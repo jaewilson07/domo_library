@@ -51,8 +51,9 @@ class DomoPage(Base):
                 *[dc.DomoCard.get_from_id(id=card.id, full_auth=full_auth) for card in dd.cards])
 
             return pg
-
-    async def get_cards(full_auth, page_id, debug :bool = False, session : aiohttp.ClientSession = None):
+    
+    @classmethod
+    async def get_cards(cls, full_auth, page_id, debug :bool = False, session : aiohttp.ClientSession = None):
         try:
             import Library.DomoClasses.DomoCard as dc
             close_session = False if session else True

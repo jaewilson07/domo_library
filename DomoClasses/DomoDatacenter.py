@@ -1,12 +1,19 @@
 import aiohttp
 import asyncio
+from enum import Enum
 
 from .DomoAuth import DomoFullAuth
 from .DomoDataset import DomoDataset
 from .routes import datacenter_routes
 
-
+class DomoEntity(Enum):
+    DATASET = 'DATA_SOURCE'
+    DATAFLOW = 'DATAFLOW'
+    PAGE = 'PAGE'
+    CARD = 'CARD'
+    
 class DomoDatacenter:
+    full_auth : DomoFullAuth = None
     
     @classmethod
     def generate_search_datacenter_body(cls, entities_list: list[str] = ['DATASET'],
@@ -107,3 +114,48 @@ class DomoDatacenter:
                 *[DomoDataset.get_from_id(id=json_obj.get('databaseId'), full_auth=full_auth, debug = debug)
                   for json_obj in json_list]
             )
+        
+            
+    @classmethod        
+    async def get_lineage_upstream(cls,
+                                   full_auth: DomoFullAuth,
+                                   entity_id,
+                                   entity_type,
+                                   session :aiohttp.ClientSession = None,
+                                   debug:bool = False,
+                                  debug_prn:bool = False):
+        
+        import Library.DomoClasses.DomoDataflow as dmdf
+        import Library.DomoClasses.DomoDataset as dmds
+        
+        try:
+            if not session:
+                    session = aiohttp.ClientSession()
+                    is_close_session = True
+
+            res = await datacenter_routes.get_lineage_upstream(full_auth = full_auth, 
+                                                               entity_type = entity_type,
+                                                               entity_id = entity_id,
+                                                               session= session, debug = debug )
+            
+            if res.status == 200:
+                obj = res.response
+                
+                domo_obj = []
+                for key, item in obj.items():
+                    if item.get('type') == 'DATA_SOURCE':
+                        domo_obj.append( await dmds.DomoDataset.get_from_id(full_auth = full_auth, id = item.get('id')))
+                    
+                    if item.get('type') == 'DATAFLOW':
+                        # print(item.get('id'))
+                        domo_obj.append( await dmdf.DomoDataflow.get_from_id(full_auth = full_auth, id = item.get('id')))
+                        pass
+                
+                return domo_obj
+            else:
+                return None
+                
+        finally:            
+            if is_close_session:
+                    await session.close()
+

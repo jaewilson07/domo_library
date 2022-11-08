@@ -124,7 +124,8 @@ class DomoJob:
 #         if debug:
 #             print(res)
 
-#         if res.status == 200:
-#             return { 'status' : res.status, 'response' : res.response}
-        pass
+        if res.status != 200:
+            return False
+        
+        return True
     

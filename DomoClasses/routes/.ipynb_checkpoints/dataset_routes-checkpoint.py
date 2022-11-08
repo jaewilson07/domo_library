@@ -476,20 +476,3 @@ async def delete(full_auth : DomoFullAuth,
         debug=debug
     )
 
-async def get_lineage_upstream(full_auth: DomoFullAuth, 
-                               dataset_id:str,
-                               session:aiohttp.ClientSession = None,
-                               debug:bool = False ):
-    url = f"https://{full_auth.domo_instance}.domo.com/api/data/v1/lineage/DATA_SOURCE/{dataset_id}"
-    
-    params = {'traverseDown' : 'false', 
-              'requestEntities' : 'DATA_SOURCE,DATAFLOW'}
-    
-    return await get_data(
-        auth=full_auth,
-        method="GET",
-        url=url,
-        params = params,
-        session=session,
-        debug=debug
-    )

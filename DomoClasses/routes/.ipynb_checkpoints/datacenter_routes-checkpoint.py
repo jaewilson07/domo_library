@@ -2,11 +2,11 @@ import aiohttp
 from pprint import pprint
 
 from .get_data import get_data, looper
-from ...utils.ResponseGetData import ResponseGetData
 from ..DomoAuth import DomoFullAuth
+from ...utils.ResponseGetData import ResponseGetData
 
 
-def generate_search_datacenter_body(entities_list: list[str] = ['DATASET'], 
+def generate_search_datacenter_body(entities_list: list[str] = ['DATASET'],
                                     filters: list[dict] = None,
                                     combineResults: bool = True,
                                     count: int = 10,
@@ -18,14 +18,15 @@ def generate_search_datacenter_body(entities_list: list[str] = ['DATASET'],
         "query": "*",
         "count": count,
         "offset": offset}
-    
+
+
 async def search_datacenter(full_auth: DomoFullAuth,
                             arr_fn: callable,
                             alter_maximum_fn: callable,
-                            maximum:int = None,
+                            maximum: int = None,
                             body: dict = None,
                             session: aiohttp.ClientSession = None,
-                            limit = 1000,
+                            limit=1000,
                             debug: bool = False, log_result: bool = False) -> ResponseGetData:
     is_close_session = False
     if not session:
@@ -65,3 +66,21 @@ async def search_datacenter(full_auth: DomoFullAuth,
         await session.close()
 
     return res
+
+async def get_lineage_upstream(full_auth: DomoFullAuth,
+                               entity_type:str,
+                               entity_id:str,
+                               session:aiohttp.ClientSession = None,
+                               debug:bool = False ):
+    url = f"https://{full_auth.domo_instance}.domo.com/api/data/v1/lineage/{entity_type}/{entity_id}"
+    
+    params = {'traverseDown' : 'false'}
+    
+    return await get_data(
+        auth=full_auth,
+        method="GET",
+        url=url,
+        params = params,
+        session=session,
+        debug=debug
+    )

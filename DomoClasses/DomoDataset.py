@@ -554,41 +554,6 @@ class DomoDataset(Base):
             if is_close_session:
                 await session.close()
     
-    @classmethod
-    async def get_lineage_upstream(cls,
-                                   full_auth: DomoFullAuth,
-                                   dataset_id,
-                                   session :aiohttp.ClientSession = None,
-                                   debug:bool = False):
-        try:
-            if not session:
-                    session = aiohttp.ClientSession()
-                    is_close_session = True
-
-            res = await dataset_routes.get_lineage_upstream(full_auth = full_auth, 
-                                             dataset_id = dataset_id,
-                                             session= session,
-                                             debug = debug )
-            if res.status == 200:
-                obj = res.response
-                
-                domo_obj = []
-                for key, item in obj.items():
-                    if item.get('type') == 'DATA_SOURCE':
-                        domo_obj.append( await DomoDataset.get_from_id(full_auth = full_auth, id = item.get('id')))
-                    
-                    if item.get('type') == 'DATAFLOW':
-                        print(item.get('id'))
-                        # domo_obj.append( await dmdf.DomoDataflow.get_from_id(full_auth = full_auth, id = item.get('id')))
-                
-                return domo_obj
-            else:
-                return None
-                
-        finally:            
-            if is_close_session:
-                    await session.close()
-
     
     # async def create(self, 
     #                   ds_name, 

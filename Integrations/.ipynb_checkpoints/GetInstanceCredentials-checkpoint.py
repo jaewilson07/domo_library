@@ -15,9 +15,9 @@ class InvalidAccountTypeError(Error):
     pass
 
 class InvalidAccountNameError(Error):
-    
+    """raised when account name does not follow format string"""
+
     def __init__(self, account_name= None, regex_pattern=None):
-        
         account_str = f'"{account_name}" '
         regex_str = f'"{regex_pattern}"'
         
@@ -25,17 +25,19 @@ class InvalidAccountNameError(Error):
         self.message = message
         
         super().__init__(self.message)
-        """raised when account name does not follow format string"""
-        pass
+    
+class NoInstanceError(Error):
+    """ raised when required domo_instance argument has not been supplied"""
+    def __init__(self):
+        self.message = "must pass a domo_instance argument"
+        super().__init__(self.message)
     
 class NoConfigCompanyError(Error):
-    
     def __init__(self, sql):
         message = f'SQL "{sql}" returned no results'
         self.message = message
         super().__init__(self.message)
-    """raised when account type is not abstract credentials"""
-    pass
+
 
 
 @dataclass
@@ -140,7 +142,7 @@ class DomoInstanceAuth:
         self.domo_instance =  domo_instance or self.domo_instance
         
         if not self.domo_instance:
-            return None
+            raise NoInstanceError
         
         full_auth = dmda.DomoFullAuth(domo_instance = domo_instance,
                                       domo_username = self.domo_username, 
@@ -189,6 +191,59 @@ async def get_domains_with_global_config_auth(config_auth: dmda.DomoFullAuth,
         full_auth = dmda.DomoFullAuth(domo_instance = instance['domo_instance'],
                                   domo_username = creds.domo_username,
                                   domo_password = creds.domo_password)
+        try:
+            await full_auth.get_auth_token(debug = False)
+        
+        except dmda.InvalidCredentialsError as e:
+            print(e)
+        
+        df.at[index, 'instance_auth'] = full_auth
+        df.at[index, 'is_valid'] = 1 if (full_auth.token) else 0
+    
+    return df
+
+async def get_domains_with_instance_auth(config_auth: dmda.DomoFullAuth,
+                                         dataset_id: str,
+                                         pa_auth,
+                                         pa_test_auth,
+                                         other_auth,
+                                         other_test_auth,
+                                         sql: str = "select domain from table",
+                                         debug: bool = False
+                                        ) -> pd.DataFrame:
+    
+    import Library.DomoClasses.DomoDataset as dmds
+    
+    ds = await dmds.DomoDataset.get_from_id(full_auth=config_auth,
+                                            id=dataset_id, debug=debug)
+
+    print(f"⚙️ START - Retrieving company list \n{ds.display_url()}")
+    print(f"⚙️ SQL = {sql}")
+
+    df = await ds.query_dataset_private(full_auth=config_auth,
+                                        dataset_id=dataset_id,
+                                        sql=sql,
+                                        debug=debug)
+    if len(df.index) == 0:
+        raise NoConfigCompanyError(sql)
+        
+    print(f"\n⚙️ SUCCESS 🎉 Retrieved company list \nThere are {len(df.index)} companies to update")
+    
+    for index, instance in df.iterrows():
+        creds = other_auth 
+
+        if instance['project'] == 'pa' and instance['config_useprod'] == 1:
+            creds = pa_auth
+        elif instance['project'] == 'pa' and instance['config_useprod'] == 0:
+            creds = pa_test_auth     
+        elif instance['project'] == 'other' and instance['config_useprod'] == 0:
+            creds = other_test_auth
+
+        full_auth = dmda.DomoFullAuth(domo_instance = instance['domo_instance'],
+                                  domo_username = creds.domo_username,
+                                  domo_password = creds.domo_password,
+                                      token_name = 'instance'
+                                     )
         try:
             await full_auth.get_auth_token(debug = False)
         

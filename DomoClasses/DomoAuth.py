@@ -26,26 +26,35 @@ class _DA_Base:
 @dataclass
 class _DA_Default:
     token: str = field(default = None, repr = False)
+    token_name : str = field(default = None)
     user_id: str = field(default = None, repr = False)
     auth_header: dict = field(default_factory = dict, repr = False)
+    
+    async def print_is_token(self, token_name = None) -> None:
+        self.token_name = token_name
+        if not self.token:
+            await self.get_auth_token()
+        
+        token_str = f"{token_name} "
+        
+        if not self.token:
+            print(f"🚧 failed to retrieve {token_str if token_name else ''}token from {self.domo_instance}")
+            return False
+        
+        print(f"🎉 {token_str if token_name else ''}token retrieved from {self.domo_instance} ⚙️")
+        return True
 
 @dataclass
 class DomoAuth(_DA_Default, _DA_Base):
     def _init__():
         super().__init__()
         
-#     @abstractmethod
-#     async def get_auth_token(self) -> ResponseGetData:
-#         pass
-
-#     @abstractmethod
-#     async def generate_auth_header(self, token) -> dict:
-#         pass
    
 @dataclass
 class _DFA_Base(_DA_Base):
     domo_username: str
     domo_password: str = field(default = None , repr = False)
+    
     
 @dataclass
 class DomoFullAuth(_DA_Default, _DFA_Base):

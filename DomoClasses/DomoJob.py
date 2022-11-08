@@ -91,7 +91,7 @@ class DomoJob:
                  customer_id = dd.customerId,
                 triggers = triggers_dj)
 
-    
+    @classmethod
     async def create_domostats_job(cls, 
                          full_auth: DomoFullAuth, 
                          domostats_schedule: DomoTrigger_Schedule,
@@ -124,7 +124,8 @@ class DomoJob:
 #         if debug:
 #             print(res)
 
-#         if res.status == 200:
-#             return { 'status' : res.status, 'response' : res.response}
-        pass
+        if res.status != 200:
+            return False
+        
+        return True
     

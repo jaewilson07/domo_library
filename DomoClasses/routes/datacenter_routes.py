@@ -66,3 +66,21 @@ async def search_datacenter(full_auth: DomoFullAuth,
         await session.close()
 
     return res
+
+async def get_lineage_upstream(full_auth: DomoFullAuth,
+                               entity_type:str,
+                               entity_id:str,
+                               session:aiohttp.ClientSession = None,
+                               debug:bool = False ):
+    url = f"https://{full_auth.domo_instance}.domo.com/api/data/v1/lineage/{entity_type}/{entity_id}"
+    
+    params = {'traverseDown' : 'false'}
+    
+    return await get_data(
+        auth=full_auth,
+        method="GET",
+        url=url,
+        params = params,
+        session=session,
+        debug=debug
+    )
