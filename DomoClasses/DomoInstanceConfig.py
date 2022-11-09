@@ -1,5 +1,6 @@
 import aiohttp
 import datetime as dt
+import asyncio
 
 import Library.utils.convert_date as cd
 
@@ -7,11 +8,16 @@ from ..utils.DictDot import DictDot
 from dataclasses import dataclass, field
 from typing import List
 
+import importlib
+
 from .DomoAuth import DomoFullAuth
 from .DomoGrant import DomoGrant
 from .DomoRole import DomoRole
 from .DomoApplication import DomoApplication
-from .routes import instance_config_routes, role_routes, datacenter_routes, application_routes, grant_routes
+
+import Library.DomoClasses.DomoPublish as dmpb
+importlib.reload(dmpb)
+from .routes import instance_config_routes, role_routes, datacenter_routes, publish_routes, application_routes, grant_routes
 
                                     
 @dataclass
@@ -212,6 +218,25 @@ class DomoInstanceConfig:
 
         if res.status == 200 and not return_raw:
             return [ DomoApplication._from_json(job) for job in res.response]
+        
+        if res.status == 200 and return_raw:
+            return res.response
+        
+    
+    @classmethod
+    async def get_publications(cls, 
+                               full_auth: DomoFullAuth, 
+                               debug: bool = False, session : aiohttp.ClientSession = None, return_raw:bool = False):
+        
+        res = await  publish_routes.search_publications(full_auth=full_auth,
+                                                        debug=debug,
+                                                        session=session)
+        if debug:
+            print('Getting Publish jobs')
+
+        if res.status == 200 and not return_raw:
+            return await asyncio.gather(*[ dmpb.DomoPublication.get_from_id(publication_id = job.get('id'), 
+                                                                            full_auth = full_auth) for job in res.response])
         
         if res.status == 200 and return_raw:
             return res.response

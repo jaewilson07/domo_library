@@ -30,6 +30,8 @@ class _DA_Default:
     user_id: str = field(default = None, repr = False)
     auth_header: dict = field(default_factory = dict, repr = False)
     
+    url_manual_login : str = None
+        
     async def print_is_token(self, token_name = None) -> None:
         self.token_name = token_name
         if not self.token:
@@ -54,10 +56,15 @@ class _DFA_Base(_DA_Base):
     domo_username: str
     domo_password: str = field(default = None , repr = False)
     
+
+    
     
 @dataclass
 class DomoFullAuth(_DA_Default, _DFA_Base):
     """use for full authentication token"""
+
+    def __post_init__(self):
+        self.url_manual_login =  f"https://{self.domo_instance}.domo.com/auth/index?domoManualLogin=true"
 
 
     def generate_auth_header(self, token: str) -> dict:
