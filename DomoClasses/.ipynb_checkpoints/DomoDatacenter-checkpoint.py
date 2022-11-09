@@ -2,7 +2,9 @@ import aiohttp
 import asyncio
 from enum import Enum
 
-from .DomoAuth import DomoFullAuth
+from dataclasses import dataclass, field
+
+import Library.DomoClasses.DomoAuth as dmda
 from .DomoDataset import DomoDataset
 from .routes import datacenter_routes
 
@@ -11,9 +13,10 @@ class DomoEntity(Enum):
     DATAFLOW = 'DATAFLOW'
     PAGE = 'PAGE'
     CARD = 'CARD'
-    
+  
+
 class DomoDatacenter:
-    full_auth : DomoFullAuth = None
+    full_auth : dmda.DomoFullAuth = None
     
     @classmethod
     def generate_search_datacenter_body(cls, entities_list: list[str] = ['DATASET'],
@@ -43,7 +46,7 @@ class DomoDatacenter:
      
 
     @classmethod
-    async def search_datacenter(cls, full_auth: DomoFullAuth,
+    async def search_datacenter(cls, full_auth: dmda.DomoFullAuth,
                                 body: dict = None,
                                 session: aiohttp.ClientSession = None,
                                 maximum: int = None,
@@ -85,7 +88,7 @@ class DomoDatacenter:
 
     @classmethod
     async def search_datasets(cls,
-                              full_auth=DomoFullAuth,
+                              full_auth=dmda.DomoFullAuth,
                               body: dict = None,
                               session: aiohttp.ClientSession = None,
                               maximum: int = None,
@@ -118,7 +121,7 @@ class DomoDatacenter:
             
     @classmethod        
     async def get_lineage_upstream(cls,
-                                   full_auth: DomoFullAuth,
+                                   full_auth: dmda.DomoFullAuth,
                                    entity_id,
                                    entity_type,
                                    session :aiohttp.ClientSession = None,
@@ -158,4 +161,3 @@ class DomoDatacenter:
         finally:            
             if is_close_session:
                     await session.close()
-

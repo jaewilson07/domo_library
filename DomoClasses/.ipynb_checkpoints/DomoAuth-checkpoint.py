@@ -49,7 +49,6 @@ class DomoAuth(_DA_Default, _DA_Base):
     def _init__():
         super().__init__()
         
-   
 @dataclass
 class _DFA_Base(_DA_Base):
     domo_username: str
@@ -87,7 +86,7 @@ class DomoFullAuth(_DA_Default, _DFA_Base):
 
             self.auth_header = self.generate_auth_header(token=self.token)
 
-            return res
+            return self.token
 
         elif res.status == 200 and not res.is_success:
             raise InvalidCredentialsError(status=res.status, 
