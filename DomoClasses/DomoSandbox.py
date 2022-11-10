@@ -34,8 +34,11 @@ class DomoRepository:
 
     @classmethod
     def _from_json(cls, obj, full_auth = None):
+        
+        import dateutil.parser as dtut 
+        
         dd = DictDot(obj)
-    
+        
         return cls(
             id = dd.id,
             full_auth = full_auth,
@@ -44,8 +47,8 @@ class DomoRepository:
             content_card_id_ls = dd.repositoryContent.cardIds,
             content_dataflow_id_ls = dd.repositoryContent.dataflowIds,
             content_view_id_ls = dd.repositoryContent.viewIds,
-            last_updated_dt = dd.updated,
-            commit_dt = dd.lastCommit.completed,
+            last_updated_dt = dtut.parse(dd.updated).replace(tzinfo=None),
+            commit_dt = dtut.parse(dd.lastCommit.completed).replace(tzinfo=None),
             commit_version = dd.lastCommit.commitName
         )
     
