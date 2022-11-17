@@ -110,6 +110,21 @@ class DomoPublication:
         
         return cls._from_json(obj = res.response, full_auth = full_auth)
     
+    def convert_content_to_dataframe(self, return_raw:bool = False):
+        
+        
+        output_ls = [{'plubication_id' : self.id,
+                   'publication_name' : self.name,
+                   'is_v2' : self.is_v2,
+                   'publish_created_dt' : self.created_dt,
+                   'entity_type' : row.type,
+                   'entity_id' : row.id 
+                  } for row in self.content_entity_ls ]
+        
+        if return_raw:
+            return output_ls
+        
+        return pd.DataFrame(output_ls)
     
     def convert_lineage_to_dataframe(self, return_raw:bool = False ):
         import pandas as pd

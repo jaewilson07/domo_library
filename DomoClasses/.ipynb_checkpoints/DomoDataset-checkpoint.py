@@ -9,98 +9,23 @@ from enum import Enum, auto
 from pprint import pprint
 from typing import List, Any
 
-
+import Library.DomoClasses.DomoCertification as dmdc
+import Library.DomoClasses.DomoPDP as dmpdp
+import Library.DomoClasses.DomoTag as dmtg
 from .DomoAuth import DomoDeveloperAuth, DomoFullAuth
+
+
 from .routes import dataset_routes
 from ..utils import Exceptions as ex
-from ..utils import convert_date as cd
 from ..utils.Base import Base
 from ..utils.DictDot import DictDot
 from ..utils.chunk_execution import chunk_list
 
+import importlib
+importlib.reload(dmtg)
 
 @dataclass
-class DomoPDPPolicy(Base):
-    dataset_id: str
-    filter_group_id: str
-    name: str
-    resources: list
-    parameters: list
-
-    @classmethod
-    def _from_json(cls, json_obj):
-        dd = DictDot(json_obj)
-
-        return cls(dataset_id=dd.dataSourceId,
-                   filter_group_id=dd.filterGroupId,
-                   name=dd.name,
-                   resources=dd.resources,
-                   parameters=dd.parameters)
-
-    @staticmethod
-    def generate_parameter_simple(column_name, column_values_list, operator='EQUALS', ignore_case: bool = True):
-        return dataset_routes.generate_policy_parameter_simple(column_name=column_name,
-                                                               column_values_list=column_values_list,
-                                                               operator=operator,
-                                                               ignore_case=ignore_case)
-
-    @staticmethod
-    def generate_body(policy_name, dataset_id, parameters_list, policy_id=None, user_ids=None, group_ids=None):
-        return dataset_routes.generate_policy_body(policy_name=policy_name,
-                                                   dataset_id=dataset_id,
-                                                   parameters_list=parameters_list,
-                                                   policy_id=policy_id,
-                                                   user_ids=user_ids,
-                                                   group_ids=group_ids)
-
-    @classmethod
-    async def update_policy(cls, full_auth: DomoFullAuth,
-                            dataset_id: str,
-                            policy_definition: dict,
-                            debug: bool = False):
-
-        if policy_definition.get('filterGroupId'):
-            res = await dataset_routes.update_policy(full_auth=full_auth,
-                                                     dataset_id=dataset_id,
-                                                     filter_group_id=policy_definition.get('filterGroupId'),
-                                                     body=policy_definition,
-                                                     debug=debug)
-            return cls._from_json(res.response)
-        else:
-            res = await dataset_routes.create_policy(full_auth=full_auth,
-                                                     dataset_id=dataset_id,
-                                                     body=policy_definition,
-                                                     debug=debug)
-
-            return cls._from_json(res.response)
-
-
-class DomoPDPPolicies:
-
-    def __init__(self, dataset):
-        self.dataset = dataset
-        self.policies: list = []
-
-    async def get_policies(self, full_auth: DomoFullAuth = None, dataset_id: str = None, debug: bool = False):
-
-        dataset_id = dataset_id or self.dataset.id
-        full_auth = full_auth or self.dataset.full_auth
-
-        res = await dataset_routes.get_pdp_policies(full_auth=full_auth, dataset_id=dataset_id, debug=debug)
-
-        if debug:
-            print("debug")
-            print(res.status)
-            print(res.response)
-
-        if res.status == 200:
-            domo_policy = [DomoPDPPolicy._from_json(policy_obj) for policy_obj in res.response]
-            self.policies = domo_policy
-            return domo_policy
-
-
-@dataclass
-class DomoColumn:
+class Schema_Column:
     name: str
     id: str
     type: str
@@ -118,14 +43,14 @@ class DomoColumn:
 
 
 @dataclass(init=False)
-class DomoSchema:
-    columns: List[DomoColumn] = field(default_factory=list)
+class Dataset_Schema:
+    columns: List[Schema_Column] = field(default_factory=list)
 
     def __init__(self, dataset):
         self.dataset = dataset
         self.columns = []
 
-    async def get(self, full_auth: DomoFullAuth = None, debug: bool = False) -> List[DomoColumn]:
+    async def get(self, full_auth: DomoFullAuth = None, debug: bool = False) -> List[Schema_Column]:
         full_auth = full_auth or self.dataset.full_auth
 
         res = await dataset_routes.get_schema(full_auth=self.dataset.full_auth, id=self.dataset.id, debug=debug)
@@ -135,59 +60,40 @@ class DomoSchema:
 
             self.columns = []
             for json_obj in json_list:
-                dc = DomoColumn._from_json(json_obj=json_obj, domo_dataset=self.dataset)
+                dc = Schema_Column._from_json(json_obj=json_obj, domo_dataset=self.dataset)
                 if dc not in self.columns:
                     self.columns.append(dc)
 
             return self.columns
 
 
-class DomoCertificationState(Enum):
-    CERTIFIED = 'certified'
-
-
-@dataclass
-class DomoCertification:
-    certification_state: DomoCertificationState
-    last_updated: dt.datetime
-    certification_type: str
-    certification_name: str
-
-    @classmethod
-    def _from_json(cls, dd):
-        return cls(certification_state=DomoCertificationState[dd.state].value or dd.state,
-                   last_updated=cd.convert_epoch_millisecond_to_datetime(dd.lastUpdated),
-                   certification_type=dd.processType,
-                   certification_name=dd.processName
-                   )
-
-
 @dataclass
 class DomoDataset(Base):
-    full_auth: DomoFullAuth = field(repr=False, default_factory=list)
-    dev_auth: DomoDeveloperAuth = field(repr=False, default_factory=list)
+    full_auth: DomoFullAuth = field(repr=False, default = None)
+    dev_auth: DomoDeveloperAuth = field(repr=False, default = None)
     
     id: str = ''
     display_type: str = ''
     data_provider_type: str = ''
     name: str = ''
     description: str = ''
-    domo_instance: str = ''
     row_count: int = None
     column_count: int = None
     owner: dict = field(default_factory=dict)
     formula: dict = field(default_factory=dict)
     stream_id: int = None
-    tags: list[str] = field(default_factory=list[str])
+    domo_instance: str =''
     
-    certification: DomoCertification = None
-    PDPPolicies: DomoPDPPolicies = field(default = None)
-    schema :DomoSchema = None
+    tags : dmtg.Dataset_Tags = None    
+    certification: dmdc.DomoCertification = None
+    PDPPolicies: dmpdp.Dataset_PDP_Policies = None
+    schema :Dataset_Schema = None
 
     def __post_init__(self):
         Base().__init__()
-        self.PDPPolicies = DomoPDPPolicies(self)
-        self.schema = DomoSchema(self)
+        self.PDPPolicies = dmpdp.Dataset_PDP_Policies(self)
+        self.schema = Dataset_Schema(self)
+        self.tags = dmtg.Dataset_Tags(dataset = self)
 
     def display_url(self):
         return f'https://{self.domo_instance or self.full_auth.domo_instance}.domo.com/datasources/{self.id}/details/overview'
@@ -195,46 +101,49 @@ class DomoDataset(Base):
     @classmethod
     async def get_from_id(cls,
                           id: str,
-                          full_auth: DomoFullAuth = None,
+                          full_auth: DomoFullAuth,
                           debug: bool = False, log_results: bool = False):
+        
+        # try:
+        res = await dataset_routes.get_dataset_by_id(full_auth=full_auth,
+                                                     id=id or cls.id, debug=debug)
+        if res.status == 404:
+            print("f error retrieving get_from_id {full_auth.domo_instance} - {id} status = 404")
+            raise ex.InvalidDataset(domo_instance=full_auth.domo_instance, dataset_id=id)
 
-        try:
-            res = await dataset_routes.get_dataset_by_id(full_auth=full_auth,
-                                                         id=id, debug=debug)
-
-            if debug:
+        # except Exception as e:
+        #     print(e)
+        #     return None
+        
+        if debug:
                 pprint(res)
 
-            if res.status == 404:
-                print("f error retrieving get_from_id {full_auth.domo_instance} - {id} status = 404")
-                raise ex.InvalidDataset(domo_instance=full_auth.domo_instance, dataset_id=id)
+        
+        dd = DictDot(res.response)
+        ds = cls(
+            full_auth=full_auth,
+            id=dd.id,
+            display_type=dd.displayType,
+            data_provider_type=dd.dataProviderType,
+            name=dd.name,
+            description=dd.description,
+            owner=dd.owner,
+            formula=dd.properties.formulas.formulas,
+            stream_id=dd.streamId,
+            row_count=int(dd.rowCount),
+            column_count=int(dd.columnCount)
+        )
 
-            dd = DictDot(res.response)
-            ds = cls(
-                domo_instance=full_auth.domo_instance or dev_auth.domo_instance,
-                full_auth=full_auth,
-                id=dd.id,
-                display_type=dd.displayType,
-                data_provider_type=dd.dataProviderType,
-                name=dd.name,
-                description=dd.description,
-                owner=dd.owner,
-                formula=dd.properties.formulas.formulas,
-                stream_id=dd.streamId,
-                tags=json.loads(dd.tags) if dd.tags else None,
-                row_count=int(dd.rowCount),
-                column_count=int(dd.columnCount)
-            )
+        if dd.tags:
+            ds.tags.tag_ls = json.loads(dd.tags)
 
-            if dd.certification:
-                # print('class def certification', dd.certification)
-                ds.certification = DomoCertification._from_json(dd.certification)
+        if dd.certification:
+            # print('class def certification', dd.certification)
+            ds.certification = dmdc.DomoCertification._from_json(dd.certification)
 
-            return ds
+        return ds
 
-        except Exception as e:
-            print(e)
-            return None
+        
 
     @classmethod
     async def query_dataset(cls,

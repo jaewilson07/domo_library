@@ -1,5 +1,6 @@
 import aiohttp
 import pandas as pd
+import asyncio
 
 async def upload_data(instance_auth,
                       consol_auth,

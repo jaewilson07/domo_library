@@ -41,6 +41,8 @@ class DomoLineage:
     card_id_ls : [str] = None
     dataflow_id_ls: [str] = None
     dataset_id_ls: [str] = None
+    
+    entity_ls : [any] = None
             
     
     async def _get_page_card_ids(self):
@@ -53,6 +55,7 @@ class DomoLineage:
         page_card_ls = await asyncio.gather( *[dmpg.DomoPage.get_cards(page_id = page_id,
                                                                        full_auth = self.parent.full_auth) 
                                                for page_id in self.parent.content_page_id_ls])
+        
         
         if not page_card_ls or len(page_card_ls) == 0 :
             return
@@ -103,6 +106,9 @@ class DomoLineage:
                 entity_type = item.get('type')
                 entity_id = item .get('id')
                 
+                if not self.entity_ls :
+                    self.entity_ls = []
+                
                 
                 if entity_type == 'DATA_SOURCE':
                     if not self.dataset_id_ls:
@@ -110,7 +116,10 @@ class DomoLineage:
                     
                     if entity_id not in self.dataset_id_ls:
                         self.dataset_id_ls.append(entity_id)
-                        domo_obj_ls.append( await dmds.DomoDataset.get_from_id(full_auth = full_auth, id = entity_id))
+                        
+                        do = await dmds.DomoDataset.get_from_id(full_auth = full_auth, id = entity_id)
+                        domo_obj_ls.append( do)
+                        self.entity_ls.append(do)
 
                 if entity_type == 'DATAFLOW':
                     if not self.dataflow_id_ls:
@@ -118,7 +127,11 @@ class DomoLineage:
                     
                     if entity_id not in self.dataflow_id_ls:
                         self.dataflow_id_ls.append(entity_id)
-                        domo_obj_ls.append( await dmdf.DomoDataflow.get_from_id(full_auth = full_auth, id = entity_id))
+                        
+                        do = await dmdf.DomoDataflow.get_from_id(full_auth = full_auth, id = entity_id)
+                        domo_obj_ls.append( do)
+                        self.entity_ls.append(do)
+
                     
             return domo_obj_ls
 

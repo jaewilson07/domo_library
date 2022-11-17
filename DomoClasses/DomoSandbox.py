@@ -62,7 +62,7 @@ class DomoRepository:
         return cls._from_json(res.response, full_auth = full_auth)
 
     
-    def convert_lineage_to_dataframe(self, is_return_obj_ls:bool = False ):
+    def convert_lineage_to_dataframe(self, return_raw:bool = False ):
         import pandas as pd
         import re
         
@@ -77,7 +77,7 @@ class DomoRepository:
                    'entity_id' : row.get('entity_id') 
                   } for row in flat_lineage_ls ]
         
-        if is_return_obj_ls:
+        if return_raw:
             return output_ls
         
         return pd.DataFrame(output_ls)

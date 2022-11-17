@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 
 import Library.DomoClasses.DomoAuth as dmda
 from .DomoDataset import DomoDataset
-from .routes import datacenter_routes
+from .routes import datacenter_routes, account_routes
 
 class DomoEntity(Enum):
     DATASET = 'DATA_SOURCE'
@@ -161,3 +161,16 @@ class DomoDatacenter:
         finally:            
             if is_close_session:
                     await session.close()
+                    
+    async def get_accounts(full_auth : dmda.DomoFullAuth):
+        import Library.DomoClasses.DomoAccount as dma
+        
+        res = await account_routes.get_accounts(full_auth= full_auth)
+
+        if res.status !=200:
+            return None
+
+        obj_ls = res.response
+
+        return await asyncio.gather(*[ dma.DomoAccount.get_from_id(account_id = obj.get('id'), full_auth = full_auth) for obj in obj_ls])
+   
