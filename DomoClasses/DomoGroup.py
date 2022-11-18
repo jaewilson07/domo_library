@@ -30,7 +30,8 @@ class GroupMembership:
         if res.status == 200:
             if log_results:
                 if self.group_members:
-                    print(f'Group Membership includes {len(self.group_members)}')
+                    print(
+                        f'Group Membership includes {len(self.group_members)}')
 
         return res
 
@@ -41,7 +42,8 @@ class GroupMembership:
         full_auth = full_auth or self.group.full_auth
 
         add_user_arr = [str(uid) for uid in user_ids_list]
-        remove_user_arr = [str(uid) for uid in self.group_members_ids if str(uid) not in add_user_arr]
+        remove_user_arr = [
+            str(uid) for uid in self.group_members_ids if str(uid) not in add_user_arr]
 
         body = group_routes.generate_body_update_group_membership(group_id=self.group.id,
                                                                   add_user_arr=add_user_arr,
@@ -71,35 +73,32 @@ class GroupMembership:
 class DomoGroups:
     def __init__(self, user):
         self.user = user
-        
+
     def _groups_to_domo_group(json_list, full_auth: DomoFullAuth):
-        
-        return [ DomoGroup._from_search_json( full_auth=full_auth, json_obj=json_obj) for json_obj in json_list]
 
-        
-        
-        
+        return [DomoGroup._from_search_json(full_auth=full_auth, json_obj=json_obj) for json_obj in json_list]
+
     @classmethod
-    async def all_groups(cls, full_auth: DomoFullAuth, debug: bool = False, log_results: bool = False, session : aiohttp.ClientSession = None):
+    async def all_groups(cls, full_auth: DomoFullAuth, debug: bool = False, log_results: bool = False, session: aiohttp.ClientSession = None):
 
-        res = await group_routes.get_all_groups(full_auth=full_auth, debug = debug, log_results=log_results, session = session)
-                
+        res = await group_routes.get_all_groups(full_auth=full_auth, debug=debug, log_results=log_results, session=session)
+
         if res.status != 200:
             return None
-        
+
         if len(res.response) > 0:
             json_list = res.response
-            
+
             return cls._groups_to_domo_group(json_list=json_list, full_auth=full_auth)
-        
+
         else:
             return []
-    
-    
+
+
 @dataclass
 class DomoGroup(Base):
     domo_instance: str = None
-    full_auth :DomoFullAuth = None
+    full_auth: DomoFullAuth = None
     id: str = None
     name: str = None
     type: str = None
@@ -108,11 +107,9 @@ class DomoGroup(Base):
     owner_members: list = field(repr=False, default_factory=list)
 
     def __post_init__(self):
-        self.domo_instance = self.domo_instance or full_auth.domo_instance    
+        self.domo_instance = self.domo_instance or full_auth.domo_instance
         self.Membership = GroupMembership(self)
         Base().__init__()
-
-
 
     @classmethod
     def _from_search_json(cls, full_auth: DomoFullAuth, json_obj):
@@ -159,9 +156,9 @@ class DomoGroup(Base):
             res.print(is_pretty=True)
 
         if res.status == 200 and res.response.get('id'):
-            domo_group = cls._from_search_json(full_auth=full_auth, json_obj=res.response)
+            domo_group = cls._from_search_json(
+                full_auth=full_auth, json_obj=res.response)
             return domo_group
-
 
     @classmethod
     async def search_by_name(cls, full_auth: DomoFullAuth,
@@ -176,7 +173,8 @@ class DomoGroup(Base):
         if res.status == 200:
             json_list = res.response
             domo_groups = cls._groups_to_domo_group(json_list, full_auth)
-            domo_groups = [group for group in domo_groups if group.name == group_name]
+            domo_groups = [
+                group for group in domo_groups if group.name == group_name]
 
             if debug:
                 print('groups after name filter')
@@ -187,7 +185,6 @@ class DomoGroup(Base):
                 if debug:
                     print("create if not exist and not domo groups")
                 return await DomoGroup.create_from_name(full_auth=full_auth, group_name=group_name, debug=debug)
-
 
             elif allow_only_one:
                 if debug:

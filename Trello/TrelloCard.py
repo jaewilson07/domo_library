@@ -13,52 +13,53 @@ import Library.Trello.TrelloUtils as tu
 
 from .routes import card_routes
 
+
 class UpdateCard:
     def __init__(self, card, auth: ta.TrelloAuth):
         self._card = card
         self._auth = auth
 
-    async def name(self, new_value,auth,  debug: bool = False):
+    async def name(self, new_value, auth,  debug: bool = False):
         await card_routes.put_card_attribute(auth=auth or self._auth, card_id=self._card.id,
-                                 attribute='name', value=new_value, debug=debug)
+                                             attribute='name', value=new_value, debug=debug)
 
-    async def description(self, new_value,auth,  debug: bool = False):
+    async def description(self, new_value, auth,  debug: bool = False):
         await card_routes.put_card_attribute(auth=auth or self._auth, card_id=self._card.id,
-                                 attribute='desc', value=new_value, debug=debug)
-        
+                                             attribute='desc', value=new_value, debug=debug)
+
     async def start_date(self, new_value, auth, debug: bool = False):
         await card_routes.put_card_attribute(auth=auth or self._auth, card_id=self._card.id,
-                                 attribute='start', value=new_value, debug=debug)
-        
+                                             attribute='start', value=new_value, debug=debug)
+
     async def add_label(self, new_value, auth, debug: bool = False):
         await card_routes.post_card_attribute(auth=auth or self._auth, card_id=self._card.id,
-                                 attribute='idLabels', value=new_value, debug=debug)
-        
+                                              attribute='idLabels', value=new_value, debug=debug)
+
     async def remove_label(self, new_value, auth, debug: bool = False):
         await card_routes.delete_card_attribute(auth=auth or self._auth, card_id=self._card.id,
-                                 attribute='idLabels', value=new_value, debug=debug)
+                                                attribute='idLabels', value=new_value, debug=debug)
 
 
 @dataclass
 class TrelloCard(Base):
     id: str
-    auth :ta.TrelloAuth = None
+    auth: ta.TrelloAuth = None
 
     name: str = None
     list_id: str = None
     board_id: str = None
-    
+
     description: str = None
-    start_date : dt.datetime = None
+    start_date: dt.datetime = None
     label_ids: list = None
     labels: list = None
-        
-    url : str = None
-    
-    members_ids: List[str] = field(default_factory = list) 
-    
+
+    url: str = None
+
+    members_ids: List[str] = field(default_factory=list)
+
     closed: bool = None
-    
+
     pos: Union[str, int] = None
 
     def __post_init__(self):
@@ -71,7 +72,7 @@ class TrelloCard(Base):
             print(f"debug -- getting props for {card_id}")
 
         res = await card_routes.get_card_by_id(auth=self.auth, card_id=card_id, debug=debug)
-        
+
         if res.status == 200:
             json_obj = res.response
 
@@ -89,27 +90,28 @@ class TrelloCard(Base):
             self.list_id = dd.idList
             self.pos = dd.pos
             self.start_date = tu.trello_timestr_to_datetime(dd.start)
-            
+
         return res
 
     @classmethod
     def _create_from_json(cls, auth: ta.TrelloAuth, json_obj: dict):
         dd = DictDot(json_obj)
-        
+
         card = cls(id=dd.id, auth=auth,
-                   name = dd.name,
-                   url = dd.url,
-                   members_ids = dd.idMembers,
-                   description = dd.desc,
-                   closed = dd.closed,
-                   board_id = dd.idBoard,
-                   list_id = dd.idList,
-                   pos = dd.pos,
-                   start_date = tu.trello_timestr_to_datetime(dd.start) if dd.start else None,
-                   label_ids = dd.idLabels,
-                   labels = dd.labels
-                  )
-        
+                   name=dd.name,
+                   url=dd.url,
+                   members_ids=dd.idMembers,
+                   description=dd.desc,
+                   closed=dd.closed,
+                   board_id=dd.idBoard,
+                   list_id=dd.idList,
+                   pos=dd.pos,
+                   start_date=tu.trello_timestr_to_datetime(
+                       dd.start) if dd.start else None,
+                   label_ids=dd.idLabels,
+                   labels=dd.labels
+                   )
+
         return card
 
     @classmethod
@@ -122,7 +124,7 @@ class TrelloCard(Base):
                            closed: bool = False,
                            pos: str = 'top',
                            debug: bool = False, log_results: bool = False,
-                           start_date :str = None,
+                           start_date: str = None,
                            session: aiohttp.ClientSession = None):
 
         card_properties = {
@@ -130,9 +132,9 @@ class TrelloCard(Base):
             'idList': list_id,
             'idBoard': board_id,
             'closed': closed,
-            'pos': pos  
+            'pos': pos
         }
-        
+
         if start_date:
             card_properties.update({'start': start_date})
 
@@ -143,8 +145,8 @@ class TrelloCard(Base):
             card_properties.update({'idMembers': members_ids})
 
         res = await card_routes.post_new_card(auth=auth, card_properties=card_properties, debug=debug,
-                                  session=session)
-        
+                                              session=session)
+
         if res.status == 200:
             return cls._create_from_json(auth=auth, json_obj=res.response)
 
@@ -160,12 +162,13 @@ class TrelloCard(Base):
                            debug: bool = False, session: aiohttp.ClientSession = None):
 
         res = await card_routes.get_search_cards_by_name(auth, search_name=name, allow_partial_match=False,
-                                                      debug=debug)
-        
-        if res.status == 200 :
+                                                         debug=debug)
+
+        if res.status == 200:
             search_cards = res.response
 
-            match_card = next((card for card in search_cards if card.get('name') == name), None) if len(search_cards) > 0 else None
+            match_card = next((card for card in search_cards if card.get(
+                'name') == name), None) if len(search_cards) > 0 else None
 
             if match_card:
                 if debug:
@@ -202,7 +205,7 @@ class TrelloCard(Base):
                           members_ids: list[str] = None,
                           closed: bool = False,
                           pos: str = 'top',
-                          start_date:str = None,
+                          start_date: str = None,
                           debug: bool = False, session: aiohttp.ClientSession = None):
 
         if check_duplicates:
@@ -225,9 +228,8 @@ class TrelloCard(Base):
                                       closed=closed,
                                       pos=pos,
                                       debug=debug,
-                                      start_date = start_date,
+                                      start_date=start_date,
                                       session=session)
-
 
     async def delete_card(self, debug: bool = False, session: aiohttp.ClientSession = None):
         return await card_routes.delete_card(auth=self.auth, card_id=self.id, debug=debug, session=session)

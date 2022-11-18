@@ -19,14 +19,14 @@ class DomoPage(Base):
     cards: list = field(default_factory=list)
     collections: list = field(default_factory=list)
 
-    def __post_init__(self, full_auth = None):
+    def __post_init__(self, full_auth=None):
         Base().__init__()
-        
+
         if full_auth:
             self.domo_instance = full_auth.domo_instance
             self.full_auth = full_auth
         # self.Definition = CardDefinition(self)
-        
+
     def display_url(self):
         return f'https://{self.domo_instance}.domo.com/page/{self.id}'
 
@@ -51,52 +51,54 @@ class DomoPage(Base):
                 *[dc.DomoCard.get_from_id(id=card.id, full_auth=full_auth) for card in dd.cards])
 
             return pg
-    
+
     @classmethod
-    async def get_cards(cls, full_auth, page_id, debug :bool = False, session : aiohttp.ClientSession = None):
+    async def get_cards(cls, full_auth, page_id, debug: bool = False, session: aiohttp.ClientSession = None):
         try:
             import Library.DomoClasses.DomoCard as dc
             close_session = False if session else True
-            
+
             if not session:
                 session = aiohttp.ClientSession()
-                
-            res = await page_routes.get_page_definition(full_auth = full_auth, page_id = page_id , debug = debug, session = session)
+
+            res = await page_routes.get_page_definition(full_auth=full_auth, page_id=page_id, debug=debug, session=session)
 
             if res.status == 200:
                 json = res.response
 
-                card_list = [ dc.DomoCard(id = card.get('id'), full_auth = full_auth) for card in json.get('cards')]         
+                card_list = [dc.DomoCard(id=card.get(
+                    'id'), full_auth=full_auth) for card in json.get('cards')]
 
                 return card_list
 
             else:
                 return None
-        
+
         finally:
             if close_session:
                 await session.close()
-    
-    async def get_datasets(full_auth, page_id, debug :bool = False, session : aiohttp.ClientSession = None):
+
+    async def get_datasets(full_auth, page_id, debug: bool = False, session: aiohttp.ClientSession = None):
         try:
             import Library.DomoClasses.DomoDataset as dmds
             close_session = False if session else True
-            
+
             if not session:
                 session = aiohttp.ClientSession()
-                
-            res = await page_routes.get_page_definition(full_auth = full_auth, page_id = page_id , debug = debug, session = session)
+
+            res = await page_routes.get_page_definition(full_auth=full_auth, page_id=page_id, debug=debug, session=session)
 
             if res.status == 200:
                 json = res.response
 
-                dataset_ls = [ card.get('datasources') for card in json.get('cards') ]
+                dataset_ls = [card.get('datasources')
+                              for card in json.get('cards')]
 
-                return [dmds.DomoDataset(id = ds.get('dataSourceId'), full_auth = full_auth) for ds_ls in dataset_ls for ds in ds_ls] 
+                return [dmds.DomoDataset(id=ds.get('dataSourceId'), full_auth=full_auth) for ds_ls in dataset_ls for ds in ds_ls]
 
             else:
                 return None
-        
+
         finally:
             if close_session:
                 await session.close()

@@ -21,24 +21,24 @@ async def get_page_by_id(full_auth: DomoFullAuth, page_id: str,
 
     return res
 
-async def get_page_definition(full_auth, page_id, debug :bool = False, session : aiohttp.ClientSession = None):
-    
+
+async def get_page_definition(full_auth, page_id, debug: bool = False, session: aiohttp.ClientSession = None):
+
     close_session = False if session else True
-    
+
     if not session:
         session = aiohttp.ClientSession()
     try:
         url = f"https://{full_auth.domo_instance}.domo.com/api/content/v3/stacks/{page_id}/cards"
 
+        params = {"includeV4PageLayouts": "true",
+                  "parts": "metadata,datasources,library,drillPathURNs,certification,owners,dateInfo,subscriptions,slicers"}
 
-        params = {"includeV4PageLayouts" : "true",
-                  "parts":"metadata,datasources,library,drillPathURNs,certification,owners,dateInfo,subscriptions,slicers"}
-
-        res = await get_data(url, 
-                 method = 'GET',
-                 auth = full_auth,
-                 session = session,
-                 params = params, debug=debug)
+        res = await get_data(url,
+                             method='GET',
+                             auth=full_auth,
+                             session=session,
+                             params=params, debug=debug)
 
         return res
     finally:

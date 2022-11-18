@@ -15,7 +15,7 @@ async def get_dataset_by_id(id: str,
     domo_instance = full_auth.domo_instance if full_auth else dev_auth.domo_instance
 
     url = f'https://{domo_instance}.domo.com/api/dataprocessing/v1/dataflows/{id}'
-    
+
     res = await get_data(
         auth=full_auth or dev_auth,
         url=url,

@@ -1,8 +1,8 @@
 import aiohttp
 
-from .get_data import get_data
-from ..DomoAuth import DomoFullAuth
 from ...utils.ResponseGetData import ResponseGetData
+from ..DomoAuth import DomoFullAuth
+from .get_data import get_data
 
 
 async def get_bootstrap(full_auth: DomoFullAuth, debug: bool, session: aiohttp.ClientSession = None) -> ResponseGetData:
@@ -19,7 +19,7 @@ async def get_bootstrap(full_auth: DomoFullAuth, debug: bool, session: aiohttp.C
 
 
 async def bsr_features(full_auth: DomoFullAuth, session: aiohttp.ClientSession = None, debug: bool = False) -> list[
-    dict]:
+        dict]:
     res = await get_bootstrap(full_auth=full_auth, session=session, debug=debug)
 
     if res.status == 200:

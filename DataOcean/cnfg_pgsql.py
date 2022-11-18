@@ -55,13 +55,16 @@ def con_pgsql(qry_tableName=None,
         ]
 
     config = tr.Configuration(transport=tr.Transport(type=cnfg.get('type'),
-                                                     description=cnfg.get('description'),
+                                                     description=cnfg.get(
+                                                         'description'),
                                                      version=cnfg.get('version')),
                               account=tr.Account(id=account_id),
                               configuration=configuration,
                               updateMethod=tr.UpdateMethod.APPEND.value,
-                              dataProvider=tr.DataProvider(key=cnfg.get('dataProvider_key')),
-                              dataSource=tr.Datasource(name=ds_name, description=ds_description),
+                              dataProvider=tr.DataProvider(
+                                  key=cnfg.get('dataProvider_key')),
+                              dataSource=tr.Datasource(
+                                  name=ds_name, description=ds_description),
                               advancedScheduleJson=schedule
                               )
 

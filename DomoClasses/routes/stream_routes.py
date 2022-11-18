@@ -21,10 +21,11 @@ async def get_stream_definition(full_auth: DomoFullAuth, stream_id: str,
     )
     return res
 
+
 async def update_stream(full_auth: DomoFullAuth, stream_id: str,
-                                   body :dict,
-                                   session: aiohttp.ClientSession = None,
-                                   debug: bool = False) -> ResponseGetData:
+                        body: dict,
+                        session: aiohttp.ClientSession = None,
+                        debug: bool = False) -> ResponseGetData:
     url = f'https://{full_auth.domo_instance}.domo.com/api/data/v1/streams/{stream_id}'
 
     if debug:
@@ -33,15 +34,16 @@ async def update_stream(full_auth: DomoFullAuth, stream_id: str,
     res = await get_data(
         auth=full_auth,
         url=url,
-        body = body,
+        body=body,
         method='PUT',
         session=session,
         debug=debug,
     )
     return res
 
+
 async def create_stream(full_auth: DomoFullAuth,
-                        body :dict,
+                        body: dict,
                         session: aiohttp.ClientSession = None,
                         debug: bool = False) -> ResponseGetData:
     url = f'https://{full_auth.domo_instance}.domo.com/api/data/v1/streams'
@@ -52,7 +54,7 @@ async def create_stream(full_auth: DomoFullAuth,
     res = await get_data(
         auth=full_auth,
         url=url,
-        body = body,
+        body=body,
         method='POST',
         session=session,
         debug=debug,

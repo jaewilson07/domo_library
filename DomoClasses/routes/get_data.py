@@ -44,11 +44,10 @@ async def get_data(url, method, auth: DomoAuth,
                 'headers': headers,
                 'json': body,
                 'params': params})
-        
+
     # if params:
     #     params = {k: literal_eval(v) for k, v in params.items()}
     #     print(params)
-
 
     if headers.get('Content-Type') == 'application/json':
         if debug:
@@ -71,7 +70,6 @@ async def get_data(url, method, auth: DomoAuth,
                                     url=url,
                                     headers=headers,
                                     params=params)
-    
 
     if is_close_session:
         await session.close()
@@ -156,7 +154,8 @@ async def looper(auth: DomoAuth,
 
         if debug:
             pprint(params)
-            print(f'Retrieving records {skip} through {skip + limit} via {url}')
+            print(
+                f'Retrieving records {skip} through {skip + limit} via {url}')
 
         res = await get_data(auth=auth,
                              url=url,
@@ -168,7 +167,7 @@ async def looper(auth: DomoAuth,
 
         newRecords = arr_fn(res)
         # print('loop', newRecords)
-        ## process rows
+        # process rows
         allRows += newRecords
 
         if skip == 0 and alter_maximum_fn:
@@ -183,7 +182,8 @@ async def looper(auth: DomoAuth,
 
         if maximum <= len(allRows) or len(newRecords) < limit:
             if debug:
-                print(f'{len(allRows)} records retrieved from {url} in query looper\n')
+                print(
+                    f'{len(allRows)} records retrieved from {url} in query looper\n')
             isLoop = False
 
         skip += limit

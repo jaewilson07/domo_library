@@ -1,14 +1,14 @@
-import aiohttp
 import csv
 import datetime as DT
 import os
-import pandas as pd
 from dataclasses import dataclass
 
+import aiohttp
 import Library.DomoClasses.DomoAuth as dmda
 import Library.DomoClasses.DomoDataset as dmds
 import Library.DomoClasses.DomoInstanceConfig as dmic
 import Library.utils.Exceptions as ex
+import pandas as pd
 
 
 @dataclass
@@ -48,7 +48,8 @@ async def get_ip_whitelist_config(config_full_auth: dmda.DomoFullAuth,
         if debug:
             print(sync_ip_ds)
 
-        print(f"⚙️ START - Retrieving whitelist configuration \n{sync_ip_ds.display_url()}")
+        print(
+            f"⚙️ START - Retrieving whitelist configuration \n{sync_ip_ds.display_url()}")
 
         sync_ip_df = await sync_ip_ds.query_dataset_private(full_auth=config_full_auth,
                                                             dataset_id=dataset_id,
@@ -105,7 +106,8 @@ async def remove_partition_by_x_days(full_auth: dmda.DomoFullAuth,
         except ValueError:
             d = None
         if d is not None and d < days_ago:
-            print(full_auth.domo_instance, ': 🚀  Removing partition key : ', (i['partitionId']), ' in ', dataset_id)
+            print(full_auth.domo_instance, ': 🚀  Removing partition key : ',
+                  (i['partitionId']), ' in ', dataset_id)
             await domo_ds.delete_partition(dataset_partition_id=i['partitionId'], dataset_id=dataset_id,
                                            full_auth=full_auth, session=session)
 
@@ -145,7 +147,8 @@ async def get_company_domains(config_full_auth: dmda.DomoFullAuth,
                                         sql=sql,
                                         debug=debug)
 
-    df["domo_instance"] = df["domain"].apply(lambda x: x.replace('.domo.com', ''))
+    df["domo_instance"] = df["domain"].apply(
+        lambda x: x.replace('.domo.com', ''))
 
     if global_admin_username:
         df["domo_username"] = global_admin_username
@@ -159,6 +162,7 @@ async def get_company_domains(config_full_auth: dmda.DomoFullAuth,
         raise Exception('no companies retrieved')
         return False
 
-    print(f"\n⚙️ SUCCESS 🎉 Retrieved company list \nThere are {len(df.index)} companies to update")
+    print(
+        f"\n⚙️ SUCCESS 🎉 Retrieved company list \nThere are {len(df.index)} companies to update")
 
     return df

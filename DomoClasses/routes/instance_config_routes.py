@@ -53,7 +53,7 @@ async def update_whitelist(full_auth: DomoFullAuth,
 
 async def update_authorized_domains(full_auth: DomoFullAuth, authorized_domain_list: list[str],
                                     debug: bool = False, log_results: bool = False,
-                                   session: aiohttp.ClientSession = None):
+                                    session: aiohttp.ClientSession = None):
     url = f'https://{full_auth.domo_instance}.domo.com/api/content/v1/customer-states/authorized-domains'
 
     body = {
@@ -71,7 +71,7 @@ async def update_authorized_domains(full_auth: DomoFullAuth, authorized_domain_l
         body=body,
         log_results=log_results,
         debug=debug,
-        session = session
+        session=session
     )
 
     return res
@@ -79,8 +79,8 @@ async def update_authorized_domains(full_auth: DomoFullAuth, authorized_domain_l
 
 async def get_authorized_domains(full_auth: DomoFullAuth,
                                  debug: bool = False, log_results: bool = False,
-                                 session : aiohttp.ClientSession = None
-                                ):
+                                 session: aiohttp.ClientSession = None
+                                 ):
     url = f'https://{full_auth.domo_instance}.domo.com/api/content/v1/customer-states/authorized-domains'
 
     if debug:
@@ -92,8 +92,7 @@ async def get_authorized_domains(full_auth: DomoFullAuth,
         method='GET',
         log_results=log_results,
         debug=debug,
-        session = session
+        session=session
     )
 
     return res
-

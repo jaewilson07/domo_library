@@ -1,5 +1,6 @@
-import Transport as tr
+import json
 
+import Transport as tr
 
 # class Snowflake_DatabaseObjects(Enum):
 #     TABLES = 'tables'
@@ -56,13 +57,16 @@ def con_s3(warehouse_name,
     ]
 
     config = tr.Configuration(transport=tr.Transport(type=cnfg.get('type'),
-                                                     description=cnfg.get('description'),
+                                                     description=cnfg.get(
+                                                         'description'),
                                                      version=cnfg.get('version')),
                               account=tr.Account(id=account_id),
                               configuration=configuration,
                               updateMethod=tr.UpdateMethod.APPEND.value,
-                              dataProvider=tr.DataProvider(key=cnfg.get('dataProvider_key')),
-                              dataSource=tr.Datasource(name=ds_name, description=ds_description),
+                              dataProvider=tr.DataProvider(
+                                  key=cnfg.get('dataProvider_key')),
+                              dataSource=tr.Datasource(
+                                  name=ds_name, description=ds_description),
                               advancedScheduleJson=schedule
                               )
 
@@ -83,6 +87,5 @@ cnfg_pgsql = con_snowflake(warehouse_name="WH_BIS_PARTNER_ANALYTICS_HEAVY_NONPRO
 
 # pprint(cnfg_pgsql.to_dict())
 
-import json
 
 print(json.dumps(cnfg_pgsql.to_dict()))

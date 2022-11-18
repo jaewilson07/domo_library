@@ -17,7 +17,8 @@ def split_str_to_obj(env_string: str, value_split_keys: list[str]):
 
 
 def split_creds(env: DictDot, key_starts_with: str, env_var_list: list[str]):
-    env_lines_to_split = [getattr(env, key) for key in dir(env) if key.startswith(key_starts_with)]
+    env_lines_to_split = [getattr(env, key) for key in dir(
+        env) if key.startswith(key_starts_with)]
 
     return [split_str_to_obj(env_string=line, value_split_keys=env_var_list) for line in env_lines_to_split]
 

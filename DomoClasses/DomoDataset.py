@@ -24,6 +24,7 @@ from ..utils.chunk_execution import chunk_list
 import importlib
 importlib.reload(dmtg)
 
+
 @dataclass
 class Schema_Column:
     name: str
@@ -60,7 +61,8 @@ class Dataset_Schema:
 
             self.columns = []
             for json_obj in json_list:
-                dc = Schema_Column._from_json(json_obj=json_obj, domo_dataset=self.dataset)
+                dc = Schema_Column._from_json(
+                    json_obj=json_obj, domo_dataset=self.dataset)
                 if dc not in self.columns:
                     self.columns.append(dc)
 
@@ -69,9 +71,9 @@ class Dataset_Schema:
 
 @dataclass
 class DomoDataset(Base):
-    full_auth: DomoFullAuth = field(repr=False, default = None)
-    dev_auth: DomoDeveloperAuth = field(repr=False, default = None)
-    
+    full_auth: DomoFullAuth = field(repr=False, default=None)
+    dev_auth: DomoDeveloperAuth = field(repr=False, default=None)
+
     id: str = ''
     display_type: str = ''
     data_provider_type: str = ''
@@ -82,18 +84,18 @@ class DomoDataset(Base):
     owner: dict = field(default_factory=dict)
     formula: dict = field(default_factory=dict)
     stream_id: int = None
-    domo_instance: str =''
-    
-    tags : dmtg.Dataset_Tags = None    
+    domo_instance: str = ''
+
+    tags: dmtg.Dataset_Tags = None
     certification: dmdc.DomoCertification = None
     PDPPolicies: dmpdp.Dataset_PDP_Policies = None
-    schema :Dataset_Schema = None
+    schema: Dataset_Schema = None
 
     def __post_init__(self):
         Base().__init__()
         self.PDPPolicies = dmpdp.Dataset_PDP_Policies(self)
         self.schema = Dataset_Schema(self)
-        self.tags = dmtg.Dataset_Tags(dataset = self)
+        self.tags = dmtg.Dataset_Tags(dataset=self)
 
     def display_url(self):
         return f'https://{self.domo_instance or self.full_auth.domo_instance}.domo.com/datasources/{self.id}/details/overview'
@@ -103,22 +105,23 @@ class DomoDataset(Base):
                           id: str,
                           full_auth: DomoFullAuth,
                           debug: bool = False, log_results: bool = False):
-        
+
         # try:
         res = await dataset_routes.get_dataset_by_id(full_auth=full_auth,
                                                      id=id or cls.id, debug=debug)
         if res.status == 404:
-            print("f error retrieving get_from_id {full_auth.domo_instance} - {id} status = 404")
-            raise ex.InvalidDataset(domo_instance=full_auth.domo_instance, dataset_id=id)
+            print(
+                "f error retrieving get_from_id {full_auth.domo_instance} - {id} status = 404")
+            raise ex.InvalidDataset(
+                domo_instance=full_auth.domo_instance, dataset_id=id)
 
         # except Exception as e:
         #     print(e)
         #     return None
-        
-        if debug:
-                pprint(res)
 
-        
+        if debug:
+            pprint(res)
+
         dd = DictDot(res.response)
         ds = cls(
             full_auth=full_auth,
@@ -139,11 +142,10 @@ class DomoDataset(Base):
 
         if dd.certification:
             # print('class def certification', dd.certification)
-            ds.certification = dmdc.DomoCertification._from_json(dd.certification)
+            ds.certification = dmdc.DomoCertification._from_json(
+                dd.certification)
 
         return ds
-
-        
 
     @classmethod
     async def query_dataset(cls,
@@ -165,7 +167,8 @@ class DomoDataset(Base):
             print(res.response)
 
         if res.status == 200:
-            df = pd.DataFrame(data=res.response.get('rows'), columns=res.response.get('columns'))
+            df = pd.DataFrame(data=res.response.get('rows'),
+                              columns=res.response.get('columns'))
             return df
         return None
 
@@ -175,7 +178,7 @@ class DomoDataset(Base):
                                     dataset_id: str,
                                     full_auth: DomoFullAuth,
                                     debug: bool = False,
-                                    session: aiohttp.ClientSession = None)->pd.DataFrame:
+                                    session: aiohttp.ClientSession = None) -> pd.DataFrame:
 
         if debug:
             print("query dataset class method")
@@ -210,12 +213,12 @@ class DomoDataset(Base):
         if not dataset_upload_id:
             if debug:
                 print(f"\n\n🎭 starting Stage 1")
-                
+
             res = await dataset_routes.upload_dataset_stage_1(full_auth=full_auth,
                                                               dataset_id=dataset_id,
-                                                              session=session, 
+                                                              session=session,
                                                               data_tag=partition_key,
-                                                              debug = debug
+                                                              debug=debug
                                                               )
             if debug:
                 print(f"\n\n🎭 Stage 1 response -- {res.status}")
@@ -224,67 +227,67 @@ class DomoDataset(Base):
             dataset_upload_id = res.response.get('uploadId')
 
         # stage 2 upload_dataset
-        
+
         if debug:
-                print(f"\n\n🎭 starting Stage 2 - {len(upload_df_list)} - number of parts")
-        
+            print(
+                f"\n\n🎭 starting Stage 2 - {len(upload_df_list)} - number of parts")
+
         stage_2_res = None
-        
+
         if upload_file:
             if debug:
                 print('stage 2 - file')
             stage_2_res = await dataset_routes.upload_dataset_stage_2_file(full_auth=full_auth,
-                                                                     dataset_id=dataset_id,
-                                                                     upload_id=dataset_upload_id,
-                                                                     part_id= 1,
-                                                                     file=upload_file,
-                                                                     session=session, debug=debug)
+                                                                           dataset_id=dataset_id,
+                                                                           upload_id=dataset_upload_id,
+                                                                           part_id=1,
+                                                                           file=upload_file,
+                                                                           session=session, debug=debug)
             if debug:
                 print(f"🎭 Stage 2 response -- {stage_2_res.status}")
-                print(stage_2_res.print(is_pretty = True))
+                print(stage_2_res.print(is_pretty=True))
 
         else:
             if debug:
                 print('stage 2 - df')
             stage_2_res = await asyncio.gather(*[dataset_routes.upload_dataset_stage_2_df(full_auth=full_auth,
-                                                                         dataset_id=dataset_id,
-                                                                         upload_id=dataset_upload_id,
-                                                                         part_id=index + 1,
-                                                                         upload_df=df,
-                                                                         session=session, debug=debug) for index, df in enumerate(upload_df_list)])
-        
+                                                                                          dataset_id=dataset_id,
+                                                                                          upload_id=dataset_upload_id,
+                                                                                          part_id=index + 1,
+                                                                                          upload_df=df,
+                                                                                          session=session, debug=debug) for index, df in enumerate(upload_df_list)])
+
             if debug:
                 for res in stage_2_res:
                     print(f"🎭 Stage 2 response -- {res.status}")
                     res.print(is_pretty=True)
-                    
+
         # return stage_2_res
 
 #         # stage 3 commit_data
         if debug:
-                print(f"\n\n🎭 starting Stage 3")
+            print(f"\n\n🎭 starting Stage 3")
         await asyncio.sleep(10)
 
         stage3_res = await dataset_routes.upload_dataset_stage_3(full_auth=full_auth,
-                                                           dataset_id=dataset_id,
-                                                           upload_id=dataset_upload_id,
-                                                           update_method=upload_method,
-                                                           data_tag=partition_key,
-                                                           is_index=False,
-                                                           session=session,
-                                                           debug=debug)
-        
-                      
+                                                                 dataset_id=dataset_id,
+                                                                 upload_id=dataset_upload_id,
+                                                                 update_method=upload_method,
+                                                                 data_tag=partition_key,
+                                                                 is_index=False,
+                                                                 session=session,
+                                                                 debug=debug)
+
         if debug:
             print(f"\n🎭 stage 3 res - {res.status}")
             print(stage3_res)
-            
+
         if is_index:
-            await self.index_dataset(full_auth = full_auth, 
-                               dataset_id = dataset_id,
-                               debug = debug,
-                               session = session)
-            
+            await self.index_dataset(full_auth=full_auth,
+                                     dataset_id=dataset_id,
+                                     debug=debug,
+                                     session=session)
+
         return stage3_res
 
     async def index_dataset(self,
@@ -309,9 +312,9 @@ class DomoDataset(Base):
         full_auth = full_auth or self.full_auth
         dataset_id = dataset_id or self.id
 
-        res= await dataset_routes.list_partitions(full_auth=full_auth, dataset_id=dataset_id, debug=debug,
-                                                    session=session)
-        if res.status !=200:
+        res = await dataset_routes.list_partitions(full_auth=full_auth, dataset_id=dataset_id, debug=debug,
+                                                   session=session)
+        if res.status != 200:
             return None
         return res.response
 
@@ -347,34 +350,34 @@ class DomoDataset(Base):
 #                              debug=False)
         if debug:
             print(f"\n\n🎭 starting Stage 1")
-        
+
         res = await dataset_routes.delete_partition_stage_1(full_auth=full_auth,
-                                                    dataset_id=dataset_id,
-                                                    dataset_partition_id=dataset_partition_id,
-                                                    debug=debug, session=session)
+                                                            dataset_id=dataset_id,
+                                                            dataset_partition_id=dataset_partition_id,
+                                                            debug=debug, session=session)
         if debug:
-                print(f"\n\n🎭 Stage 1 response -- {res.status}")
-                print(res)
-        
+            print(f"\n\n🎭 Stage 1 response -- {res.status}")
+            print(res)
+
         stage_2_res = None
         if debug:
-                print('starting Stage 2')
+            print('starting Stage 2')
         stage_2_res = await dataset_routes.delete_partition_stage_2(full_auth=full_auth,
-                                                    dataset_id=dataset_id,
-                                                    dataset_partition_id=dataset_partition_id,
-                                                    debug=debug, session=session)
+                                                                    dataset_id=dataset_id,
+                                                                    dataset_partition_id=dataset_partition_id,
+                                                                    debug=debug, session=session)
         if debug:
-                print(f"\n\n🎭 Stage 2 response -- {stage_2_res.status}")
+            print(f"\n\n🎭 Stage 2 response -- {stage_2_res.status}")
 
         stage_3_res = None
         if debug:
-                print('starting Stage 3')
+            print('starting Stage 3')
         stage_3_res = await dataset_routes.index_dataset(full_auth=full_auth,
-                                                    dataset_id=dataset_id,
-                                                    debug=debug, session=session)
+                                                         dataset_id=dataset_id,
+                                                         debug=debug, session=session)
         if debug:
-                print(f"\n\n🎭 Stage 3 response -- {stage_3_res.status}")
-                
+            print(f"\n\n🎭 Stage 3 response -- {stage_3_res.status}")
+
         if is_close_session:
             await session.close()
 
@@ -389,7 +392,8 @@ class DomoDataset(Base):
                             is_index: bool = True,
                             debug: bool = False
                             ):
-        execute_reset = input("This function will delete all rows.  Type BLOW_ME_AWAY to execute:")
+        execute_reset = input(
+            "This function will delete all rows.  Type BLOW_ME_AWAY to execute:")
 
         if execute_reset != 'BLOW_ME_AWAY':
             print("You didn't type BLOW_ME_AWAY, moving on.")
@@ -441,10 +445,10 @@ class DomoDataset(Base):
         return True
 
     async def delete(self,
-                     dataset_id = None,
-                            full_auth: DomoFullAuth = None,
-                            debug: bool = False,
-                            session : aiohttp.ClientSession = None):
+                     dataset_id=None,
+                     full_auth: DomoFullAuth = None,
+                     debug: bool = False,
+                     session: aiohttp.ClientSession = None):
         try:
             is_close_session = False
 
@@ -452,20 +456,18 @@ class DomoDataset(Base):
                 session = aiohttp.ClientSession()
                 is_close_session = True
 
-
             return await dataset_routes.delete(
-                full_auth = full_auth or self.full_auth, 
-                dataset_id = dataset_id or self.id,
-                debug = debug,
-                session = session)
-        
+                full_auth=full_auth or self.full_auth,
+                dataset_id=dataset_id or self.id,
+                debug=debug,
+                session=session)
+
         finally:
             if is_close_session:
                 await session.close()
-    
-    
-    # async def create(self, 
-    #                   ds_name, 
+
+    # async def create(self,
+    #                   ds_name,
     #                   ds_type ='api',
     #                   schema = { "columns": [ {
     #                       "name": 'col1',
@@ -475,4 +477,3 @@ class DomoDataset(Base):
     #                   ]},
     #                   full_auth:DomoFullAuth = None,
     #                   debug:bool = False)
-    

@@ -99,6 +99,7 @@ async def query_dataset_private(full_auth: DomoFullAuth,
 
     return res
 
+
 async def get_schema(full_auth: DomoFullAuth, id: str,
                      debug: bool = False, log_result: bool = False) -> ResponseGetData:
     url = f'https://{full_auth.domo_instance}.domo.com/api/query/v1/datasources/{id}/schema/indexed?includeHidden=false'
@@ -119,13 +120,13 @@ async def get_schema(full_auth: DomoFullAuth, id: str,
     return res
 
 
-## UPLOAD DATASET
+# UPLOAD DATASET
 async def upload_dataset_stage_1(full_auth: DomoFullAuth,
                                  dataset_id: str,
                                  session: aiohttp.ClientSession = None,
                                  debug: bool = False,
                                  restate_data_tag: str = None,
-                                 data_tag : str = None
+                                 data_tag: str = None
                                  ):
     url = f"https://{full_auth.domo_instance}.domo.com/api/data/v3/datasources/{dataset_id}/uploads"
 
@@ -137,10 +138,10 @@ async def upload_dataset_stage_1(full_auth: DomoFullAuth,
         params = None
     else:
         params = {'dataTag': restate_data_tag or data_tag}
-        body.update({'appendId' : 'latest'})
-        
+        body.update({'appendId': 'latest'})
+
     return await get_data(auth=full_auth,
-                          url=url, method='POST', 
+                          url=url, method='POST',
                           body=body,
                           session=session,
                           debug=debug,
@@ -148,21 +149,21 @@ async def upload_dataset_stage_1(full_auth: DomoFullAuth,
 
 
 async def upload_dataset_stage_2_file(full_auth: DomoFullAuth,
-                                 dataset_id: str,
-                                 upload_id: str,
-                                 file: io.TextIOWrapper = None,
-                                 session: aiohttp.ClientSession = None,
-                                 part_id: str = 2,
-                                 debug: bool = False
+                                      dataset_id: str,
+                                      upload_id: str,
+                                      file: io.TextIOWrapper = None,
+                                      session: aiohttp.ClientSession = None,
+                                      part_id: str = 2,
+                                      debug: bool = False
 
-                                 ):
+                                      ):
     url = f"https://{full_auth.domo_instance}.domo.com/api/data/v3/datasources/{dataset_id}/uploads/{upload_id}/parts/{part_id}"
     body = file
-    
-    if debug: 
+
+    if debug:
         print(body)
-        
-    res= await get_data(
+
+    res = await get_data(
         url=url,
         method="PUT",
         auth=full_auth,
@@ -174,24 +175,25 @@ async def upload_dataset_stage_2_file(full_auth: DomoFullAuth,
     res.upload_id = upload_id
     res.dataset_id = dataset_id
     res.part_id = part_id
-    
+
     return res
 
-async def upload_dataset_stage_2_df(full_auth: DomoFullAuth,
-                                 dataset_id: str,
-                                 upload_id: str,
-                                 upload_df: pd.DataFrame,
-                                 session: aiohttp.ClientSession = None,
-                                 part_id: str = 2,
-                                 debug: bool = False
 
-                                 ):
+async def upload_dataset_stage_2_df(full_auth: DomoFullAuth,
+                                    dataset_id: str,
+                                    upload_id: str,
+                                    upload_df: pd.DataFrame,
+                                    session: aiohttp.ClientSession = None,
+                                    part_id: str = 2,
+                                    debug: bool = False
+
+                                    ):
     url = f"https://{full_auth.domo_instance}.domo.com/api/data/v3/datasources/{dataset_id}/uploads/{upload_id}/parts/{part_id}"
     body = upload_df.to_csv(header=False, index=False)
-    
-    # if debug: 
+
+    # if debug:
     #     print(body)
-        
+
     res = await get_data(
         url=url,
         method="PUT",
@@ -205,7 +207,7 @@ async def upload_dataset_stage_2_df(full_auth: DomoFullAuth,
     res.upload_id = upload_id
     res.dataset_id = dataset_id
     res.part_id = part_id
-    
+
     return res
 
 
@@ -215,23 +217,23 @@ async def upload_dataset_stage_3(full_auth: DomoFullAuth,
                                  session: aiohttp.ClientSession = None,
                                  update_method: str = 'REPLACE',
                                  restate_data_tag: str = None,
-                                 data_tag:str = None,
+                                 data_tag: str = None,
                                  is_index: bool = False,
                                  debug: bool = False):
     url = f"https://{full_auth.domo_instance}.domo.com/api/data/v3/datasources/{dataset_id}/uploads/{upload_id}/commit"
 
-    body = {"index": is_index, 
+    body = {"index": is_index,
             "action": update_method}
-    
+
     if restate_data_tag or data_tag:
         if debug:
             print('route_stage_3_updating body')
-        
-        body.update({"action": 'APPEND', 
+
+        body.update({"action": 'APPEND',
                      'dataTag': restate_data_tag or data_tag,
-                     'appendId' : 'latest' if (restate_data_tag or data_tag) else None,
-                     'index' : is_index
-                    })
+                     'appendId': 'latest' if (restate_data_tag or data_tag) else None,
+                     'index': is_index
+                     })
 
     res = await get_data(
         auth=full_auth,
@@ -241,11 +243,12 @@ async def upload_dataset_stage_3(full_auth: DomoFullAuth,
         session=session,
         debug=debug
     )
-    
+
     res.upload_id = upload_id
     res.dataset_id = dataset_id
-    
+
     return res
+
 
 async def upload_dataset_stage_4(full_auth: DomoFullAuth,
                                  dataset_id: str,
@@ -268,13 +271,12 @@ async def index_dataset(full_auth: DomoFullAuth,
                         dataset_id: str,
                         session: aiohttp.ClientSession = None,
                         debug: bool = False):
-    
+
     url = f"https://{full_auth.domo_instance}.domo.com/api/data/v3/datasources/{dataset_id}/indexes"
-    
-    body = { "dataIds": [] }
 
+    body = {"dataIds": []}
 
-    return await get_data(auth=full_auth, method='POST', body = body, url=url, session=session)
+    return await get_data(auth=full_auth, method='POST', body=body, url=url, session=session)
 
 
 def generate_list_partitions_body(limit=100, offset=0):
@@ -300,7 +302,7 @@ async def list_partitions(full_auth: DomoFullAuth,
                           session: aiohttp.ClientSession = None,
                           debug: bool = False):
     try:
-    
+
         is_close_session = False if session else True
 
         if not session:
@@ -330,29 +332,30 @@ async def list_partitions(full_auth: DomoFullAuth,
                            debug=debug)
 
         if isinstance(res, list):
-            return ResponseGetData(status = 200,
-                            response = res,
-                            is_success = True)
-        else: 
-            return ResponseGetData(status = 400,
-                            response = None,
-                            is_success = False)
-        
-    finally:   
+            return ResponseGetData(status=200,
+                                   response=res,
+                                   is_success=True)
+        else:
+            return ResponseGetData(status=400,
+                                   response=None,
+                                   is_success=False)
+
+    finally:
         if is_close_session:
             await session.close()
 
-#Delete partition has 3 stages
-#Stage 1. This marks the data version associated with the partition tag as deleted.  It does not delete the partition tag or remove the association between the partition tag and data version.  There should be no need to upload an empty file – step #3 will remove the data from Adrenaline.
+# Delete partition has 3 stages
+# Stage 1. This marks the data version associated with the partition tag as deleted.  It does not delete the partition tag or remove the association between the partition tag and data version.  There should be no need to upload an empty file – step #3 will remove the data from Adrenaline.
+
 
 async def delete_partition_stage_1(full_auth: DomoFullAuth,
-                           dataset_id: str,
-                           dataset_partition_id: str,
-                           session : aiohttp.ClientSession = None,
-                           debug: bool = False):
-    
+                                   dataset_id: str,
+                                   dataset_partition_id: str,
+                                   session: aiohttp.ClientSession = None,
+                                   debug: bool = False):
+
     #url = f'https://{full_auth.domo_instance}.domo.com/api/query/v1/datasources/{dataset_id}/partition/{dataset_partition_id}'
-    #update on 9/9/2022 based on the conversation with Greg Swensen
+    # update on 9/9/2022 based on the conversation with Greg Swensen
     url = f'https://{full_auth.domo_instance}.domo.com/api/query/v1/datasources/{dataset_id}/tag/{dataset_partition_id}/data'
 
     return await get_data(
@@ -362,14 +365,15 @@ async def delete_partition_stage_1(full_auth: DomoFullAuth,
         session=session,
         debug=debug
     )
-#Stage 2. This will remove the partition association so that it doesn’t show up in the list call.  Technically, this is not required as a partition against a deleted data version will not count against the 400 partition limit, but as the current partitions api doesn’t make that clear, cleaning these up will make it much easier for you to manage.
+# Stage 2. This will remove the partition association so that it doesn’t show up in the list call.  Technically, this is not required as a partition against a deleted data version will not count against the 400 partition limit, but as the current partitions api doesn’t make that clear, cleaning these up will make it much easier for you to manage.
+
 
 async def delete_partition_stage_2(full_auth: DomoFullAuth,
-                           dataset_id: str,
-                           dataset_partition_id: str,
-                           session : aiohttp.ClientSession = None,
-                           debug: bool = False):
-    
+                                   dataset_id: str,
+                                   dataset_partition_id: str,
+                                   session: aiohttp.ClientSession = None,
+                                   debug: bool = False):
+
     url = f'https://{full_auth.domo_instance}.domo.com/api/query/v1/datasources/{dataset_id}/partition/{dataset_partition_id}'
 
     return await get_data(
@@ -380,8 +384,9 @@ async def delete_partition_stage_2(full_auth: DomoFullAuth,
         debug=debug
     )
 
-async def delete(full_auth : DomoFullAuth, 
-                 dataset_id:str, session:aiohttp.ClientSession = None, debug :bool = False):
+
+async def delete(full_auth: DomoFullAuth,
+                 dataset_id: str, session: aiohttp.ClientSession = None, debug: bool = False):
     url = f"https://{full_auth.domo_instance}.domo.com/api/data/v3/datasources/{dataset_id}?deleteMethod=hard"
 
     return await get_data(

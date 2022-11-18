@@ -8,7 +8,7 @@ from ...utils.ResponseGetData import ResponseGetData
 async def get_roles(full_auth: DomoFullAuth,
                     debug: bool = False,
                     session: aiohttp.ClientSession = None,
-                   ) -> ResponseGetData:
+                    ) -> ResponseGetData:
     url = f'https://{full_auth.domo_instance}.domo.com/api/authorization/v1/roles'
 
     if debug:
@@ -19,7 +19,7 @@ async def get_roles(full_auth: DomoFullAuth,
         url=url,
         method='GET',
         debug=debug,
-        session = session
+        session=session
     )
     return res
 
@@ -51,9 +51,9 @@ async def create_role(full_auth: DomoFullAuth,
 
 
 async def set_default_role(full_auth: DomoFullAuth,
-                           role_id : str,
+                           role_id: str,
                            debug: bool = False,
-                          session: aiohttp.ClientSession = None) -> ResponseGetData:
+                           session: aiohttp.ClientSession = None) -> ResponseGetData:
     url = f'https://{full_auth.domo_instance}.domo.com/api/content/v1/customer-states/user.roleid.default'
 
     body = {
@@ -71,7 +71,7 @@ async def set_default_role(full_auth: DomoFullAuth,
         method='PUT',
         debug=debug,
         body=body,
-        session = session
+        session=session
     )
     return res
 
@@ -128,10 +128,9 @@ async def role_membership_add_user(full_auth: DomoFullAuth,
     return res
 
 
-
 async def get_role_membership(full_auth: DomoFullAuth,
                               role_id: str,
-                              debug: bool = False, session : aiohttp.ClientSession = None) -> ResponseGetData:
+                              debug: bool = False, session: aiohttp.ClientSession = None) -> ResponseGetData:
     url = f'https://{full_auth.domo_instance}.domo.com/api/authorization/v1/roles/{role_id}/users'
 
     if debug:
@@ -142,6 +141,6 @@ async def get_role_membership(full_auth: DomoFullAuth,
         url=url,
         method='GET',
         debug=debug,
-        session = session
+        session=session
     )
     return res

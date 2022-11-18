@@ -41,7 +41,7 @@ class DomoStream(Base):
     @classmethod
     async def get_definition(cls, full_auth: DomoFullAuth, stream_id: str, session: aiohttp.ClientSession = None):
         # self.column_usage = []
-        
+
         if stream_id is None:
             return None
 
@@ -51,9 +51,10 @@ class DomoStream(Base):
                                                         )
 
         if res.status != 200:
-            print(f"error retrieving stream {stream_id} from {full_auth.domo_instance}")
+            print(
+                f"error retrieving stream {stream_id} from {full_auth.domo_instance}")
             return None
-            
+
         dd = DictDot(res.response)
 
         sd = cls(
@@ -68,7 +69,7 @@ class DomoStream(Base):
         if dd.account:
             sd.account_id = dd.account.id
             sd.account_display_name = dd.account.displayName
-            sd.account_userid= dd.account.userId
+            sd.account_userid = dd.account.userId
 
         sd.configuration = []
 
@@ -86,75 +87,78 @@ class DomoStream(Base):
                 try:
                     for table in Parser(sc.value).tables:
                         sd.configuration_tables.append(table)
-                    sd.configuration_tables = sorted(list(set(sd.configuration_tables)))
+                    sd.configuration_tables = sorted(
+                        list(set(sd.configuration_tables)))
                 except:
                     # print('unable to parse table')
                     sd.configuration_tables = ['unable to auto-parse query']
 
             sd.configuration.append(sc)
         return sd
-        
-    @classmethod
-    async def create_stream( cls,
-                                cnfg_body,
-                                full_auth : DomoFullAuth = None,
-                                session : aiohttp.ClientSession = None,
-                                debug: bool = False,
-                                log_result:bool = False):
-        return await stream_routes.create_stream(full_auth = full_auth,
-                    body = cnfg_body,
-                    session = session,
-                    debug = debug)
 
     @classmethod
-    async def update_stream( cls,
-                                cnfg_body,
-                                stream_id,
-                                full_auth : DomoFullAuth = None,
-                                session : aiohttp.ClientSession = None,
-                                debug: bool = False,
-                                log_result:bool = False):
-        
-        return await stream_routes.update_stream(full_auth = full_auth,
-                             stream_id = stream_id,
-                             body = cnfg_body,
-                             session = session,
-                             debug = debug)
-    
-    @classmethod    
-    async def upsert_connector(cls,
+    async def create_stream(cls,
                             cnfg_body,
-                            match_name = None,
-                            full_auth : DomoFullAuth = None,
-                            session : aiohttp.ClientSession = None,
+                            full_auth: DomoFullAuth = None,
+                            session: aiohttp.ClientSession = None,
                             debug: bool = False,
-                            log_result:bool = False):
-        search_body = dmdc.DomoDatacenter.generate_search_datacenter_body_by_name(entity_name = match_name)
-        
-        search_res = await dmdc.DomoDatacenter.search_datacenter(full_auth = full_auth, 
-                                                                 body = search_body,
-                                                                 session = session,
-                                                                 debug = debug,
-                                                                 log_result = log_result)
-        
-        existing_ds = next(( ds for ds in search_res if ds.get('name').lower() == match_name.lower()), None)
-        
+                            log_result: bool = False):
+        return await stream_routes.create_stream(full_auth=full_auth,
+                                                 body=cnfg_body,
+                                                 session=session,
+                                                 debug=debug)
+
+    @classmethod
+    async def update_stream(cls,
+                            cnfg_body,
+                            stream_id,
+                            full_auth: DomoFullAuth = None,
+                            session: aiohttp.ClientSession = None,
+                            debug: bool = False,
+                            log_result: bool = False):
+
+        return await stream_routes.update_stream(full_auth=full_auth,
+                                                 stream_id=stream_id,
+                                                 body=cnfg_body,
+                                                 session=session,
+                                                 debug=debug)
+
+    @classmethod
+    async def upsert_connector(cls,
+                               cnfg_body,
+                               match_name=None,
+                               full_auth: DomoFullAuth = None,
+                               session: aiohttp.ClientSession = None,
+                               debug: bool = False,
+                               log_result: bool = False):
+        search_body = dmdc.DomoDatacenter.generate_search_datacenter_body_by_name(
+            entity_name=match_name)
+
+        search_res = await dmdc.DomoDatacenter.search_datacenter(full_auth=full_auth,
+                                                                 body=search_body,
+                                                                 session=session,
+                                                                 debug=debug,
+                                                                 log_result=log_result)
+
+        existing_ds = next((ds for ds in search_res if ds.get(
+            'name').lower() == match_name.lower()), None)
+
         if debug:
-            print(f"existing_ds - {existing_ds.id if existing_ds else ' not found '}" )
-        
+            print(
+                f"existing_ds - {existing_ds.id if existing_ds else ' not found '}")
+
         if existing_ds:
-            existing_ds = await DomoDataset.getDomoProps(id = existing_ds.get('databaseId'),
-                                                        full_auth = full_auth)
+            existing_ds = await DomoDataset.getDomoProps(id=existing_ds.get('databaseId'),
+                                                         full_auth=full_auth)
             return await cls.update_stream(cnfg_body,
-                             stream_id = existing_ds.stream_id,
-                             full_auth = full_auth,
-                             session = session,
-                             debug = False,
-                             log_result = False)
+                                           stream_id=existing_ds.stream_id,
+                                           full_auth=full_auth,
+                                           session=session,
+                                           debug=False,
+                                           log_result=False)
         else:
             return await cls.create_stream(cnfg_body,
-                                          full_auth = full_auth,
-                                          session = session,
-                                          debug = debug,
-                                          log_result = log_result)
-
+                                           full_auth=full_auth,
+                                           session=session,
+                                           debug=debug,
+                                           log_result=log_result)

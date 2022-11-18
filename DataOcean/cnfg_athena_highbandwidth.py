@@ -1,4 +1,5 @@
-import Library.DataOcean.Transport as tr
+import Transport as tr
+
 
 def con_athena_highbandwidth(database_name,
                              qry_tableName=None,
@@ -42,13 +43,16 @@ def con_athena_highbandwidth(database_name,
     ]
 
     config = tr.Configuration(transport=tr.Transport(type=cnfg.get('type'),
-                                                     description=cnfg.get('description'),
+                                                     description=cnfg.get(
+                                                         'description'),
                                                      version=cnfg.get('version')),
                               account=tr.Account(id=account_id),
                               configuration=configuration,
                               updateMethod=tr.UpdateMethod.REPLACE.value,
-                              dataProvider=tr.DataProvider(key=cnfg.get('dataProvider_key')),
-                              dataSource=tr.Datasource(name=ds_name, description=ds_description),
+                              dataProvider=tr.DataProvider(
+                                  key=cnfg.get('dataProvider_key')),
+                              dataSource=tr.Datasource(
+                                  name=ds_name, description=ds_description),
                               advancedScheduleJson=schedule)
 
     return config

@@ -6,34 +6,33 @@ from ..DomoAuth import DomoFullAuth
 from ...utils.ResponseGetData import ResponseGetData
 
 
-#get RemoteDomostats job names
+# get RemoteDomostats job names
 async def get_jobs(full_auth: DomoFullAuth,
-                                    application_id: str,
-                                    debug: bool = False, log_results: bool = False,
-                                    session : aiohttp.ClientSession = None ):
+                   application_id: str,
+                   debug: bool = False, log_results: bool = False,
+                   session: aiohttp.ClientSession = None):
     try:
         is_close_session = False
-        
+
         if not session:
             session = aiohttp.ClientSession()
             is_close_session = True
 
         offset_params = {
             'offset': 'offset',
-            'limit': 'limit' }
-
+            'limit': 'limit'}
 
         offset = 60
         limit = 10
-    
+
         url = f'https://{full_auth.domo_instance}.domo.com/api/executor/v2/applications/{application_id}/jobs'
- 
+
         if debug:
             print(url)
-        
+
         def arr_fn(res) -> list[dict]:
             return res.response.get('jobs')
-        
+
         def alter_maximum_fn(res):
             return res.response.get('totalResults')
 
@@ -41,39 +40,38 @@ async def get_jobs(full_auth: DomoFullAuth,
                            method='GET',
                            url=url,
                            arr_fn=arr_fn,
-                           limit = 100, 
+                           limit=100,
                            # fixed_params=fixed_params,
-                           alter_maximum_fn = alter_maximum_fn,
+                           alter_maximum_fn=alter_maximum_fn,
                            offset_params=offset_params,
-                           
+
                            session=session,
-                           # maximum=maximum, 
+                           # maximum=maximum,
                            debug=debug)
-        
+
         return ResponseGetData(
-            status= 200,
-            response = res,
-            is_success = True)
+            status=200,
+            response=res,
+            is_success=True)
     except:
         return ResponseGetData(
-            status= 400,
-            is_success = False)
-    
+            status=400,
+            is_success=False)
+
     finally:
         if is_close_session:
             await session.close()
 
 
-            
-#create the new RemoteDomostats job
+# create the new RemoteDomostats job
 async def add_job(full_auth: DomoFullAuth,
-                  body : dict,
-                  application_id:str,
-                  session :aiohttp.ClientSession = None,
-                  debug :bool = False, 
-                  log_results :bool = False
-                 ):
-    
+                  body: dict,
+                  application_id: str,
+                  session: aiohttp.ClientSession = None,
+                  debug: bool = False,
+                  log_results: bool = False
+                  ):
+
     url = f'https://{full_auth.domo_instance}.domo.com/api/executor/v1/applications/{application_id}/jobs'
 
     if debug:
@@ -86,19 +84,20 @@ async def add_job(full_auth: DomoFullAuth,
         body=body,
         log_results=log_results,
         debug=debug,
-        session = session
+        session=session
     )
 
+
 def generate_body_remote_domostats(target_instance: str,
-                                         report_dict : dict,
-                                         output_dataset_id: str,
-                                         account_id: str,
-                                         schedule_ls: list,
-                                         execution_timeout: int = 1440,
-                                         debug: bool = False):
-                                    
+                                   report_dict: dict,
+                                   output_dataset_id: str,
+                                   account_id: str,
+                                   schedule_ls: list,
+                                   execution_timeout: int = 1440,
+                                   debug: bool = False):
+
     instance_url = f"{target_instance}.domo.com"
-    
+
     body = {
         "jobName": instance_url,
         "jobDescription": f'Get Remote stat from {instance_url}',
@@ -106,15 +105,15 @@ def generate_body_remote_domostats(target_instance: str,
         "executionPayload": {
             "remoteInstance": instance_url,
             "policies": report_dict,
-            "metricsDatasetId" : output_dataset_id},
+            "metricsDatasetId": output_dataset_id},
         "accounts": [account_id],
         "executionClass": "com.domo.executor.subscriberstats.SubscriberStatsExecutor",
         "resources": {
-            "requests": { "memory": "256M" },
-            "limits": { "memory": "256M" }},
+            "requests": {"memory": "256M"},
+            "limits": {"memory": "256M"}},
         "triggers": schedule_ls
-        }
-    
+    }
+
     if debug:
         pprint(body)
 

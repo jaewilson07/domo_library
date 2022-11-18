@@ -20,7 +20,8 @@ class DomoCertification:
     @classmethod
     def _from_json(cls, dd):
         return cls(certification_state=DomoCertificationState[dd.state].value or dd.state,
-                   last_updated=cd.convert_epoch_millisecond_to_datetime(dd.lastUpdated),
+                   last_updated=cd.convert_epoch_millisecond_to_datetime(
+                       dd.lastUpdated),
                    certification_type=dd.processType,
                    certification_name=dd.processName
                    )

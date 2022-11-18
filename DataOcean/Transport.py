@@ -1,5 +1,5 @@
 import json
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from enum import Enum
 from typing import Any
 
@@ -100,7 +100,8 @@ class Configuration:
 
     def __post_init__(self):
         if not self.advancedScheduleJson:
-            self.advancedScheduleJson = Schedule(type=Schedule_Type.MANUAL.value)
+            self.advancedScheduleJson = Schedule(
+                type=Schedule_Type.MANUAL.value)
 
     def to_dict(self):
         clean_self = self

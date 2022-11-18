@@ -1,11 +1,11 @@
 import aiohttp
 
-from .get_data import get_data
-from ..DomoAuth import DomoFullAuth
+from ...DomoClasses import DomoAuth as dmda
 from ...utils.ResponseGetData import ResponseGetData
+from . import get_data as gd
 
 
-async def create_document(full_auth: DomoFullAuth, app_id: str,
+async def create_document(full_auth: dmda.DomoFullAuth, app_id: str,
                           domo_environment: str,
                           collection_name: str,
                           document: dict,
@@ -16,21 +16,21 @@ async def create_document(full_auth: DomoFullAuth, app_id: str,
     if debug:
         print(url)
 
-    res = await get_data(auth=full_auth,
-                         method='POST',
-                         url=url,
-                         body=document,
-                         session=session,
-                         debug=debug)
+    res = await gd.get_data(auth=full_auth,
+                            method='POST',
+                            url=url,
+                            body=document,
+                            session=session,
+                            debug=debug)
     return res
 
 
-async def get_documents(full_auth: DomoFullAuth, app_id: str,
+async def get_documents(full_auth: dmda.DomoFullAuth, app_id: str,
                         domo_environment: str,
                         collection_name: str):
     url = f'https://{app_id}.domoapps.{domo_environment}.domo.com/domo/datastores/v1/collections/{collection_name}/documents/'
 
-    res = await get_data(auth=full_auth,
-                         method='GET',
-                         url=url)
+    res = await gd.get_data(auth=full_auth,
+                            method='GET',
+                            url=url)
     return res

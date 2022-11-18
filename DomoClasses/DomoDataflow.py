@@ -14,20 +14,21 @@ from ..utils import convert as cd
 from ..utils.Base import Base
 from ..utils.DictDot import DictDot
 
+
 @dataclass
 class DomoDataflow(Base):
-    
+
     id: str
     name: str
-    
+
     full_auth: DomoFullAuth = field(repr=False, default_factory=list)
     dev_auth: DomoDeveloperAuth = field(repr=False, default_factory=list)
-    
+
     owner: str = None
     description: str = None
     domo_instance: str = None
-    tags : list = None
-    
+    tags: list = None
+
     @classmethod
     async def get_from_id(cls,
                           id: str,
@@ -36,7 +37,7 @@ class DomoDataflow(Base):
 
         try:
             res = await dataflow_routes.get_dataset_by_id(full_auth=full_auth,
-                                                         id=id, debug=debug)
+                                                          id=id, debug=debug)
 
             if debug:
                 pprint(res)

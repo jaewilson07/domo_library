@@ -1,12 +1,13 @@
-import aiohttp
 from pprint import pprint
 
-from .get_data import looper
-from ..DomoAuth import DomoFullAuth
-from ...utils.ResponseGetData import ResponseGetData
+import aiohttp
+
+from ...DomoClasses import DomoAuth as dmda
+from ...utils import ResponseGetData as ResponseGetData
+from . import get_data as gd
 
 
-async def search_activity_log(full_auth: DomoFullAuth,
+async def search_activity_log(full_auth: dmda.DomoFullAuth,
                               end_time: int,
                               start_time: int,
                               maximum: int, object_type=None,
@@ -34,14 +35,14 @@ async def search_activity_log(full_auth: DomoFullAuth,
     def arr_fn(res) -> list[dict]:
         return res.response
 
-    res = await looper(auth=full_auth,
-                       method='GET',
-                       url=url,
-                       arr_fn=arr_fn,
-                       fixed_params=fixed_params,
-                       offset_params=offset_params,
-                       session=session,
-                       maximum=maximum, debug=debug)
+    res = await gd.looper(auth=full_auth,
+                          method='GET',
+                          url=url,
+                          arr_fn=arr_fn,
+                          fixed_params=fixed_params,
+                          offset_params=offset_params,
+                          session=session,
+                          maximum=maximum, debug=debug)
 
     if is_close_session:
         await session.close()

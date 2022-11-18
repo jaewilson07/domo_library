@@ -7,7 +7,8 @@ async def create_user(full_auth: DomoFullAuth, display_name, email, role_id, deb
                       log_results: bool = False):
     url = f"https://{full_auth.domo_instance}.domo.com/api/content/v3/users"
 
-    body = {"displayName": display_name, "detail": {"email": email}, "roleId": role_id}
+    body = {"displayName": display_name, "detail": {
+        "email": email}, "roleId": role_id}
 
     res = await get_data(url=url, method='POST', auth=full_auth, body=body, log_results=log_results, debug=debug)
     return res

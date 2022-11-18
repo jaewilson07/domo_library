@@ -21,7 +21,7 @@ class DomoCard(Base):
 
     def __post_init__(self):
         Base().__init__()
-        
+
         self.domo_instance = self.full_auth.domo_instance
         # self.Definition = CardDefinition(self)
 
@@ -51,5 +51,3 @@ class DomoCard(Base):
                 card.dataset_id = dd.datasources[0].dataSourceId
 
             return card
-
-        

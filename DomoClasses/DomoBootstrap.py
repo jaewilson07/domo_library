@@ -46,6 +46,7 @@ class DomoBootstrap:
                            session: aiohttp.ClientSession, debug: bool = False):
         json_list = await bootstrap_routes.bsr_features(full_auth=full_auth, session=session, debug=debug)
 
-        feature_list = [DomoBootstrapFeature.create_from_json_bootstrap(json_obj) for json_obj in json_list]
+        feature_list = [DomoBootstrapFeature.create_from_json_bootstrap(
+            json_obj) for json_obj in json_list]
 
         return feature_list

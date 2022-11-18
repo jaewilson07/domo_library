@@ -10,6 +10,7 @@ def convert_datetime_to_epoch_millisecond(datetime: dt.datetime):
     '''convert DateTime to Epoch time with Miliseconds'''
     return int(datetime.timestamp() * 1000)
 
+
 def convert_snake_to_pascal(str):
     clean_str = str.replace("_", " ").title().replace(" ", "")
     return clean_str[0].lower()+clean_str[1:]

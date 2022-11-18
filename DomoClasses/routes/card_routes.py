@@ -2,9 +2,9 @@ from typing import List
 
 import aiohttp
 
-from .get_data import get_data
-from ..DomoAuth import DomoFullAuth
 from ...utils.ResponseGetData import ResponseGetData
+from ..DomoAuth import DomoFullAuth
+from .get_data import get_data
 
 
 async def get_kpi_definition(full_auth: DomoFullAuth, card_id: str, debug: bool = False) -> ResponseGetData:

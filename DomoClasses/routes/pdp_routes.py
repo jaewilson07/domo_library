@@ -7,6 +7,7 @@ from .get_data import get_data, looper
 from ..DomoAuth import DomoDeveloperAuth, DomoFullAuth
 from ...utils.ResponseGetData import ResponseGetData
 
+
 async def get_pdp_policies(full_auth: DomoFullAuth, dataset_id: str, debug: bool = False) -> ResponseGetData:
     url = f'http://{full_auth.domo_instance}.domo.com/api/query/v1/data-control/{dataset_id}/filter-groups/'
 

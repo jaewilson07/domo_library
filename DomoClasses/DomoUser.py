@@ -67,7 +67,8 @@ class DomoUsers:
             if not json_list:
                 return None
 
-            domo_users = cls._users_to_domo_user(json_list, full_auth=full_auth)
+            domo_users = cls._users_to_domo_user(
+                json_list, full_auth=full_auth)
 
             if only_allow_one:
                 return domo_users[0]
@@ -88,10 +89,12 @@ class DomoUsers:
             if not json_list:
                 return None
 
-            domo_users = cls._users_to_domo_user(json_list, full_auth=full_auth)
+            domo_users = cls._users_to_domo_user(
+                json_list, full_auth=full_auth)
 
             if only_allow_one:
-                domo_users = cls.util_match_domo_users_to_emails(domo_users, [email_address])
+                domo_users = cls.util_match_domo_users_to_emails(
+                    domo_users, [email_address])
                 return domo_users[0]
 
             return domo_users
@@ -171,13 +174,13 @@ class DomoUser(Base):
 
     @classmethod
     async def request_password_reset(cls, domo_instance: str, email: str, locale: str = 'en-us', debug: bool = False):
-       
+
         return await user_routes.request_password_reset(domo_instance=domo_instance, email=email, locale=locale,
                                                         debug=debug)
 
     @classmethod
-    async def create_user(cls, full_auth: DomoFullAuth, display_name, email, role_id, password: str = None, 
-                          send_password_reset_email:bool = False,
+    async def create_user(cls, full_auth: DomoFullAuth, display_name, email, role_id, password: str = None,
+                          send_password_reset_email: bool = False,
                           debug: bool = False, log_results: bool = False):
 
         res = await user_routes.create_user(full_auth=full_auth, display_name=display_name, email=email,
@@ -198,9 +201,9 @@ class DomoUser(Base):
 
         if password:
             await u.reset_password(new_password=password)
-        
+
         if send_password_reset_email:
-            await u.request_password_reset(domo_instance = full_auth.domo_instance,
-                                           email = u.email_address)
+            await u.request_password_reset(domo_instance=full_auth.domo_instance,
+                                           email=u.email_address)
 
         return u

@@ -22,8 +22,10 @@ class DomoActivityLog:
                                debug: bool = False,
                                convert_to_class_dictdot: bool = False) -> list[DictDot]:
 
-        start_time_epoch = convert.convert_datetime_to_epoch_millisecond(start_time)
-        end_time_epoch = convert.convert_datetime_to_epoch_millisecond(end_time)
+        start_time_epoch = convert.convert_datetime_to_epoch_millisecond(
+            start_time)
+        end_time_epoch = convert.convert_datetime_to_epoch_millisecond(
+            end_time)
 
         is_close_session = False
 
@@ -47,7 +49,8 @@ class DomoActivityLog:
                 return [DictDot(al) for al in res_activity_log]
             else:
                 df = pd.DataFrame(res_activity_log)
-                df["time_dt"] = df["time"].apply(lambda x: convert.convert_epoch_millisecond_to_datetime(x))
+                df["time_dt"] = df["time"].apply(
+                    lambda x: convert.convert_epoch_millisecond_to_datetime(x))
                 df["instance"] = f'{full_auth.domo_instance}.domo.com'
                 df["date"] = df["time_dt"].apply(lambda x: x.date())
 

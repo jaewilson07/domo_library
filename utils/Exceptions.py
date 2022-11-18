@@ -36,6 +36,7 @@ class NoDataReturned(Exception):
 
         self.message = message
 
+
 class ResourceUnavailable(Exception):
     """Exception representing a failed request to a resource"""
 
