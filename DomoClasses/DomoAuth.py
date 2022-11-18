@@ -1,19 +1,18 @@
-import aiohttp
-from abc import abstractmethod, ABC
 from dataclasses import dataclass, field
 
+import aiohttp
+
+from .. import utils
+from ..utils import ResponseGetData as gd
 from .routes import auth_routes
-from ..utils import Exceptions
-from ..utils.Base import Base
-from ..utils.ResponseGetData import ResponseGetData
 
 
-class Error(Exception):
+class Error(utils.Exceptions.Exception):
     """Base class for other exceptions"""
     pass
 
 
-class InvalidCredentialsError(Exception):
+class InvalidCredentialsError(utils.Exceptions.Exception):
     def __init__(self, status, message="invalid credentials", domo_instance=None):
 
         instance_str = f" at {domo_instance}" if domo_instance else None
@@ -78,7 +77,7 @@ class DomoFullAuth(_DA_Default, _DFA_Base):
     async def get_auth_token(self, domo_instance=None,
                              domo_username=None, domo_password=None,
                              debug: bool = False,
-                             session: aiohttp.ClientSession = None) -> ResponseGetData:
+                             session: aiohttp.ClientSession = None) -> gd.ResponseGetData:
 
         self.domo_username = domo_username or self.domo_username
         self.domo_password = domo_password or self.domo_password
@@ -131,7 +130,7 @@ class DomoDeveloperAuth(DomoAuth):
 
     async def get_auth_token(self,
                              domo_client_id=None,
-                             domo_client_secret=None) -> ResponseGetData:
+                             domo_client_secret=None) -> gd.ResponseGetData:
 
         self.domo_client_id = domo_client_id or self.domo_client_id
         self.domo_client_secret = domo_client_secret or self.domo_client_secret

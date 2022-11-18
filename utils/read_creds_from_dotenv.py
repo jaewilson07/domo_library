@@ -1,9 +1,10 @@
 import os
-from dotenv import load_dotenv
 from os.path import exists
 from pprint import pprint
 
-from .DictDot import DictDot
+from dotenv import load_dotenv
+
+from . import DictDot as dd
 
 
 def split_str_to_obj(env_string: str, value_split_keys: list[str]):
@@ -13,7 +14,7 @@ def split_str_to_obj(env_string: str, value_split_keys: list[str]):
     for index, new_obj_key in enumerate(value_split_keys):
         obj[new_obj_key] = env_list[index]
 
-    return DictDot(obj)
+    return dd.DictDot(obj)
 
 
 def split_creds(env: DictDot, key_starts_with: str, env_var_list: list[str]):

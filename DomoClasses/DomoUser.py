@@ -1,10 +1,10 @@
 from dataclasses import dataclass, field
 from typing import List
 
-from .DomoAuth import DomoFullAuth
-from .routes import user_routes
 from ..utils.Base import Base
 from ..utils.DictDot import DictDot
+from . import DomoAuth as dmda
+from .routes import user_routes
 
 
 class DomoUsers:
@@ -23,7 +23,7 @@ class DomoUsers:
                 matches.append(matchUsr)
         return matches
 
-    def _users_to_domo_user(json_list, full_auth: DomoFullAuth):
+    def _users_to_domo_user(json_list, full_auth: dmda.DomoFullAuth):
         domo_users = []
         for json_obj in json_list:
             user = DomoUser._from_search_json(
@@ -33,7 +33,7 @@ class DomoUsers:
 
         return domo_users
 
-    def _users_to_virtual_user(json_list, full_auth: DomoFullAuth):
+    def _users_to_virtual_user(json_list, full_auth: dmda.DomoFullAuth):
         domo_users = []
         for json_obj in json_list:
             user = DomoUser._from_virtual_json(
@@ -44,7 +44,7 @@ class DomoUsers:
         return domo_users
 
     @classmethod
-    async def all_users(cls, full_auth: DomoFullAuth, log_results: bool = False):
+    async def all_users(cls, full_auth: dmda.DomoFullAuth, log_results: bool = False):
 
         res = await user_routes.get_all_users(full_auth=full_auth, log_results=log_results)
 
@@ -54,7 +54,7 @@ class DomoUsers:
 
     @classmethod
     async def by_id(cls, user_ids: list[str],
-                    full_auth: DomoFullAuth,
+                    full_auth: dmda.DomoFullAuth,
                     only_allow_one: bool = True,
                     log_results: bool = False, debug: bool = False) -> list:
 
@@ -76,7 +76,7 @@ class DomoUsers:
             return domo_users
 
     @classmethod
-    async def by_email(cls, email_address: str, full_auth: DomoFullAuth,
+    async def by_email(cls, email_address: str, full_auth: dmda.DomoFullAuth,
                        only_allow_one: bool = True,
                        log_results: bool = False, debug: bool = False) -> list:
 
@@ -104,7 +104,7 @@ class DomoUsers:
     @classmethod
     async def virtual_user_by_subscriber_instance(cls,
                                                   subscriber_instance: str,
-                                                  full_auth: DomoFullAuth,
+                                                  full_auth: dmda.DomoFullAuth,
                                                   debug: bool = False, log_results: bool = False
                                                   ):
         res = await user_routes.search_virtual_user_by_subscriber_instance(full_auth=full_auth,
@@ -127,7 +127,7 @@ class DomoUsers:
 class DomoUser(Base):
     id: str
     domo_instance: str
-    full_auth: DomoFullAuth = field(repr=False)
+    full_auth: dmda.DomoFullAuth = field(repr=False)
     display_name: str = None
     email_address: str = None
 
@@ -179,7 +179,7 @@ class DomoUser(Base):
                                                         debug=debug)
 
     @classmethod
-    async def create_user(cls, full_auth: DomoFullAuth, display_name, email, role_id, password: str = None,
+    async def create_user(cls, full_auth: dmda.DomoFullAuth, display_name, email, role_id, password: str = None,
                           send_password_reset_email: bool = False,
                           debug: bool = False, log_results: bool = False):
 

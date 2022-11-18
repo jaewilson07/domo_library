@@ -1,10 +1,10 @@
 from dataclasses import dataclass, field
 
-from .Base import Base
+from . import Base as b
 
 
 @dataclass
-class ResponseGetData(Base):
+class ResponseGetData(b.Base):
     status: int
     response: any
     is_success: bool

@@ -1,6 +1,6 @@
+from ..DomoClasses import DomoAuth as dmda
+from ..DomoClasses import DomoDataset as dmds
 from .read_creds_from_dotenv import read_creds_from_dotenv, split_creds
-from ..DomoClasses.DomoAuth import DomoFullAuth
-from ..DomoClasses.DomoDataset import DomoDataset
 
 
 def get_creds(array_env,
@@ -20,10 +20,10 @@ def get_creds(array_env,
         for instance in instance_list:
             print(instance.domo_instance)
 
-    consol_auth = DomoFullAuth(domo_instance=consol_env.CONSOL_INSTANCE,
-                               domo_username=consol_env.CONSOL_USERNAME,
-                               domo_password=consol_env.CONSOL_PASSWORD)
+    consol_auth = dmda.DomoFullAuth(domo_instance=consol_env.CONSOL_INSTANCE,
+                                    domo_username=consol_env.CONSOL_USERNAME,
+                                    domo_password=consol_env.CONSOL_PASSWORD)
 
-    consol_dataset = DomoDataset(full_auth=consol_auth, id=consol_ds_id)
+    consol_dataset = dmds.DomoDataset(full_auth=consol_auth, id=consol_ds_id)
 
     return instance_list, consol_auth, consol_dataset
