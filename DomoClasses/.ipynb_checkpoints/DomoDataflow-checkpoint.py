@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 from .DomoAuth import DomoDeveloperAuth, DomoFullAuth
 from .routes import dataflow_routes
 from ..utils import Exceptions as ex
-from ..utils import convert_date as cd
+from ..utils import convert as cd
 from ..utils.Base import Base
 from ..utils.DictDot import DictDot
 

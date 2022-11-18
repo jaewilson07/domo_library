@@ -39,6 +39,35 @@ class NoConfigCompanyError(Error):
         super().__init__(self.message)
 
 
+def get_jupyter_account(account_name):
+    import domojupyter as dj
+    import time
+    account_properties = None
+    
+    while not account_properties:
+        try:
+            account_properties = dj.get_account_property_keys(account_name)
+        except Exception as e:
+            print(f"trying again - {account_name}")
+            time.sleep(2)
+            
+    obj = {}
+    
+    for index , prop in enumerate(account_properties):
+        value = None
+        
+        while not value:
+            try:
+                value = dj.get_account_property_value(account_name, account_properties[index])
+            
+            except Exception as e:
+                print(f"trying again - {prop}")
+                time.sleep(2)
+        
+        obj.update({prop : value})
+
+    return account_properties, obj
+
 
 @dataclass
 class DomoInstanceAuth:
@@ -95,11 +124,13 @@ class DomoInstanceAuth:
 
         if not cls._test_regex_mask(account_name, cls.account_name_mask):
             raise InvalidAccountNameError(account_name, cls.account_name_mask)
+            
+        account_properties, dj_account = get_jupyter_account(account_name)
 
-        if dj.get_account_property_keys(account_name) != ['credentials']:
+        if account_properties != ['credentials']:
             raise InvalidAccountTypeError
         
-        creds = json.loads(dj.get_account_property_value(account_name, 'credentials'))
+        creds = json.loads(dj_account.get('credentials'))
         
         return cls(
             account_name = account_name,
@@ -158,6 +189,7 @@ class DomoInstanceAuth:
             'domo_password' : self.domo_password ,
             'display_name' : display_name or self.display_name}
 
+    
 async def get_domains_with_global_config_auth(config_auth: dmda.DomoFullAuth,
                                               dataset_id: str,
                                               global_auth : dmda.DomoFullAuth,
@@ -201,6 +233,7 @@ async def get_domains_with_global_config_auth(config_auth: dmda.DomoFullAuth,
         df.at[index, 'is_valid'] = 1 if (full_auth.token) else 0
     
     return df
+
 
 async def get_domains_with_instance_auth(config_auth: dmda.DomoFullAuth,
                                          dataset_id: str,
@@ -254,3 +287,9 @@ async def get_domains_with_instance_auth(config_auth: dmda.DomoFullAuth,
         df.at[index, 'is_valid'] = 1 if (full_auth.token) else 0
     
     return df
+
+
+account_name = 'sdk-user-domo-visualization-do-prod'
+
+                
+        

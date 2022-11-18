@@ -2,7 +2,7 @@ import datetime as dt
 from dataclasses import dataclass
 from enum import Enum
 
-from ..utils import convert_date as cd
+from ..utils import convert as cd
 from ..utils.DictDot import DictDot
 
 

@@ -2,7 +2,7 @@ import aiohttp
 import datetime as dt
 import asyncio
 
-import Library.utils.convert_date as cd
+import Library.utils.convert as cd
 
 from ..utils.DictDot import DictDot
 from dataclasses import dataclass, field
