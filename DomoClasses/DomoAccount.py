@@ -37,18 +37,39 @@ class DomoAccount_Config_HighBandwidthConnector:
                 "region": self.region
                }
 
+class DomoAccount_Config_AbstractCredential:
+    credentials: dict
+    
+    @classmethod
+    def _from_json(cls, obj):
+        
+        dd = dcd.DictDot(obj)
 
+        return cls(
+            credentials=dd.credentials,
+            )
+
+    def to_json(self):
+        return {"credentials": self.credentials
+               }
+    
 class AccountConfig(Enum):
-    amazon_athena_high_bandwidth = DomoAccount_Config_HighBandwidthConnector
+    amazon_athena_high_bandwidth = {'type' : 'amazon-athena-high-bandwidth',
+                                    'config' : DomoAccount_Config_HighBandwidthConnector}
+    
+    abstract_credential_store = {'type' : 'abstract-credential-store'
+                                 'config' : DomoAccount_Config_AbstractCredential}
+    
+    
 
 
 @dataclass
 class DomoAccount:
-    id: int
     name: str
     data_provider_type: str
-    created_dt: dt.datetime
-    modified_dt: dt.datetime
+    id: int = None
+    created_dt: dt.datetime = None
+    modified_dt: dt.datetime = None
     full_auth: dmda.DomoFullAuth = field(repr=False, default=None)
 
     config:  AccountConfig = None
@@ -97,7 +118,7 @@ class DomoAccount:
         if enum_clean not in account_config_names:
             return acc
 
-        acc.config = AccountConfig[enum_clean].value._from_json(
+        acc.config = AccountConfig[enum_clean].value.get('config')._from_json(
             res_config.response
         )
 
