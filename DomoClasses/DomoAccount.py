@@ -57,7 +57,7 @@ class AccountConfig(Enum):
     amazon_athena_high_bandwidth = {'type' : 'amazon-athena-high-bandwidth',
                                     'config' : DomoAccount_Config_HighBandwidthConnector}
     
-    abstract_credential_store = {'type' : 'abstract-credential-store'
+    abstract_credential_store = {'type' : 'abstract-credential-store',
                                  'config' : DomoAccount_Config_AbstractCredential}
     
     
