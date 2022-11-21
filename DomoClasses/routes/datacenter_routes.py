@@ -19,6 +19,37 @@ def generate_search_datacenter_body(entities_list: list[str] = ['DATASET'],
         "count": count,
         "offset": offset}
 
+def generate_search_datacenter_account_body( search_str : str, is_exact_match:bool = True):
+    return {
+        "count": 100,
+        "offset": 0,
+        "combineResults": False,
+        "query": search_str if is_exact_match else f"*{search_str}*",
+        "filters": [],
+        "facetValuesToInclude": [
+            "DATAPROVIDERNAME",
+            "OWNED_BY_ID",
+            "VALID",
+            "USED",
+            "LAST_MODIFIED_DATE"
+        ],
+        "queryProfile": "GLOBAL",
+        "entityList": [
+            [
+                "account"
+            ]
+        ],
+        "sort": {
+            "fieldSorts": [
+                {
+                    "field": "display_name_sort",
+                    "sortOrder": "ASC"
+                }
+            ]
+        }
+    }
+        
+
 
 async def search_datacenter(full_auth: DomoFullAuth,
                             arr_fn: callable,

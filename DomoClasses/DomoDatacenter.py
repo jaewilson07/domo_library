@@ -8,6 +8,9 @@ import Library.DomoClasses.DomoAuth as dmda
 from .DomoDataset import DomoDataset
 from .routes import datacenter_routes, account_routes
 
+import importlib
+importlib.reload(datacenter_routes)
+
 
 class DomoEntity(Enum):
     DATASET = 'DATA_SOURCE'
@@ -163,14 +166,42 @@ class DomoDatacenter:
             if is_close_session:
                 await session.close()
 
-    async def get_accounts(full_auth: dmda.DomoFullAuth):
+    @classmethod
+    async def get_accounts(cls, full_auth: dmda.DomoFullAuth,
+                           search_str: str = None,
+                           is_exact_match : bool = True,
+                           maximum : int = None, 
+                           session :aiohttp.ClientSession = None, debug : bool = False):
+        
         import Library.DomoClasses.DomoAccount as dma
+        
+        json_ls = None
+        
+        if search_str:
+            body = datacenter_routes.generate_search_datacenter_account_body(search_str = search_str, is_exact_match = is_exact_match)
+            
+            search_ls = await cls.search_datacenter(full_auth=full_auth,
+                                                maximum=maximum,
+                                                body=body,
+                                                session=session,
+                                                debug=debug)
+            
+            if not search_ls or len(search_ls) == 0:
+                return None
+            
+            json_ls = [ { 'id' : obj.get('databaseId')} for obj in search_ls]
 
-        res = await account_routes.get_accounts(full_auth=full_auth)
+        else:
+            res = await account_routes.get_accounts(full_auth=full_auth, session=session, deubg = debug)
 
-        if res.status != 200:
-            return None
+            if res.status != 200:
+                return None
 
-        obj_ls = res.response
-
-        return await asyncio.gather(*[dma.DomoAccount.get_from_id(account_id=obj.get('id'), full_auth=full_auth) for obj in obj_ls])
+            json_ls = res.response
+            
+        domo_account_ls =  await asyncio.gather(*[dma.DomoAccount.get_from_id(account_id=obj.get('id'), full_auth=full_auth) for obj in json_ls])
+        
+        if is_exact_match:
+            return domo_account_ls[0]
+        
+        return domo_account_ls

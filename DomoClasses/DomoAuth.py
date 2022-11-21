@@ -2,17 +2,17 @@ from dataclasses import dataclass, field
 
 import aiohttp
 
-from .. import utils
+from ..utils import Exceptions as ex
 from ..utils import ResponseGetData as gd
 from .routes import auth_routes
 
 
-class Error(utils.Exceptions.Exception):
+class Error(Exception):
     """Base class for other exceptions"""
     pass
 
 
-class InvalidCredentialsError(utils.Exceptions.Exception):
+class InvalidCredentialsError(Exception):
     def __init__(self, status, message="invalid credentials", domo_instance=None):
 
         instance_str = f" at {domo_instance}" if domo_instance else None
@@ -104,7 +104,7 @@ class DomoFullAuth(_DA_Default, _DFA_Base):
                                           domo_instance=self.domo_instance)
 
         else:
-            raise Exceptions.InvalidInstanceError(
+            raise ex.InvalidInstanceError(
                 message=f'invalid instance {self.domo_instance}')
 
 

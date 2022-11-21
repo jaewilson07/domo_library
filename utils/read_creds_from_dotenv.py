@@ -17,7 +17,7 @@ def split_str_to_obj(env_string: str, value_split_keys: list[str]):
     return dd.DictDot(obj)
 
 
-def split_creds(env: DictDot, key_starts_with: str, env_var_list: list[str]):
+def split_creds(env: dd.DictDot, key_starts_with: str, env_var_list: list[str]):
     env_lines_to_split = [getattr(env, key) for key in dir(
         env) if key.startswith(key_starts_with)]
 
@@ -26,7 +26,7 @@ def split_creds(env: DictDot, key_starts_with: str, env_var_list: list[str]):
 
 def read_creds_from_dotenv(env_path: str = '.env',
                            params: list[str] = None,
-                           debug: bool = False) -> DictDot:
+                           debug: bool = False) -> dd.DictDot:
     """use_prod = false will replace all PROD values with matching TEST values"""
 
     file_exists = exists(env_path)
@@ -46,4 +46,4 @@ def read_creds_from_dotenv(env_path: str = '.env',
         pprint(vars(os.environ))
         pprint({'read_creds_from_params': params_res})
 
-    return DictDot(params_res)
+    return dd.DictDot(params_res)

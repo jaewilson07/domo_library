@@ -17,9 +17,10 @@ class DomoAccount_Config_HighBandwidthConnector:
     aws_secret_key: str
     s3_staging_dir: str
     region: str = 'us-west-2'
-
+    
     @classmethod
     def _from_json(cls, obj):
+        
         dd = dcd.DictDot(obj)
 
         return cls(
@@ -33,7 +34,8 @@ class DomoAccount_Config_HighBandwidthConnector:
         return {"awsAccessKey": self.aws_access_key,
                 "awsSecretKey": self.aws_secret_key,
                 "s3StagingDir": self.s3_staging_dir,
-                "region": self.region}
+                "region": self.region
+               }
 
 
 class AccountConfig(Enum):
@@ -58,7 +60,7 @@ class DomoAccount:
         dd = dcd.DictDot(obj)
 
         return cls(id=dd.id,
-                   name=dd.name,
+                   name=dd.displayName,
                    data_provider_type=dd.dataProviderType,
                    created_dt=cd.convert_epoch_millisecond_to_datetime(
                        dd.createdAt),
@@ -96,7 +98,8 @@ class DomoAccount:
             return acc
 
         acc.config = AccountConfig[enum_clean].value._from_json(
-            res_config.response)
+            res_config.response
+        )
 
         return acc
 
@@ -106,12 +109,50 @@ class DomoAccount:
 
         full_auth = full_auth or self.full_auth
 
-        print(full_auth, self.id, self.data_provider_type, self.config.to_json())
+        # print(full_auth, self.id, self.data_provider_type, self.config.to_json())
 
         res = await account_routes.update_account_config(full_auth=full_auth,
                                                          account_id=self.id,
                                                          data_provider_type=self.data_provider_type,
                                                          config_body=self.config.to_json(),
                                                          debug=debug, log_results=log_results, session=session)
+        
+        return res.is_success
+    
+    async def update_name(self,
+                          account_name : str =  None, 
+                          full_auth: dmda.DomoFullAuth = None,
+                          debug: bool = False, log_results: bool = False, session: aiohttp.ClientSession = None):
 
-        return res.response
+        full_auth = full_auth or self.full_auth
+
+        # print(full_auth, self.id, self.data_provider_type, self.config.to_json())
+
+        res = await account_routes.update_account_name(full_auth=full_auth,
+                                                         account_id=self.id,
+                                                         account_name = account_name or self.name,
+                                                         debug=debug, log_results=log_results, session=session)
+
+        return res.is_success
+    
+    def config_to_json(self):
+        obj = { 'displayName': self.name,
+               'dataProviderType': self.data_provider_type,
+               'name': self.data_provider_type,
+               'configurations': self.config.to_json()}
+        
+        return obj
+
+    @classmethod
+    async def create_account(cls, full_auth:dmda.DomoFullAuth, 
+                             config_body:dict,
+                             debug: bool = False, log_results: bool = False, session: aiohttp.ClientSession = None):
+        
+        res = await account_routes.create_account(full_auth = full_auth, 
+                                      config_body = config_body, 
+                                                  debug = debug, log_results = log_results, session = session)
+        
+        obj = res.response
+        
+        return await cls.get_from_id(full_auth = full_auth, account_id = obj.get('id'))
+                                                  
