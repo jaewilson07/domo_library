@@ -15,9 +15,10 @@ importlib.reload(account_routes)
 @dataclass
 class DomoAccount_Config_HighBandwidthConnector:
     aws_access_key: str
-    aws_secret_key: str
+    aws_secret_key: str = field(repr = False)
     s3_staging_dir: str
     region: str = 'us-west-2'
+    data_provider_type = 'amazon-athena-high-bandwidth'
 
     @classmethod
     def _from_json(cls, obj):
@@ -180,16 +181,38 @@ class DomoAccount:
                              full_auth: dmda.DomoFullAuth = None,
                              #  config_body: dict,
                              debug: bool = False, log_results: bool = False, session: aiohttp.ClientSession = None):
+        full_auth = full_auth or self.full_auth
 
-        res = await account_routes.create_account(full_auth=full_auth or self.full_auth,
+        res = await account_routes.create_account(full_auth=full_auth,
                                                   config_body=self.config_to_json(),
                                                   debug=debug, log_results=log_results, session=session)
 
         if debug:
             print(res)
+            
+        if res.status != 200:
+            return False
 
         obj = res.response
         acc = await self.get_from_id(full_auth=full_auth, account_id=obj.get('id'))
         acc.status = res.status
         acc.is_success = res.is_success
         return acc
+    
+    async def delete_account(self,
+                             full_auth: dmda.DomoFullAuth = None,
+                             #  config_body: dict,
+                             debug: bool = False, log_results: bool = False, session: aiohttp.ClientSession = None):
+        full_auth = full_auth or self.full_auth
+
+        res = await account_routes.delete_account(full_auth=full_auth,
+                                                  account_id = self.id,
+                                                  debug=debug, log_results=log_results, session=session)
+
+        if debug:
+            print(res)
+            
+        if res.status != 200:
+            return False
+
+        return True

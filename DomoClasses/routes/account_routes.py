@@ -141,3 +141,22 @@ async def create_account(full_auth:dmda.DomoFullAuth, config_body:dict,
         debug=debug,
         session=session
     )
+
+async def delete_account(full_auth:dmda.DomoFullAuth,
+                         account_id: str,
+                         debug: bool = False, 
+                         log_results: bool = False, session: aiohttp.ClientSession = None):
+    
+    url = f"https://{full_auth.domo_instance}.domo.com/api/data/v1/accounts/{account_id}"
+
+    if debug:
+        print(url)
+
+    return await gd.get_data(
+        auth=full_auth,
+        url=url,
+        method='DELETE',
+        log_results=log_results,
+        debug=debug,
+        session=session
+    )

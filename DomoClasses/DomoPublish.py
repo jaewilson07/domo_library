@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 import datetime as dt
 
 import importlib
+import json
 
 from Library.utils.DictDot import DictDot
 
@@ -21,13 +22,19 @@ class DomoPublication_Subscription:
     domain: str
     created_dt: dt.datetime
 
-
 @dataclass
 class DomoPublication_Content:
     content_id: str
     entity_type: str
     entity_id: str
     content_domain: str
+    
+    def to_json (self):
+        temp_dict = {'domain': self.content_domain,
+                 'domoObjectId': self.entity_id,
+                 'customerId': self.content_domain,
+                 'type': self.entity_type}
+        return temp_dict
 
 
 @dataclass
@@ -149,3 +156,24 @@ class DomoPublication:
             return output_ls
 
         return pd.DataFrame(output_ls)
+    
+    @classmethod
+    async def create_publication(cls, name : str, 
+                                 content : DomoPublication_Content , 
+                                 subscription_ls : [DomoPublication_Subscription] ,
+                                 
+                                 description: str = None, full_auth: dmda.DomoFullAuth = None):
+        
+        if isinstance( subscription_ls, list) :
+            subscription_ls = [subscription_ls]
+
+        full_auth = full_auth or cls.full_auth
+
+        res = await publish_routes.create_publish_job(full_auth = full_auth, subscriber= subscription.domain, content = content.to_json(),
+                                                      name = name, description= description)
+        
+        if res.status != 200:
+            print(res)
+            return None
+
+        return cls._from_json(obj=res.response, full_auth=full_auth)

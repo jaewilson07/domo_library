@@ -141,7 +141,7 @@ class DomoInstanceAuth:
             raw_cred=creds,
             domo_username=creds.get('DOMO_USERNAME'),
             domo_password=creds.get('DOMO_PASSWORD'),
-            domo_instance=creds.get('DOMO_INSTANCE')
+            domo_instance=domo_instance or creds.get('DOMO_INSTANCE')
         )
 
     def generate_full_auth_ls(self,
@@ -170,14 +170,15 @@ class DomoInstanceAuth:
 
     def generate_full_auth(self,
                            domo_instance: str = None):
+        
         import Library.DomoClasses.DomoAuth as dmda
 
         self.full_auth_ls = None
         self.domo_instance_ls = None
 
-        self.domo_instance = domo_instance or self.domo_instance
+        domo_instance = domo_instance or self.domo_instance
 
-        if not self.domo_instance:
+        if not domo_instance:
             raise NoInstanceError
 
         full_auth = dmda.DomoFullAuth(domo_instance=domo_instance,
@@ -294,6 +295,3 @@ async def get_domains_with_instance_auth(config_auth: dmda.DomoFullAuth,
         df.at[index, 'is_valid'] = 1 if (full_auth.token) else 0
 
     return df
-
-
-account_name = 'sdk-user-domo-visualization-do-prod'

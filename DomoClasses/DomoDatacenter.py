@@ -194,7 +194,10 @@ class DomoDatacenter:
             json_ls = [{'id': obj.get('databaseId')} for obj in search_ls]
 
         else:
-            res = await account_routes.get_accounts(full_auth=full_auth, session=session, deubg=debug)
+            res = await account_routes.get_accounts(full_auth=full_auth, session=session, debug=debug)
+            
+            if debug:
+                print(res)
 
             if res.status != 200:
                 return None
@@ -203,7 +206,7 @@ class DomoDatacenter:
 
         domo_account_ls = await asyncio.gather(*[dma.DomoAccount.get_from_id(account_id=obj.get('id'), full_auth=full_auth) for obj in json_ls])
 
-        if is_exact_match:
+        if is_exact_match and search_str:
             return next((domo_account for domo_account in domo_account_ls if domo_account.name == search_str), None)
 
         return domo_account_ls

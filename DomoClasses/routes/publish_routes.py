@@ -38,18 +38,20 @@ async def get_publication_by_id(full_auth: dmda.DomoFullAuth, publication_id: st
 # Creating publish job for a specific subscriber
 
 
-async def create_publish_job(full_auth: dmda.DomoFullAuth, subscriber: str, content: str, name: str, description: str, session: aiohttp.ClientSession = None, debug: bool = False) -> rgd.ResponseGetData:
+async def create_publish_job(full_auth: dmda.DomoFullAuth, subscriber: str, content: str, name: str, description: str, unique_id: str = None, session: aiohttp.ClientSession = None, debug: bool = False) -> rgd.ResponseGetData:
     url = f'https://{full_auth.domo_instance}.domo.com/api/publish/v2/publication'
-
+    if not unique_id:
+        uniqu
     body = {
         'id': unique_id,
-        'name': 'PROD ' + name,
+        'name': name,
         'description': description,
         'domain': full_auth.domo_instance,
         'content': content,
         'subscriberDomain': [subscriber],
         'new': 'true'
     }
+    print (body)
     res = await get_data(auth=full_auth,
                          method='POST',
                          url=url,
@@ -87,33 +89,7 @@ async def accept_invite_by_id(full_auth: dmda.DomoFullAuth, subscription_id: str
                          debug=debug)
     return res
 
-# Getting the summaries of all publish jobs.
 
-
-async def get_publish_summaries(full_auth: dmda.DomoFullAuth, subscription_id: str, session: aiohttp.ClientSession = None, debug: bool = False) -> rgd.ResponseGetData:
-
-    url = f'https://{full_auth.domo_instance}.domo.com/api/publish/v2/publication/summaries'
-
-    res = await get_data(auth=dev_auth,
-                         method='GET',
-                         url=url,
-                         session=session,
-                         debug=debug)
-    return res
-
-# Getting details for one specific publish job id
-
-
-async def get_publish_job_by_id(full_auth: dmda.DomoFullAuth, publish_id: str, session: aiohttp.ClientSession = None, debug: bool = False) -> rgd.ResponseGetData:
-
-    url = f'https://{full_auth.domo_instance}.domo.com/api/publish/v2/publication/{publish_id}'
-
-    res = await get_data(auth=dev_auth,
-                         method='GET',
-                         url=url,
-                         session=session,
-                         debug=debug)
-    return res
 
 # Updating existing publish job with content
 
