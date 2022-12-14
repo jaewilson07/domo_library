@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 
 import aiohttp
-import Library.DomoClasses.DomoAuth as dmda
-from Library.DomoClasses.routes.get_data import get_data
+
+from . import DomoAuth as dmda
+from .routes import get_data
 
 
 async def _set_dataset_tags(full_auth: dmda.DomoFullAuth,

@@ -1,27 +1,26 @@
-import aiohttp
 import asyncio
 import datetime as dt
-import pandas as pd
+import importlib
 import io
 import json
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from pprint import pprint
-from typing import List, Any
+from typing import Any, List
 
-import Library.DomoClasses.DomoCertification as dmdc
-import Library.DomoClasses.DomoPDP as dmpdp
-import Library.DomoClasses.DomoTag as dmtg
-from .DomoAuth import DomoDeveloperAuth, DomoFullAuth
+import aiohttp
+import pandas as pd
 
-
-from .routes import dataset_routes
 from ..utils import Exceptions as ex
 from ..utils.Base import Base
-from ..utils.DictDot import DictDot
 from ..utils.chunk_execution import chunk_list
+from ..utils.DictDot import DictDot
+from . import DomoCertification as dmdc
+from . import DomoPDP as dmpdp
+from . import DomoTag as dmtg
+from .DomoAuth import DomoDeveloperAuth, DomoFullAuth
+from .routes import dataset_routes
 
-import importlib
 importlib.reload(dmtg)
 
 
@@ -70,7 +69,8 @@ class Dataset_Schema:
 
 
 @dataclass
-class DomoDataset(Base):
+class DomoDataset:
+    "interacts with domo datasets"
     full_auth: DomoFullAuth = field(repr=False, default=None)
     dev_auth: DomoDeveloperAuth = field(repr=False, default=None)
 
@@ -92,7 +92,6 @@ class DomoDataset(Base):
     schema: Dataset_Schema = None
 
     def __post_init__(self):
-        Base().__init__()
         self.PDPPolicies = dmpdp.Dataset_PDP_Policies(self)
         self.schema = Dataset_Schema(self)
         self.tags = dmtg.Dataset_Tags(dataset=self)
