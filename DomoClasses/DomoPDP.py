@@ -1,19 +1,18 @@
-import aiohttp
 import asyncio
 import datetime as dt
-import pandas as pd
 import io
 import json
 from dataclasses import dataclass, field
 from enum import Enum, auto
 
-import Library.DomoClasses.DomoCertification as dmdc
-from .DomoAuth import DomoDeveloperAuth, DomoFullAuth
+import aiohttp
+import pandas as pd
 
-from .routes import pdp_routes
-
-from ..utils.DictDot import DictDot
 from ..utils.chunk_execution import chunk_list
+from ..utils.DictDot import DictDot
+from . import DomoCertification as dmdc
+from .DomoAuth import DomoDeveloperAuth, DomoFullAuth
+from .routes import pdp_routes
 
 
 @dataclass
