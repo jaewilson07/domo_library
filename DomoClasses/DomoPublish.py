@@ -1,9 +1,10 @@
 from dataclasses import dataclass, field
 import datetime as dt
-
+import asyncio
 import importlib
 import json
-
+import uuid
+import time
 from Library.utils.DictDot import DictDot
 
 from Library.DomoClasses.routes import publish_routes
@@ -158,22 +159,125 @@ class DomoPublication:
         return pd.DataFrame(output_ls)
     
     @classmethod
-    async def create_publication(cls, name : str, 
-                                 content : DomoPublication_Content , 
-                                 subscription_ls : [DomoPublication_Subscription] ,
-                                 
-                                 description: str = None, full_auth: dmda.DomoFullAuth = None):
+    async def create_publication(cls, 
+                                 name : str, 
+                                 content_ls : [DomoPublication_Content], 
+                                 subscription_ls : [DomoPublication_Subscription],
+                                 unique_id : str = None,
+                                 description: str = None,
+                                 full_auth: dmda.DomoFullAuth = None,
+                                 debug: bool = False):
         
-        if isinstance( subscription_ls, list) :
+        if not isinstance(subscription_ls, list) :
             subscription_ls = [subscription_ls]
 
         full_auth = full_auth or cls.full_auth
-
-        res = await publish_routes.create_publish_job(full_auth = full_auth, subscriber= subscription.domain, content = content.to_json(),
-                                                      name = name, description= description)
+        domain_ls =[]
+        content_json_ls =[]
+        for sub in subscription_ls:
+            domain_ls.append(sub.domain)
+        for content_item in content_ls:
+            content_json_ls.append(content_item.to_json())
         
+        if not unique_id:
+            unique_id = str(uuid.uuid4())
+        if not description:
+            description =''
+          
+        body = publish_routes.generate_publish_body(url = f'{full_auth.domo_instance}.domo.com',
+                                                    sub_domain_ls= domain_ls,
+                                                    content_ls = content_json_ls,
+                                                    name = name,
+                                                    unique_id=unique_id,
+                                                    description= description,
+                                                    is_new  = True)
+        
+        res = await publish_routes.create_publish_job(full_auth = full_auth, body=body)
+        if debug:
+            print('Create the new Publish job')
         if res.status != 200:
             print(res)
-            return None
+            await asyncio.sleep(2) 
+            res = await publish_routes.get_publication_by_id(full_auth=full_auth, publication_id=unique_id)
+            if res.status != 200:
+                return None
+            else:
+                return cls._from_json(obj=res.response, full_auth=full_auth)
 
         return cls._from_json(obj=res.response, full_auth=full_auth)
+
+    
+    @classmethod
+    async def update_publication(cls, 
+                                 name : str, 
+                                 content_ls : [DomoPublication_Content], 
+                                 subscription_ls : [DomoPublication_Subscription],
+                                 publication_id : str,
+                                 description: str = None, 
+                                 full_auth: dmda.DomoFullAuth = None,
+                                 debug: bool = False):
+        
+        if not isinstance(subscription_ls, list) :
+            subscription_ls = [subscription_ls]
+
+        full_auth = full_auth or cls.full_auth
+        domain_ls =[]
+        content_json_ls =[]
+        for sub in subscription_ls:
+            domain_ls.append(sub.domain)
+        for content_item in content_ls:
+            content_json_ls.append(content_item.to_json())
+
+        if not description:
+            description =''
+        body = publish_routes.generate_publish_body(url = f'{full_auth.domo_instance}.domo.com',
+                                                    sub_domain_ls= domain_ls,
+                                                    content_ls = content_json_ls,
+                                                    name = name,
+                                                    unique_id=publication_id,
+                                                    description= description,
+                                                    is_new  = False)
+        
+        res = await publish_routes.udpate_publish_job(full_auth = full_auth, 
+                                                      publication_id = publication_id,
+                                                      body = body)
+        if debug:
+            print('Update Publish job by id')
+        if res.status != 200:
+            print(res)
+            await asyncio.sleep(2) 
+            res = await publish_routes.get_publication_by_id(full_auth=full_auth, publication_id=publication_id)
+            if res.status != 200:
+                return None
+            else:
+                return cls._from_json(obj=res.response, full_auth=full_auth)
+
+        return cls._from_json(obj=res.response, full_auth=full_auth)
+    
+    @classmethod
+    async def get_subscription_invites_list(cls, full_auth: dmda.DomoFullAuth,
+                                            debug: bool = False):
+        
+        res = await publish_routes.get_subscription_invites_list(full_auth=full_auth,
+                                                       debug=debug)
+        if debug:
+            print('Getting Publish subscription invites')
+
+        if res.status == 200:
+            return res.response
+    
+    @classmethod
+    async def accept_invite_by_id(cls,
+                                    full_auth: dmda.DomoFullAuth, 
+                                    subscription_id : str,
+                                    debug: bool = False):
+        
+        res = await publish_routes.accept_invite_by_id(full_auth=full_auth,
+                                                        subscription_id=subscription_id,
+                                                       debug=debug)
+        if debug:
+            print(f'Accept invite by id {subscription_id}')
+
+        if res.status == 200:
+            return res.response
+    

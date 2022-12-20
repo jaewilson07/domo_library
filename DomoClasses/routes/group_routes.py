@@ -122,3 +122,18 @@ async def update_group_membership(full_auth: DomoFullAuth,
     )
 
     return res
+
+async def get_group_by_id(full_auth:DomoFullAuth, group_id:id, debug:bool = False) -> ResponseGetData:
+    url = f'https://{full_auth.domo_instance}.domo.com/api/content/v2/groups/{group_id}'
+
+    if debug:
+        print(url)
+
+    res = await get_data(
+        auth=full_auth,
+        url=url,
+        method='GET',
+        debug=debug
+    )
+
+    return res

@@ -115,6 +115,9 @@ class DomoUsers:
             return None
 
         json_list = res.response
+        
+        if debug:
+            print (json_list)
 
         if not json_list:
             return None
@@ -161,7 +164,7 @@ class DomoUser(Base):
             id=dd.id,
             publisher_domain=dd.publisherDomain,
             subscriber_domain=dd.subscriberDomain,
-            virtual_user_id=dd.virtual_user_id
+            virtual_user_id=dd.virtualUserId
         )
         return u
 
@@ -207,3 +210,18 @@ class DomoUser(Base):
                                            email=u.email_address)
 
         return u
+    
+    async def set_user_landing_page(self, 
+                                    page_id:str,
+                                    user_id: str = None,
+                                    full_auth : dmda.DomoFullAuth = None,
+                                   debug:bool = False):
+
+        res = await user_routes.set_user_landing_page(full_auth = full_auth or self.full_auth, page_id = page_id, 
+                                                      user_id = self.id or user_id , debug = debug)
+
+        if res.status != 200:
+            return False
+
+        return True
+            
