@@ -1,6 +1,0 @@
-class InvalidCredentialsError(Error):
-    def __init__(self, status, message="invalid credentials", domo_instance=None):
-
-        instance_str = f" at {domo_instance}" if domo_instance else None
-        self.message = f"Status {status} - {message}{instance_str or ''}" or message
-        super().__init__(self.message)

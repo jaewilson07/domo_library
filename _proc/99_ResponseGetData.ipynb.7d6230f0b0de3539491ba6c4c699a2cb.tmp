@@ -1,5 +1,0 @@
-#| hide
-from nbdev.showdoc import *
-from dataclasses import dataclass, field
-
-from . import Base as b
