@@ -1,40 +1,5 @@
 [
   {
-    "objectID": "core.html",
-    "href": "core.html",
-    "title": "core",
-    "section": "",
-    "text": "foo\n\n foo ()"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "domo_library",
-    "section": "",
-    "text": "This file will become your README and also the index of your documentation."
-  },
-  {
-    "objectID": "index.html#install",
-    "href": "index.html#install",
-    "title": "domo_library",
-    "section": "Install",
-    "text": "Install\npip install domo_library"
-  },
-  {
-    "objectID": "index.html#how-to-use",
-    "href": "index.html#how-to-use",
-    "title": "domo_library",
-    "section": "How to use",
-    "text": "How to use\nFill me in please! Don’t forget code examples:\n\n1+1\n\n2"
-  },
-  {
-    "objectID": "responsegetdata.html",
-    "href": "responsegetdata.html",
-    "title": "ResponseGetData",
-    "section": "",
-    "text": "source\n\nResponseGetData\n\n ResponseGetData (status:int, response:<built-infunctionany>,\n                  is_success:bool, auth:dict=None)\n\npreferred response class for all API Requests\n\nrgd = ResponseGetData(status = 200, response = \"test\", is_success = True)\nrgd\n\nResponseGetData(status=200, response='test', is_success=True, auth=None)\n\n\n\n\nClassmethods from Response objects by library\nThis code base supports two API request libraries, requests.request (synchronous) and aiohttp.ClientRequest (asynchronous) this can be extended as new libraries emerge with different performance characteristics.\n\nsource\n\nResponseGetData._from_requests_response\n\n ResponseGetData._from_requests_response (res:requests.models.Response)\n\nreturns ResponseGetData\n\n\n\n\nType\nDetails\n\n\n\n\nres\nResponse\nrequests response object\n\n\nReturns\nResponseGetData\n\n\n\n\n\n# test _from_requests_response returns ResponseGetData class\n\ntest_url = 'http://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita'\n\nres = requests.request(method = 'GET', url = test_url)\n\ntest_res = ResponseGetData._from_requests_response(res)\ntest_res.__dict__.keys()\n\n\nsource\n\n\nResponseGetData._from_aiohttp_response\n\n ResponseGetData._from_aiohttp_response\n                                         (res:aiohttp.client_reqrep.Client\n                                         Response)\n\nasync method returns ResponseGetData\n\n# test _from_aiohttp_response returns ResponseGetData class\n\ntest_url = 'http://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita'\n\nsession = aiohttp.ClientSession()\nres = await session.get(url = test_url)\nawait session.close()\n\ntest_res = await ResponseGetData._from_aiohttp_response(res)\ntest_res.__dict__.keys()"
-  },
-  {
     "objectID": "domoauth.html",
     "href": "domoauth.html",
     "title": "DomoAuth",
@@ -63,11 +28,11 @@
     "text": "DomoFullAuth\n\nsource\n\nDomoFullAuth\n\n DomoFullAuth (domo_instance:str, domo_username:str, domo_password:str,\n               token:str=None, token_name:str=None, user_id:str=None,\n               auth_header:dict=<factory>, url_manual_login:str=None)\n\nuse for full authentication token\n\nsample implementations of DomoFullAuth\n\ndomo_instance = \"domo-dojo\"\ndomo_username = \"test12@domo.com\"\ndomo_password = \"test1234\"\n\ntry:\n    full_auth = DomoFullAuth(domo_instance, domo_username, domo_password)\n    res = await full_auth.get_auth_token()\n    \nexcept InvalidCredentialsError as e:\n    print(e)\n\nStatus 200 - INVALID_CREDENTIALS at domo-dojo\n\n\n\ndomo_instance = \"test\"\n\ntry:\n    full_auth = DomoFullAuth(domo_instance, domo_username, domo_password)\n    await full_auth.get_auth_token()\nexcept InvalidInstanceError as e:\n    print(e)\n\nStatus 403 - INVALID INSTANCE at test"
   },
   {
-    "objectID": "domoauth.html#domofullauth-class",
-    "href": "domoauth.html#domofullauth-class",
+    "objectID": "domoauth.html#domotokenauth",
+    "href": "domoauth.html#domotokenauth",
     "title": "DomoAuth",
-    "section": "DomoFullAuth Class",
-    "text": "DomoFullAuth Class\n\n@dataclass\nclass DomoFullAuth(_DA_Default, _DFA_Base):\n    \"\"\"use for full authentication token\"\"\"\n\n    def __post_init__(self):\n        self.url_manual_login = f\"https://{self.domo_instance}.domo.com/auth/index?domoManualLogin=true\"\n\n    def generate_auth_header(self, token: str) -> dict:\n        self.auth_header = {'x-domo-authentication': token}\n        return self.auth_header\n\n    async def get_auth_token(self, domo_instance=None,\n                             domo_username=None, domo_password=None,\n                             debug: bool = False,\n                             session: aiohttp.ClientSession = None) -> rgd.ResponseGetData:\n\n        self.domo_username = domo_username or self.domo_username\n        self.domo_password = domo_password or self.domo_password\n        self.domo_instance = domo_instance or self.domo_instance\n\n        res = await get_full_auth(domo_instance=self.domo_instance,\n                                              domo_username=self.domo_username,\n                                              domo_password=self.domo_password,\n                                              session=session)\n        if debug:\n            print(res)\n\n        if res.is_success == True:\n            self.token = res.response.get('sessionToken')\n            self.user_id = res.response.get('userId')\n\n            self.auth_header = self.generate_auth_header(token=self.token)\n\n            return self.token\n\n        elif res.status == 200 and not res.is_success:\n            raise InvalidCredentialsError(status=res.status,\n                                          message=res.response.get(\"reason\"),\n                                          domo_instance=self.domo_instance)\n\n        else:\n            raise ex.InvalidInstanceError(\n                message=f'invalid instance {self.domo_instance}')\n\nNameError: name '_DA_Default' is not defined\n\n\n\nasync def get_developer_auth(domo_client_id, domo_client_secret, session=None) -> rgd.ResponseGetData:\n    if not session:\n        session = aiohttp.ClientSession(\n            auth=aiohttp.BasicAuth(domo_client_id, domo_client_secret))\n\n    url = f'https://api.domo.com/oauth/token?grant_type=client_credentials'\n\n    res = await session.request(method='GET', url=url)\n    data = await res.json()\n\n    gdr = ResponseGetData(status=res.status,\n                          is_success=True if res.status == 200 else False,\n                          response=data)\n\n    await session.close()\n    return gdr"
+    "section": "DomoTokenAuth",
+    "text": "DomoTokenAuth\n\nsource\n\nDomoTokenAuth\n\n DomoTokenAuth (domo_instance:str, domo_access_token:str, token:str=None,\n                token_name:str=None, user_id:str=None,\n                auth_header:dict=<factory>, url_manual_login:str=None)\n\nuse for access_token authentication. Tokens are generated in domo > admin > access token Necessary in cases where direct sign on is not permitted\n\nSample implementation of DomoTokenAuth\n\ndomo_instance = 'test'\ndomo_access_token = 'test_access_token'\n\ndomo_access_token = 'a9c9c837775a981121fc57b4c78550d28c8784b6b0f4c69c'\ntry:\n    domo_auth = DomoTokenAuth(domo_instance, domo_access_token)\n    token = await domo_auth.get_auth_token()\n    print(domo_auth)\n    \nexcept InvalidCredentialsError as e:\n    print(e)\n\nDomoTokenAuth(domo_instance='test', token_name='token_auth', url_manual_login='https://test.domo.com/auth/index?domoManualLogin=true')"
   },
   {
     "objectID": "domoauth.html#domodeveloperauth",
@@ -77,10 +42,17 @@
     "text": "DomoDeveloperAuth\n\nsource\n\nDomoDeveloperAuth\n\n DomoDeveloperAuth (domo_client_id:str, domo_client_secret:str)\n\nuse for full authentication token\n\nSample implementations of DomoDeveloperAuth\n\ndomo_client_id = 'test_client'\ndomo_client_secret = 'test_secret'\n\ntry:\n    domo_auth = DomoDeveloperAuth(domo_client_id, domo_client_secret)\n    await domo_auth.get_auth_token()\nexcept InvalidCredentialsError as e:\n    print(e)\n\nStatus 401 - Unauthorized"
   },
   {
-    "objectID": "domoauth.html#domotokenauth",
-    "href": "domoauth.html#domotokenauth",
-    "title": "DomoAuth",
-    "section": "DomoTokenAuth",
-    "text": "DomoTokenAuth\n\nsource\n\nDomoTokenAuth\n\n DomoTokenAuth (domo_instance:str, domo_access_token:str, token:str=None,\n                token_name:str=None, user_id:str=None,\n                auth_header:dict=<factory>, url_manual_login:str=None)\n\nuse for access_token authentication. Tokens are generated in domo > admin > access token Necessary in cases where direct sign on is not permitted\n\nSample implementation of DomoTokenAuth\n\ndomo_instance = 'test'\ndomo_access_token = 'test_access_token'\n\ndomo_access_token = 'a9c9c837775a981121fc57b4c78550d28c8784b6b0f4c69c'\ntry:\n    domo_auth = DomoTokenAuth(domo_instance, domo_access_token)\n    token = await domo_auth.get_auth_token()\n    print(domo_auth)\n    \nexcept InvalidCredentialsError as e:\n    print(e)\n\nDomoTokenAuth(domo_instance='test', token_name='token_auth', url_manual_login='https://test.domo.com/auth/index?domoManualLogin=true')"
+    "objectID": "core.html",
+    "href": "core.html",
+    "title": "core",
+    "section": "",
+    "text": "source\n\nfoo\n\n foo ()"
+  },
+  {
+    "objectID": "responsegetdata.html",
+    "href": "responsegetdata.html",
+    "title": "ResponseGetData",
+    "section": "",
+    "text": "source\n\nResponseGetData\n\n ResponseGetData (status:int, response:<built-infunctionany>,\n                  is_success:bool, auth:dict=None)\n\npreferred response class for all API Requests\n\nrgd = ResponseGetData(status = 200, response = \"test\", is_success = True)\nrgd\n\nResponseGetData(status=200, response='test', is_success=True, auth=None)\n\n\n\n\nClassmethods from Response objects by library\nThis code base supports two API request libraries, requests.request (synchronous) and aiohttp.ClientRequest (asynchronous) this can be extended as new libraries emerge with different performance characteristics.\n\nsource\n\nResponseGetData._from_requests_response\n\n ResponseGetData._from_requests_response (res:requests.models.Response)\n\nreturns ResponseGetData\n\n\n\n\nType\nDetails\n\n\n\n\nres\nResponse\nrequests response object\n\n\nReturns\nResponseGetData\n\n\n\n\n\n# test _from_requests_response returns ResponseGetData class\n\ntest_url = 'http://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita'\n\nres = requests.request(method = 'GET', url = test_url)\n\ntest_res = ResponseGetData._from_requests_response(res)\ntest_res.__dict__.keys()\n\n\nsource\n\n\nResponseGetData._from_aiohttp_response\n\n ResponseGetData._from_aiohttp_response\n                                         (res:aiohttp.client_reqrep.Client\n                                         Response)\n\nasync method returns ResponseGetData\n\n# test _from_aiohttp_response returns ResponseGetData class\n\ntest_url = 'http://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita'\n\nsession = aiohttp.ClientSession()\nres = await session.get(url = test_url)\nawait session.close()\n\ntest_res = await ResponseGetData._from_aiohttp_response(res)\ntest_res.__dict__.keys()"
   }
 ]

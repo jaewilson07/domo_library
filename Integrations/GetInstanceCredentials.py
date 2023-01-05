@@ -5,7 +5,7 @@ import importlib
 import datetime as dt
 
 import Library.DomoClasses.DomoAuth as dmda
-
+import Library.utils.LoggerClass as lc
 
 class Error(Exception):
     """Base class for other exceptions"""
@@ -201,7 +201,8 @@ async def get_domains_with_global_config_auth(config_auth: dmda.DomoFullAuth,
                                               global_auth: dmda.DomoFullAuth,
                                               exception_auth: dmda.DomoFullAuth,
                                               sql: str = "select domain from table",
-                                              debug: bool = False) -> pd.DataFrame:
+                                              debug: bool = False,
+                                              logger: lc.MyLogger = None) -> pd.DataFrame:
 
     import Library.DomoClasses.DomoDataset as dmds
 
@@ -210,6 +211,8 @@ async def get_domains_with_global_config_auth(config_auth: dmda.DomoFullAuth,
 
     print(f"⚙️ START - Retrieving company list \n{ds.display_url()}")
     print(f"⚙️ SQL = {sql}")
+    if logger : 
+        logger.log_info (f"⚙️ START - Retrieving company list \n{ds.display_url()}")
 
     df = await ds.query_dataset_private(full_auth=config_auth,
                                         dataset_id=dataset_id,
@@ -220,6 +223,9 @@ async def get_domains_with_global_config_auth(config_auth: dmda.DomoFullAuth,
 
     print(
         f"\n⚙️ SUCCESS 🎉 Retrieved company list \nThere are {len(df.index)} companies to update")
+    
+    if logger : 
+        logger.log_info (f"\n⚙️ SUCCESS 🎉 Retrieved company list \nThere are {len(df.index)} companies to update")
 
     for index, instance in df.iterrows():
         creds = global_auth
@@ -235,7 +241,9 @@ async def get_domains_with_global_config_auth(config_auth: dmda.DomoFullAuth,
 
         except dmda.InvalidCredentialsError as e:
             print(e)
-
+            if logger : 
+                logger.log_error(f"Error with Invalid Credentials {instance} instance. Exception : {e}")
+        
         df.at[index, 'instance_auth'] = full_auth
         df.at[index, 'is_valid'] = 1 if (full_auth.token) else 0
 
@@ -249,7 +257,8 @@ async def get_domains_with_instance_auth(config_auth: dmda.DomoFullAuth,
                                          other_auth,
                                          other_test_auth,
                                          sql: str = "select domain from table",
-                                         debug: bool = False
+                                         debug: bool = False,
+                                         logger: lc.MyLogger = None
                                          ) -> pd.DataFrame:
 
     import Library.DomoClasses.DomoDataset as dmds
@@ -259,6 +268,8 @@ async def get_domains_with_instance_auth(config_auth: dmda.DomoFullAuth,
 
     print(f"⚙️ START - Retrieving company list \n{ds.display_url()}")
     print(f"⚙️ SQL = {sql}")
+    if logger : 
+        logger.log_info (f"⚙️ START - Retrieving company list \n{ds.display_url()}")
 
     df = await ds.query_dataset_private(full_auth=config_auth,
                                         dataset_id=dataset_id,
@@ -269,29 +280,43 @@ async def get_domains_with_instance_auth(config_auth: dmda.DomoFullAuth,
 
     print(
         f"\n⚙️ SUCCESS 🎉 Retrieved company list \nThere are {len(df.index)} companies to update")
+    if logger : 
+        logger.log_info (f"\n⚙️ SUCCESS 🎉 Retrieved company list \nThere are {len(df.index)} companies to update")
 
     for index, instance in df.iterrows():
-        creds = other_auth
+        try:
+            creds = other_auth
 
-        if instance['project'] == 'pa' and instance['config_useprod'] == 1:
-            creds = pa_auth
-        elif instance['project'] == 'pa' and instance['config_useprod'] == 0:
-            creds = pa_test_auth
-        elif instance['project'] == 'other' and instance['config_useprod'] == 0:
-            creds = other_test_auth
+            if instance['project'] == 'pa' and instance['config_useprod'] == 1:
+                creds = pa_auth
+            elif instance['project'] == 'pa' and instance['config_useprod'] == 0:
+                creds = pa_test_auth
+            elif instance['project'] == 'other' and instance['config_useprod'] == 0:
+                creds = other_test_auth
 
-        full_auth = dmda.DomoFullAuth(domo_instance=instance['domo_instance'],
+            full_auth = dmda.DomoFullAuth(domo_instance=instance['domo_instance'],
                                       domo_username=creds.domo_username,
                                       domo_password=creds.domo_password,
                                       token_name='instance'
                                       )
-        try:
-            await full_auth.get_auth_token(debug=False)
+            try:
+                await full_auth.get_auth_token(debug=False)
 
-        except dmda.InvalidCredentialsError as e:
+            except dmda.InvalidCredentialsError as e:
+                print(e)
+                if logger : 
+                    logger.log_error(f"Error with Invalid Credentials {instance} instance. Exception : {e}")
+        
+            df.at[index, 'instance_auth'] = full_auth
+            is_valid = 1 if (full_auth.token) else 0
+            df.at[index, 'is_valid'] = is_valid
+            if logger : 
+                logger.log_info (f"{instance} has {is_valid} valid token")
+
+        
+        except Exception as e:
             print(e)
-
-        df.at[index, 'instance_auth'] = full_auth
-        df.at[index, 'is_valid'] = 1 if (full_auth.token) else 0
+            if logger : 
+                logger.log_error(f"Error with {instance} instance. Exception : {e}")
 
     return df

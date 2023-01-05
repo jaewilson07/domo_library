@@ -126,6 +126,21 @@ class DomoGroup(Base):
         g.group_members = dd.groupMembers or dd.users
         g.owner_members = dd.owners
         return g
+    
+    @classmethod
+    def _from_groups_API_json(cls, full_auth: DomoFullAuth, json_obj):
+        dd = DictDot(json_obj)
+
+        g = cls(full_auth=full_auth,
+                id=dd.id or dd.groupId,
+                domo_instance=full_auth.domo_instance,
+                description=dd.description
+                )
+
+        g.name = dd.name
+        g.type = dd.type
+        g.group_members = dd.userIds
+        return g
 
     @staticmethod
     def _groups_to_domo_group(json_list, full_auth: DomoFullAuth) -> List[dict]:
@@ -159,6 +174,13 @@ class DomoGroup(Base):
             domo_group = cls._from_search_json(
                 full_auth=full_auth, json_obj=res.response)
             return domo_group
+        
+    @classmethod
+    async def get_by_id(cls, full_auth:DomoFullAuth,
+                        group_id: str):
+        res = await group_routes.get_group_by_id(full_auth= full_auth, group_id=group_id)
+        if res.status == 200:
+            return cls._from_groups_API_json(full_auth = full_auth, json_obj = res.response)
 
     @classmethod
     async def search_by_name(cls, full_auth: DomoFullAuth,

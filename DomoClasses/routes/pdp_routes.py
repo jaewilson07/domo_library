@@ -35,18 +35,21 @@ def generate_policy_parameter_simple(column_name, column_values_list, operator='
 
 
 def generate_policy_body(policy_name, dataset_id, parameters_list, policy_id=None, user_ids=None,
-                         group_ids=None):
+                         group_ids=None, virtual_user_ids=None):
     if not user_ids:
         user_ids = []
 
     if not group_ids:
         group_ids = []
+    
+    if not virtual_user_ids:
+        virtual_user_ids = []
 
     body = {
         "name": policy_name,
         "dataSourceId": dataset_id,
         "userIds": user_ids,
-        "virtualUserIds": [],
+        "virtualUserIds": virtual_user_ids,
         "groupIds": group_ids,
         "dataSourcePermissions": False,
         "parameters": parameters_list
@@ -88,3 +91,4 @@ async def update_policy(full_auth: DomoFullAuth, dataset_id: str, filter_group_i
     )
 
     return res
+

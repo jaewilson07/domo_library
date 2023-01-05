@@ -41,22 +41,25 @@ class PDP_Policy():
                                                            ignore_case=ignore_case)
 
     @staticmethod
-    def generate_body(policy_name, dataset_id, parameters_list, policy_id=None, user_ids=None, group_ids=None):
+    def generate_body(policy_name, dataset_id, parameters_list, policy_id=None, user_ids=None, group_ids=None, virtual_user_ids=None):
         return pdp_routes.generate_policy_body(policy_name=policy_name,
                                                dataset_id=dataset_id,
                                                parameters_list=parameters_list,
                                                policy_id=policy_id,
                                                user_ids=user_ids,
-                                               group_ids=group_ids)
+                                               group_ids=group_ids,
+                                               virtual_user_ids=virtual_user_ids)
 
     @classmethod
     async def update_policy(cls, full_auth: DomoFullAuth,
                             dataset_id: str,
-                            policy_definition: dict,
+                            policy_definition: dict, # body sent to the API (uses camelCase instead of snake_case)
                             debug: bool = False):
+        
         print(policy_definition)
+        
         if policy_definition.get('filterGroupId'):
-            print("update PDP")
+            
             res = await pdp_routes.update_policy(full_auth=full_auth,
                                                  dataset_id=dataset_id,
                                                  filter_group_id=policy_definition.get(
@@ -65,15 +68,13 @@ class PDP_Policy():
                                                  debug=debug)
             return cls._from_json(res.response)
         else:
-            print("create PDP")
             res = await pdp_routes.create_policy(full_auth=full_auth,
                                                  dataset_id=dataset_id,
                                                  body=policy_definition,
                                                  debug=debug)
 
             return cls._from_json(res.response)
-
-
+    
 class Dataset_PDP_Policies:
 
     def __init__(self, dataset):

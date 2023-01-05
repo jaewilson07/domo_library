@@ -118,3 +118,19 @@ async def request_password_reset(domo_instance: str, email: str, locale='en-us',
                           method='GET',
                           auth=None,
                           params=params, debug=debug)
+
+
+async def set_user_landing_page( full_auth: DomoFullAuth, user_id: str,
+                             page_id:str,
+                             debug:bool = False ):
+    
+    url = f'https://{full_auth.domo_instance}.domo.com/api/content/v1/landings/target/DESKTOP/entity/PAGE/id/{page_id}/{user_id}'
+        
+    return await get_data(url=url,
+                          method='PUT',
+                          auth=full_auth,
+                          # body = body,
+                          debug=debug)
+
+                             
+                             
