@@ -1,0 +1,24 @@
+# test _from_aiohttp_response returns ResponseGetData class
+
+import os
+import json
+import requests
+
+creds = json.loads(os.environ['DOMO_DOJO'])
+
+url = f"https://{creds.get('domo_instance')}.domo.com/api/content/v2/authentication"
+
+tokenHeaders = {"Content-Type": "application/json"}
+
+body = {
+    "method": "password",
+    "emailAddress": creds.get('domo_username'),
+    "password": creds.get('domo_password'),
+}
+
+session = aiohttp.ClientSession()
+res = await session.get(url = test_url)
+await session.close()
+
+test_res = await ResponseGetData._from_aiohttp_response(res)
+test_res.__dict__.keys()

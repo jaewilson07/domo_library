@@ -1,17 +1,24 @@
 [
   {
+    "objectID": "responsegetdata.html",
+    "href": "responsegetdata.html",
+    "title": "ResponseGetData",
+    "section": "",
+    "text": "source\n\nResponseGetData\n\n ResponseGetData (status:int, response:<built-infunctionany>,\n                  is_success:bool, auth:dict=None)\n\npreferred response class for all API Requests\n\nrgd = ResponseGetData(status = 200, response = \"test\", is_success = True)\nrgd\n\nResponseGetData(status=200, response='test', is_success=True, auth=None)\n\n\n\n\nClassmethods from Response objects by library\nThis code base supports two API request libraries, requests.request (synchronous) and aiohttp.ClientRequest (asynchronous) this can be extended as new libraries emerge with different performance characteristics.\n\nsource\n\nResponseGetData._from_requests_response\n\n ResponseGetData._from_requests_response (res:requests.models.Response)\n\nreturns ResponseGetData\n\n\n\n\nType\nDetails\n\n\n\n\nres\nResponse\nrequests response object\n\n\nReturns\nResponseGetData\n\n\n\n\n\n# test _from_requests_response returns ResponseGetData class\nimport os\nimport json\nimport requests\n\ncreds = json.loads(os.environ['DOMO_DOJO'])\n\nurl = f\"https://{creds.get('domo_instance')}.domo.com/api/content/v2/authentication\"\n\ntokenHeaders = {\"Content-Type\": \"application/json\"}\n\nbody = {\n    \"method\": \"password\",\n    \"emailAddress\": creds.get('domo_username'),\n    \"password\": creds.get('domo_password'),\n}\n\nres = requests.request(method = 'POST', url = url, json = body, headers = tokenHeaders)\n\nprint(res.status_code)\n\ntest_res = ResponseGetData._from_requests_response(res)\ntest_res.__dict__.keys()\n\n200\n\n\ndict_keys(['status', 'response', 'is_success', 'auth'])\n\n\n\nsource\n\n\nResponseGetData._from_aiohttp_response\n\n ResponseGetData._from_aiohttp_response\n                                         (res:aiohttp.client_reqrep.Client\n                                         Response)\n\nasync method returns ResponseGetData\n\n# test _from_aiohttp_response returns ResponseGetData class\n\nimport os\nimport json\nimport requests\n\ncreds = json.loads(os.environ['DOMO_DOJO'])\n\nurl = f\"https://{creds.get('domo_instance')}.domo.com/api/content/v2/authentication\"\n\nbody = {\n    \"method\": \"password\",\n    \"emailAddress\": creds.get('domo_username'),\n    \"password\": creds.get('domo_password'),\n}\n\nsession = aiohttp.ClientSession()\nres = await session.post(url = url, json = body)\nawait session.close()\n\nprint(res.status)\n\ntest_res = await ResponseGetData._from_aiohttp_response(res)\ntest_res.__dict__.keys()\n\n200\n\n\ndict_keys(['status', 'response', 'is_success', 'auth'])"
+  },
+  {
+    "objectID": "core.html",
+    "href": "core.html",
+    "title": "core",
+    "section": "",
+    "text": "source\n\nfoo\n\n foo ()"
+  },
+  {
     "objectID": "domoauth.html",
     "href": "domoauth.html",
     "title": "DomoAuth",
     "section": "",
-    "text": "Stand alone functions for users who prefer a functional programming approach\n\n\n\nsource\n\n\n\n get_full_auth (domo_instance:str, domo_username:str, domo_password:str,\n                session:aiohttp.client.ClientSession=None)\n\nuses username and password authentication to retrieve a full_auth access token\n\n\n\ndomo_instance = \"domo-dojo\"\ndomo_username = \"test12@domo.com\"\ndomo_password = \"test1234\"\n\nres = await get_full_auth(domo_instance, domo_username, domo_password)\nres\n\nResponseGetData(status=200, response={'success': False, 'reason': 'INVALID_CREDENTIALS'}, is_success=True, auth=None)\n\n\nThe 200 response confirms we were able to get a response from the credentials API, however success was FALSE because we sent invalid credentials\n\ndomo_instance = \"test\"\nres = await get_full_auth(domo_instance, domo_username, domo_password)\nres\n\nResponseGetData(status=403, response='Forbidden', is_success=False, auth=None)\n\n\nThe 403 response is expected because test.domo.com presumeably does not exist or access if forbidden.\n\n\n\n\n\n\nsource\n\n\n\n get_developer_auth (domo_client_id:str, domo_client_secret:str,\n                     session:aiohttp.client.ClientSession=None)\n\nonly use for authenticating against apis documented under developer.domo.com\n\n\nThe 401 response is expected because we are using invalid credentials\n\ndomo_client_id = 'test_id'\ndomo_client_secret = 'test_secret'\n\nawait get_developer_auth(domo_client_id, domo_client_secret)\n\nResponseGetData(status=401, response='Unauthorized', is_success=False, auth=None)\n\n\n\n\n\n\n\nThis access_token based authentication assumes the user has been provided a valid access token from Domo > Admin > Authentication > Access Token so authentication routes are actually not required.\nPer the Domo JavaCLI implementation, users can test the validity of the access_token agains the ‘me’ API\n!! Note about the Me API !! It appears that access_token authentication will direct the\n\nsource\n\n\n\n test_access_token (domo_access_token:str, domo_instance:str,\n                    session:aiohttp.client.ClientSession=None)\n\nwill attempt to validate against the ‘me’ API.\nThis is the same authentication test the Domo Java CLI uses.\n\n\n\ndomo_instance = 'playstation-beta'\ndomo_access_token = 'a9c9c837775a981121fc57b4c78550d28c8784b6b0f4c69c'\n\nawait test_access_token(domo_instance= domo_instance, domo_access_token = domo_access_token)\n\nResponseGetData(status=401, response='Unauthorized', is_success=False, auth=None)"
-  },
-  {
-    "objectID": "domoauth.html#auth_routes",
-    "href": "domoauth.html#auth_routes",
-    "title": "DomoAuth",
-    "section": "auth_routes",
-    "text": "auth_routes\n\nasync def get_full_auth(domo_instance, domo_username, domo_password, session=None) -> rgd.ResponseGetData:\n    is_close_session = False\n\n    if not session:\n        is_close_session = True\n        session = aiohttp.ClientSession()\n\n    url = f'https://{domo_instance}.domo.com/api/content/v2/authentication'\n\n    tokenHeaders = {'Content-Type': 'application/json'}\n    body = {'method': 'password', 'emailAddress': domo_username,\n            'password': domo_password}\n\n    res = await session.request(method='POST', url=url, headers=tokenHeaders, json=body)\n\n    if is_close_session:\n        await session.close()\n    \n    return await rgd.ResponseGetData._from_aiohttp_response(res)\n\n\nSample Implementations of get_full_auth\n\ndomo_instance = 'domo-dojo'\ndomo_username = 'test12@domo.com'\ndomo_password = 'test1234'\n\nres = await get_full_auth(domo_instance, domo_username, domo_password)\nres\n\nResponseGetData(status=200, response={'success': False, 'reason': 'INVALID_CREDENTIALS'}, is_success=True, auth=None)\n\n\n\nassert res.status == 200\nassert res.response.get('success') == False\n\nThe 200 response confirms we were able to get a response from the credentials API, however success was FALSE because we sent invalid credentials\n\ndomo_instance = 'test'\nres = await get_full_auth(domo_instance, domo_username, domo_password)\nres\n\nResponseGetData(status=403, response='Forbidden', is_success=False, auth=None)\n\n\n\nassert res.status == 403\n\nThe 403 response is expected because test.domo.com presumeably does not exist or access if forbidden."
+    "text": "Stand alone functions for users who prefer a functional programming approach\n\n\n\nsource\n\n\n\n get_full_auth (domo_instance:str, domo_username:str, domo_password:str,\n                session:aiohttp.client.ClientSession=None)\n\nuses username and password authentication to retrieve a full_auth access token\n\n\n\nimport os\nimport json\n\ncreds = json.loads(os.environ['DOMO_DOJO'])\n\nres = await get_full_auth(domo_instance=creds.get('domo_instance'),\n                          domo_username=creds.get('domo_username'),\n                          domo_password='fake password')\nres\n\nResponseGetData(status=200, response={'userId': 1893952720, 'success': False, 'reason': 'ACCOUNT_LOCKED'}, is_success=True, auth=None)\n\n\nThe 200 response confirms we were able to get a response from the credentials API, however success was FALSE because we sent invalid credentials\n\ndomo_instance = \"test\"\nres = await get_full_auth(domo_instance, domo_username, domo_password)\nres\n\nResponseGetData(status=403, response='Forbidden', is_success=False, auth=None)\n\n\nThe 403 response is expected because test.domo.com presumeably does not exist or access if forbidden.\n\n\n\n\n\n\nsource\n\n\n\n get_developer_auth (domo_client_id:str, domo_client_secret:str,\n                     session:aiohttp.client.ClientSession=None)\n\nonly use for authenticating against apis documented under developer.domo.com\n\n\nThe 401 response is expected because we are using invalid credentials\n\ndomo_client_id = 'test_id'\ndomo_client_secret = 'test_secret'\n\nawait get_developer_auth(domo_client_id, domo_client_secret)\n\nResponseGetData(status=401, response='Unauthorized', is_success=False, auth=None)\n\n\n\n\n\n\n\nThis access_token based authentication assumes the user has been provided a valid access token from Domo > Admin > Authentication > Access Token so authentication routes are actually not required.\nPer the Domo JavaCLI implementation, users can test the validity of the access_token agains the ‘me’ API\n!! Note about the Me API !! It appears that access_token authentication will direct the\n\nsource\n\n\n\n test_access_token (domo_access_token:str, domo_instance:str,\n                    session:aiohttp.client.ClientSession=None)\n\nwill attempt to validate against the ‘me’ API.\nThis is the same authentication test the Domo Java CLI uses.\n\n\n\ndomo_instance = ''\ndomo_access_token = 'a9c9c837775a981121fc57b4c78550d28c8784b6b0f4c69c'\n\nawait test_access_token(domo_instance= domo_instance, domo_access_token = domo_access_token)\n\nResponseGetData(status=401, response='Unauthorized', is_success=False, auth=None)"
   },
   {
     "objectID": "domoauth.html#domoauth-error-classes",
@@ -42,17 +49,24 @@
     "text": "DomoDeveloperAuth\n\nsource\n\nDomoDeveloperAuth\n\n DomoDeveloperAuth (domo_client_id:str, domo_client_secret:str)\n\nuse for full authentication token\n\nSample implementations of DomoDeveloperAuth\n\ndomo_client_id = 'test_client'\ndomo_client_secret = 'test_secret'\n\ntry:\n    domo_auth = DomoDeveloperAuth(domo_client_id, domo_client_secret)\n    await domo_auth.get_auth_token()\nexcept InvalidCredentialsError as e:\n    print(e)\n\nStatus 401 - Unauthorized"
   },
   {
-    "objectID": "core.html",
-    "href": "core.html",
-    "title": "core",
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "domo_library",
     "section": "",
-    "text": "source\n\nfoo\n\n foo ()"
+    "text": "This file will become your README and also the index of your documentation."
   },
   {
-    "objectID": "responsegetdata.html",
-    "href": "responsegetdata.html",
-    "title": "ResponseGetData",
-    "section": "",
-    "text": "source\n\nResponseGetData\n\n ResponseGetData (status:int, response:<built-infunctionany>,\n                  is_success:bool, auth:dict=None)\n\npreferred response class for all API Requests\n\nrgd = ResponseGetData(status = 200, response = \"test\", is_success = True)\nrgd\n\nResponseGetData(status=200, response='test', is_success=True, auth=None)\n\n\n\n\nClassmethods from Response objects by library\nThis code base supports two API request libraries, requests.request (synchronous) and aiohttp.ClientRequest (asynchronous) this can be extended as new libraries emerge with different performance characteristics.\n\nsource\n\nResponseGetData._from_requests_response\n\n ResponseGetData._from_requests_response (res:requests.models.Response)\n\nreturns ResponseGetData\n\n\n\n\nType\nDetails\n\n\n\n\nres\nResponse\nrequests response object\n\n\nReturns\nResponseGetData\n\n\n\n\n\n# test _from_requests_response returns ResponseGetData class\n\ntest_url = 'http://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita'\n\nres = requests.request(method = 'GET', url = test_url)\n\ntest_res = ResponseGetData._from_requests_response(res)\ntest_res.__dict__.keys()\n\n\nsource\n\n\nResponseGetData._from_aiohttp_response\n\n ResponseGetData._from_aiohttp_response\n                                         (res:aiohttp.client_reqrep.Client\n                                         Response)\n\nasync method returns ResponseGetData\n\n# test _from_aiohttp_response returns ResponseGetData class\n\ntest_url = 'http://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita'\n\nsession = aiohttp.ClientSession()\nres = await session.get(url = test_url)\nawait session.close()\n\ntest_res = await ResponseGetData._from_aiohttp_response(res)\ntest_res.__dict__.keys()"
+    "objectID": "index.html#install",
+    "href": "index.html#install",
+    "title": "domo_library",
+    "section": "Install",
+    "text": "Install\npip install domo_library"
+  },
+  {
+    "objectID": "index.html#how-to-use",
+    "href": "index.html#how-to-use",
+    "title": "domo_library",
+    "section": "How to use",
+    "text": "How to use\nFill me in please! Don’t forget code examples:\n\n1+1\n\n2"
   }
 ]

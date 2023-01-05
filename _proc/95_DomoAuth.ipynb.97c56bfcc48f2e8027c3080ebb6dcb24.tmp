@@ -1,0 +1,9 @@
+import os
+import json
+
+creds = json.loads(os.environ['DOMO_DOJO'])
+
+res = await get_full_auth(domo_instance=creds.get('domo_instance'), 
+domo_username=creds.get('domo_username'), 
+domo_password='fake password')
+res

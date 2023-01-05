@@ -272,23 +272,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>uses username and password authentication to retrieve a full_auth access token</p>
 <section id="sample-implementations-of-get_full_auth" class="level4">
 <h4 class="anchored" data-anchor-id="sample-implementations-of-get_full_auth">Sample Implementations of get_full_auth</h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>domo_instance <span class="op">=</span> <span class="st">"domo-dojo"</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>domo_username <span class="op">=</span> <span class="st">"test12@domo.com"</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>domo_password <span class="op">=</span> <span class="st">"test1234"</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="cf">await</span> get_full_auth(domo_instance, domo_username, domo_password)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>res</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<pre><code>ResponseGetData(status=200, response={'success': False, 'reason': 'INVALID_CREDENTIALS'}, is_success=True, auth=None)</code></pre>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>creds <span class="op">=</span> json.loads(os.environ[<span class="st">'DOMO_DOJO'</span>])</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="cf">await</span> get_full_auth(domo_instance<span class="op">=</span>creds.get(<span class="st">'domo_instance'</span>),</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                          domo_username<span class="op">=</span>creds.get(<span class="st">'domo_username'</span>),</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>                          domo_password<span class="op">=</span><span class="st">'fake password'</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>res</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<pre><code>ResponseGetData(status=200, response={'userId': 1893952720, 'success': False, 'reason': 'ACCOUNT_LOCKED'}, is_success=True, auth=None)</code></pre>
 </div>
 </div>
 <p>The 200 response confirms we were able to get a response from the credentials API, however success was FALSE because we sent invalid credentials</p>
-<div class="cell">
+<div class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>domo_instance <span class="op">=</span> <span class="st">"test"</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="cf">await</span> get_full_auth(domo_instance, domo_username, domo_password)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>res</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
+<div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>ResponseGetData(status=403, response='Forbidden', is_success=False, auth=None)</code></pre>
 </div>
 </div>
@@ -310,12 +313,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="sample-implementations-of-get_developer_auth" class="level4">
 <h4 class="anchored" data-anchor-id="sample-implementations-of-get_developer_auth">Sample Implementations of get_developer_auth</h4>
 <p>The 401 response is expected because we are using invalid credentials</p>
-<div class="cell">
+<div class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>domo_client_id <span class="op">=</span> <span class="st">'test_id'</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>domo_client_secret <span class="op">=</span> <span class="st">'test_secret'</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> get_developer_auth(domo_client_id, domo_client_secret)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
+<div class="cell-output cell-output-display" data-execution_count="10">
 <pre><code>ResponseGetData(status=401, response='Unauthorized', is_success=False, auth=None)</code></pre>
 </div>
 </div>
@@ -339,12 +342,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 This is the same authentication test the Domo Java CLI uses.</p>
 <section id="sample-implementation-of-test_access_token" class="level4">
 <h4 class="anchored" data-anchor-id="sample-implementation-of-test_access_token">Sample implementation of <a href="https://jaewilson07.github.io/domo_library/domoauth.html#test_access_token"><code>test_access_token</code></a></h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>domo_instance <span class="op">=</span> <span class="st">'playstation-beta'</span></span>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>domo_instance <span class="op">=</span> <span class="st">''</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>domo_access_token <span class="op">=</span> <span class="st">'a9c9c837775a981121fc57b4c78550d28c8784b6b0f4c69c'</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> test_access_token(domo_instance<span class="op">=</span> domo_instance, domo_access_token <span class="op">=</span> domo_access_token)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
+<div class="cell-output cell-output-display" data-execution_count="12">
 <pre><code>ResponseGetData(status=401, response='Unauthorized', is_success=False, auth=None)</code></pre>
 </div>
 </div>
@@ -365,11 +368,11 @@ This is the same authentication test the Domo Java CLI uses.</p>
            url_manual_login:str=None)</code></pre>
 </blockquote>
 <p>abstract DomoAuth class</p>
-<div class="cell">
+<div class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Attributes of `DomoAuth`</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>domo_instance <span class="op">=</span> <span class="st">'test'</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>[attr <span class="cf">for</span> attr <span class="kw">in</span> <span class="bu">dir</span>(DomoAuth(domo_instance)) <span class="cf">if</span> <span class="kw">not</span> attr.startswith(<span class="st">"__"</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
+<div class="cell-output cell-output-display" data-execution_count="15">
 <pre><code>['auth_header',
  'domo_instance',
  'generate_auth_header',
@@ -382,17 +385,17 @@ This is the same authentication test the Domo Java CLI uses.</p>
  'user_id']</code></pre>
 </div>
 </div>
-<div class="cell">
+<div class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># validate can print manual login link</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>domo_instance <span class="op">=</span> <span class="st">"test"</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>da <span class="op">=</span> DomoAuth(domo_instance)</span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>da.url_manual_login</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
+<div class="cell-output cell-output-display" data-execution_count="16">
 <pre><code>'https://test.domo.com/auth/index?domoManualLogin=true'</code></pre>
 </div>
 </div>
-<div class="cell">
+<div class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># validate is_token returns boolean and can test if we have a token</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>domo_auth <span class="op">=</span> DomoAuth(domo_instance<span class="op">=</span><span class="st">"test"</span>)</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>bool_is_token <span class="op">=</span> <span class="cf">await</span> domo_auth.is_token()</span>
@@ -403,7 +406,7 @@ This is the same authentication test the Domo Java CLI uses.</p>
 <div class="cell-output cell-output-stdout">
 <pre><code>failed to retrieve token from test</code></pre>
 </div>
-<div class="cell-output cell-output-display">
+<div class="cell-output cell-output-display" data-execution_count="17">
 <pre><code>False</code></pre>
 </div>
 </div>
@@ -445,7 +448,7 @@ This is the same authentication test the Domo Java CLI uses.</p>
 <p>use for full authentication token</p>
 <section id="sample-implementations-of-domofullauth" class="level4">
 <h4 class="anchored" data-anchor-id="sample-implementations-of-domofullauth">sample implementations of DomoFullAuth</h4>
-<div class="cell">
+<div class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>domo_instance <span class="op">=</span> <span class="st">"domo-dojo"</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>domo_username <span class="op">=</span> <span class="st">"test12@domo.com"</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>domo_password <span class="op">=</span> <span class="st">"test1234"</span></span>
@@ -460,7 +463,7 @@ This is the same authentication test the Domo Java CLI uses.</p>
 <pre><code>Status 200 - INVALID_CREDENTIALS at domo-dojo</code></pre>
 </div>
 </div>
-<div class="cell">
+<div class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>domo_instance <span class="op">=</span> <span class="st">"test"</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
@@ -489,7 +492,7 @@ This is the same authentication test the Domo Java CLI uses.</p>
 <p>use for access_token authentication. Tokens are generated in domo &gt; admin &gt; access token Necessary in cases where direct sign on is not permitted</p>
 <section id="sample-implementation-of-domotokenauth" class="level4">
 <h4 class="anchored" data-anchor-id="sample-implementation-of-domotokenauth">Sample implementation of DomoTokenAuth</h4>
-<div class="cell">
+<div class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>domo_instance <span class="op">=</span> <span class="st">'test'</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>domo_access_token <span class="op">=</span> <span class="st">'test_access_token'</span></span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -520,7 +523,7 @@ This is the same authentication test the Domo Java CLI uses.</p>
 <p>use for full authentication token</p>
 <section id="sample-implementations-of-domodeveloperauth" class="level4">
 <h4 class="anchored" data-anchor-id="sample-implementations-of-domodeveloperauth">Sample implementations of DomoDeveloperAuth</h4>
-<div class="cell">
+<div class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>domo_client_id <span class="op">=</span> <span class="st">'test_client'</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>domo_client_secret <span class="op">=</span> <span class="st">'test_secret'</span></span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
