@@ -65,5 +65,4 @@ d = { 'settings': { 'branch': 'main',
                                                      'domo_library.client.ResponseGetData.ResponseGetData._from_aiohttp_response': ( 'client/responsegetdata.html#responsegetdata._from_aiohttp_response',
                                                                                                                                      'domo_library/client/ResponseGetData.py'),
                                                      'domo_library.client.ResponseGetData.ResponseGetData._from_requests_response': ( 'client/responsegetdata.html#responsegetdata._from_requests_response',
-                                                                                                                                      'domo_library/client/ResponseGetData.py')},
-            'domo_library.core': {'domo_library.core.foo': ('core.html#foo', 'domo_library/core.py')}}}
+                                                                                                                                      'domo_library/client/ResponseGetData.py')}}}
