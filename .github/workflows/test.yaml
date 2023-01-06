@@ -4,6 +4,13 @@ env:
   DOMO_DOJO: ${{ secrets.DOMO_DOJO }},
   DOMO_DOJO_ACCESS_TOKEN: ${{ secrets.DOMO_DOJO_ACCESS_TOKEN }}
 jobs:
+  echosecrets:
+    runs-on: windows-latest
+    steps:
+      - name: print github secrets
+        run: |
+          echo "The GitHub Action Secret will be masked:  "
+          echo ${{ secrets.DOMO_DOJO_ACCESS_TOKEN }}
   test:
     runs-on: ubuntu-latest
     steps:
