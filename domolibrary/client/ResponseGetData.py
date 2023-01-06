@@ -5,7 +5,7 @@ __all__ = ['API_Response', 'ResponseGetData']
 
 # %% ../../nbs/client/99_ResponseGetData.ipynb 3
 from dataclasses import dataclass, field
-from fastcore.utils import patch_to
+from fastcore.utils import patch_to, patch
 
 import requests
 import asyncio
@@ -52,8 +52,8 @@ def _from_requests_response(cls, res : requests.Response #requests response obje
     )
 
 # %% ../../nbs/client/99_ResponseGetData.ipynb 12
-@patch_to(ResponseGetData, cls_method = True)
-async def _from_aiohttp_response(cls, res : aiohttp.ClientResponse #requests response object
+@patch(cls_method = True)
+async def _from_aiohttp_response(cls: ResponseGetData, res: aiohttp.ClientResponse  # requests response object
                            ) -> ResponseGetData:
     
     """async method returns ResponseGetData"""
