@@ -4,10 +4,6 @@
 __all__ = ['get_data', 'looper']
 
 # %% ../../nbs/client/10_get_data.ipynb 2
-# | export
-
-
-# %% ../../nbs/client/10_get_data.ipynb 3
 from typing import Optional, Union
 
 from pprint import pprint
@@ -18,7 +14,7 @@ import domolibrary.DomoAuth as dmda
 import domolibrary.client.ResponseGetData as rgd
 
 
-# %% ../../nbs/client/10_get_data.ipynb 4
+# %% ../../nbs/client/10_get_data.ipynb 3
 async def get_data(
     url: str,
     method: str,
@@ -101,7 +97,7 @@ async def get_data(
 
     return await rgd.ResponseGetData._from_aiohttp_response(res)
 
-# %% ../../nbs/client/10_get_data.ipynb 7
+# %% ../../nbs/client/10_get_data.ipynb 6
 async def looper(
     auth: dmda.DomoAuth,
     session: aiohttp.ClientSession,
