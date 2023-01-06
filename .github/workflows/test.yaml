@@ -8,8 +8,8 @@ jobs:
       - name: print github secrets
         run: |
           echo "The GitHub Action Secret will be masked:  "
-          echo ${{ secrets.DOMO_DOJO_ACCESS_TOKEN }}
-          echo ${{ secrets.DOJO_PASSWORD}}
+          echo "${{ secrets.DOMO_DOJO_ACCESS_TOKEN }}""
+          echo "${{ secrets.DOJO_PASSWORD}}""
 
   test:
     runs-on: ubuntu-latest
