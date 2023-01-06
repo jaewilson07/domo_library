@@ -1,3 +1,0 @@
-import os
-
-creds = os.environ['DOMO_DOJO']

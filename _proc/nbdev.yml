@@ -2,7 +2,7 @@ project:
   output-dir: _docs
 
 website:
-  title: "domo_library"
+  title: "domolibrary"
   site-url: "https://jaewilson07.github.io/domo_library"
   description: ""
   repo-branch: main

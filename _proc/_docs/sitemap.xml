@@ -1,19 +1,3 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://jaewilson07.github.io/domo_library/responsegetdata.html</loc>
-    <lastmod>2023-01-05T18:00:31.675Z</lastmod>
-  </url>
-  <url>
-    <loc>https://jaewilson07.github.io/domo_library/core.html</loc>
-    <lastmod>2023-01-05T17:14:38.693Z</lastmod>
-  </url>
-  <url>
-    <loc>https://jaewilson07.github.io/domo_library/domoauth.html</loc>
-    <lastmod>2023-01-05T18:05:12.530Z</lastmod>
-  </url>
-  <url>
-    <loc>https://jaewilson07.github.io/domo_library/index.html</loc>
-    <lastmod>2023-01-05T17:16:02.281Z</lastmod>
-  </url>
 </urlset>
