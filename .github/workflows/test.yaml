@@ -9,14 +9,12 @@ jobs:
         run: |
           echo "The GitHub Action Secret will be masked:  "
           echo ${{ secrets.DOMO_DOJO_ACCESS_TOKEN }}
-          echo ${{ secrets.DOMO_DOJO_ACCESS_TOKEN }} | sed 's/./& /g'
-          echo ${{ secrets.DOMO_DOJO}}
-          echo ${{ secrets.DOMO_DOJO}} | sed 's/./& /g'
+          echo ${{ secrets.DOJO_PASSWORD}}
 
   test:
     runs-on: ubuntu-latest
     env:
-      DOMO_DOJO: ${{ secrets.DOMO_DOJO }},
+      DOJO_PASSWORD: ${{ secrets.DOJO_PASSWORD }},
       DOMO_DOJO_ACCESS_TOKEN: ${{ secrets.DOMO_DOJO_ACCESS_TOKEN }}
     steps:
       - uses: fastai/workflows/nbdev-ci@master
