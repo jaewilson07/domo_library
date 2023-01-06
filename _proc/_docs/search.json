@@ -1,0 +1,65 @@
+[
+  {
+    "objectID": "client/responsegetdata.html",
+    "href": "client/responsegetdata.html",
+    "title": "ResponseGetData",
+    "section": "",
+    "text": "source\n\nResponseGetData\n\n ResponseGetData (status:int, response:<built-infunctionany>,\n                  is_success:bool, auth:dict=None)\n\npreferred response class for all API Requests\n\nrgd = ResponseGetData(status = 200, response = \"test\", is_success = True)\nrgd\n\nResponseGetData(status=200, response='test', is_success=True, auth=None)\n\n\n\n\nClassmethods from Response objects by library\nThis code base supports two API request libraries, requests.request (synchronous) and aiohttp.ClientRequest (asynchronous) this can be extended as new libraries emerge with different performance characteristics.\n\nsource\n\nResponseGetData._from_requests_response\n\n ResponseGetData._from_requests_response (res:requests.models.Response)\n\nreturns ResponseGetData\n\n\n\n\nType\nDetails\n\n\n\n\nres\nResponse\nrequests response object\n\n\nReturns\nResponseGetData\n\n\n\n\n\n# test _from_requests_response returns ResponseGetData class\nimport os\nimport requests\n\nurl = f\"https://domo-dojo.domo.com/api/content/v2/authentication\"\n\ntokenHeaders = {\"Content-Type\": \"application/json\"}\n\nbody = {\n    \"method\": \"password\",\n    \"emailAddress\": 'jae@onyxreporting.com',\n    \"password\": os.environ['DOJO_PASSWORD'],\n}\n\nres = requests.request(method = 'POST', url = url, json = body, headers = tokenHeaders)\n\nprint(res.status_code)\n\ntest_res = ResponseGetData._from_requests_response(res)\ntest_res.__dict__.keys()\n\n200\n\n\ndict_keys(['status', 'response', 'is_success', 'auth'])\n\n\n\nsource\n\n\nResponseGetData._from_aiohttp_response\n\n ResponseGetData._from_aiohttp_response\n                                         (res:aiohttp.client_reqrep.Client\n                                         Response)\n\nasync method returns ResponseGetData\n\n# test _from_aiohttp_response returns ResponseGetData class\n\nimport os\nimport requests\n\n\nurl = f\"https://domo-dojo.domo.com/api/content/v2/authentication\"\n\nbody = {\n    \"method\": \"password\",\n    \"emailAddress\": 'jae@onyxreporting.com',\n    \"password\": os.environ['DOJO_PASSWORD'],\n}\n\nsession = aiohttp.ClientSession()\nres = await session.post(url = url, json = body)\nawait session.close()\n\nprint(res.status)\n\ntest_res = await ResponseGetData._from_aiohttp_response(res)\ntest_res.__dict__.keys()\n\n200\n\n\ndict_keys(['status', 'response', 'is_success', 'auth'])"
+  },
+  {
+    "objectID": "domoauth.html",
+    "href": "domoauth.html",
+    "title": "DomoAuth",
+    "section": "",
+    "text": "Stand alone functions for users who prefer a functional programming approach\n\n\n\nsource\n\n\n\n get_full_auth (domo_instance:str, domo_username:str, domo_password:str,\n                session:Optional[aiohttp.client.ClientSession]=None)\n\nuses username and password authentication to retrieve a full_auth access token\n\n\n\ndomo_instance = \"domo-dojo\"\ndomo_username = \"test12@domo.com\"\ndomo_password = \"test1234\"\n\nres = await get_full_auth(domo_instance, domo_username, domo_password)\nres\n\nResponseGetData(status=200, response={'success': False, 'reason': 'INVALID_CREDENTIALS'}, is_success=True, auth=None)\n\n\nThe 200 response confirms we were able to get a response from the credentials API, however success was FALSE because we sent invalid credentials\n\ndomo_instance = \"test\"\nres = await get_full_auth(domo_instance, domo_username, domo_password)\nres\n\nResponseGetData(status=403, response='Forbidden', is_success=False, auth=None)\n\n\nThe 403 response is expected because test.domo.com presumeably does not exist or access if forbidden.\n\n\n\n\n\n\nsource\n\n\n\n get_developer_auth (domo_client_id:str, domo_client_secret:str,\n                     session:Optional[aiohttp.client.ClientSession]=None)\n\nonly use for authenticating against apis documented under developer.domo.com\n\n\nThe 401 response is expected because we are using invalid credentials\n\ndomo_client_id = 'test_id'\ndomo_client_secret = 'test_secret'\n\nawait get_developer_auth(domo_client_id, domo_client_secret)\n\nResponseGetData(status=401, response='Unauthorized', is_success=False, auth=None)\n\n\n\n\n\n\n\nThis access_token based authentication assumes the user has been provided a valid access token from Domo > Admin > Authentication > Access Token so authentication routes are actually not required.\nPer the Domo JavaCLI implementation, users can test the validity of the access_token agains the ‘me’ API\n!! Note about the Me API !! It appears that access_token authentication will direct the\n\nsource\n\n\n\n test_access_token (domo_access_token:str, domo_instance:str,\n                    session:Optional[aiohttp.client.ClientSession]=None)\n\nwill attempt to validate against the ‘me’ API.\nThis is the same authentication test the Domo Java CLI uses.\n\n\n\ndomo_instance = 'playstation-beta'\ndomo_access_token = 'a9c9c837775a981121fc57b4c78550d28c8784b6b0f4c69c'\n\nawait test_access_token(domo_instance=domo_instance, domo_access_token=domo_access_token)\n\nResponseGetData(status=401, response='Unauthorized', is_success=False, auth=None)"
+  },
+  {
+    "objectID": "domoauth.html#domoauth-error-classes",
+    "href": "domoauth.html#domoauth-error-classes",
+    "title": "DomoAuth",
+    "section": "DomoAuth Error Classes",
+    "text": "DomoAuth Error Classes\n\nsource\n\nInvalidInstanceError\n\n InvalidInstanceError (status:Optional[int]=None, message='invalid\n                       instance', domo_instance:Optional[str]=None)\n\nreturn if invalid domo_instance sent to API\n\nsource\n\n\nInvalidCredentialsError\n\n InvalidCredentialsError (status:Optional[int]=None, message='invalid\n                          credentials', domo_instance:Optional[str]=None)\n\nreturn invalid credentials sent to API\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nstatus\nOptional\nNone\nAPI request status\n\n\nmessage\nstr\ninvalid credentials\n\n\n\ndomo_instance\nOptional\nNone"
+  },
+  {
+    "objectID": "domoauth.html#domofullauth",
+    "href": "domoauth.html#domofullauth",
+    "title": "DomoAuth",
+    "section": "DomoFullAuth",
+    "text": "DomoFullAuth\n\nsource\n\nDomoFullAuth\n\n DomoFullAuth (domo_instance:str, domo_username:str, domo_password:str,\n               token:Optional[str]=None, token_name:Optional[str]=None,\n               user_id:Optional[str]=None, auth_header:dict=<factory>,\n               url_manual_login:Optional[str]=None)\n\nuse for full authentication token\n\nsample implementations of DomoFullAuth\n\ndomo_instance = \"domo-dojo\"\ndomo_username = \"test12@domo.com\"\ndomo_password = \"test1234\"\n\ntry:\n    full_auth = DomoFullAuth(domo_instance, domo_username, domo_password)\n    res = await full_auth.get_auth_token()\n\nexcept InvalidCredentialsError as e:\n    print(e)\n\nStatus 200 - INVALID_CREDENTIALS at domo-dojo\n\n\n\ndomo_instance = \"test\"\n\ntry:\n    full_auth = DomoFullAuth(domo_instance, domo_username, domo_password)\n    await full_auth.get_auth_token()\nexcept InvalidInstanceError as e:\n    print(e)\n\nStatus 403 - INVALID INSTANCE at test"
+  },
+  {
+    "objectID": "domoauth.html#domotokenauth",
+    "href": "domoauth.html#domotokenauth",
+    "title": "DomoAuth",
+    "section": "DomoTokenAuth",
+    "text": "DomoTokenAuth\n\nsource\n\nDomoTokenAuth\n\n DomoTokenAuth (domo_instance:str, domo_access_token:str,\n                token:Optional[str]=None, token_name:Optional[str]=None,\n                user_id:Optional[str]=None, auth_header:dict=<factory>,\n                url_manual_login:Optional[str]=None)\n\nuse for access_token authentication. Tokens are generated in domo > admin > access token Necessary in cases where direct sign on is not permitted\n\nSample implementation of DomoTokenAuth\n\ndomo_instance = 'test'\ndomo_access_token = 'test_access_token'\n\ndomo_access_token = 'a9c9c837775a981121fc57b4c78550d28c8784b6b0f4c69c'\ntry:\n    domo_auth = DomoTokenAuth(domo_instance, domo_access_token)\n    token = await domo_auth.get_auth_token()\n    print(domo_auth)\n\nexcept InvalidCredentialsError as e:\n    print(e)\n\nDomoTokenAuth(domo_instance='test', token_name='token_auth', url_manual_login='https://test.domo.com/auth/index?domoManualLogin=true')"
+  },
+  {
+    "objectID": "domoauth.html#domodeveloperauth",
+    "href": "domoauth.html#domodeveloperauth",
+    "title": "DomoAuth",
+    "section": "DomoDeveloperAuth",
+    "text": "DomoDeveloperAuth\n\nsource\n\nDomoDeveloperAuth\n\n DomoDeveloperAuth (domo_client_id:str, domo_client_secret:str)\n\nuse for full authentication token\n\nSample implementations of DomoDeveloperAuth\n\ndomo_client_id = 'test_client'\ndomo_client_secret = 'test_secret'\n\ntry:\n    domo_auth = DomoDeveloperAuth(domo_client_id, domo_client_secret)\n    await domo_auth.get_auth_token()\nexcept InvalidCredentialsError as e:\n    print(e)\n\nStatus 401 - Unauthorized"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "domo_library",
+    "section": "",
+    "text": "This file will become your README and also the index of your documentation."
+  },
+  {
+    "objectID": "index.html#install",
+    "href": "index.html#install",
+    "title": "domo_library",
+    "section": "Install",
+    "text": "Install\npip install domo_library"
+  },
+  {
+    "objectID": "index.html#how-to-use",
+    "href": "index.html#how-to-use",
+    "title": "domo_library",
+    "section": "How to use",
+    "text": "How to use\nFill me in please! Don’t forget code examples:\n\n1+1\n\n2"
+  }
+]

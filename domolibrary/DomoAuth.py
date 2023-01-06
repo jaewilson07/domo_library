@@ -6,10 +6,13 @@ __all__ = ['get_full_auth', 'get_developer_auth', 'test_access_token', 'DomoAuth
 
 # %% ../nbs/95_DomoAuth.ipynb 3
 from fastcore.basics import patch_to
+
 from dataclasses import dataclass, field
 from abc import abstractmethod
-import aiohttp
 from typing import Optional, Union
+
+import aiohttp
+
 import domolibrary.client.ResponseGetData as rgd
 
 # %% ../nbs/95_DomoAuth.ipynb 5
