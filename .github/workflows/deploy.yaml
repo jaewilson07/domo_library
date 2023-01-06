@@ -1,9 +1,13 @@
 name: Deploy to GitHub Pages
 on:
   push:
-    branches: ['main', 'master']
+    branches: ["main", "master"]
   workflow_dispatch:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    steps: [uses: fastai/workflows/quarto-ghp@master]
+    env:
+      DOJO_PASSWORD: ${{ secrets.DOJO_PASSWORD }},
+      DOMO_DOJO_ACCESS_TOKEN: ${{ secrets.DOMO_DOJO_ACCESS_TOKEN }}
+    steps:
+      - uses: fastai/workflows/quarto-ghp@master
