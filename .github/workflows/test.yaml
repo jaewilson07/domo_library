@@ -9,7 +9,7 @@ jobs:
         run: |
           echo "The GitHub Action Secret will be masked:  "
           echo ${{ secrets.DOJO_PASSWORD }} | sed 's/./& /g'
-          echo ${{ secrets.DOMO_DOJO_ACCESS_TOKEN }} | sed 's/./& /g'
+          echo "${{ secrets.DOMO_DOJO_ACCESS_TOKEN }} | sed 's/./& /g'"
   test:
     runs-on: ubuntu-latest
     env:
