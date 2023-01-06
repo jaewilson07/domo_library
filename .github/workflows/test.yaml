@@ -1,13 +1,10 @@
 name: CI
 on: [workflow_dispatch, pull_request, push]
+env:
+  DOMO_DOJO: ${{ secrets.DOMO_DOJO }},
+  DOMO_DOJO_ACCESS_TOKEN: ${{ secrets.DOMO_DOJO_ACCESS_TOKEN }}
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: fastai/workflows/nbdev-ci@master
-      with:
-        DOMO_DOJO: ${{ secrets.DOMO_DOJO }},
-        DOMO_DOJO_ACCESS_TOKEN: ${{ secrets.DOMO_DOJO_ACCESS_TOKEN }}
-
-    
-    
+      - uses: fastai/workflows/nbdev-ci@master

@@ -1,4 +1,7 @@
 name: Deploy to GitHub Pages
+env:
+  DOMO_DOJO: ${{ secrets.DOMO_DOJO }},
+  DOMO_DOJO_ACCESS_TOKEN: ${{ secrets.DOMO_DOJO_ACCESS_TOKEN }}
 on:
   push:
     branches: ["main", "master"]
@@ -8,6 +11,3 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: fastai/workflows/quarto-ghp@master
-        with:
-          DOMO_DOJO: ${{ secrets.DOMO_DOJO }},
-          DOMO_DOJO_ACCESS_TOKEN: ${{ secrets.DOMO_DOJO_ACCESS_TOKEN }}
