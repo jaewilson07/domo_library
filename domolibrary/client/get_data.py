@@ -119,6 +119,8 @@ async def looper(
     skip = 0
     isLoop = True
 
+    res = None
+
     if maximum < limit:
         limit = maximum
 
@@ -177,6 +179,5 @@ async def looper(
 
             if debug_loop:
                 print(f"skip: {skip}, limit: {limit}")
-        
-    return allRows
 
+    return await rgd.ResponseGetData._from_looper(res = res, array = allRows)

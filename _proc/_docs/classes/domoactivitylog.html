@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="preferred response class for all API requests">
+<meta name="description" content="class based approach for interacting with the activity log">
 
-<title>domolibrary - ResponseGetData</title>
+<title>domolibrary - Activity Log</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -125,11 +125,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="domolibrary - ResponseGetData">
-<meta property="og:description" content="preferred response class for all API requests">
+<meta property="og:title" content="domolibrary - Activity Log">
+<meta property="og:description" content="class based approach for interacting with the activity log">
 <meta property="og:site-name" content="domolibrary">
-<meta name="twitter:title" content="domolibrary - ResponseGetData">
-<meta name="twitter:description" content="preferred response class for all API requests">
+<meta name="twitter:title" content="domolibrary - Activity Log">
+<meta name="twitter:description" content="class based approach for interacting with the activity log">
 <meta name="twitter:card" content="summary">
 </head>
 
@@ -149,7 +149,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     </nav>
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">ResponseGetData</h1>
+      <h1 class="quarto-secondary-nav-title">Activity Log</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -182,7 +182,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../classes/domoactivitylog.html" class="sidebar-item-text sidebar-link">Activity Log</a>
+  <a href="../classes/domoactivitylog.html" class="sidebar-item-text sidebar-link active">Activity Log</a>
   </div>
 </li>
       </ul>
@@ -202,7 +202,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../client/responsegetdata.html" class="sidebar-item-text sidebar-link active">ResponseGetData</a>
+  <a href="../client/responsegetdata.html" class="sidebar-item-text sidebar-link">ResponseGetData</a>
   </div>
 </li>
       </ul>
@@ -251,11 +251,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#responsegetdata" id="toc-responsegetdata" class="nav-link active" data-scroll-target="#responsegetdata">ResponseGetData</a></li>
-  <li><a href="#classmethods-from-response-objects-by-library" id="toc-classmethods-from-response-objects-by-library" class="nav-link" data-scroll-target="#classmethods-from-response-objects-by-library">Classmethods from Response objects by library</a>
+  <li><a href="#valid-object-types" id="toc-valid-object-types" class="nav-link active" data-scroll-target="#valid-object-types">Valid Object Types</a>
   <ul class="collapse">
-  <li><a href="#responsegetdata._from_requests_response" id="toc-responsegetdata._from_requests_response" class="nav-link" data-scroll-target="#responsegetdata._from_requests_response">ResponseGetData._from_requests_response</a></li>
-  <li><a href="#responsegetdata._from_aiohttp_response" id="toc-responsegetdata._from_aiohttp_response" class="nav-link" data-scroll-target="#responsegetdata._from_aiohttp_response">ResponseGetData._from_aiohttp_response</a></li>
+  <li><a href="#activitylog_objecttype" id="toc-activitylog_objecttype" class="nav-link" data-scroll-target="#activitylog_objecttype">ActivityLog_ObjectType</a></li>
+  <li><a href="#domoactivitylog" id="toc-domoactivitylog" class="nav-link" data-scroll-target="#domoactivitylog">DomoActivityLog</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/jaewilson07/domo_library/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
@@ -265,12 +264,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">ResponseGetData</h1>
+<h1 class="title d-none d-lg-block">Activity Log</h1>
 </div>
 
 <div>
   <div class="description">
-    preferred response class for all API requests
+    class based approach for interacting with the activity log
   </div>
 </div>
 
@@ -286,123 +285,112 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </header>
 
 <!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<section id="valid-object-types" class="level2">
+<h2 class="anchored" data-anchor-id="valid-object-types">Valid Object Types</h2>
+<p>To get an updated list of objectTypes run the <code>get_activity_log_object_types</code> function.</p>
+<p>Note: in the <a href="https://jaewilson07.github.io/domo_library/routes/activity_log.html#activitylog_objecttype"><code>ActivityLog_ObjectType</code></a> enum, some of the entries have been renamed for clarity.</p>
+<div class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ActivityLog_ObjectType(Enum):</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""enumerates valid object types to pass to activity log api"""</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    ACCESS_TOKEN <span class="op">=</span> <span class="st">"ACCESS_TOKEN"</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    ACCOUNT <span class="op">=</span> <span class="st">"ACCOUNT"</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    ACTIVITY_LOG <span class="op">=</span> <span class="st">"ACTIVITY_LOG"</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    ALERT <span class="op">=</span> <span class="st">"ALERT"</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    APP <span class="op">=</span> <span class="st">"APP"</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    APPDB_COLLECTION <span class="op">=</span> <span class="st">"MAGNUM_COLLECTION"</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    APPDB_DATASTORE <span class="op">=</span> <span class="st">"MAGNUM_DATASTORE"</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    AUTHORITY <span class="op">=</span> <span class="st">"AUTHORITY"</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    BEAST_MODE_FORMULA <span class="op">=</span> <span class="st">"BEAST_MODE_FORMULA"</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    BUZZ_CHANNEL <span class="op">=</span> <span class="st">"CHANNEL"</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    BUZZ_GROUP_CHAT <span class="op">=</span> <span class="st">"GROUP_CHAT"</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    BUZZ_THREAD <span class="op">=</span> <span class="st">"HUDDLE"</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    CARD <span class="op">=</span> <span class="st">"CARD"</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    CHART_COLOR_PALETTE <span class="op">=</span> <span class="st">"CHART_COLOR_PALETTE"</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    COLLECTION <span class="op">=</span> <span class="st">"COLLECTION"</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    CUSTOMER <span class="op">=</span> <span class="st">"CUSTOMER"</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    CUSTOMER_STATE <span class="op">=</span> <span class="st">"CUSTOMER_STATE"</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    CUSTOMER_TIER <span class="op">=</span> <span class="st">"CUSTOMER_TIER"</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    DATA_SCIENCE_NOTEBOOK <span class="op">=</span> <span class="st">"DATA_SCIENCE_NOTEBOOK"</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    DATAFLOW <span class="op">=</span> <span class="st">"DATAFLOW_TYPE"</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    DATASET <span class="op">=</span> <span class="st">"DATA_SOURCE"</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    DATASOURCE <span class="op">=</span> <span class="st">"DATASOURCE"</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    DEPLOYMENT <span class="op">=</span> <span class="st">"DEPLOYMENT"</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    DRILL_VIEW <span class="op">=</span> <span class="st">"DRILL_VIEW"</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    EASY_INVITE_LINK <span class="op">=</span> <span class="st">"EASY_INVITE_LINK"</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    ENABLED <span class="op">=</span> <span class="st">"ENABLED"</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    FILE <span class="op">=</span> <span class="st">"FILE"</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    FILE_VERSION <span class="op">=</span> <span class="st">"FILE_REVISION"</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    GROUP <span class="op">=</span> <span class="st">"GROUP"</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    LICENSE_PAGE <span class="op">=</span> <span class="st">"LICENSE_PAGE"</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    LOGIN_SETTINGS <span class="op">=</span> <span class="st">"LOGIN_SETTINGS"</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    NAME <span class="op">=</span> <span class="st">"NAME"</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    PDP_FILTER <span class="op">=</span> <span class="st">"ADC_FILTER"</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    PDP_POLICY <span class="op">=</span> <span class="st">"ADC_POLICY"</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    PAGE <span class="op">=</span> <span class="st">"PAGE"</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    PAGE_ANALYZER <span class="op">=</span> <span class="st">"PAGE_ANALYZER"</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>    PAGE_COLLECTION <span class="op">=</span> <span class="st">"PAGE_COLLECTION"</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>    PROJECT <span class="op">=</span> <span class="st">"PROJECT"</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>    PROJECT_LIST <span class="op">=</span> <span class="st">"PROJECT_LIST"</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>    PROJECT_TASK <span class="op">=</span> <span class="st">"PROJECT_TASK"</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>    PROJECT_TASK_ATTACHMENT <span class="op">=</span> <span class="st">"PROJECT_TASK_ATTACHMENT"</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>    PROJECT_TASK_OWNER <span class="op">=</span> <span class="st">"PROJECT_TASK_OWNER"</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>    PROXIER_EMAIL <span class="op">=</span> <span class="st">"PROXIER_EMAIL"</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>    PUBLIC_EMBED_URL <span class="op">=</span> <span class="st">"PUBLIC_URL"</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>    PUBLICATION <span class="op">=</span> <span class="st">"PUBLICATION"</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>    REPOSITORY <span class="op">=</span> <span class="st">"REPOSITORY"</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>    REPOSITORY_AUTHORIZATION <span class="op">=</span> <span class="st">"REPOSITORY_AUTHORIZATION"</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>    ROLE <span class="op">=</span> <span class="st">"ROLE"</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>    SEGMENT <span class="op">=</span> <span class="st">"SEGMENT"</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>    SSO_PAGE <span class="op">=</span> <span class="st">"SSO_PAGE"</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>    SUBSCRIBER <span class="op">=</span> <span class="st">"PROXY_USER"</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>    USER <span class="op">=</span> <span class="st">"USER"</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>    USER_STATE <span class="op">=</span> <span class="st">"USER_STATE"</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>    VARIABLE <span class="op">=</span> <span class="st">"VARIABLE"</span></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>    VARIABLE_CONTROL <span class="op">=</span> <span class="st">"VARIABLE_CONTROL"</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>    NOTEBOOK_VIEW <span class="op">=</span> <span class="st">"CONTAINER_VIEW"</span></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>    VIEW <span class="op">=</span> <span class="st">"VIEW"</span></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>    VIRTUAL_USER <span class="op">=</span> <span class="st">"VIRTUAL_USER"</span></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>    WORKBENCH_AGENT <span class="op">=</span> <span class="st">"Workbench_AGENT"</span></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>    WORKBENCH_JOB <span class="op">=</span> <span class="st">"Workbench_JOB"</span></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>    WORKBENCH_SCHEDULE <span class="op">=</span> <span class="st">"Workbench_SCHEDULE"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/ResponseGetData.py#L19" target="_blank" style="float:right; font-size:smaller">source</a></p>
-<section id="responsegetdata" class="level3">
-<h3 class="anchored" data-anchor-id="responsegetdata">ResponseGetData</h3>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/activity_log.py#L21" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="activitylog_objecttype" class="level3">
+<h3 class="anchored" data-anchor-id="activitylog_objecttype">ActivityLog_ObjectType</h3>
 <blockquote class="blockquote">
-<pre><code> ResponseGetData (status:int, response:&lt;built-infunctionany&gt;,
-                  is_success:bool, auth:dict=None)</code></pre>
+<pre><code> ActivityLog_ObjectType (value, names=None, module=None, qualname=None,
+                         type=None, start=1)</code></pre>
 </blockquote>
-<p>preferred response class for all API Requests</p>
+<p>enumerates valid object types to pass to activity log api</p>
+<hr>
+</section>
+<section id="domoactivitylog" class="level3">
+<h3 class="anchored" data-anchor-id="domoactivitylog">DomoActivityLog</h3>
+<blockquote class="blockquote">
+<pre><code> DomoActivityLog ()</code></pre>
+</blockquote>
+<p>Initialize self. See help(type(self)) for accurate signature.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>rgd <span class="op">=</span> ResponseGetData(status<span class="op">=</span><span class="dv">200</span>, response<span class="op">=</span><span class="st">"test"</span>, is_success<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>rgd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<pre><code>ResponseGetData(status=200, response='test', is_success=True, auth=None)</code></pre>
-</div>
-</div>
-</section>
-<section id="classmethods-from-response-objects-by-library" class="level1">
-<h1>Classmethods from Response objects by library</h1>
-<p>This code base supports two API request libraries, <code>requests.request</code> (synchronous) and <code>aiohttp.ClientRequest</code> (asynchronous) this can be extended as new libraries emerge with different performance characteristics.</p>
-<hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/ResponseGetData.py#L29" target="_blank" style="float:right; font-size:smaller">source</a></p>
-<section id="responsegetdata._from_requests_response" class="level3">
-<h3 class="anchored" data-anchor-id="responsegetdata._from_requests_response">ResponseGetData._from_requests_response</h3>
-<blockquote class="blockquote">
-<pre><code> ResponseGetData._from_requests_response (res:requests.models.Response)</code></pre>
-</blockquote>
-<p>returns ResponseGetData</p>
-<table class="table">
-<thead>
-<tr class="header">
-<th></th>
-<th><strong>Type</strong></th>
-<th><strong>Details</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>res</td>
-<td>Response</td>
-<td>requests response object</td>
-</tr>
-<tr class="even">
-<td><strong>Returns</strong></td>
-<td><strong>ResponseGetData</strong></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<div class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test _from_requests_response returns ResponseGetData class</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="ss">f"https://domo-dojo.domo.com/api/content/v2/authentication"</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>tokenHeaders <span class="op">=</span> {<span class="st">"Content-Type"</span>: <span class="st">"application/json"</span>}</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>body <span class="op">=</span> {</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"method"</span>: <span class="st">"password"</span>,</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"emailAddress"</span>: <span class="st">"jae@onyxreporting.com"</span>,</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"password"</span>: os.environ[<span class="st">"DOJO_PASSWORD"</span>],</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> requests.request(method<span class="op">=</span><span class="st">"POST"</span>, url<span class="op">=</span>url, json<span class="op">=</span>body, headers<span class="op">=</span>tokenHeaders)</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(res.status_code)</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>test_res <span class="op">=</span> ResponseGetData._from_requests_response(res)</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>test_res.__dict__.keys()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>200</code></pre>
-</div>
-<div class="cell-output cell-output-display" data-execution_count="3">
-<pre><code>dict_keys(['status', 'response', 'is_success', 'auth'])</code></pre>
-</div>
-</div>
-<hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/ResponseGetData.py#L47" target="_blank" style="float:right; font-size:smaller">source</a></p>
-</section>
-<section id="responsegetdata._from_aiohttp_response" class="level3">
-<h3 class="anchored" data-anchor-id="responsegetdata._from_aiohttp_response">ResponseGetData._from_aiohttp_response</h3>
-<blockquote class="blockquote">
-<pre><code> ResponseGetData._from_aiohttp_response
-                                         (res:aiohttp.client_reqrep.Client
-                                         Response)</code></pre>
-</blockquote>
-<p>async method returns ResponseGetData</p>
-<div class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test _from_aiohttp_response returns ResponseGetData class</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="ss">f"https://domo-dojo.domo.com/api/content/v2/authentication"</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>body <span class="op">=</span> {</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"method"</span>: <span class="st">"password"</span>,</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"emailAddress"</span>: <span class="st">"jae@onyxreporting.com"</span>,</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"password"</span>: os.environ[<span class="st">"DOJO_PASSWORD"</span>],</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>session <span class="op">=</span> aiohttp.ClientSession()</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="cf">await</span> session.post(url<span class="op">=</span>url, json<span class="op">=</span>body)</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> session.close()</span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(res.status)</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>test_res <span class="op">=</span> <span class="cf">await</span> ResponseGetData._from_aiohttp_response(res)</span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>test_res.__dict__.keys()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>200</code></pre>
-</div>
-<div class="cell-output cell-output-display" data-execution_count="5">
-<pre><code>dict_keys(['status', 'response', 'is_success', 'auth'])</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> datetime <span class="im">as</span> dt</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>end_datetime <span class="op">=</span> dt.datetime.today()</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>start_datetime <span class="op">=</span> end_datetime <span class="op">-</span> dt.timedelta(days<span class="op">=</span><span class="dv">100</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(domo_instance<span class="op">=</span><span class="st">'domo-dojo'</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                                    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>])</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>DomoActivityLog.get_activity_log(</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    auth <span class="op">=</span> token_auth,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    start_time <span class="op">=</span> start_datetime,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    end_time <span class="op">=</span> end_datetime,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    object_type <span class="op">=</span> ActivityLog_ObjectType.BEAST_MODE_FORMULA,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    maximum <span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    session: Optional[aiohttp.ClientSession]<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    debug_api: <span class="bu">bool</span><span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    debug_loop: <span class="bu">bool</span><span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
