@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="async wrapper for asyncio requests">
 
-<title>domolibrary - domo_library</title>
+<title>domolibrary - get_data</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -86,22 +87,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -123,12 +124,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 }</script>
 
 
-<link rel="stylesheet" href="styles.css">
-<meta property="og:title" content="domolibrary - domo_library">
-<meta property="og:description" content="This file will become your README and also the index of your documentation.">
+<link rel="stylesheet" href="../styles.css">
+<meta property="og:title" content="domolibrary - get_data">
+<meta property="og:description" content="async wrapper for asyncio requests">
 <meta property="og:site-name" content="domolibrary">
-<meta name="twitter:title" content="domolibrary - domo_library">
-<meta name="twitter:description" content="This file will become your README and also the index of your documentation.">
+<meta name="twitter:title" content="domolibrary - get_data">
+<meta name="twitter:description" content="async wrapper for asyncio requests">
 <meta name="twitter:card" content="summary">
 </head>
 
@@ -139,7 +140,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">domolibrary</span>
     </a>
   </div>
@@ -148,7 +149,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     </nav>
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">domo_library</h1>
+      <h1 class="quarto-secondary-nav-title">get_data</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -163,12 +164,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">domo_library</a>
+  <a href="../index.html" class="sidebar-item-text sidebar-link">domo_library</a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./domoauth.html" class="sidebar-item-text sidebar-link">DomoAuth</a>
+  <a href="../domoauth.html" class="sidebar-item-text sidebar-link">DomoAuth</a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -181,7 +182,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./classes/domoactivitylog.html" class="sidebar-item-text sidebar-link">Activity Log</a>
+  <a href="../classes/domoactivitylog.html" class="sidebar-item-text sidebar-link">Activity Log</a>
   </div>
 </li>
       </ul>
@@ -196,12 +197,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./client/get_data.html" class="sidebar-item-text sidebar-link">get_data</a>
+  <a href="../client/get_data.html" class="sidebar-item-text sidebar-link active">get_data</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./client/responsegetdata.html" class="sidebar-item-text sidebar-link">ResponseGetData</a>
+  <a href="../client/responsegetdata.html" class="sidebar-item-text sidebar-link">ResponseGetData</a>
   </div>
 </li>
       </ul>
@@ -216,7 +217,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./routes/activity_log.html" class="sidebar-item-text sidebar-link">Activity Log Routes</a>
+  <a href="../routes/activity_log.html" class="sidebar-item-text sidebar-link">Activity Log Routes</a>
   </div>
 </li>
       </ul>
@@ -231,12 +232,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./utils/utils.convert.html" class="sidebar-item-text sidebar-link">Conversion utility functions</a>
+  <a href="../utils/utils.convert.html" class="sidebar-item-text sidebar-link">Conversion utility functions</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./utils/dictdot.html" class="sidebar-item-text sidebar-link">DictDot</a>
+  <a href="../utils/dictdot.html" class="sidebar-item-text sidebar-link">DictDot</a>
   </div>
 </li>
       </ul>
@@ -250,8 +251,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#install" id="toc-install" class="nav-link active" data-scroll-target="#install">Install</a></li>
-  <li><a href="#how-to-use" id="toc-how-to-use" class="nav-link" data-scroll-target="#how-to-use">How to use</a></li>
+  <li><a href="#get_data" id="toc-get_data" class="nav-link active" data-scroll-target="#get_data">get_data</a></li>
+  <li><a href="#looper" id="toc-looper" class="nav-link" data-scroll-target="#looper">looper</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/jaewilson07/domo_library/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -260,9 +261,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">domo_library</h1>
+<h1 class="title d-none d-lg-block">get_data</h1>
 </div>
 
+<div>
+  <div class="description">
+    async wrapper for asyncio requests
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
@@ -276,20 +282,59 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </header>
 
 <!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
-<p>This file will become your README and also the index of your documentation.</p>
-<section id="install" class="level2">
-<h2 class="anchored" data-anchor-id="install">Install</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install domo_library</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-<section id="how-to-use" class="level2">
-<h2 class="anchored" data-anchor-id="how-to-use">How to use</h2>
-<p>Fill me in please! Don’t forget code examples:</p>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/get_data.py#L18" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="get_data" class="level3">
+<h3 class="anchored" data-anchor-id="get_data">get_data</h3>
+<blockquote class="blockquote">
+<pre><code> get_data (url:str, method:str, auth:domolibrary.DomoAuth.DomoAuth,
+           content_type:Optional[dict]=None, headers:Optional[dict]=None,
+           session:Optional[aiohttp.client.ClientSession]=None,
+           body:Union[dict,str,NoneType]=None, params:Optional[dict]=None,
+           debug_api:bool=False)</code></pre>
+</blockquote>
+<p>async wrapper for asyncio requests</p>
+<section id="sample-implementation-of-get_data" class="level4">
+<h4 class="anchored" data-anchor-id="sample-implementation-of-get_data">sample implementation of get_data</h4>
+<p>During execution <code>get_data()</code> will attempt to retrieve exchange credentials for an auth token using the <code>dmda.DomoFullAuth.get_auth_token()</code> method.</p>
+<p>Then the appropriate headers will be passed to the request.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="op">+</span><span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<pre><code>2</code></pre>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>domo_password <span class="op">=</span> os.environ[<span class="st">"DOJO_PASSWORD"</span>]</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>full_auth <span class="op">=</span> dmda.DomoFullAuth(</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-dojo"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    domo_username<span class="op">=</span><span class="st">"jae@onyxreporting.com"</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    domo_password<span class="op">=</span>os.environ[<span class="st">"DOJO_PASSWORD"</span>]</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://domo-dojo.domo.com/api/content/v2/users/me"</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    res <span class="op">=</span> <span class="cf">await</span> get_data(url<span class="op">=</span>url, method<span class="op">=</span><span class="st">"get"</span>, auth<span class="op">=</span>full_auth)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(res)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(e)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>ResponseGetData(status=200, response={'id': 1893952720, 'invitorUserId': 587894148, 'displayName': 'Jae Wilson', 'userName': 'jae@onyxreporting.com', 'emailAddress': 'jae@onyxreporting.com', 'avatarKey': 'c605f478-0cd2-4451-9fd4-d82090b71e66', 'accepted': True, 'userType': 'USER', 'modified': 1651692505000, 'created': 1588960518, 'role': 'Admin', 'rights': 63, 'active': True, 'pending': False, 'systemUser': False, 'anonymous': False}, is_success=True, auth=None)</code></pre>
 </div>
 </div>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/get_data.py#L101" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+</section>
+<section id="looper" class="level3">
+<h3 class="anchored" data-anchor-id="looper">looper</h3>
+<blockquote class="blockquote">
+<pre><code> looper (auth:domolibrary.DomoAuth.DomoAuth,
+         session:aiohttp.client.ClientSession, url, offset_params,
+         arr_fn:&lt;built-infunctioncallable&gt;, loop_until_end:bool=False,
+         method='POST', body:dict=None, fixed_params:dict=None,
+         offset_params_in_body:bool=False, body_fn=None, limit=1000,
+         maximum=2000, debug_api:bool=False, debug_loop:bool=False)</code></pre>
+</blockquote>
 
 
 </section>

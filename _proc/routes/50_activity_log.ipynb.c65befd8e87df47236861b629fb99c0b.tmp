@@ -1,0 +1,7 @@
+# | export
+async def get_activity_log_object_types(auth: dmda.DomoAuth):
+    """retrieves a list of valid objectTypes to pass to the activity_log API"""
+
+    url = "https://domo-dojo.domo.com/api/audit/v1/user-audits/objectTypes"
+
+    return await gd.get_data(url=url, method="GET", auth=auth)

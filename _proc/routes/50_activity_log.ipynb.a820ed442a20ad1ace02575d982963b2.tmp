@@ -1,0 +1,30 @@
+import os
+import pandas as pd
+import datetime as dt
+
+import domolibrary.utils.convert as convert
+
+end_datetime = dt.datetime.today()
+start_datetime = end_datetime - dt.timedelta(days=100)
+
+token_auth = dmda.DomoTokenAuth(
+        domo_access_token=os.environ["DOMO_DOJO_ACCESS_TOKEN"],
+        domo_instance="domo-dojo",
+    )
+
+try:
+    activity_log_res = await search_activity_log(
+        object_type=ActivityLog_ObjectType.ACTIVITY_LOG,
+        start_time=convert.convert_datetime_to_epoch_millisecond(
+            start_datetime),
+        end_time=convert.convert_datetime_to_epoch_millisecond(end_datetime),
+        domo_auth=full_auth,
+        maximum=6,
+        debug_loop=False,
+        debug_api=True,
+    )
+
+    print(pd.DataFrame(activity_log_res))
+
+except Exception as e:
+    print(e)
