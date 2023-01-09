@@ -8,7 +8,6 @@ from enum import Enum
 from typing import Optional
 
 import datetime as dt
-import pandas as pd
 from pprint import pprint
 
 import aiohttp
@@ -18,10 +17,7 @@ import domolibrary.DomoAuth as dmda
 import domolibrary.routes.activity_log as activity_log_routes
 import domolibrary.utils.convert as convert
 
-# from .DomoDataset import DomoDataset
-# from ..utils.DictDot import DictDot
-
-# %% ../../nbs/classes/50_DomoActivityLog.ipynb 5
+# %% ../../nbs/classes/50_DomoActivityLog.ipynb 4
 class ActivityLog_ObjectType(Enum):
     """enumerates valid object types to pass to activity log api"""
 
@@ -89,6 +85,7 @@ class ActivityLog_ObjectType(Enum):
 
 # %% ../../nbs/classes/50_DomoActivityLog.ipynb 6
 class DomoActivityLog:
+    @staticmethod
     def _process_activity_log_row(row):
 
         if row.get('time'):

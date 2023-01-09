@@ -3,13 +3,15 @@
 # %% auto 0
 __all__ = ['API_Response', 'ResponseGetData']
 
-# %% ../../nbs/client/99_ResponseGetData.ipynb 3
+# %% ../../nbs/client/99_ResponseGetData.ipynb 2
+# pylint: disable=no-member
 from dataclasses import dataclass, field
-from fastcore.utils import patch_to, patch
 
-import requests
 import asyncio
+import requests
 import aiohttp
+
+from fastcore.utils import patch_to, patch
 
 # %% ../../nbs/client/99_ResponseGetData.ipynb 4
 API_Response = any

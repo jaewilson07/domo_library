@@ -12,7 +12,8 @@ website:
           - client/99_ResponseGetData.ipynb
       - section: routes
         contents:
-          - routes/50_activity_log.ipynb
+          - routes/activity_log.ipynb
+          - routes/dataset.ipynb
       - section: utils
         contents:
           - utils/50_utils.convert.ipynb
