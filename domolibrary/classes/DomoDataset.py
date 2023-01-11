@@ -5,10 +5,10 @@ __all__ = ['DatasetSchema_AuthNotProvidedError', 'DatasetSchema_DatasetNotProvid
            'DomoDataset_Schema', 'DatasetTags_AuthNotProvidedError', 'DatasetTags_SetTagsError', 'DomoDataset_Tags',
            'DomoDataset']
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 3
+# %% ../../nbs/classes/50_DomoDataset.ipynb 4
 from fastcore.basics import patch
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 4
+# %% ../../nbs/classes/50_DomoDataset.ipynb 5
 from dataclasses import dataclass, field
 from typing import Any, List, Optional
 
@@ -39,7 +39,7 @@ import domolibrary.utils.DictDot as util_dd
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.routes.dataset as dataset_routes
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 6
+# %% ../../nbs/classes/50_DomoDataset.ipynb 7
 class DatasetSchema_AuthNotProvidedError(Exception):
     """return if DatasetSchema request cannot access an auth object"""
 
@@ -112,7 +112,7 @@ class DomoDataset_Schema:
 
             return self.columns
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 9
+# %% ../../nbs/classes/50_DomoDataset.ipynb 11
 class DatasetTags_AuthNotProvidedError(Exception):
     """return if DatasetTags request cannot access an auth object"""
 
@@ -205,7 +205,7 @@ class DomoDataset_Tags:
 
         return self.tag_ls
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 12
+# %% ../../nbs/classes/50_DomoDataset.ipynb 14
 @patch
 async def add(
     self: DomoDataset_Tags,
@@ -230,7 +230,7 @@ async def add(
         session=session,
     )
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 14
+# %% ../../nbs/classes/50_DomoDataset.ipynb 16
 @patch
 async def remove(self: DomoDataset_Tags,
                  remove_tag_ls: [str],
@@ -254,7 +254,7 @@ async def remove(self: DomoDataset_Tags,
                           debug_api=debug_api, session=session)
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 17
+# %% ../../nbs/classes/50_DomoDataset.ipynb 19
 @dataclass
 class DomoDataset:
     "interacts with domo datasets"
@@ -289,7 +289,7 @@ class DomoDataset:
     def display_url(self):
         return f"https://{self.auth.domo_instance }.domo.com/datasources/{self.id}/details/overview"
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 21
+# %% ../../nbs/classes/50_DomoDataset.ipynb 23
 @patch(cls_method=True)
 async def get_from_id(
     cls: DomoDataset,
