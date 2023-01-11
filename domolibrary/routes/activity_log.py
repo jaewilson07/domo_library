@@ -8,7 +8,7 @@ import aiohttp
 
 import domolibrary.client.get_data as gd
 import domolibrary.client.ResponseGetData as rgd
-import domolibrary.DomoAuth as dmda
+import domolibrary.client.DomoAuth as dmda
 
 
 # %% ../../nbs/routes/activity_log.ipynb 4

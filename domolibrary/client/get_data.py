@@ -10,7 +10,7 @@ from pprint import pprint
 
 import aiohttp
 
-import domolibrary.DomoAuth as dmda
+import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.ResponseGetData as rgd
 
 
@@ -95,11 +95,13 @@ async def get_data(
         if is_close_session:
             await session.close()
 
-    return await rgd.ResponseGetData._from_aiohttp_response(res)
+    return await rgd.ResponseGetData._from_aiohttp_response(res, auth = auth)
 
 # %% ../../nbs/client/10_get_data.ipynb 6
 class LooperError(Exception):
-    pass
+    def __init__(loop_stage: str, message ):
+
+        super().__init__(f"{loop_stage} - {message}")
 
 # %% ../../nbs/client/10_get_data.ipynb 7
 async def looper(
@@ -115,6 +117,7 @@ async def looper(
     offset_params_in_body: bool = False,
     body_fn=None,
     limit=1000,
+    skip = 0,
     maximum=2000,
     debug_api: bool = False,
     debug_loop: bool = False
@@ -128,7 +131,6 @@ async def looper(
 
 
     allRows = []
-    skip = 0
     isLoop = True
 
     res = None
@@ -148,13 +150,20 @@ async def looper(
             params[offset_params.get("limit")] = limit
 
         if body_fn:
-            body = body_fn(skip, limit)
+            try:
+                body = body_fn(skip, limit)
+            
+            except Exception as e:
+                await session.close()
+                raise LooperError(loop_stage = "processing body_fn", message = str(e))
+            
 
         if debug_loop:
             print(
                 f"\n🚀 Retrieving records {skip} through {skip + limit} via {url}")
             # pprint(params)
 
+        
         res = await get_data(
             auth=auth,
             url=url,
@@ -166,11 +175,18 @@ async def looper(
         )
 
         if not res.is_success:
-            raise LooperError()
-            
+            if is_close_session:
+                await session.close()
+            return res
 
-        newRecords = arr_fn(res)
 
+        try:
+            newRecords = arr_fn(res)
+        
+        except Exception as e:
+            await session.close()
+            raise LooperError(loop_stage = "processing arr_fn", message = str(e))
+        
         allRows += newRecords
 
         if loop_until_end and len(newRecords) != 0:
@@ -184,9 +200,7 @@ async def looper(
                 print(
                     f"\n🎉 Success - {len(allRows)} records retrieved from {url} in query looper\n")
 
-
-            isLoop = False
-
+            break
 
         skip += len(newRecords)
         

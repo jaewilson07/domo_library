@@ -6,6 +6,7 @@ website:
       - section: classes
         contents:
           - classes/50_DomoActivityLog.ipynb
+          - classes/50_DomoDataset.ipynb
       - section: client
         contents:
           - client/10_get_data.ipynb

@@ -185,6 +185,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <a href="../classes/domoactivitylog.html" class="sidebar-item-text sidebar-link">Activity Log</a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domodataset.html" class="sidebar-item-text sidebar-link">Dataset</a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -220,6 +225,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <a href="../routes/activity_log.html" class="sidebar-item-text sidebar-link">Activity Log Routes</a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/dataset.html" class="sidebar-item-text sidebar-link">Dataset Routes</a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -252,6 +262,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    
   <ul>
   <li><a href="#get_data" id="toc-get_data" class="nav-link active" data-scroll-target="#get_data">get_data</a></li>
+  <li><a href="#loopererror" id="toc-loopererror" class="nav-link" data-scroll-target="#loopererror">LooperError</a></li>
   <li><a href="#looper" id="toc-looper" class="nav-link" data-scroll-target="#looper">looper</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/jaewilson07/domo_library/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
@@ -298,32 +309,39 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h4 class="anchored" data-anchor-id="sample-implementation-of-get_data">sample implementation of get_data</h4>
 <p>During execution <code>get_data()</code> will attempt to retrieve exchange credentials for an auth token using the <code>dmda.DomoFullAuth.get_auth_token()</code> method.</p>
 <p>Then the appropriate headers will be passed to the request.</p>
-<div class="cell">
+<div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>domo_password <span class="op">=</span> os.environ[<span class="st">"DOJO_PASSWORD"</span>]</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>full_auth <span class="op">=</span> dmda.DomoFullAuth(</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-dojo"</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    domo_username<span class="op">=</span><span class="st">"jae@onyxreporting.com"</span>,</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    domo_password<span class="op">=</span>os.environ[<span class="st">"DOJO_PASSWORD"</span>]</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>full_auth <span class="op">=</span> dmda.DomoFullAuth(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-dojo"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    domo_username<span class="op">=</span><span class="st">"jae@onyxreporting.com"</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    domo_password<span class="op">=</span>os.environ[<span class="st">"DOJO_PASSWORD"</span>]</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://domo-dojo.domo.com/api/content/v2/users/me"</span></span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://domo-dojo.domo.com/api/content/v2/users/me"</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    res <span class="op">=</span> <span class="cf">await</span> get_data(url<span class="op">=</span>url, method<span class="op">=</span><span class="st">"get"</span>, auth<span class="op">=</span>full_auth)</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(res)</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(e)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    res <span class="op">=</span> <span class="cf">await</span> get_data(url<span class="op">=</span>url, method<span class="op">=</span><span class="st">"get"</span>, auth<span class="op">=</span>full_auth)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(res)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(e)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>ResponseGetData(status=200, response={'id': 1893952720, 'invitorUserId': 587894148, 'displayName': 'Jae Wilson', 'userName': 'jae@onyxreporting.com', 'emailAddress': 'jae@onyxreporting.com', 'avatarKey': 'c605f478-0cd2-4451-9fd4-d82090b71e66', 'accepted': True, 'userType': 'USER', 'modified': 1651692505000, 'created': 1588960518, 'role': 'Admin', 'rights': 63, 'active': True, 'pending': False, 'systemUser': False, 'anonymous': False}, is_success=True, auth=None)</code></pre>
+<pre><code>ResponseGetData(status=200, response={'id': 1893952720, 'invitorUserId': 587894148, 'displayName': 'Jae Wilson', 'userName': 'jae@onyxreporting.com', 'emailAddress': 'jae@onyxreporting.com', 'avatarKey': 'c605f478-0cd2-4451-9fd4-d82090b71e66', 'accepted': True, 'userType': 'USER', 'modified': 1651692505000, 'created': 1588960518, 'role': 'Admin', 'rights': 63, 'active': True, 'pending': False, 'systemUser': False, 'anonymous': False}, is_success=True)</code></pre>
 </div>
 </div>
 <hr>
 <p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/get_data.py#L101" target="_blank" style="float:right; font-size:smaller">source</a></p>
 </section>
+</section>
+<section id="loopererror" class="level3">
+<h3 class="anchored" data-anchor-id="loopererror">LooperError</h3>
+<blockquote class="blockquote">
+<pre><code> LooperError (message)</code></pre>
+</blockquote>
+<p>Common base class for all non-exit exceptions.</p>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/get_data.py#L105" target="_blank" style="float:right; font-size:smaller">source</a></p>
 </section>
 <section id="looper" class="level3">
 <h3 class="anchored" data-anchor-id="looper">looper</h3>
@@ -333,7 +351,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
          arr_fn:&lt;built-infunctioncallable&gt;, loop_until_end:bool=False,
          method='POST', body:dict=None, fixed_params:dict=None,
          offset_params_in_body:bool=False, body_fn=None, limit=1000,
-         maximum=2000, debug_api:bool=False, debug_loop:bool=False)</code></pre>
+         skip=0, maximum=2000, debug_api:bool=False,
+         debug_loop:bool=False)</code></pre>
 </blockquote>
 
 
