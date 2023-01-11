@@ -12,10 +12,9 @@ from pprint import pprint
 
 import aiohttp
 
-import domolibrary.DomoAuth as dmda
-
-import domolibrary.routes.activity_log as activity_log_routes
 import domolibrary.utils.convert as convert
+import domolibrary.client.DomoAuth as dmda
+import domolibrary.routes.activity_log as activity_log_routes
 
 # %% ../../nbs/classes/50_DomoActivityLog.ipynb 4
 class ActivityLog_ObjectType(Enum):

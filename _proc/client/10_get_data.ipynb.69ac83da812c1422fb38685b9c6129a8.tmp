@@ -1,0 +1,37 @@
+url = f"https://{auth.domo_instance}.domo.com/api/query/v1/execute/{dataset_id}"
+
+    offset_params = {
+        "offset": "offset",
+        "limit": "limit",
+    }
+
+    def body_fn(skip, limit):
+        return {"sql": f"{sql} limit {limit} offset {skip}"}
+
+    def arr_fn(res) -> pd.DataFrame:
+        rows_ls = res.response.get("rows")
+        columns_ls = res.response.get("columns")
+        output = []
+        for row in rows_ls:
+            new_row = {}
+            for index, column in enumerate(columns_ls):
+                new_row[column] = row[index]
+            output.append(new_row)
+            # pd.DataFrame(data=res.response.get('rows'), columns=res.response.get('columns'))
+        return output
+
+    return await gd.looper(
+        auth=auth,
+        method="POST",
+        url=url,
+        arr_fn=arr_fn,
+        offset_params=offset_params,
+        limit=limit,
+        skip=skip,
+        maximum=maximum,
+        session=session,
+        body_fn=body_fn,
+        debug_api=debug_api,
+        debug_loop=debug_loop,
+        loop_until_end=loop_until_end
+    )

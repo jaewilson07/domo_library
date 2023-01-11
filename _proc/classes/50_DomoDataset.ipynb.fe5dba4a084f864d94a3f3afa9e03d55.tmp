@@ -1,0 +1,74 @@
+# | export
+
+class DatasetTags_AuthNotProvidedError(Exception):
+    """return if DatasetTags request cannot access an auth object"""
+
+    def __init__(self, id):
+        message = f"valid Auth object not provided to dataset - {id}"
+        super().__init__(message)
+
+@dataclass
+class DomoDataset_Tags:
+    """class for interacting with dataset tags"""
+
+    dataset: any = None
+    tag_ls: List[str] = field(default_factory=list)
+
+    def _have_prereqs(self, auth, dataset_id):
+        """tests if have a parent dataset or prerequsite dataset_id and auth object"""
+
+        if self.dataset and (not self.dataset.auth and not auth):
+            raise DatasetTags_AuthNotProvidedError(self.dataset.id)
+
+        auth = auth or self.dataset.auth
+
+        if not self.dataset and not auth:
+            raise DatasetTags_AuthNotProvidedError(self.dataset.id)
+
+        dataset_id = dataset_id or self.dataset.id
+
+        return auth, dataset_id
+        
+
+    async def get(self, auth: Optional[dmda.DomoAuth] = None,
+                  dataset_id: str = None,
+                  debug_api: bool = False) -> List[str]:
+
+        auth, dataset_id = self._have_prereqs(auth = auth, dataset_id = dataset_id)
+
+        res = await dataset_routes.get_dataset_by_id(
+            auth=auth, dataset_id=dataset_id, debug_api=debug_api
+        )
+
+        if res.is_success= True:
+
+            tag_ls = json.loads(res.response.get('tags'))
+            self.tag_ls = tag_ls
+       
+            return tag_ls
+
+    # async def set(self,
+    #               tag_ls: [str],
+    #               full_auth: dmda.DomoFullAuth = None,
+    #               debug: bool = False, log_results: bool = False,
+    #               session: aiohttp.ClientSession = None):
+
+    #     full_auth = full_auth or self.dataset.full_auth
+
+    #     res = await _set_dataset_tags(full_auth=full_auth,
+    #                                   tag_ls=list(set(tag_ls)),
+    #                                   dataset_id=self.dataset.id,
+    #                                   debug=debug,
+    #                                   session=session,
+    #                                   log_results=log_results)
+
+    #     if res.status != 200:
+    #         print('invalid response')
+    #         return None
+
+    #     new_ds = await self.dataset.get_from_id(id=self.dataset.id,
+    #                                             full_auth=self.dataset.full_auth)
+
+    #     self.tag_ls = new_ds.tags.tag_ls
+
+    #     return self.tag_ls

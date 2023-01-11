@@ -1,0 +1,5 @@
+import os 
+token_auth = dmda.DomoTokenAuth(
+    domo_access_token=os.environ["DOMO_DOJO_ACCESS_TOKEN"],
+    domo_instance="domo-dojo",
+)

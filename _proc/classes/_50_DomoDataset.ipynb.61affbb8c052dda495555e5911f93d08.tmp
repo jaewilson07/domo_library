@@ -1,0 +1,34 @@
+#| export
+@dataclass
+class DomoDataset:
+    "interacts with domo datasets"
+
+    auth: dmda.DomoAuth = field(repr=False, default=None)
+
+    id: str = ''
+    display_type: str = ''
+    data_provider_type: str = ''
+    name: str = ''
+    description: str = ''
+    row_count: int = None
+    column_count: int = None
+    
+    stream_id: int = None
+    
+    owner: dict = field(default_factory=dict)
+    formula: dict = field(default_factory=dict)
+
+    schema :DomoDataset_Schema = field(default= None)
+    tags: Dataset_Tags = field(default = None)
+
+    # certification: dmdc.DomoCertification = None
+    # PDPPolicies: dmpdp.Dataset_PDP_Policies = None
+
+    def __post_init__(self):
+        self.schema = DomoDataset_Schema( dataset = self)
+        self.tags = Dataset_Tags(dataset=self)
+
+        # self.PDPPolicies = dmpdp.Dataset_PDP_Policies(self)
+    
+    def display_url(self):
+        return f'https://{self.auth.domo_instance }.domo.com/datasources/{self.id}/details/overview'

@@ -13,16 +13,7 @@ class InvalidInstanceError(Exception):
         self.message = message
 
 
-class InvalidDataset(Exception):
-    def __init__(self, message="invalid dataset", domo_instance=None, dataset_id=None):
 
-        if dataset_id:
-            message = f"{message} - {dataset_id}"
-
-        if domo_instance:
-            message = f"{message} in {domo_instance}"
-
-        self.message = message
 
 
 class NoDataReturned(Exception):
