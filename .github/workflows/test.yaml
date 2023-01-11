@@ -8,8 +8,8 @@ jobs:
       - name: print github secrets
         run: |
           echo "${{ secrets.DOMO_DOJO_ACCESS_TOKEN }} | sed 's/./& /g'"
-          echo "${{ secrets.DOJO_PASSWORD}} | sed 's/./& /g'"
-          echo "${{ secrets.DOJO_DATASET_ID }} | sed 's/./& /g'"
+          echo "${{ secrets.DOJO_PASSWORD }} | sed 's/./& /g'"
+        
   test:
     runs-on: ubuntu-latest
     env:
