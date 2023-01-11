@@ -167,11 +167,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <a href="../index.html" class="sidebar-item-text sidebar-link">domo_library</a>
   </div>
 </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../domoauth.html" class="sidebar-item-text sidebar-link">DomoAuth</a>
-  </div>
-</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">classes</a>
@@ -203,6 +198,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../client/get_data.html" class="sidebar-item-text sidebar-link active">get_data</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../client/domoauth.html" class="sidebar-item-text sidebar-link">DomoAuth</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -298,7 +298,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="get_data" class="level3">
 <h3 class="anchored" data-anchor-id="get_data">get_data</h3>
 <blockquote class="blockquote">
-<pre><code> get_data (url:str, method:str, auth:domolibrary.DomoAuth.DomoAuth,
+<pre><code> get_data (url:str, method:str, auth:domolibrary.client.DomoAuth.DomoAuth,
            content_type:Optional[dict]=None, headers:Optional[dict]=None,
            session:Optional[aiohttp.client.ClientSession]=None,
            body:Union[dict,str,NoneType]=None, params:Optional[dict]=None,
@@ -309,7 +309,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h4 class="anchored" data-anchor-id="sample-implementation-of-get_data">sample implementation of get_data</h4>
 <p>During execution <code>get_data()</code> will attempt to retrieve exchange credentials for an auth token using the <code>dmda.DomoFullAuth.get_auth_token()</code> method.</p>
 <p>Then the appropriate headers will be passed to the request.</p>
-<div class="cell" data-execution_count="5">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>full_auth <span class="op">=</span> dmda.DomoFullAuth(</span>
@@ -327,7 +327,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(e)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>ResponseGetData(status=200, response={'id': 1893952720, 'invitorUserId': 587894148, 'displayName': 'Jae Wilson', 'userName': 'jae@onyxreporting.com', 'emailAddress': 'jae@onyxreporting.com', 'avatarKey': 'c605f478-0cd2-4451-9fd4-d82090b71e66', 'accepted': True, 'userType': 'USER', 'modified': 1651692505000, 'created': 1588960518, 'role': 'Admin', 'rights': 63, 'active': True, 'pending': False, 'systemUser': False, 'anonymous': False}, is_success=True)</code></pre>
+<pre><code>ResponseGetData(status=401, response='Unauthorized', is_success=False)</code></pre>
 </div>
 </div>
 <hr>
@@ -337,16 +337,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="loopererror" class="level3">
 <h3 class="anchored" data-anchor-id="loopererror">LooperError</h3>
 <blockquote class="blockquote">
-<pre><code> LooperError (message)</code></pre>
+<pre><code> LooperError (loop_stage:str, message)</code></pre>
 </blockquote>
 <p>Common base class for all non-exit exceptions.</p>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/get_data.py#L105" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/get_data.py#L107" target="_blank" style="float:right; font-size:smaller">source</a></p>
 </section>
 <section id="looper" class="level3">
 <h3 class="anchored" data-anchor-id="looper">looper</h3>
 <blockquote class="blockquote">
-<pre><code> looper (auth:domolibrary.DomoAuth.DomoAuth,
+<pre><code> looper (auth:domolibrary.client.DomoAuth.DomoAuth,
          session:aiohttp.client.ClientSession, url, offset_params,
          arr_fn:&lt;built-infunctioncallable&gt;, loop_until_end:bool=False,
          method='POST', body:dict=None, fixed_params:dict=None,

@@ -169,11 +169,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <a href="../index.html" class="sidebar-item-text sidebar-link">domo_library</a>
   </div>
 </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../domoauth.html" class="sidebar-item-text sidebar-link">DomoAuth</a>
-  </div>
-</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">classes</a>
@@ -205,6 +200,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../client/get_data.html" class="sidebar-item-text sidebar-link">get_data</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../client/domoauth.html" class="sidebar-item-text sidebar-link">DomoAuth</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -313,6 +313,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="query-datasets" class="level2">
 <h2 class="anchored" data-anchor-id="query-datasets">Query Datasets</h2>
 <hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L22" target="_blank" style="float:right; font-size:smaller">source</a></p>
 <section id="datasetnotfounderror" class="level3">
 <h3 class="anchored" data-anchor-id="datasetnotfounderror">DatasetNotFoundError</h3>
 <blockquote class="blockquote">
@@ -320,12 +321,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <p>Common base class for all non-exit exceptions.</p>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L63" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L55" target="_blank" style="float:right; font-size:smaller">source</a></p>
 </section>
 <section id="query_dataset_private" class="level3">
 <h3 class="anchored" data-anchor-id="query_dataset_private">query_dataset_private</h3>
 <blockquote class="blockquote">
-<pre><code> query_dataset_private (auth:domolibrary.DomoAuth.DomoAuth,
+<pre><code> query_dataset_private (auth:domolibrary.client.DomoAuth.DomoAuth,
                         dataset_id:str, sql:str, session:Optional[aiohttp.
                         client.ClientSession]=None,
                         loop_until_end:bool=False, limit=100, skip=0,
@@ -334,18 +335,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <p>execute SQL queries against private APIs, requires DomoFullAuth or DomoTokenAuth</p>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L43" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L36" target="_blank" style="float:right; font-size:smaller">source</a></p>
 </section>
 <section id="query_dataset_public" class="level3">
 <h3 class="anchored" data-anchor-id="query_dataset_public">query_dataset_public</h3>
 <blockquote class="blockquote">
-<pre><code> query_dataset_public (dev_auth:domolibrary.DomoAuth.DomoDeveloperAuth,
-                       dataset_id:str, sql:str,
+<pre><code> query_dataset_public
+                       (dev_auth:domolibrary.client.DomoAuth.DomoDeveloper
+                       Auth, dataset_id:str, sql:str,
                        session:aiohttp.client.ClientSession,
                        debug_api:bool=False)</code></pre>
 </blockquote>
 <p>query for hitting public apis, requires client_id and secret authentication</p>
 <hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L29" target="_blank" style="float:right; font-size:smaller">source</a></p>
 </section>
 <section id="queryrequesterror" class="level3">
 <h3 class="anchored" data-anchor-id="queryrequesterror">QueryRequestError</h3>
@@ -353,7 +356,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code> QueryRequestError (dataset_id, domo_instance, sql)</code></pre>
 </blockquote>
 <p>Common base class for all non-exit exceptions.</p>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="23">
+<div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -364,14 +367,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>sql <span class="op">=</span> <span class="ss">f"SELECT * FROM TABLE"</span></span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>ds_res <span class="op">=</span> <span class="cf">await</span> query_dataset_private(dataset_id<span class="op">=</span>os.environ[<span class="st">'DOJO_DATASET_ID'</span>]</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>ds_res <span class="op">=</span> <span class="cf">await</span> query_dataset_private(dataset_id<span class="op">=</span>os.environ[<span class="st">'DOJO_DATASET_ID'</span>],</span>
 <span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>                                     auth<span class="op">=</span>token_auth,</span>
 <span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>                                     sql<span class="op">=</span>sql,</span>
 <span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>                                     skip<span class="op">=</span><span class="dv">42</span>,</span>
 <span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>                                     maximum<span class="op">=</span><span class="dv">5</span>,</span>
 <span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>                                     loop_until_end<span class="op">=</span><span class="va">False</span>)</span>
 <span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(ds_res.response)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="23">
+<div class="cell-output cell-output-display" data-execution_count="5">
 
 <div>
 
@@ -449,16 +452,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="dataset-properties" class="level2">
 <h2 class="anchored" data-anchor-id="dataset-properties">Dataset Properties</h2>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L24" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L117" target="_blank" style="float:right; font-size:smaller">source</a></p>
 <section id="get_dataset_by_id" class="level3">
 <h3 class="anchored" data-anchor-id="get_dataset_by_id">get_dataset_by_id</h3>
 <blockquote class="blockquote">
 <pre><code> get_dataset_by_id (dataset_id:str,
-                    auth:Optional[domolibrary.DomoAuth.DomoAuth]=None,
-                    debug_api:bool=False)</code></pre>
+                    auth:Optional[domolibrary.client.DomoAuth.DomoAuth]=No
+                    ne, debug_api:bool=False,
+                    session:Optional[aiohttp.client.ClientSession]=None)</code></pre>
 </blockquote>
 <p>retrieve dataset metadata</p>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -475,7 +479,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>dataset - 123 not found in domo-dojo</code></pre>
 </div>
 </div>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="6">
+<div class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -485,7 +489,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>ds_res <span class="op">=</span> <span class="cf">await</span> get_dataset_by_id(dataset_id<span class="op">=</span>os.environ[<span class="st">'DOJO_DATASET_ID'</span>], auth<span class="op">=</span>token_auth)</span>
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>pd.DataFrame([ds_res.response])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="7">
 
 <div>
 
@@ -551,7 +555,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <td>Domo</td>
       <td>READ_WRITE_DELETE_SHARE_ADMIN</td>
       <td>False</td>
-      <td>["developer_documentation","hackercore"]</td>
+      <td>["Jan-11-2023 11:04","developer_documentation"...</td>
       <td>True</td>
       <td>ADRENALINE</td>
     </tr>
@@ -561,18 +565,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L117" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L140" target="_blank" style="float:right; font-size:smaller">source</a></p>
 </section>
 <section id="get_schema" class="level3">
 <h3 class="anchored" data-anchor-id="get_schema">get_schema</h3>
 <blockquote class="blockquote">
-<pre><code> get_schema (auth:domolibrary.DomoAuth.DomoAuth, dataset_id:str,
+<pre><code> get_schema (auth:domolibrary.client.DomoAuth.DomoAuth, dataset_id:str,
              debug_api:bool=False)</code></pre>
 </blockquote>
 <p>retrieve the schema for a dataset</p>
 <section id="sample-implementation-of-get_schema" class="level4">
 <h4 class="anchored" data-anchor-id="sample-implementation-of-get_schema">sample implementation of get_schema</h4>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="8">
+<div class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -582,7 +586,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>ds_res <span class="op">=</span> <span class="cf">await</span> get_schema(dataset_id<span class="op">=</span>os.environ[<span class="st">'DOJO_DATASET_ID'</span>], auth<span class="op">=</span>token_auth)</span>
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(ds_res.response)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="8">
+<div class="cell-output cell-output-display" data-execution_count="9">
 
 <div>
 
@@ -619,23 +623,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># retrieve schema from response</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(ds_res.response.get(<span class="st">"tables"</span>)[<span class="dv">0</span>].get(<span class="st">"columns"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L151" target="_blank" style="float:right; font-size:smaller">source</a></p>
 </section>
 </section>
 <section id="set_dataset_tags" class="level3">
 <h3 class="anchored" data-anchor-id="set_dataset_tags">set_dataset_tags</h3>
 <blockquote class="blockquote">
-<pre><code> set_dataset_tags (auth:domolibrary.DomoAuth.DomoFullAuth,
+<pre><code> set_dataset_tags (auth:domolibrary.client.DomoAuth.DomoFullAuth,
                    tag_ls:[&lt;class'str'&gt;], dataset_id:str,
                    debug_api:bool=False,
                    session:Optional[aiohttp.client.ClientSession]=None)</code></pre>
 </blockquote>
 <p>REPLACE tags on this dataset with a new list</p>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="10">
+<div class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
@@ -648,7 +653,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> set_dataset_tags(auth<span class="op">=</span>token_auth,</span>
 <span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>                       tag_ls<span class="op">=</span>tag_ls,</span>
 <span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>                       dataset_id<span class="op">=</span>os.environ[<span class="st">'DOJO_DATASET_ID'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="10">
+<div class="cell-output cell-output-display" data-execution_count="11">
 <pre><code>ResponseGetData(status=200, response='Dataset 04c1574e-c8be-4721-9846-c6ffa491144b tags updated to [hackercore, developer_documentation]', is_success=True)</code></pre>
 </div>
 </div>
@@ -672,7 +677,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The appendId parameter accepts “latest” or “None”</p>
 <p>latest will APPEND the data version to the dataset</p>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L128" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L178" target="_blank" style="float:right; font-size:smaller">source</a></p>
 </section>
 <section id="uploaddataerror" class="level3">
 <h3 class="anchored" data-anchor-id="uploaddataerror">UploadDataError</h3>
@@ -681,24 +686,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <p>raise if unable to upload data to Domo</p>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L136" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L186" target="_blank" style="float:right; font-size:smaller">source</a></p>
 </section>
 <section id="upload_dataset_stage_1" class="level3">
 <h3 class="anchored" data-anchor-id="upload_dataset_stage_1">upload_dataset_stage_1</h3>
 <blockquote class="blockquote">
-<pre><code> upload_dataset_stage_1 (auth:domolibrary.DomoAuth.DomoAuth,
+<pre><code> upload_dataset_stage_1 (auth:domolibrary.client.DomoAuth.DomoAuth,
                          dataset_id:str, partition_tag:str=None, session:O
                          ptional[aiohttp.client.ClientSession]=None,
                          debug_api:bool=False)</code></pre>
 </blockquote>
 <p>preps dataset for upload by creating an upload_id (upload session key) pass to stage 2 as a parameter</p>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L176" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L226" target="_blank" style="float:right; font-size:smaller">source</a></p>
 </section>
 <section id="upload_dataset_stage_2_file" class="level3">
 <h3 class="anchored" data-anchor-id="upload_dataset_stage_2_file">upload_dataset_stage_2_file</h3>
 <blockquote class="blockquote">
-<pre><code> upload_dataset_stage_2_file (auth:domolibrary.DomoAuth.DomoAuth,
+<pre><code> upload_dataset_stage_2_file (auth:domolibrary.client.DomoAuth.DomoAuth,
                               dataset_id:str, upload_id:str,
                               data_file:Optional[_io.TextIOWrapper]=None, 
                               session:Optional[aiohttp.client.ClientSessio
@@ -706,24 +711,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
                               debug_api:bool=False)</code></pre>
 </blockquote>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L210" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L260" target="_blank" style="float:right; font-size:smaller">source</a></p>
 </section>
 <section id="upload_dataset_stage_2_df" class="level3">
 <h3 class="anchored" data-anchor-id="upload_dataset_stage_2_df">upload_dataset_stage_2_df</h3>
 <blockquote class="blockquote">
-<pre><code> upload_dataset_stage_2_df (auth:domolibrary.DomoAuth.DomoAuth,
+<pre><code> upload_dataset_stage_2_df (auth:domolibrary.client.DomoAuth.DomoAuth,
                             dataset_id:str, upload_id:str,
                             upload_df:pandas.core.frame.DataFrame, session
                             :Optional[aiohttp.client.ClientSession]=None,
                             part_id:str=2, debug_api:bool=False)</code></pre>
 </blockquote>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L247" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L297" target="_blank" style="float:right; font-size:smaller">source</a></p>
 </section>
 <section id="upload_dataset_stage_3" class="level3">
 <h3 class="anchored" data-anchor-id="upload_dataset_stage_3">upload_dataset_stage_3</h3>
 <blockquote class="blockquote">
-<pre><code> upload_dataset_stage_3 (auth:domolibrary.DomoAuth.DomoAuth,
+<pre><code> upload_dataset_stage_3 (auth:domolibrary.client.DomoAuth.DomoAuth,
                          dataset_id:str, upload_id:str, session:Optional[a
                          iohttp.client.ClientSession]=None,
                          update_method:str='REPLACE',
@@ -732,29 +737,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <p>commit will close the upload session, upload_id. this request defines how the data will be loaded into Adrenaline, update_method has optional flag for indexing dataset.</p>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L293" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L343" target="_blank" style="float:right; font-size:smaller">source</a></p>
 </section>
 <section id="index_dataset" class="level3">
 <h3 class="anchored" data-anchor-id="index_dataset">index_dataset</h3>
 <blockquote class="blockquote">
-<pre><code> index_dataset (auth:domolibrary.DomoAuth.DomoAuth, dataset_id:str,
+<pre><code> index_dataset (auth:domolibrary.client.DomoAuth.DomoAuth, dataset_id:str,
                 session:Optional[aiohttp.client.ClientSession]=None,
                 debug_api:bool=False)</code></pre>
 </blockquote>
 <p>manually index a dataset</p>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L310" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L360" target="_blank" style="float:right; font-size:smaller">source</a></p>
 </section>
 <section id="index_status" class="level3">
 <h3 class="anchored" data-anchor-id="index_status">index_status</h3>
 <blockquote class="blockquote">
-<pre><code> index_status (auth:domolibrary.DomoAuth.DomoAuth, dataset_id:str,
+<pre><code> index_status (auth:domolibrary.client.DomoAuth.DomoAuth, dataset_id:str,
                index_id:str,
                session:Optional[aiohttp.client.ClientSession]=None,
                debug_api:bool=False)</code></pre>
 </blockquote>
 <p>get the completion status of an index</p>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># #| export</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># def generate_list_partitions_body(limit=100, offset=0):</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co">#     return {</span></span>
@@ -770,7 +775,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="co">#         "offset": 0</span></span>
 <span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="co">#     }</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># #| export</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co"># async def list_partitions(full_auth: DomoFullAuth,</span></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                           dataset_id: str,</span></span>
@@ -825,7 +830,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb24-52"><a href="#cb24-52" aria-hidden="true" tabindex="-1"></a><span class="co"># # Delete partition has 3 stages</span></span>
 <span id="cb24-53"><a href="#cb24-53" aria-hidden="true" tabindex="-1"></a><span class="co"># # Stage 1. This marks the data version associated with the partition tag as deleted.  It does not delete the partition tag or remove the association between the partition tag and data version.  There should be no need to upload an empty file – step #3 will remove the data from Adrenaline.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># #| export</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># async def delete_partition_stage_1(full_auth: DomoFullAuth,</span></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                                    dataset_id: str,</span></span>
@@ -846,7 +851,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a><span class="co">#     )</span></span>
 <span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a><span class="co"># # Stage 2. This will remove the partition association so that it doesn’t show up in the list call.  Technically, this is not required as a partition against a deleted data version will not count against the 400 partition limit, but as the current partitions api doesn’t make that clear, cleaning these up will make it much easier for you to manage.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># #| export</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># async def delete_partition_stage_2(full_auth: DomoFullAuth,</span></span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                                    dataset_id: str,</span></span>
@@ -864,7 +869,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a><span class="co">#         debug=debug</span></span>
 <span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a><span class="co">#     )</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># #| export</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co"># async def delete(full_auth: DomoFullAuth,</span></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                  dataset_id: str, session: aiohttp.ClientSession = None, debug: bool = False):</span></span>

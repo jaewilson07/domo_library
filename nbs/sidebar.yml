@@ -2,7 +2,6 @@ website:
   sidebar:
     contents:
       - index.ipynb
-      - 95_DomoAuth.ipynb
       - section: classes
         contents:
           - classes/50_DomoActivityLog.ipynb
@@ -10,6 +9,7 @@ website:
       - section: client
         contents:
           - client/10_get_data.ipynb
+          - client/95_DomoAuth.ipynb
           - client/99_ResponseGetData.ipynb
       - section: routes
         contents:

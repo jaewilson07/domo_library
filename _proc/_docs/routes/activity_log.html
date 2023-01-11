@@ -170,11 +170,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <a href="../index.html" class="sidebar-item-text sidebar-link">domo_library</a>
   </div>
 </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../domoauth.html" class="sidebar-item-text sidebar-link">DomoAuth</a>
-  </div>
-</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">classes</a>
@@ -206,6 +201,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../client/get_data.html" class="sidebar-item-text sidebar-link">get_data</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../client/domoauth.html" class="sidebar-item-text sidebar-link">DomoAuth</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -300,7 +300,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="get_activity_log_object_types" class="level3">
 <h3 class="anchored" data-anchor-id="get_activity_log_object_types">get_activity_log_object_types</h3>
 <blockquote class="blockquote">
-<pre><code> get_activity_log_object_types (auth:domolibrary.DomoAuth.DomoAuth)</code></pre>
+<pre><code> get_activity_log_object_types (auth:domolibrary.client.DomoAuth.DomoAuth)</code></pre>
 </blockquote>
 <p>retrieves a list of valid objectTypes that can be used to search the activity_log API</p>
 <section id="sample-implementation-of-get_activity_log_object_types" class="level4">
@@ -348,8 +348,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="search_activity_log" class="level3">
 <h3 class="anchored" data-anchor-id="search_activity_log">search_activity_log</h3>
 <blockquote class="blockquote">
-<pre><code> search_activity_log (auth:domolibrary.DomoAuth.DomoAuth, start_time:int,
-                      end_time:int, maximum:int, object_type:str=None,
+<pre><code> search_activity_log (auth:domolibrary.client.DomoAuth.DomoAuth,
+                      start_time:int, end_time:int, maximum:int,
+                      object_type:str=None,
                       session:aiohttp.client.ClientSession=None,
                       debug_api:bool=False, debug_loop:bool=False)</code></pre>
 </blockquote>
@@ -486,24 +487,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <td>04c1574e-c8be-4721-9846-c6ffa491144b</td>
       <td>DATA_SOURCE</td>
       <td>Jae Wilson updated DataSet domo_kbs.</td>
-      <td>1673355575268</td>
+      <td>1673394855540</td>
       <td>Updated DataSet</td>
       <td>None</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>Jae Wilson</td>
-      <td>1893952720</td>
+      <td>test@test.com</td>
+      <td>test@test.com</td>
       <td>USER</td>
       <td></td>
       <td>0</td>
-      <td>LOGGEDIN</td>
+      <td>FAILED_LOGIN</td>
       <td></td>
       <td></td>
       <td></td>
-      <td>Jae Wilson logged in. Logged in from IP addres...</td>
-      <td>1673355570815</td>
-      <td>Logged in</td>
+      <td>test@test.com failed logging in. Logged in fro...</td>
+      <td>1673394855316</td>
+      <td>Failed login</td>
       <td>None</td>
     </tr>
     <tr>
@@ -518,7 +519,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <td></td>
       <td></td>
       <td>Jae Wilson logged in. Logged in from IP addres...</td>
-      <td>1673355570378</td>
+      <td>1673394855028</td>
       <td>Logged in</td>
       <td>None</td>
     </tr>
@@ -534,7 +535,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <td></td>
       <td></td>
       <td>Jae Wilson logged in. Logged in from IP addres...</td>
-      <td>1673355569765</td>
+      <td>1673394854694</td>
       <td>Logged in</td>
       <td>None</td>
     </tr>
@@ -545,13 +546,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <td>USER</td>
       <td></td>
       <td>0</td>
-      <td>UPDATED</td>
-      <td>domo_kbs</td>
-      <td>04c1574e-c8be-4721-9846-c6ffa491144b</td>
-      <td>DATA_SOURCE</td>
-      <td>Jae Wilson updated DataSet domo_kbs.</td>
-      <td>1673355566574</td>
-      <td>Updated DataSet</td>
+      <td>LOGGEDIN</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>Jae Wilson logged in. Logged in from IP addres...</td>
+      <td>1673394853720</td>
+      <td>Logged in</td>
       <td>None</td>
     </tr>
   </tbody>

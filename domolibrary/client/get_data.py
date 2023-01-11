@@ -99,7 +99,7 @@ async def get_data(
 
 # %% ../../nbs/client/10_get_data.ipynb 6
 class LooperError(Exception):
-    def __init__(loop_stage: str, message ):
+    def __init__(self, loop_stage: str, message ):
 
         super().__init__(f"{loop_stage} - {message}")
 
