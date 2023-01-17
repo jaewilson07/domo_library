@@ -127,6 +127,7 @@ async def get_account_from_id(full_auth: dmda.DomoFullAuth, account_id: int,
 
 async def create_account(full_auth:dmda.DomoFullAuth, config_body:dict,
                          debug: bool = False, log_results: bool = False, session: aiohttp.ClientSession = None):
+    
     url = f"https://{full_auth.domo_instance}.domo.com/api/data/v1/accounts"
 
     if debug:
@@ -160,3 +161,56 @@ async def delete_account(full_auth:dmda.DomoFullAuth,
         debug=debug,
         session=session
     )
+
+def generate_share_account_payload_v1( user_id: int ):
+    return {"type":"USER","id":user_id,"permissions":['READ']}
+
+def generate_share_account_payload_v2( user_id: int,
+                                   access_level: str = 'CAN_VIEW' # CAN_VIEW, CAN_EDIT, CAN_SHARE
+                                  ):
+    return {"type":"USER","id":user_id,"accessLevel":access_level }
+
+
+
+async def share_account_v2(full_auth : dmda.DomoFullAuth,
+                        account_id : str,
+                        share_payload: dict,
+                        debug: bool = False,
+                        log_results :bool = False,
+                        session : aiohttp.ClientSession = None
+                       ):
+
+    url = f"https://{full_auth.domo_instance}.domo.com/api/data/v2/accounts/share/{account_id}"
+    
+    return await gd.get_data(
+        auth=full_auth,
+        url=url,
+        method='PUT',
+        body = share_payload,
+        log_results=log_results,
+        debug=debug,
+        session=session
+    )
+
+async def share_account_v1(full_auth : dmda.DomoFullAuth,
+                        account_id : str,
+                        share_payload: dict,
+                        debug: bool = False,
+                        log_results :bool = False,
+                        session : aiohttp.ClientSession = None
+                       ):
+
+    url = f"https://{full_auth.domo_instance}.domo.com/api/data/v1/accounts/{account_id}/share"
+    
+    return await gd.get_data(
+        auth=full_auth,
+        url=url,
+        method='PUT',
+        body = share_payload,
+        log_results=log_results,
+        debug=debug,
+        session=session
+    )
+
+
+

@@ -6,6 +6,7 @@ import datetime as dt
 
 import Library.DomoClasses.DomoAuth as dmda
 import Library.utils.LoggerClass as lc
+import Library.utils.Exceptions as ex
 
 class Error(Exception):
     """Base class for other exceptions"""
@@ -221,11 +222,11 @@ async def get_domains_with_global_config_auth(config_auth: dmda.DomoFullAuth,
     if len(df.index) == 0:
         raise NoConfigCompanyError(sql)
 
-    print(
-        f"\n⚙️ SUCCESS 🎉 Retrieved company list \nThere are {len(df.index)} companies to update")
+    success_str = f"\n⚙️ SUCCESS 🎉 Retrieved company list \nThere are {len(df.index)} companies to update"
+    print(success_str)
     
     if logger : 
-        logger.log_info (f"\n⚙️ SUCCESS 🎉 Retrieved company list \nThere are {len(df.index)} companies to update")
+        logger.log_info (success_str)
 
     for index, instance in df.iterrows():
         creds = global_auth
@@ -242,7 +243,12 @@ async def get_domains_with_global_config_auth(config_auth: dmda.DomoFullAuth,
         except dmda.InvalidCredentialsError as e:
             print(e)
             if logger : 
-                logger.log_error(f"Error with Invalid Credentials {instance} instance. Exception : {e}")
+                logger.log_error(f"Error with Invalid Credentials {instance} instance. Exception : {str(e)}")
+        
+        except ex.InvalidInstanceError as e:
+            print(e)
+            if logger:
+                logger.log_errror(f"Invalid Instance {instance}. Exception : {str(e)}")
         
         df.at[index, 'instance_auth'] = full_auth
         df.at[index, 'is_valid'] = 1 if (full_auth.token) else 0
