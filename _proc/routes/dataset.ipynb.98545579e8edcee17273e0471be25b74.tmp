@@ -1,0 +1,17 @@
+import os
+import pandas as pd
+
+token_auth = dmda.DomoTokenAuth(
+    domo_instance="domo-dojo", 
+    domo_access_token=os.environ["DOMO_DOJO_ACCESS_TOKEN"]
+)
+
+sql = f"SELECT * FROM TABLE"
+
+ds_res = await query_dataset_private(dataset_id= os.environ['DOJO_DATASET_ID'], 
+auth=token_auth,
+                                     sql=sql, 
+                                     skip=42, 
+                                     maximum=5,
+                                     loop_until_end=False)
+pd.DataFrame(ds_res.response)

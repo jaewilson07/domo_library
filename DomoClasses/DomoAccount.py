@@ -4,7 +4,6 @@ from dataclasses import dataclass, field
 from enum import Enum
 
 import aiohttp
-
 import Library.DomoClasses.DomoAuth as dmda
 import Library.DomoClasses.routes.account_routes as account_routes
 import Library.utils.DictDot as dcd

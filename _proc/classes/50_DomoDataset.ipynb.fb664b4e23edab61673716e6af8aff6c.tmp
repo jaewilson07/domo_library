@@ -1,0 +1,67 @@
+#| export
+
+class DatasetSchema_AuthNotProvided(Exception):
+    """return if DatasetSchema request cannot access an auth object"""
+
+    def __init__(self, id):
+        message = f"valid Auth object not provided to dataset - {id}"
+        super().__init__(message)
+
+@dataclass
+class DomoDataset_Schema_Column:
+    name: str
+    id: str
+    type: str
+
+    @classmethod
+    def _from_json(cls, json_obj):
+        dd = util_dd.DictDot(json_obj)
+        return cls(
+            name=dd.name,
+            id=dd.id,
+            type=dd.type
+        )
+
+
+@dataclass
+class DomoDataset_Schema:
+    """class for interacting with dataset schemas"""
+
+    dataset : any = None
+    columns: List[DomoDataset_Schema_Column] = field(default_factory=list)
+
+
+    async def get(self,
+        auth : Optional[dmda.DomoAuth] = None,
+        dataset_id: str = None,
+        debug_api: bool = False,
+        return_raw_res: bool = False # return the raw response
+                  ) -> List[DomoDataset_Schema_Column]:
+
+        """method that retrieves schema for a dataset"""
+            
+        if self.dataset and ( not self.dataset.auth and not auth) :
+            raise DatasetSchema_AuthNotProvided(self.dataset.id)
+
+        auth = auth or self.dataset.auth
+        
+        if not self.dataset and not auth:
+            raise DatasetSchema_AuthNotProvided(self.dataset.id)
+        
+        dataset_id = dataset_id or self.dataset.id
+
+        res = await dataset_routes.get_schema(
+            auth= auth,
+            dataset_id=dataset_id, 
+            debug_api=debug_api)
+        
+        if return_raw_res:
+            return res.response
+
+        if res.status == 200:
+            json_list = res.response.get('tables')[0].get('columns')
+
+            self.columns = [DomoDataset_Schema_Column._from_json(
+                json_obj=json_obj) for json_obj in json_list]
+                
+            return self.columns

@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.280">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>domolibrary - Dataset Routes</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+<meta property="og:title" content="domolibrary - Dataset Routes">
+<meta property="og:description" content="source">
+<meta property="og:site-name" content="domolibrary">
+<meta name="twitter:title" content="domolibrary - Dataset Routes">
+<meta name="twitter:description" content="source">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">domolibrary</span>
+    </a>
+  </div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Dataset Routes</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">domolibrary: a powerful pydomo alternative</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">classes</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domoactivitylog.html" class="sidebar-item-text sidebar-link">Activity Log</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domodataset.html" class="sidebar-item-text sidebar-link">Dataset</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">client</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../client/get_data.html" class="sidebar-item-text sidebar-link">get_data</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../client/domoauth.html" class="sidebar-item-text sidebar-link">DomoAuth</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../client/responsegetdata.html" class="sidebar-item-text sidebar-link">ResponseGetData</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">routes</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/activity_log.html" class="sidebar-item-text sidebar-link">Activity Log Routes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/dataset.html" class="sidebar-item-text sidebar-link active">Dataset Routes</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">utils</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../utils/utils.convert.html" class="sidebar-item-text sidebar-link">Conversion utility functions</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../utils/dictdot.html" class="sidebar-item-text sidebar-link">DictDot</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#query-datasets" id="toc-query-datasets" class="nav-link active" data-scroll-target="#query-datasets">Query Datasets</a>
+  <ul class="collapse">
+  <li><a href="#datasetnotfounderror" id="toc-datasetnotfounderror" class="nav-link" data-scroll-target="#datasetnotfounderror">DatasetNotFoundError</a></li>
+  <li><a href="#query_dataset_private" id="toc-query_dataset_private" class="nav-link" data-scroll-target="#query_dataset_private">query_dataset_private</a></li>
+  <li><a href="#query_dataset_public" id="toc-query_dataset_public" class="nav-link" data-scroll-target="#query_dataset_public">query_dataset_public</a></li>
+  <li><a href="#queryrequesterror" id="toc-queryrequesterror" class="nav-link" data-scroll-target="#queryrequesterror">QueryRequestError</a></li>
+  </ul></li>
+  <li><a href="#dataset-properties" id="toc-dataset-properties" class="nav-link" data-scroll-target="#dataset-properties">Dataset Properties</a>
+  <ul class="collapse">
+  <li><a href="#get_dataset_by_id" id="toc-get_dataset_by_id" class="nav-link" data-scroll-target="#get_dataset_by_id">get_dataset_by_id</a></li>
+  <li><a href="#get_schema" id="toc-get_schema" class="nav-link" data-scroll-target="#get_schema">get_schema</a></li>
+  <li><a href="#set_dataset_tags" id="toc-set_dataset_tags" class="nav-link" data-scroll-target="#set_dataset_tags">set_dataset_tags</a></li>
+  </ul></li>
+  <li><a href="#upload-data" id="toc-upload-data" class="nav-link" data-scroll-target="#upload-data">Upload Data</a>
+  <ul class="collapse">
+  <li><a href="#uploaddataerror" id="toc-uploaddataerror" class="nav-link" data-scroll-target="#uploaddataerror">UploadDataError</a></li>
+  <li><a href="#upload_dataset_stage_1" id="toc-upload_dataset_stage_1" class="nav-link" data-scroll-target="#upload_dataset_stage_1">upload_dataset_stage_1</a></li>
+  <li><a href="#upload_dataset_stage_2_file" id="toc-upload_dataset_stage_2_file" class="nav-link" data-scroll-target="#upload_dataset_stage_2_file">upload_dataset_stage_2_file</a></li>
+  <li><a href="#upload_dataset_stage_2_df" id="toc-upload_dataset_stage_2_df" class="nav-link" data-scroll-target="#upload_dataset_stage_2_df">upload_dataset_stage_2_df</a></li>
+  <li><a href="#upload_dataset_stage_3" id="toc-upload_dataset_stage_3" class="nav-link" data-scroll-target="#upload_dataset_stage_3">upload_dataset_stage_3</a></li>
+  <li><a href="#index_dataset" id="toc-index_dataset" class="nav-link" data-scroll-target="#index_dataset">index_dataset</a></li>
+  <li><a href="#index_status" id="toc-index_status" class="nav-link" data-scroll-target="#index_status">index_status</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/jaewilson07/domo_library/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Dataset Routes</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<section id="query-datasets" class="level2">
+<h2 class="anchored" data-anchor-id="query-datasets">Query Datasets</h2>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L22" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="datasetnotfounderror" class="level3">
+<h3 class="anchored" data-anchor-id="datasetnotfounderror">DatasetNotFoundError</h3>
+<blockquote class="blockquote">
+<pre><code> DatasetNotFoundError (dataset_id, domo_instance)</code></pre>
+</blockquote>
+<p>Common base class for all non-exit exceptions.</p>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L55" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="query_dataset_private" class="level3">
+<h3 class="anchored" data-anchor-id="query_dataset_private">query_dataset_private</h3>
+<blockquote class="blockquote">
+<pre><code> query_dataset_private (auth:domolibrary.client.DomoAuth.DomoAuth,
+                        dataset_id:str, sql:str, session:Optional[aiohttp.
+                        client.ClientSession]=None,
+                        loop_until_end:bool=False, limit=100, skip=0,
+                        maximum=100, debug_api:bool=False,
+                        debug_loop:bool=False)</code></pre>
+</blockquote>
+<p>execute SQL queries against private APIs, requires DomoFullAuth or DomoTokenAuth</p>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L36" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="query_dataset_public" class="level3">
+<h3 class="anchored" data-anchor-id="query_dataset_public">query_dataset_public</h3>
+<blockquote class="blockquote">
+<pre><code> query_dataset_public
+                       (dev_auth:domolibrary.client.DomoAuth.DomoDeveloper
+                       Auth, dataset_id:str, sql:str,
+                       session:aiohttp.client.ClientSession,
+                       debug_api:bool=False)</code></pre>
+</blockquote>
+<p>query for hitting public apis, requires client_id and secret authentication</p>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L29" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="queryrequesterror" class="level3">
+<h3 class="anchored" data-anchor-id="queryrequesterror">QueryRequestError</h3>
+<blockquote class="blockquote">
+<pre><code> QueryRequestError (dataset_id, domo_instance, sql)</code></pre>
+</blockquote>
+<p>Common base class for all non-exit exceptions.</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-dojo"</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>]</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>sql <span class="op">=</span> <span class="ss">f"SELECT * FROM TABLE"</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>ds_res <span class="op">=</span> <span class="cf">await</span> query_dataset_private(dataset_id<span class="op">=</span>os.environ[<span class="st">'DOJO_DATASET_ID'</span>],</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>                                     auth<span class="op">=</span>token_auth,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>                                     sql<span class="op">=</span>sql,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>                                     skip<span class="op">=</span><span class="dv">42</span>,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>                                     maximum<span class="op">=</span><span class="dv">5</span>,</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>                                     loop_until_end<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(ds_res.response)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>objectID</th>
+      <th>url</th>
+      <th>Title</th>
+      <th>article</th>
+      <th>views</th>
+      <th>created_dt</th>
+      <th>published_dt</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>000004790</td>
+      <td>https://domo-support.domo.com/s/article/360046...</td>
+      <td>Starting, Stopping, and Restarting the Workben...</td>
+      <td>Important:  Support for Workbench 4 ended on ...</td>
+      <td>39</td>
+      <td>2022-10-24T22:30:00</td>
+      <td>2022-10-24T22:41:00</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>000004796</td>
+      <td>https://domo-support.domo.com/s/article/360047...</td>
+      <td>Understanding the Workbench 4 User Interface</td>
+      <td>Important:  Support for Workbench 4 ended on ...</td>
+      <td>56</td>
+      <td>2022-10-24T22:30:00</td>
+      <td>2022-10-24T22:40:00</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>000004773</td>
+      <td>https://domo-support.domo.com/s/article/360046...</td>
+      <td>Using the External Process File Provider in Wo...</td>
+      <td>Important:  Support for Workbench 4 ended on ...</td>
+      <td>20</td>
+      <td>2022-10-24T22:30:00</td>
+      <td>2022-10-24T22:41:00</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>000004798</td>
+      <td>https://domo-support.domo.com/s/article/360046...</td>
+      <td>Workbench 4 FAQs</td>
+      <td>Important:  Support for Workbench 4 ended on ...</td>
+      <td>48</td>
+      <td>2022-10-24T22:30:00</td>
+      <td>2022-10-24T22:40:00</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>000004800</td>
+      <td>https://domo-support.domo.com/s/article/360047...</td>
+      <td>Workbench 4 Overview</td>
+      <td>Important:  Support for Workbench 4 ended on ...</td>
+      <td>40</td>
+      <td>2022-10-24T22:30:00</td>
+      <td>2022-10-24T22:41:00</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="dataset-properties" class="level2">
+<h2 class="anchored" data-anchor-id="dataset-properties">Dataset Properties</h2>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L117" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="get_dataset_by_id" class="level3">
+<h3 class="anchored" data-anchor-id="get_dataset_by_id">get_dataset_by_id</h3>
+<blockquote class="blockquote">
+<pre><code> get_dataset_by_id (dataset_id:str,
+                    auth:Optional[domolibrary.client.DomoAuth.DomoAuth]=No
+                    ne, debug_api:bool=False,
+                    session:Optional[aiohttp.client.ClientSession]=None)</code></pre>
+</blockquote>
+<p>retrieve dataset metadata</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        domo_instance<span class="op">=</span><span class="st">"domo-dojo"</span>, domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>]</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> get_dataset_by_id(dataset_id<span class="op">=</span><span class="dv">123</span>, auth<span class="op">=</span>token_auth)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> DatasetNotFoundError <span class="im">as</span> e:</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(e)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>dataset - 123 not found in domo-dojo</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-dojo"</span>, domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>]</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>ds_res <span class="op">=</span> <span class="cf">await</span> get_dataset_by_id(dataset_id<span class="op">=</span>os.environ[<span class="st">'DOJO_DATASET_ID'</span>], auth<span class="op">=</span>token_auth)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>pd.DataFrame([ds_res.response])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>id</th>
+      <th>displayType</th>
+      <th>dataProviderType</th>
+      <th>type</th>
+      <th>name</th>
+      <th>owner</th>
+      <th>status</th>
+      <th>created</th>
+      <th>lastTouched</th>
+      <th>lastUpdated</th>
+      <th>rowCount</th>
+      <th>columnCount</th>
+      <th>cardInfo</th>
+      <th>properties</th>
+      <th>state</th>
+      <th>validConfiguration</th>
+      <th>validAccount</th>
+      <th>streamId</th>
+      <th>transportType</th>
+      <th>adc</th>
+      <th>adcExternal</th>
+      <th>cloudId</th>
+      <th>cloudName</th>
+      <th>permissions</th>
+      <th>hidden</th>
+      <th>tags</th>
+      <th>scheduleActive</th>
+      <th>cryoStatus</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>04c1574e-c8be-4721-9846-c6ffa491144b</td>
+      <td>domo-jupyterdata</td>
+      <td>domo-jupyterdata</td>
+      <td>Jupyter</td>
+      <td>domo_kbs</td>
+      <td>{'id': '1893952720', 'name': 'Jae Wilson', 'ty...</td>
+      <td>SUCCESS</td>
+      <td>1668379680000</td>
+      <td>1668385822000</td>
+      <td>1668385822045</td>
+      <td>1185</td>
+      <td>7</td>
+      <td>{'cardCount': 0, 'cardViewCount': 0}</td>
+      <td>{'formulas': {'formulas': {}}}</td>
+      <td>SUCCESS</td>
+      <td>True</td>
+      <td>True</td>
+      <td>825</td>
+      <td>API</td>
+      <td>False</td>
+      <td>False</td>
+      <td>domo</td>
+      <td>Domo</td>
+      <td>READ_WRITE_DELETE_SHARE_ADMIN</td>
+      <td>False</td>
+      <td>["Jan-11-2023 13:17","developer_documentation"...</td>
+      <td>True</td>
+      <td>ADRENALINE</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L140" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="get_schema" class="level3">
+<h3 class="anchored" data-anchor-id="get_schema">get_schema</h3>
+<blockquote class="blockquote">
+<pre><code> get_schema (auth:domolibrary.client.DomoAuth.DomoAuth, dataset_id:str,
+             debug_api:bool=False)</code></pre>
+</blockquote>
+<p>retrieve the schema for a dataset</p>
+<section id="sample-implementation-of-get_schema" class="level4">
+<h4 class="anchored" data-anchor-id="sample-implementation-of-get_schema">sample implementation of get_schema</h4>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-dojo"</span>, domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>]</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>ds_res <span class="op">=</span> <span class="cf">await</span> get_schema(dataset_id<span class="op">=</span>os.environ[<span class="st">'DOJO_DATASET_ID'</span>], auth<span class="op">=</span>token_auth)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(ds_res.response)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>name</th>
+      <th>tables</th>
+      <th>dataSourceId</th>
+      <th>url</th>
+      <th>queryEndpoint</th>
+      <th>progressEndpoint</th>
+      <th>indexEndpoint</th>
+      <th>deleteEndpoint</th>
+      <th>versionId</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>domo_kbs</td>
+      <td>{'columns': [{'name': 'objectID', 'id': 'objec...</td>
+      <td>04c1574e-c8be-4721-9846-c6ffa491144b</td>
+      <td>/schemas/853832B128D75BCE</td>
+      <td>/query/mmmm-0012-0200/04c1574e-c8be-4721-9846-...</td>
+      <td>/index/mmmm-0012-0200/04c1574e-c8be-4721-9846-...</td>
+      <td>/index/mmmm-0012-0200/04c1574e-c8be-4721-9846-...</td>
+      <td>/delete/mmmm-0012-0200/04c1574e-c8be-4721-9846...</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># retrieve schema from response</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(ds_res.response.get(<span class="st">"tables"</span>)[<span class="dv">0</span>].get(<span class="st">"columns"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L151" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+</section>
+<section id="set_dataset_tags" class="level3">
+<h3 class="anchored" data-anchor-id="set_dataset_tags">set_dataset_tags</h3>
+<blockquote class="blockquote">
+<pre><code> set_dataset_tags (auth:domolibrary.client.DomoAuth.DomoFullAuth,
+                   tag_ls:[&lt;class'str'&gt;], dataset_id:str,
+                   debug_api:bool=False,
+                   session:Optional[aiohttp.client.ClientSession]=None)</code></pre>
+</blockquote>
+<p>REPLACE tags on this dataset with a new list</p>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>],</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-dojo"</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>tag_ls <span class="op">=</span> [<span class="st">'hackercore'</span>, <span class="st">'developer_documentation'</span>]</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> set_dataset_tags(auth<span class="op">=</span>token_auth,</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>                       tag_ls<span class="op">=</span>tag_ls,</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>                       dataset_id<span class="op">=</span>os.environ[<span class="st">'DOJO_DATASET_ID'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>ResponseGetData(status=200, response='Dataset 04c1574e-c8be-4721-9846-c6ffa491144b tags updated to [hackercore, developer_documentation]', is_success=True)</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="upload-data" class="level2">
+<h2 class="anchored" data-anchor-id="upload-data">Upload Data</h2>
+<section id="overview" class="level4">
+<h4 class="anchored" data-anchor-id="overview">overview</h4>
+<p>In the URL, parts refers to the multi-part API and is unrelated to the partitions concept. The multi-part API was designed to allow sending multiple streams of Data into a data_version simultaneously.</p>
+<p>In stage 1, the values passed in the Body will be superseded by values in the COMMIT (stage 3), so best practices is to not populate values here.</p>
+<p>The response includes an uploadId, which must be stored and passed to the URL of the subsequent upload request (stages 2 and 3).</p>
+</section>
+<section id="url-params" class="level4">
+<h4 class="anchored" data-anchor-id="url-params">url params</h4>
+<p>The dataTag parameter allows users to UPDATE or REPLACE a datatag (partition)</p>
+<p>NOTE: restateDataTag is largely deprecated // exists for backward compatibility</p>
+</section>
+<section id="body-params" class="level4">
+<h4 class="anchored" data-anchor-id="body-params">body params</h4>
+<p>The appendId parameter accepts “latest” or “None”</p>
+<p>latest will APPEND the data version to the dataset</p>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L178" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="uploaddataerror" class="level3">
+<h3 class="anchored" data-anchor-id="uploaddataerror">UploadDataError</h3>
+<blockquote class="blockquote">
+<pre><code> UploadDataError (stage_num:int, dataset_id:str, domo_instance:str)</code></pre>
+</blockquote>
+<p>raise if unable to upload data to Domo</p>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L186" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="upload_dataset_stage_1" class="level3">
+<h3 class="anchored" data-anchor-id="upload_dataset_stage_1">upload_dataset_stage_1</h3>
+<blockquote class="blockquote">
+<pre><code> upload_dataset_stage_1 (auth:domolibrary.client.DomoAuth.DomoAuth,
+                         dataset_id:str, partition_tag:str=None, session:O
+                         ptional[aiohttp.client.ClientSession]=None,
+                         debug_api:bool=False)</code></pre>
+</blockquote>
+<p>preps dataset for upload by creating an upload_id (upload session key) pass to stage 2 as a parameter</p>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L226" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="upload_dataset_stage_2_file" class="level3">
+<h3 class="anchored" data-anchor-id="upload_dataset_stage_2_file">upload_dataset_stage_2_file</h3>
+<blockquote class="blockquote">
+<pre><code> upload_dataset_stage_2_file (auth:domolibrary.client.DomoAuth.DomoAuth,
+                              dataset_id:str, upload_id:str,
+                              data_file:Optional[_io.TextIOWrapper]=None, 
+                              session:Optional[aiohttp.client.ClientSessio
+                              n]=None, part_id:str=2,
+                              debug_api:bool=False)</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L260" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="upload_dataset_stage_2_df" class="level3">
+<h3 class="anchored" data-anchor-id="upload_dataset_stage_2_df">upload_dataset_stage_2_df</h3>
+<blockquote class="blockquote">
+<pre><code> upload_dataset_stage_2_df (auth:domolibrary.client.DomoAuth.DomoAuth,
+                            dataset_id:str, upload_id:str,
+                            upload_df:pandas.core.frame.DataFrame, session
+                            :Optional[aiohttp.client.ClientSession]=None,
+                            part_id:str=2, debug_api:bool=False)</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L297" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="upload_dataset_stage_3" class="level3">
+<h3 class="anchored" data-anchor-id="upload_dataset_stage_3">upload_dataset_stage_3</h3>
+<blockquote class="blockquote">
+<pre><code> upload_dataset_stage_3 (auth:domolibrary.client.DomoAuth.DomoAuth,
+                         dataset_id:str, upload_id:str, session:Optional[a
+                         iohttp.client.ClientSession]=None,
+                         update_method:str='REPLACE',
+                         partition_tag:str=None, is_index:bool=False,
+                         debug_api:bool=False)</code></pre>
+</blockquote>
+<p>commit will close the upload session, upload_id. this request defines how the data will be loaded into Adrenaline, update_method has optional flag for indexing dataset.</p>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L343" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="index_dataset" class="level3">
+<h3 class="anchored" data-anchor-id="index_dataset">index_dataset</h3>
+<blockquote class="blockquote">
+<pre><code> index_dataset (auth:domolibrary.client.DomoAuth.DomoAuth, dataset_id:str,
+                session:Optional[aiohttp.client.ClientSession]=None,
+                debug_api:bool=False)</code></pre>
+</blockquote>
+<p>manually index a dataset</p>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/dataset.py#L360" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="index_status" class="level3">
+<h3 class="anchored" data-anchor-id="index_status">index_status</h3>
+<blockquote class="blockquote">
+<pre><code> index_status (auth:domolibrary.client.DomoAuth.DomoAuth, dataset_id:str,
+               index_id:str,
+               session:Optional[aiohttp.client.ClientSession]=None,
+               debug_api:bool=False)</code></pre>
+</blockquote>
+<p>get the completion status of an index</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># #| export</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># def generate_list_partitions_body(limit=100, offset=0):</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co">#     return {</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co">#         "paginationFields": [{</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co">#             "fieldName": "datecompleted",</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="co">#             "sortOrder": "DESC",</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co">#             "filterValues": {</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="co">#                 "MIN": None,</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co">#                 "MAX": None</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co">#             }</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="co">#         }],</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="co">#         "limit": 1000,</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="co">#         "offset": 0</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="co">#     }</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># #| export</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co"># async def list_partitions(full_auth: DomoFullAuth,</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                           dataset_id: str,</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co">#                           body: dict = None,</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co">#                           maximum: int = None,</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="co">#                           loop_until_end: bool = True,</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co">#                           session: aiohttp.ClientSession = None,</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co">#                           debug: bool = False):</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="co">#     try:</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="co">#         is_close_session = False if session else True</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="co">#         if not session:</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="co">#             session = aiohttp.ClientSession()</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a><span class="co">#         body = body or generate_list_partitions_body()</span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a><span class="co">#         url = f"https://{full_auth.domo_instance}.domo.com/api/query/v1/datasources/{dataset_id}/partition/list"</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a><span class="co">#         offset_params = {</span></span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a><span class="co">#             'offset': 'offset',</span></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="co">#             'limit': 'limit',</span></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a><span class="co">#         }</span></span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a><span class="co">#         def arr_fn(res) -&gt; list[dict]:</span></span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a><span class="co">#             return res.response</span></span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a><span class="co">#         res = await looper(auth=full_auth,</span></span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a><span class="co">#                            method='POST',</span></span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a><span class="co">#                            url=url,</span></span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a><span class="co">#                            arr_fn=arr_fn,</span></span>
+<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a><span class="co">#                            body=body,</span></span>
+<span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a><span class="co">#                            offset_params_in_body=True,</span></span>
+<span id="cb24-34"><a href="#cb24-34" aria-hidden="true" tabindex="-1"></a><span class="co">#                            offset_params=offset_params,</span></span>
+<span id="cb24-35"><a href="#cb24-35" aria-hidden="true" tabindex="-1"></a><span class="co">#                            loop_until_end=True,</span></span>
+<span id="cb24-36"><a href="#cb24-36" aria-hidden="true" tabindex="-1"></a><span class="co">#                            session=session,</span></span>
+<span id="cb24-37"><a href="#cb24-37" aria-hidden="true" tabindex="-1"></a><span class="co">#                            debug=debug)</span></span>
+<span id="cb24-38"><a href="#cb24-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-39"><a href="#cb24-39" aria-hidden="true" tabindex="-1"></a><span class="co">#         if isinstance(res, list):</span></span>
+<span id="cb24-40"><a href="#cb24-40" aria-hidden="true" tabindex="-1"></a><span class="co">#             return ResponseGetData(status=200,</span></span>
+<span id="cb24-41"><a href="#cb24-41" aria-hidden="true" tabindex="-1"></a><span class="co">#                                    response=res,</span></span>
+<span id="cb24-42"><a href="#cb24-42" aria-hidden="true" tabindex="-1"></a><span class="co">#                                    is_success=True)</span></span>
+<span id="cb24-43"><a href="#cb24-43" aria-hidden="true" tabindex="-1"></a><span class="co">#         else:</span></span>
+<span id="cb24-44"><a href="#cb24-44" aria-hidden="true" tabindex="-1"></a><span class="co">#             return ResponseGetData(status=400,</span></span>
+<span id="cb24-45"><a href="#cb24-45" aria-hidden="true" tabindex="-1"></a><span class="co">#                                    response=None,</span></span>
+<span id="cb24-46"><a href="#cb24-46" aria-hidden="true" tabindex="-1"></a><span class="co">#                                    is_success=False)</span></span>
+<span id="cb24-47"><a href="#cb24-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-48"><a href="#cb24-48" aria-hidden="true" tabindex="-1"></a><span class="co">#     finally:</span></span>
+<span id="cb24-49"><a href="#cb24-49" aria-hidden="true" tabindex="-1"></a><span class="co">#         if is_close_session:</span></span>
+<span id="cb24-50"><a href="#cb24-50" aria-hidden="true" tabindex="-1"></a><span class="co">#             await session.close()</span></span>
+<span id="cb24-51"><a href="#cb24-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-52"><a href="#cb24-52" aria-hidden="true" tabindex="-1"></a><span class="co"># # Delete partition has 3 stages</span></span>
+<span id="cb24-53"><a href="#cb24-53" aria-hidden="true" tabindex="-1"></a><span class="co"># # Stage 1. This marks the data version associated with the partition tag as deleted.  It does not delete the partition tag or remove the association between the partition tag and data version.  There should be no need to upload an empty file – step #3 will remove the data from Adrenaline.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># #| export</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># async def delete_partition_stage_1(full_auth: DomoFullAuth,</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                                    dataset_id: str,</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co">#                                    dataset_partition_id: str,</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co">#                                    session: aiohttp.ClientSession = None,</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="co">#                                    debug: bool = False):</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="co">#     #url = f'https://{full_auth.domo_instance}.domo.com/api/query/v1/datasources/{dataset_id}/partition/{dataset_partition_id}'</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="co">#     # update on 9/9/2022 based on the conversation with Greg Swensen</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="co">#     url = f'https://{full_auth.domo_instance}.domo.com/api/query/v1/datasources/{dataset_id}/tag/{dataset_partition_id}/data'</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a><span class="co">#     return await get_data(</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="co">#         auth=full_auth,</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a><span class="co">#         method="DELETE",</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a><span class="co">#         url=url,</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a><span class="co">#         session=session,</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a><span class="co">#         debug=debug</span></span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a><span class="co">#     )</span></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a><span class="co"># # Stage 2. This will remove the partition association so that it doesn’t show up in the list call.  Technically, this is not required as a partition against a deleted data version will not count against the 400 partition limit, but as the current partitions api doesn’t make that clear, cleaning these up will make it much easier for you to manage.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># #| export</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># async def delete_partition_stage_2(full_auth: DomoFullAuth,</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                                    dataset_id: str,</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co">#                                    dataset_partition_id: str,</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co">#                                    session: aiohttp.ClientSession = None,</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="co">#                                    debug: bool = False):</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="co">#     url = f'https://{full_auth.domo_instance}.domo.com/api/query/v1/datasources/{dataset_id}/partition/{dataset_partition_id}'</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="co">#     return await get_data(</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="co">#         auth=full_auth,</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="co">#         method="DELETE",</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="co">#         url=url,</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="co">#         session=session,</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a><span class="co">#         debug=debug</span></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a><span class="co">#     )</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># #| export</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co"># async def delete(full_auth: DomoFullAuth,</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                  dataset_id: str, session: aiohttp.ClientSession = None, debug: bool = False):</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     url = f"https://{full_auth.domo_instance}.domo.com/api/data/v3/datasources/{dataset_id}?deleteMethod=hard"</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="co">#     return await get_data(</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="co">#         auth=full_auth,</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="co">#         method="DELETE",</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="co">#         url=url,</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="co">#         session=session,</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a><span class="co">#         debug=debug</span></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a><span class="co">#     )</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
