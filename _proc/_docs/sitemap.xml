@@ -1,51 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://jaewilson07.github.io/domo_library/client/get_data.html</loc>
-    <lastmod>2023-01-11T13:13:19.035Z</lastmod>
-  </url>
-  <url>
-    <loc>https://jaewilson07.github.io/domo_library/client/responsegetdata.html</loc>
-    <lastmod>2023-01-10T12:59:31.293Z</lastmod>
-  </url>
-  <url>
-    <loc>https://jaewilson07.github.io/domo_library/routes/activity_log.html</loc>
-    <lastmod>2023-01-11T11:04:19.953Z</lastmod>
-  </url>
-  <url>
-    <loc>https://jaewilson07.github.io/domo_library/index.html</loc>
-    <lastmod>2023-01-11T13:17:39.509Z</lastmod>
-  </url>
-  <url>
-    <loc>https://jaewilson07.github.io/domo_library/domoauth.html</loc>
-    <lastmod>2023-01-09T22:29:29.287Z</lastmod>
-  </url>
-  <url>
-    <loc>https://jaewilson07.github.io/domo_library/utils/utils.convert.html</loc>
-    <lastmod>2023-01-07T00:51:44.999Z</lastmod>
-  </url>
-  <url>
-    <loc>https://jaewilson07.github.io/domo_library/utils/dictdot.html</loc>
-    <lastmod>2023-01-07T00:51:45.263Z</lastmod>
+    <loc>https://jaewilson07.github.io/domo_library/classes/domodataset.html</loc>
+    <lastmod>2023-01-17T21:18:09.679Z</lastmod>
   </url>
   <url>
     <loc>https://jaewilson07.github.io/domo_library/classes/domoactivitylog.html</loc>
-    <lastmod>2023-01-11T11:04:18.349Z</lastmod>
+    <lastmod>2023-01-17T21:16:23.520Z</lastmod>
   </url>
   <url>
-    <loc>https://jaewilson07.github.io/domo_library/routes/dataset.html</loc>
-    <lastmod>2023-01-11T13:17:45.193Z</lastmod>
+    <loc>https://jaewilson07.github.io/domo_library/client/get_data.html</loc>
+    <lastmod>2023-01-17T21:16:23.868Z</lastmod>
   </url>
   <url>
-    <loc>https://jaewilson07.github.io/domo_library/classes/domodataset.html</loc>
-    <lastmod>2023-01-11T13:17:51.473Z</lastmod>
+    <loc>https://jaewilson07.github.io/domo_library/client/logger.html</loc>
+    <lastmod>2023-01-17T21:16:24.276Z</lastmod>
   </url>
   <url>
-    <loc>https://jaewilson07.github.io/domo_library/routes/tag.html</loc>
-    <lastmod>2023-01-10T11:58:23.714Z</lastmod>
+    <loc>https://jaewilson07.github.io/domo_library/client/responsegetdata.html</loc>
+    <lastmod>2023-01-17T21:16:24.604Z</lastmod>
   </url>
   <url>
     <loc>https://jaewilson07.github.io/domo_library/client/domoauth.html</loc>
-    <lastmod>2023-01-11T11:04:19.129Z</lastmod>
+    <lastmod>2023-01-17T21:16:25.040Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jaewilson07.github.io/domo_library/routes/dataset.html</loc>
+    <lastmod>2023-01-17T21:16:25.464Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jaewilson07.github.io/domo_library/routes/activity_log.html</loc>
+    <lastmod>2023-01-17T21:16:25.844Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jaewilson07.github.io/domo_library/index.html</loc>
+    <lastmod>2023-01-17T21:17:58.879Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jaewilson07.github.io/domo_library/utils/utils.convert.html</loc>
+    <lastmod>2023-01-17T21:16:26.732Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jaewilson07.github.io/domo_library/utils/dictdot.html</loc>
+    <lastmod>2023-01-17T21:16:27.052Z</lastmod>
   </url>
 </urlset>

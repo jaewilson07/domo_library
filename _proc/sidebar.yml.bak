@@ -2,6 +2,21 @@ website:
   sidebar:
     contents:
       - index.ipynb
-      - 00_core.ipynb
-      - 95_DomoAuth.ipynb
-      - 99_ResponseGetData.ipynb
+      - section: classes
+        contents:
+          - classes/50_DomoActivityLog.ipynb
+          - classes/50_DomoDataset.ipynb
+      - section: client
+        contents:
+          - client/10_get_data.ipynb
+          - client/95_DomoAuth.ipynb
+          - client/95_Logger.ipynb
+          - client/99_ResponseGetData.ipynb
+      - section: routes
+        contents:
+          - routes/activity_log.ipynb
+          - routes/dataset.ipynb
+      - section: utils
+        contents:
+          - utils/50_utils.convert.ipynb
+          - utils/99_DictDot.ipynb

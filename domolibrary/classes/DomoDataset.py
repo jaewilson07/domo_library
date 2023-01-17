@@ -3,10 +3,11 @@
 # %% auto 0
 __all__ = ['DatasetSchema_AuthNotProvidedError', 'DatasetSchema_DatasetNotProvidedError', 'DomoDataset_Schema_Column',
            'DomoDataset_Schema', 'DatasetTags_AuthNotProvidedError', 'DatasetTags_SetTagsError', 'DomoDataset_Tags',
-           'DomoDataset']
+           'DomoDataset', 'QueryExecutionError']
 
 # %% ../../nbs/classes/50_DomoDataset.ipynb 4
-from fastcore.basics import patch
+from fastcore.basics import patch, patch_to
+import pandas as pd
 
 # %% ../../nbs/classes/50_DomoDataset.ipynb 5
 from dataclasses import dataclass, field
@@ -332,4 +333,43 @@ async def get_from_id(
     #         dd.certification)
 
     return ds
+
+
+# %% ../../nbs/classes/50_DomoDataset.ipynb 27
+class QueryExecutionError(Exception):
+    def __init__(self, sql, dataset_id, domo_instance):
+        self.message = f"error executing {sql} against dataset {dataset_id} in {domo_instance}"
+        super.__init__(self, self.message)
+
+
+@patch_to(DomoDataset, cls_method=True)
+async def query_dataset_private(cls: DomoDataset,
+                                auth: dmda.DomoAuth,  # DomoFullAuth or DomoTokenAuth
+                                dataset_id: str,
+                                sql: str,
+                                session: Optional[aiohttp.ClientSession] = None,
+                                loop_until_end: bool = False,  # retrieve all available rows
+                                limit=100,  # maximum rows to return per request.  refers to PAGINATION
+                                skip=0,
+                                maximum=100,  # equivalent to the LIMIT or TOP clause in SQL, the number of rows to return total
+                                debug_api: bool = False,
+                                debug_loop: bool = False,
+                                ) -> pd.DataFrame:
+
+    res = await dataset_routes.query_dataset_private(auth=auth,
+                                                     dataset_id=dataset_id,
+                                                     sql=sql,
+                                                     maximum=maximum,
+                                                     skip=skip,
+                                                     limit=limit,
+                                                     loop_until_end=loop_until_end,
+                                                     session=session,
+                                                     debug_loop=debug_loop,
+                                                     debug_api=debug_api
+                                                     )
+
+    if not res.is_success:
+        raise QueryExecutionError(sql=sql, dataset_id=dataset_id, domo_instance=auth.domo_instance)
+
+    return pd.DataFrame(res.response)
 

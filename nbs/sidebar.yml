@@ -10,6 +10,7 @@ website:
         contents:
           - client/10_get_data.ipynb
           - client/95_DomoAuth.ipynb
+          - client/95_Logger.ipynb
           - client/99_ResponseGetData.ipynb
       - section: routes
         contents:
