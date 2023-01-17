@@ -43,10 +43,18 @@ class DomoBootstrap:
 
     @classmethod
     async def get_features(cls, full_auth: DomoFullAuth,
-                           session: aiohttp.ClientSession, debug: bool = False):
+                           session: aiohttp.ClientSession = None, debug: bool = False):
+        is_close_session= False
+        if not session:
+            session = aiohttp.ClientSession()
+            is_close_session= True
+            
         json_list = await bootstrap_routes.bsr_features(full_auth=full_auth, session=session, debug=debug)
 
+        if is_close_session:
+            await session.close()
+            
         feature_list = [DomoBootstrapFeature.create_from_json_bootstrap(
             json_obj) for json_obj in json_list]
-
+        
         return feature_list

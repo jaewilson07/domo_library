@@ -181,6 +181,7 @@ class DomoAccount:
                              full_auth: dmda.DomoFullAuth = None,
                              #  config_body: dict,
                              debug: bool = False, log_results: bool = False, session: aiohttp.ClientSession = None):
+        
         full_auth = full_auth or self.full_auth
 
         res = await account_routes.create_account(full_auth=full_auth,
@@ -216,3 +217,35 @@ class DomoAccount:
             return False
 
         return True
+    
+    async def share_account(self, 
+                            full_auth : dmda.DomoFullAuth,
+                            user_id: int,
+                            is_v2: bool = False,
+                            access_level: str = 'CAN_VIEW', # for v2 account_sharing beta CAN_VIEW, CAN_EDIT, CAN_SHARE
+                            debug: bool = False,
+                            log_results :bool = False,
+                            session : aiohttp.ClientSession = None ):
+        
+        
+
+        if is_v2:
+            share_payload = account_routes.generate_share_account_payload_v2(user_id = user_id,
+                                                                          access_level = access_level)
+            return await account_routes.share_account_v2(full_auth = full_auth,
+                                                  account_id = self.id,
+                                                  share_payload = share_payload,
+                                                  debug = debug, 
+                                                  log_results = log_results,
+                                                  session = session                                           
+                                                 )
+        
+        share_payload = account_routes.generate_share_account_payload_v1(user_id = user_id)
+        return await account_routes.share_account_v1(full_auth = full_auth,
+                                                  account_id = self.id,
+                                                  share_payload = share_payload,
+                                                  debug = debug, 
+                                                  log_results = log_results,
+                                                  session = session                                           
+                                                 )
+        

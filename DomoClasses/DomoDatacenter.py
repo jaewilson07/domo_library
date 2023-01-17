@@ -18,6 +18,7 @@ class DomoEntity(Enum):
     DATAFLOW = 'DATAFLOW'
     PAGE = 'PAGE'
     CARD = 'CARD'
+    ACCOUNT = 'ACCOUNT'
 
 
 class DomoDatacenter:
@@ -31,6 +32,8 @@ class DomoDatacenter:
                                         offset: int = 0):
         return {
             "entities": entities_list,
+            #old value on Jan 13
+            #"entityList": entities_list,
             "filters": filters or [],
             "combineResults": combineResults,
             "query": "*",
@@ -83,14 +86,14 @@ class DomoDatacenter:
                                                              maximum=maximum,
                                                              body=body,
                                                              session=session,
-                                                             debug=False)
+                                                             debug=debug)
 
         return await datacenter_routes.search_datacenter(full_auth=full_auth,
                                                          arr_fn=arr_fn,
                                                          alter_maximum_fn=alter_maximum_fn,
                                                          body=body,
                                                          session=session,
-                                                         debug=False)
+                                                         debug=debug)
 
     @classmethod
     async def search_datasets(cls,
@@ -102,6 +105,7 @@ class DomoDatacenter:
 
         if not body:
             body = DomoDatacenter.generate_search_datacenter_body(
+                
                 entities_list=['DATASET'],
                 filters=[],
                 count=1000,

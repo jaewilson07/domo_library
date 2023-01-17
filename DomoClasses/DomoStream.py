@@ -6,9 +6,11 @@ from typing import List, Any
 
 from .DomoAuth import DomoFullAuth
 import Library.DomoClasses.DomoDatacenter as dmdc
+import Library.utils.LoggerClass as lc
 from .routes import stream_routes
 from ..utils.Base import Base
 from ..utils.DictDot import DictDot
+
 
 custom_query = ['enteredCustomQuery', 'query', 'customQuery']
 
@@ -39,9 +41,13 @@ class DomoStream(Base):
     configuration_query: str = None
 
     @classmethod
-    async def get_definition(cls, full_auth: DomoFullAuth, stream_id: str, session: aiohttp.ClientSession = None):
-        # self.column_usage = []
-
+    async def get_definition(cls,
+                             full_auth: DomoFullAuth, 
+                             stream_id: str, 
+                             session: aiohttp.ClientSession = None, 
+                             logger: lc.MyLogger = None):
+        if logger : 
+            logger.log_info (f"⚙️ get_definition: for {stream_id}")
         if stream_id is None:
             return None
 
@@ -51,8 +57,10 @@ class DomoStream(Base):
                                                         )
 
         if res.status != 200:
-            print(
-                f"error retrieving stream {stream_id} from {full_auth.domo_instance}")
+            error_str = f"get_definition: error retrieving stream {stream_id} from {full_auth.domo_instance}"
+            print(error_str)
+            if logger : 
+                logger.log_error(error_str)
             return None
 
         dd = DictDot(res.response)
@@ -89,8 +97,11 @@ class DomoStream(Base):
                         sd.configuration_tables.append(table)
                     sd.configuration_tables = sorted(
                         list(set(sd.configuration_tables)))
-                except:
-                    # print('unable to parse table')
+                    
+                except Exception as e:
+                    if logger : 
+                        logger.log_error(f"get_definition: unable to parse table for stream {stream_id}. Exception : {e}")
+                    print('ALERT: unable to parse table')
                     sd.configuration_tables = ['unable to auto-parse query']
 
             sd.configuration.append(sc)

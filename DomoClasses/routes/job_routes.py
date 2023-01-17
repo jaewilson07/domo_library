@@ -118,3 +118,69 @@ def generate_body_remote_domostats(target_instance: str,
         pprint(body)
 
     return body
+
+
+def generate_body_watchdog_generic(job_name: str,
+                                        notify_user_ids_ls: list,
+                                        notify_group_ids_ls: list,
+                                        notify_emails_ls: list,
+                                        entity_ids_ls: list,
+                                        entity_type : str,
+                                        metric_dataset_id: str,
+                                        schedule_ls: list,
+                                        job_type : str,
+                                        execution_timeout: int = 1440,
+                                        debug: bool = False):
+
+    body = {
+        "jobName": job_name,
+        "jobDescription": f'Watchdog for {job_name}',
+        "executionTimeout": execution_timeout,
+        "accounts": [],
+        "executionPayload": {
+            "notifyUserIds": notify_user_ids_ls or [],
+            "notifyGroupIds": notify_group_ids_ls or [],
+            "notifyEmailAddresses": notify_emails_ls or [],
+        "watcherParameters": {
+          "entityIds": entity_ids_ls,
+          "type": job_type,
+          "entityType": entity_type
+            },
+        "metricsDatasetId": metric_dataset_id
+          },
+        "resources": {
+            "requests": {"memory": "256Mi"},
+            "limits": {"memory": "256Mi"}
+        },
+        "triggers": schedule_ls
+    }
+
+    if debug:
+        pprint(body)
+
+    return body
+
+# update the job
+async def update_job(full_auth: DomoFullAuth,
+                  body: dict,
+                  job_id :str,
+                  application_id: str,
+                  session: aiohttp.ClientSession = None,
+                  debug: bool = False,
+                  log_results: bool = False
+                  ):
+
+    url = f'https://{full_auth.domo_instance}.domo.com/api/executor/v1/applications/{application_id}/jobs/{job_id}'
+
+    if debug:
+        print(url)
+
+    return await get_data(
+        auth=full_auth,
+        url=url,
+        method='PUT',
+        body=body,
+        log_results=log_results,
+        debug=debug,
+        session=session
+    )
