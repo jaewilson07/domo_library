@@ -19,6 +19,7 @@ async def get_full_auth(
     domo_username: str,  # email address
     domo_password: str,
     session: Optional[aiohttp.ClientSession] = None,
+    debug_api: bool = False
 ) -> rgd.ResponseGetData:
     """uses username and password authentication to retrieve a full_auth access token"""
 
@@ -38,6 +39,9 @@ async def get_full_auth(
         "password": domo_password,
     }
 
+    if debug_api:
+        print(body, url)
+
     res = await session.request(method="POST", url=url, headers=tokenHeaders, json=body)
 
     if is_close_session:
@@ -50,6 +54,7 @@ async def get_developer_auth(
     domo_client_id: str,
     domo_client_secret: str,
     session: Optional[aiohttp.ClientSession] = None,
+    debug_api: bool = False
 ) -> rgd.ResponseGetData:
 
     """
@@ -65,6 +70,9 @@ async def get_developer_auth(
 
     url = f"https://api.domo.com/oauth/token?grant_type=client_credentials"
 
+    if debug_api:
+        print(url, domo_client_id, domo_client_secret)
+
     res = await session.request(method="GET", url=url)
 
     if is_close_session:
@@ -77,6 +85,7 @@ async def test_access_token(
     domo_access_token: str,  # as provided in Domo > Admin > Authentication > AccessTokens
     domo_instance: str,  # <domo_instance>.domo.com
     session: Optional[aiohttp.ClientSession] = None,
+    debug_api: bool = False
 ):
     """
     will attempt to validate against the 'me' API.
@@ -92,6 +101,9 @@ async def test_access_token(
     url = f"https://{domo_instance}.domo.com/api/content/v2/users/me"
 
     tokenHeaders = {"X-DOMO-Developer-Token": domo_access_token}
+
+    if debug_api:
+        print(url,tokenHeaders)
 
     res = await session.request(method="GET", headers=tokenHeaders, url=url)
 
@@ -203,6 +215,7 @@ class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required):
     async def get_auth_token(
         self,
         session: Optional[aiohttp.ClientSession] = None,
+        debug_api : bool = False
     ) -> str:
         """returns `token` if valid credentials provided else raises Exception and returns None"""
 
@@ -211,6 +224,7 @@ class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required):
             domo_username=self.domo_username,
             domo_password=self.domo_password,
             session=session,
+            debug_api = debug_api
         )
 
         if res.is_success and res.response.get("reason") == "INVALID_CREDENTIALS":
@@ -259,7 +273,8 @@ class DomoTokenAuth(_DomoAuth_Optional, _DomoTokenAuth_Required):
         return self.auth_header
 
     async def get_auth_token(
-        self, session: Optional[aiohttp.ClientSession] = None
+        self, session: Optional[aiohttp.ClientSession] = None,
+        debug_api : bool = False
     ) -> str:
         """
         updates internal attributes
@@ -270,6 +285,7 @@ class DomoTokenAuth(_DomoAuth_Optional, _DomoTokenAuth_Required):
             domo_instance=self.domo_instance,
             domo_access_token=self.domo_access_token,
             session=session,
+            debug_api = debug_api
         )
 
         if res.status == 401 and res.response == "Unauthorized":
@@ -314,12 +330,14 @@ class DomoDeveloperAuth(_DomoAuth_Optional, _DomoDeveloperAuth_Required):
     async def get_auth_token(
         self,
         session: Optional[aiohttp.ClientSession] = None,
+        debug_api : bool = False
     ) -> str:
 
         res = await get_developer_auth(
             domo_client_id=self.domo_client_id,
             domo_client_secret=self.domo_client_secret,
             session=session,
+            debug_api = debug_api
         )
 
         if res.status == 401:

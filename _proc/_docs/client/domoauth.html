@@ -219,12 +219,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">routes</a>
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">integrations</a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../integrations/domojupyter.html" class="sidebar-item-text sidebar-link">DomoJupyter (GetInstanceCredentials)</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">routes</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../routes/activity_log.html" class="sidebar-item-text sidebar-link">Activity Log Routes</a>
@@ -239,12 +254,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">utils</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">utils</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../utils/utils.convert.html" class="sidebar-item-text sidebar-link">Conversion utility functions</a>
@@ -342,7 +357,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3 class="anchored" data-anchor-id="get_full_auth">get_full_auth</h3>
 <blockquote class="blockquote">
 <pre><code> get_full_auth (domo_instance:str, domo_username:str, domo_password:str,
-                session:Optional[aiohttp.client.ClientSession]=None)</code></pre>
+                session:Optional[aiohttp.client.ClientSession]=None,
+                debug_api:bool=False)</code></pre>
 </blockquote>
 <p>uses username and password authentication to retrieve a full_auth access token</p>
 <section id="sample-implementations-of-get_full_auth" class="level4">
@@ -366,7 +382,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                          domo_password<span class="op">=</span><span class="st">"fake password"</span>)</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>res</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<pre><code>ResponseGetData(status=403, response='Forbidden', is_success=False, auth=None)</code></pre>
+<pre><code>ResponseGetData(status=403, response='Forbidden', is_success=False)</code></pre>
 </div>
 </div>
 <p>The 403 response is expected because test.domo.com presumeably does not exist or access if forbidden.</p>
@@ -376,12 +392,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="developer-auth-route---client_id-and-secret-authentication" class="level2">
 <h2 class="anchored" data-anchor-id="developer-auth-route---client_id-and-secret-authentication">Developer Auth Route - client_id and secret authentication</h2>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/DomoAuth.py#L49" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/DomoAuth.py#L53" target="_blank" style="float:right; font-size:smaller">source</a></p>
 <section id="get_developer_auth" class="level3">
 <h3 class="anchored" data-anchor-id="get_developer_auth">get_developer_auth</h3>
 <blockquote class="blockquote">
 <pre><code> get_developer_auth (domo_client_id:str, domo_client_secret:str,
-                     session:Optional[aiohttp.client.ClientSession]=None)</code></pre>
+                     session:Optional[aiohttp.client.ClientSession]=None,
+                     debug_api:bool=False)</code></pre>
 </blockquote>
 <p>only use for authenticating against apis documented under developer.domo.com</p>
 <section id="sample-implementations-of-get_developer_auth" class="level4">
@@ -392,7 +409,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                         domo_client_secret<span class="op">=</span><span class="st">"test_secret"</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                         )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<pre><code>ResponseGetData(status=401, response='Unauthorized', is_success=False, auth=None)</code></pre>
+<pre><code>ResponseGetData(status=401, response='Unauthorized', is_success=False)</code></pre>
 </div>
 </div>
 </section>
@@ -404,12 +421,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Per the Domo JavaCLI implementation, users can test the validity of the access_token agains the ‘me’ API</p>
 <p>!! Note about the Me API !! It appears that access_token authentication will direct the</p>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/DomoAuth.py#L76" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/DomoAuth.py#L84" target="_blank" style="float:right; font-size:smaller">source</a></p>
 <section id="test_access_token" class="level3">
 <h3 class="anchored" data-anchor-id="test_access_token">test_access_token</h3>
 <blockquote class="blockquote">
 <pre><code> test_access_token (domo_access_token:str, domo_instance:str,
-                    session:Optional[aiohttp.client.ClientSession]=None)</code></pre>
+                    session:Optional[aiohttp.client.ClientSession]=None,
+                    debug_api:bool=False)</code></pre>
 </blockquote>
 <p>will attempt to validate against the ‘me’ API. This is the same authentication test the Domo Java CLI uses.</p>
 <section id="sample-implementation-of-test_access_token" class="level4">
@@ -433,7 +451,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1>Classes</h1>
 <p>Different Domo Auth classes will have a variety of required vs optional parameters. To avoid multiple initialization and post_intialization statements, we mix multiple classes together such that classes with optional parameters are mixed in before classes with required parameters.</p>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/DomoAuth.py#L141" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/DomoAuth.py#L153" target="_blank" style="float:right; font-size:smaller">source</a></p>
 <section id="domoauth" class="level3">
 <h3 class="anchored" data-anchor-id="domoauth">DomoAuth</h3>
 <blockquote class="blockquote">
@@ -473,7 +491,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="domoauth-error-classes" class="level2">
 <h2 class="anchored" data-anchor-id="domoauth-error-classes">DomoAuth Error Classes</h2>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/DomoAuth.py#L174" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/DomoAuth.py#L186" target="_blank" style="float:right; font-size:smaller">source</a></p>
 <section id="invalidinstanceerror" class="level3">
 <h3 class="anchored" data-anchor-id="invalidinstanceerror">InvalidInstanceError</h3>
 <blockquote class="blockquote">
@@ -482,7 +500,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <p>return if invalid domo_instance sent to API</p>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/DomoAuth.py#L161" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/DomoAuth.py#L173" target="_blank" style="float:right; font-size:smaller">source</a></p>
 </section>
 <section id="invalidcredentialserror" class="level3">
 <h3 class="anchored" data-anchor-id="invalidcredentialserror">InvalidCredentialsError</h3>
@@ -526,7 +544,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="domofullauth" class="level2">
 <h2 class="anchored" data-anchor-id="domofullauth">DomoFullAuth</h2>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/DomoAuth.py#L196" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/DomoAuth.py#L208" target="_blank" style="float:right; font-size:smaller">source</a></p>
 <section id="domofullauth-1" class="level3">
 <h3 class="anchored" data-anchor-id="domofullauth-1">DomoFullAuth</h3>
 <blockquote class="blockquote">
@@ -569,7 +587,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="domotokenauth" class="level2">
 <h2 class="anchored" data-anchor-id="domotokenauth">DomoTokenAuth</h2>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/DomoAuth.py#L250" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/DomoAuth.py#L264" target="_blank" style="float:right; font-size:smaller">source</a></p>
 <section id="domotokenauth-1" class="level3">
 <h3 class="anchored" data-anchor-id="domotokenauth-1">DomoTokenAuth</h3>
 <blockquote class="blockquote">
@@ -600,7 +618,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="domodeveloperauth" class="level2">
 <h2 class="anchored" data-anchor-id="domodeveloperauth">DomoDeveloperAuth</h2>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/DomoAuth.py#L302" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/client/DomoAuth.py#L318" target="_blank" style="float:right; font-size:smaller">source</a></p>
 <section id="domodeveloperauth-1" class="level3">
 <h3 class="anchored" data-anchor-id="domodeveloperauth-1">DomoDeveloperAuth</h3>
 <blockquote class="blockquote">

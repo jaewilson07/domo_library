@@ -22,7 +22,7 @@
   </url>
   <url>
     <loc>https://jaewilson07.github.io/domo_library/client/domoauth.html</loc>
-    <lastmod>2023-01-17T21:16:25.040Z</lastmod>
+    <lastmod>2023-01-17T23:59:28.125Z</lastmod>
   </url>
   <url>
     <loc>https://jaewilson07.github.io/domo_library/routes/dataset.html</loc>
@@ -34,7 +34,7 @@
   </url>
   <url>
     <loc>https://jaewilson07.github.io/domo_library/index.html</loc>
-    <lastmod>2023-01-17T21:17:58.879Z</lastmod>
+    <lastmod>2023-01-17T23:59:41.965Z</lastmod>
   </url>
   <url>
     <loc>https://jaewilson07.github.io/domo_library/utils/utils.convert.html</loc>
@@ -43,5 +43,9 @@
   <url>
     <loc>https://jaewilson07.github.io/domo_library/utils/dictdot.html</loc>
     <lastmod>2023-01-17T21:16:27.052Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jaewilson07.github.io/domo_library/integrations/domojupyter.html</loc>
+    <lastmod>2023-01-18T00:13:12.796Z</lastmod>
   </url>
 </urlset>

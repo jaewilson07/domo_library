@@ -1,0 +1,54 @@
+#| export
+
+class NoConfigCompanyError(Exception):
+    def __init__(self:GetInstanceConfig, sql, domo_instance):
+        message = f'SQL "{sql}" returned no results in {domo_instance}'
+        self.message = message
+        super().__init__(self.message)
+
+
+class GetInstanceConfig:
+    config : pd.DataFrame = None
+    logger : lc.Logger = None
+
+    def __init__(self, logger: Optional[lc.Logger] = None):
+
+        self.logger = logger or lc.Logger(app_name = 'GetInstanceConfig')
+    
+    async def _retrieve_company_ds(self : GetInstanceConfig, 
+                               config_auth: dmda.DomoAuth,
+                               dataset_id: str,
+                               sql: str,
+                               debug_prn: bool = False,
+                               debug_api: bool = False,
+                               debug_log: bool = False,
+                               ) -> pd.DataFrame:
+    
+
+        ds = await dmds.DomoDataset.get_from_id(auth=config_auth,
+                                                dataset_id=dataset_id, debug_api=debug_api)
+
+        message = f"⚙️ START - Retrieving company list \n{ds.display_url()} using \n{sql}"
+        
+        if debug_prn:
+            print(message)
+
+        logger.log_info(message, debug_log = debug_log)
+
+        df = await ds.query_dataset_private(auth=config_auth,
+                                            dataset_id=dataset_id,
+                                            sql=sql,
+                                            debug_api=debug_api)
+        if len(df.index) == 0:
+            raise NoConfigCompanyError(
+                sql, domo_instance=config_auth.domo_instance)
+        
+        self.config = df
+        
+        message = f"\n⚙️ SUCCESS 🎉 Retrieved company list \nThere are {len(df.index)} companies to update"
+        
+        if debug_prn:
+            print(message)
+        logger.log_info(message, debug_log=debug_log)
+
+        return df
