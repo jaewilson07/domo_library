@@ -38,7 +38,7 @@ def generate_search_users_body_by_id(user_ids: list[str]) -> dict:
 
 
 # %% ../../nbs/routes/user.ipynb 9
-def generate_search_users_body_by_email(email_address: str) -> dict:
+def generate_search_users_body_by_email(user_email_ls: list[str]) -> dict:
     """search does not appear to be case sensitive"""
 
     return {
@@ -50,12 +50,12 @@ def generate_search_users_body_by_email(email_address: str) -> dict:
         "offset": 0,
         "sort": {"field": "displayName", "order": "ASC"},
         "filters": [
-            {"filterType": "text", "field": "emailAddress", "text": email_address}
+            {"filterType": "text", "field": "emailAddress", "text": " ".join(user_email_ls)}
         ],
     }
 
 
-# %% ../../nbs/routes/user.ipynb 10
+# %% ../../nbs/routes/user.ipynb 11
 def process_v1_search_users_user(obj_user):
     dd_user = dd.DictDot(obj_user)
 
@@ -73,7 +73,7 @@ def process_v1_search_users(res_user_v1_search: rgd.ResponseGetData):
 
     return [process_v1_search_users_user(obj_user) for obj_user in obj_users]
 
-# %% ../../nbs/routes/user.ipynb 11
+# %% ../../nbs/routes/user.ipynb 12
 async def search_users(
     auth: dmda.DomoAuth,
     body: dict,
@@ -96,7 +96,7 @@ async def search_users(
 
     return res
 
-# %% ../../nbs/routes/user.ipynb 15
+# %% ../../nbs/routes/user.ipynb 16
 async def search_virtual_user_by_subscriber_instance(
     auth: dmda.DomoAuth,
     subscriber_instance,
@@ -114,7 +114,7 @@ async def search_virtual_user_by_subscriber_instance(
         debug_api=debug_api,
     )
 
-# %% ../../nbs/routes/user.ipynb 17
+# %% ../../nbs/routes/user.ipynb 18
 async def create_user(
     auth: dmda.DomoAuth,
     display_name: str,
@@ -133,7 +133,7 @@ async def create_user(
     )
 
 
-# %% ../../nbs/routes/user.ipynb 18
+# %% ../../nbs/routes/user.ipynb 19
 async def reset_password(
     auth: dmda.DomoAuth,
     user_id: str,
@@ -154,7 +154,7 @@ async def reset_password(
     )
 
 
-# %% ../../nbs/routes/user.ipynb 19
+# %% ../../nbs/routes/user.ipynb 20
 async def request_password_reset(
     domo_instance: str, email: str, 
     locale="en-us", debug_api: bool = False
@@ -167,7 +167,7 @@ async def request_password_reset(
         url=url, method="GET", params=params, auth=None, debug_api=debug_api
     )
 
-# %% ../../nbs/routes/user.ipynb 20
+# %% ../../nbs/routes/user.ipynb 21
 async def set_user_landing_page(
     auth: dmda.DomoAuth, 
     user_id: str, page_id: 
