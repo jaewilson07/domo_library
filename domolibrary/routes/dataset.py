@@ -17,7 +17,6 @@ import domolibrary.client.get_data as gd
 import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
 
-
 # %% ../../nbs/routes/dataset.ipynb 5
 class DatasetNotFoundError(Exception):
     def __init__(self, dataset_id, domo_instance):
@@ -131,6 +130,8 @@ async def get_dataset_by_id(
         debug_api=debug_api, session = session
     )
 
+    print(res)
+
     if res.status == 404 and res.response == 'Not Found':
         raise DatasetNotFoundError(dataset_id=dataset_id, domo_instance=auth.domo_instance)
 
@@ -153,6 +154,7 @@ async def set_dataset_tags(auth: dmda.DomoFullAuth,
                            dataset_id: str,
                            debug_api: bool = False,
                            session: Optional[aiohttp.ClientSession] = None,
+                           return_raw : bool = False
                            ):
     
     """REPLACE tags on this dataset with a new list"""
@@ -165,8 +167,12 @@ async def set_dataset_tags(auth: dmda.DomoFullAuth,
         method='POST',
         debug_api=debug_api,
         body=tag_ls,
-        session=session
+        session=session,
+        return_raw = return_raw
     )
+
+    if return_raw:
+        return res
 
     if res.status == 200:
         res.set_response (response = f'Dataset {dataset_id} tags updated to [{ ", ".join(tag_ls) }]')

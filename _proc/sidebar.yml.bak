@@ -12,6 +12,9 @@ website:
           - client/95_DomoAuth.ipynb
           - client/95_Logger.ipynb
           - client/99_ResponseGetData.ipynb
+      - section: integrations
+        contents:
+          - integrations/DomoJupyter.ipynb
       - section: routes
         contents:
           - routes/activity_log.ipynb
