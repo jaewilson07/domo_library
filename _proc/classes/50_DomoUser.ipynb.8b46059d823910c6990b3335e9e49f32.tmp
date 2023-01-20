@@ -1,0 +1,47 @@
+# | export
+@patch_to(DomoUser, cls_method=True)
+async def create_user(cls: DomoUser, full_auth: dmda.DomoFullAuth, display_name, email, role_id, password: str = None,
+                      send_password_reset_email: bool = False,
+                      debug: bool = False, log_results: bool = False):
+    """class method that creates a new Domo user"""
+
+    res = await user_routes.create_user(full_auth=full_auth, display_name=display_name, email=email,
+                                        role_id=role_id, debug=debug, log_results=log_results)
+
+    if debug:
+        print(res)
+
+    if res.status != 200:
+        return None
+
+    dd = util_dd.DictDot(res.response)
+    u = cls(domo_instance=full_auth.domo_instance,
+            full_auth=full_auth,
+            id=dd.id or dd.userId,
+            display_name=dd.displayName,
+            email_address=dd.emailAddress)
+
+    if password:
+        await u.reset_password(new_password=password)
+
+    if send_password_reset_email:
+        await u.request_password_reset(domo_instance=full_auth.domo_instance,
+                                       email=u.email_address)
+
+    return u
+
+
+@patch(DomoUser)
+async def set_user_landing_page(self: DomoUser,
+                                page_id: str,
+                                user_id: str = None,
+                                auth: dmda.DomoAuth = None,
+                                debug_api: bool = False):
+
+    res = await user_routes.set_user_landing_page(auth=auth or self.auth, page_id=page_id,
+                                                  user_id=self.id or user_id, debug_api=debug_api)
+
+    if res.status != 200:
+        return False
+
+    return True

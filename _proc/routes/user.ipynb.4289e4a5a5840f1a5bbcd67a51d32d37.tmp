@@ -1,0 +1,9 @@
+import os
+import pandas as pd
+
+token_auth = dmda.DomoTokenAuth(
+    domo_instance="domo-dojo", domo_access_token=os.environ["DOMO_DOJO_ACCESS_TOKEN"]
+)
+
+res = await get_all_users(auth=token_auth)
+pd.DataFrame(res.response[0:5])

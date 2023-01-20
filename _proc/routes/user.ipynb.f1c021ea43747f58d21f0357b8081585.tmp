@@ -1,0 +1,22 @@
+# | export
+async def search_users(
+    auth: dmda.DomoAuth,
+    body: dict,
+    debug_api: bool = False,
+    process_users: bool = True,
+) -> rgd.ResponseGetData:
+
+    url = f"https://{auth.domo_instance}.domo.com/api/identity/v1/users/search"
+
+    res = await gd.get_data(
+        url=url,
+        method="POST",
+        auth=auth,
+        body=body,
+        debug_api=debug_api,
+    )
+
+    if process_users and res.is_success:
+        res.response = process_v1_search_users(res)
+
+    return res

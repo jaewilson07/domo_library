@@ -1,0 +1,12 @@
+#| export
+@patch_to(DomoUser)
+async def reset_password(self: DomoUser, new_password: str,
+                         debug_api: bool = False):
+                         """reset your password, will respect password restrictions set up in the Domo UI"""
+
+    res = await user_routes.reset_password(auth=self.auth,
+                                           user_id=self.id,
+                                           new_password=new_password,
+                                           debug_api=debug_api)
+
+    return res

@@ -1,0 +1,11 @@
+# | export
+async def get_all_users(
+    auth: dmda.DomoAuth, debug_api: bool = False
+) -> rgd.ResponseGetData:
+
+    """retrieves all users from Domo"""
+    url = f"https://{ auth.domo_instance}.domo.com/api/content/v2/users"
+
+    return await gd.get_data(
+        url=url, method="GET", auth=auth, debug_api=debug_api
+    )
