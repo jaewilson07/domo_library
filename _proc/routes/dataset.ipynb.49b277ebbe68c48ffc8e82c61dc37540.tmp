@@ -1,3 +1,0 @@
-import nbdev.showdoc.show_doc
-
-show_doc(get_dataset_by_id)

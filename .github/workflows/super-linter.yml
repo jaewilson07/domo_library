@@ -28,5 +28,5 @@ jobs:
           VALIDATE_PYTHON_BLACK: true
           DEFAULT_BRANCH: "main"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DOJO_PASSWORD: ${{ secrets.DOJO_PASSWORD }},
+          DOJO_PASSWORD: ${{ secrets.DOJO_PASSWORD }}
           DOMO_DOJO_ACCESS_TOKEN: ${{ secrets.DOMO_DOJO_ACCESS_TOKEN }}

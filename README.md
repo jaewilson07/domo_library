@@ -84,6 +84,9 @@ domo_ds = await dmds.DomoDataset.get_from_id(auth = token_auth, dataset_id = os.
 domo_ds
 ```
 
+    _from_httpx_response <Response [200 OK]>
+    ResponseGetData(status=200, response={'id': '04c1574e-c8be-4721-9846-c6ffa491144b', 'displayType': 'domo-jupyterdata', 'dataProviderType': 'domo-jupyterdata', 'type': 'Jupyter', 'name': 'domo_kbs', 'owner': {'id': '1893952720', 'name': 'Jae Wilson', 'type': 'USER', 'group': False}, 'status': 'SUCCESS', 'created': 1668379680000, 'lastTouched': 1668385822000, 'lastUpdated': 1668385822045, 'rowCount': 1185, 'columnCount': 7, 'cardInfo': {'cardCount': 0, 'cardViewCount': 0}, 'properties': {'formulas': {'formulas': {}}}, 'state': 'SUCCESS', 'validConfiguration': True, 'validAccount': True, 'streamId': 825, 'transportType': 'API', 'adc': False, 'adcExternal': False, 'cloudId': 'domo', 'cloudName': 'Domo', 'permissions': 'READ_WRITE_DELETE_SHARE_ADMIN', 'hidden': False, 'tags': '["developer_documentation","hackercore"]', 'scheduleActive': True, 'cryoStatus': 'ADRENALINE'}, is_success=True)
+
     DomoDataset(id='04c1574e-c8be-4721-9846-c6ffa491144b', display_type='domo-jupyterdata', data_provider_type='domo-jupyterdata', name='domo_kbs', description=None, row_count=1185, column_count=7, stream_id=825, owner=DictDot(id='1893952720', name='Jae Wilson', type='USER', group=False), formula=DictDot(), schema=DomoDataset_Schema(dataset=..., columns=[]))
 
 Once instantiated, you can call methods to interact with that object.
@@ -105,6 +108,8 @@ are creating integrations between platforms (ex. Domo to Trello).
 ``` python
 await domo_ds.schema.get()
 ```
+
+    _from_httpx_response <Response [200 OK]>
 
     [DomoDataset_Schema_Column(name='objectID', id='objectID', type='STRING'),
      DomoDataset_Schema_Column(name='url', id='url', type='STRING'),
@@ -158,7 +163,10 @@ ds_res = await dataset_routes.get_dataset_by_id( auth = token_auth, dataset_id =
 ds_res
 ```
 
-    ResponseGetData(status=200, response={'id': '04c1574e-c8be-4721-9846-c6ffa491144b', 'displayType': 'domo-jupyterdata', 'dataProviderType': 'domo-jupyterdata', 'type': 'Jupyter', 'name': 'domo_kbs', 'owner': {'id': '1893952720', 'name': 'Jae Wilson', 'type': 'USER', 'group': False}, 'status': 'SUCCESS', 'created': 1668379680000, 'lastTouched': 1668385822000, 'lastUpdated': 1668385822045, 'rowCount': 1185, 'columnCount': 7, 'cardInfo': {'cardCount': 0, 'cardViewCount': 0}, 'properties': {'formulas': {'formulas': {}}}, 'state': 'SUCCESS', 'validConfiguration': True, 'validAccount': True, 'streamId': 825, 'transportType': 'API', 'adc': False, 'adcExternal': False, 'cloudId': 'domo', 'cloudName': 'Domo', 'permissions': 'READ_WRITE_DELETE_SHARE_ADMIN', 'hidden': False, 'tags': '["developer_documentation","Jan-11-2023 12:50","hackercore"]', 'scheduleActive': True, 'cryoStatus': 'ADRENALINE'}, is_success=True)
+    _from_httpx_response <Response [200 OK]>
+    ResponseGetData(status=200, response={'id': '04c1574e-c8be-4721-9846-c6ffa491144b', 'displayType': 'domo-jupyterdata', 'dataProviderType': 'domo-jupyterdata', 'type': 'Jupyter', 'name': 'domo_kbs', 'owner': {'id': '1893952720', 'name': 'Jae Wilson', 'type': 'USER', 'group': False}, 'status': 'SUCCESS', 'created': 1668379680000, 'lastTouched': 1668385822000, 'lastUpdated': 1668385822045, 'rowCount': 1185, 'columnCount': 7, 'cardInfo': {'cardCount': 0, 'cardViewCount': 0}, 'properties': {'formulas': {'formulas': {}}}, 'state': 'SUCCESS', 'validConfiguration': True, 'validAccount': True, 'streamId': 825, 'transportType': 'API', 'adc': False, 'adcExternal': False, 'cloudId': 'domo', 'cloudName': 'Domo', 'permissions': 'READ_WRITE_DELETE_SHARE_ADMIN', 'hidden': False, 'tags': '["developer_documentation","hackercore"]', 'scheduleActive': True, 'cryoStatus': 'ADRENALINE'}, is_success=True)
+
+    ResponseGetData(status=200, response={'id': '04c1574e-c8be-4721-9846-c6ffa491144b', 'displayType': 'domo-jupyterdata', 'dataProviderType': 'domo-jupyterdata', 'type': 'Jupyter', 'name': 'domo_kbs', 'owner': {'id': '1893952720', 'name': 'Jae Wilson', 'type': 'USER', 'group': False}, 'status': 'SUCCESS', 'created': 1668379680000, 'lastTouched': 1668385822000, 'lastUpdated': 1668385822045, 'rowCount': 1185, 'columnCount': 7, 'cardInfo': {'cardCount': 0, 'cardViewCount': 0}, 'properties': {'formulas': {'formulas': {}}}, 'state': 'SUCCESS', 'validConfiguration': True, 'validAccount': True, 'streamId': 825, 'transportType': 'API', 'adc': False, 'adcExternal': False, 'cloudId': 'domo', 'cloudName': 'Domo', 'permissions': 'READ_WRITE_DELETE_SHARE_ADMIN', 'hidden': False, 'tags': '["developer_documentation","hackercore"]', 'scheduleActive': True, 'cryoStatus': 'ADRENALINE'}, is_success=True)
 
 [`ResponseGetData`](https://jaewilson07.github.io/domo_library/client/responsegetdata.html#responsegetdata)
 will always include a boolean `is_success`, the API `status`, and raw
@@ -211,7 +219,7 @@ ds_res.response
      'cloudName': 'Domo',
      'permissions': 'READ_WRITE_DELETE_SHARE_ADMIN',
      'hidden': False,
-     'tags': '["developer_documentation","Jan-11-2023 12:50","hackercore"]',
+     'tags': '["developer_documentation","hackercore"]',
      'scheduleActive': True,
      'cryoStatus': 'ADRENALINE'}
 

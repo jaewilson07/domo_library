@@ -1,3 +1,0 @@
-import routes.dataset as dataset_routes
-
-dataset_routesget_dataset_by_id( auth = token_auth, dataset_id = os.environ['DOJO_DATASET_ID'])
