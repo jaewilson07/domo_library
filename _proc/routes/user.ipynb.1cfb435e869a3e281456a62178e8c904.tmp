@@ -1,0 +1,14 @@
+# | export
+def generate_search_users_body_by_id(user_ids: list[str] # list of user ids to search
+    ) -> dict: # dict to pass to search v1_users_search_api
+
+    return {
+        # "showCount": true,
+        # "count": false,
+        "includeDeleted": False,
+        "includeSupport": False,
+        "filters": [
+            {"field": "id", "filterType": "value",
+                "values": user_ids, "operator": "EQ"}
+        ],
+    }

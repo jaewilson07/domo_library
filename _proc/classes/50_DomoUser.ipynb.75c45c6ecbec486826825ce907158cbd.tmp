@@ -1,0 +1,18 @@
+# | export
+
+@dataclass
+class DomoUsers:
+    logger : Optional[lc.Logger] = None
+
+    def _users_to_domo_user(user_ls, auth: dmda.DomoAuth):    
+        return [ DomoUser._from_search_json(auth=auth, user_obj=user_obj) for user_obj in user_ls]
+        
+    def _users_to_virtual_user(user_ls, auth: dmda.DomoAuth):
+        return [ DomoUser._from_virtual_json(auth=auth, user_obj=user_obj)for user_obj in user_ls:
+            user = 
+            domo_users.append(user)
+
+        return domo_users
+
+    def _generate_logger(self, logger : Optional[lc.Logger] = None):
+        self.logger = logger or self.logger or lc.loger()
