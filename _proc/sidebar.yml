@@ -2,6 +2,28 @@ website:
   sidebar:
     contents:
       - index.ipynb
+      - section: blog
+        contents:
+          - blog/index.qmd
+          - section: posts
+            contents:
+              - section: 2023-01-24-Domo_Everywhere_MultiInstance
+                contents:
+                  - blog/posts/2023-01-24-Domo_Everywhere_MultiInstance/index.qmd
+      - section: blog
+        contents:
+          - section: posts
+            contents:
+              - section: 2023-01-24_DomoVariables
+                contents:
+                  - blog/posts/2023-01-24_DomoVariables/index.qmd
+      - section: blog
+        contents:
+          - section: posts
+            contents:
+              - section: 2023-01-24_Domo_Onboarding
+                contents:
+                  - blog/posts/2023-01-24_Domo_Onboarding/index.qmd
       - section: classes
         contents:
           - classes/50_DomoActivityLog.ipynb
