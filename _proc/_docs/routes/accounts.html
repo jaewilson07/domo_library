@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="a functional approach, routes only, to interacting with domo users.">
 
-<title>domolibrary - User Routes</title>
+<title>domolibrary - Account Routes</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -128,11 +127,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="domolibrary - User Routes">
-<meta property="og:description" content="a functional approach, routes only, to interacting with domo users.">
+<meta property="og:title" content="domolibrary - Account Routes">
+<meta property="og:description" content="retrieve a list of all the accounts the user has read access to. Note users with “Manage all accounts” will retrieve all account objects">
 <meta property="og:site-name" content="domolibrary">
-<meta name="twitter:title" content="domolibrary - User Routes">
-<meta name="twitter:description" content="a functional approach, routes only, to interacting with domo users.">
+<meta name="twitter:title" content="domolibrary - Account Routes">
+<meta name="twitter:description" content="retrieve a list of all the accounts the user has read access to. Note users with “Manage all accounts” will retrieve all account objects">
 <meta name="twitter:card" content="summary">
 </head>
 
@@ -152,7 +151,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     </nav>
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">User Routes</h1>
+      <h1 class="quarto-secondary-nav-title">Account Routes</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -260,7 +259,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../routes/user.html" class="sidebar-item-text sidebar-link active">User Routes</a>
+  <a href="../routes/user.html" class="sidebar-item-text sidebar-link">User Routes</a>
   </div>
 </li>
       </ul>
@@ -294,27 +293,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#get-users" id="toc-get-users" class="nav-link active" data-scroll-target="#get-users">GET Users</a>
+  <li><a href="#get_accounts" id="toc-get_accounts" class="nav-link active" data-scroll-target="#get_accounts">get_accounts</a></li>
+  <li><a href="#get_account_from_id" id="toc-get_account_from_id" class="nav-link" data-scroll-target="#get_account_from_id">get_account_from_id</a></li>
+  <li><a href="#account-config" id="toc-account-config" class="nav-link" data-scroll-target="#account-config">Account Config</a>
   <ul class="collapse">
-  <li><a href="#get_all_users" id="toc-get_all_users" class="nav-link" data-scroll-target="#get_all_users">get_all_users</a></li>
-  </ul></li>
-  <li><a href="#search-users" id="toc-search-users" class="nav-link" data-scroll-target="#search-users">Search Users</a>
-  <ul class="collapse">
-  <li><a href="#generate_search_users_body_by_id" id="toc-generate_search_users_body_by_id" class="nav-link" data-scroll-target="#generate_search_users_body_by_id">generate_search_users_body_by_id</a></li>
-  <li><a href="#generate_search_users_body_by_email" id="toc-generate_search_users_body_by_email" class="nav-link" data-scroll-target="#generate_search_users_body_by_email">generate_search_users_body_by_email</a></li>
-  <li><a href="#process_v1_search_users" id="toc-process_v1_search_users" class="nav-link" data-scroll-target="#process_v1_search_users">process_v1_search_users</a></li>
-  <li><a href="#search_users" id="toc-search_users" class="nav-link" data-scroll-target="#search_users">search_users</a></li>
-  </ul></li>
-  <li><a href="#publish-and-virtual-users" id="toc-publish-and-virtual-users" class="nav-link" data-scroll-target="#publish-and-virtual-users">Publish and Virtual Users</a>
-  <ul class="collapse">
-  <li><a href="#search_virtual_user_by_subscriber_instance" id="toc-search_virtual_user_by_subscriber_instance" class="nav-link" data-scroll-target="#search_virtual_user_by_subscriber_instance">search_virtual_user_by_subscriber_instance</a></li>
-  </ul></li>
-  <li><a href="#crud-routes-and-user-attributes" id="toc-crud-routes-and-user-attributes" class="nav-link" data-scroll-target="#crud-routes-and-user-attributes">CRUD Routes and User Attributes</a>
-  <ul class="collapse">
-  <li><a href="#create_user" id="toc-create_user" class="nav-link" data-scroll-target="#create_user">create_user</a></li>
-  <li><a href="#set_user_landing_page" id="toc-set_user_landing_page" class="nav-link" data-scroll-target="#set_user_landing_page">set_user_landing_page</a></li>
-  <li><a href="#reset_password" id="toc-reset_password" class="nav-link" data-scroll-target="#reset_password">reset_password</a></li>
-  <li><a href="#request_password_reset" id="toc-request_password_reset" class="nav-link" data-scroll-target="#request_password_reset">request_password_reset</a></li>
+  <li><a href="#get_account_config" id="toc-get_account_config" class="nav-link" data-scroll-target="#get_account_config">get_account_config</a></li>
+  <li><a href="#accountconfig_invaliddataprovider" id="toc-accountconfig_invaliddataprovider" class="nav-link" data-scroll-target="#accountconfig_invaliddataprovider">AccountConfig_InvalidDataProvider</a></li>
+  <li><a href="#update_account_config" id="toc-update_account_config" class="nav-link" data-scroll-target="#update_account_config">update_account_config</a></li>
+  <li><a href="#update_account_name" id="toc-update_account_name" class="nav-link" data-scroll-target="#update_account_name">update_account_name</a></li>
+  <li><a href="#create_account" id="toc-create_account" class="nav-link" data-scroll-target="#create_account">create_account</a></li>
+  <li><a href="#delete_account" id="toc-delete_account" class="nav-link" data-scroll-target="#delete_account">delete_account</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/jaewilson07/domo_library/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
@@ -324,14 +312,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">User Routes</h1>
+<h1 class="title d-none d-lg-block">Account Routes</h1>
 </div>
 
-<div>
-  <div class="description">
-    a functional approach, routes only, to interacting with domo users.
-  </div>
-</div>
 
 
 <div class="quarto-title-meta">
@@ -345,30 +328,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </header>
 
 <!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
-<section id="get-users" class="level1">
-<h1>GET Users</h1>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/user.py#L16" target="_blank" style="float:right; font-size:smaller">source</a></p>
-<section id="get_all_users" class="level3">
-<h3 class="anchored" data-anchor-id="get_all_users">get_all_users</h3>
+<section id="get_accounts" class="level3">
+<h3 class="anchored" data-anchor-id="get_accounts">get_accounts</h3>
 <blockquote class="blockquote">
-<pre><code> get_all_users (auth:domolibrary.client.DomoAuth.DomoAuth,
-                debug_api:bool=False)</code></pre>
+<pre><code> get_accounts (auth:domolibrary.client.DomoAuth.DomoAuth,
+               debug_api:bool=False, session:Union[aiohttp.client.ClientSe
+               ssion,httpx.AsyncClient,NoneType]=None)</code></pre>
 </blockquote>
-<p>retrieves all users from Domo</p>
-<section id="sample-implementation-of-get_all_users" class="level4">
-<h4 class="anchored" data-anchor-id="sample-implementation-of-get_all_users">sample implementation of get_all_users</h4>
+<p>retrieve a list of all the accounts the user has read access to. Note users with “Manage all accounts” will retrieve all account objects</p>
+<section id="sample-implementation-of-get_accounts" class="level4">
+<h4 class="anchored" data-anchor-id="sample-implementation-of-get_accounts">sample implementation of get_accounts</h4>
 <div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-dojo"</span>, </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-dojo"</span>,</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>]</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="cf">await</span> get_all_users(auth<span class="op">=</span>token_auth)</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(res.response[<span class="dv">0</span>:<span class="dv">5</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="cf">await</span> get_accounts(auth <span class="op">=</span> token_auth)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(res.response)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="2">
 
 <div>
@@ -378,404 +360,227 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <tr>
       <th></th>
       <th>id</th>
-      <th>invitorUserId</th>
+      <th>userId</th>
+      <th>name</th>
       <th>displayName</th>
-      <th>userName</th>
-      <th>emailAddress</th>
-      <th>accepted</th>
-      <th>userType</th>
-      <th>timeZone</th>
-      <th>modified</th>
-      <th>created</th>
-      <th>role</th>
-      <th>roleId</th>
-      <th>rights</th>
-      <th>active</th>
-      <th>pending</th>
-      <th>systemUser</th>
-      <th>anonymous</th>
+      <th>type</th>
+      <th>valid</th>
+      <th>dataProviderType</th>
+      <th>credentialsType</th>
+      <th>createdAt</th>
+      <th>createdBy</th>
+      <th>modifiedAt</th>
+      <th>modifiedBy</th>
+      <th>configurations</th>
+      <th>accountTemplateId</th>
+      <th>accountTemplateAuthorizationId</th>
+      <th>accountId</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
-      <td>0</td>
-      <td>2</td>
-      <td>monitor</td>
-      <td>monitor</td>
-      <td>monitor@domo.com</td>
-      <td>False</td>
-      <td>DOMO_SUPPORT</td>
-      <td>Etc/GMT+7</td>
-      <td>1588877394091</td>
-      <td>1464820854</td>
-      <td>Privileged</td>
       <td>1</td>
-      <td>31.0</td>
+      <td>1893952720</td>
+      <td>DataSet Copy Account</td>
+      <td>DataSet Copy Account</td>
+      <td>data</td>
       <td>True</td>
-      <td>True</td>
-      <td>True</td>
-      <td>True</td>
+      <td>dataset-copy</td>
+      <td>fields</td>
+      <td>1589100087000</td>
+      <td>1893952720</td>
+      <td>1589100087000</td>
+      <td>1893952720</td>
+      <td>{}</td>
+      <td>None</td>
+      <td>None</td>
+      <td>1</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>1006847540</td>
+      <td>5</td>
       <td>1893952720</td>
-      <td>Marc-Anton Clavel</td>
-      <td>marcanton.clavel@domo.com</td>
-      <td>marcanton.clavel@domo.com</td>
-      <td>False</td>
-      <td>USER</td>
-      <td>NaN</td>
-      <td>1665166064000</td>
-      <td>1618579073</td>
-      <td>Privileged</td>
-      <td>2</td>
-      <td>31.0</td>
+      <td>Domo Governance Datasets Third Party Account</td>
+      <td>test_rename_using_classmethod</td>
+      <td>data</td>
       <td>True</td>
-      <td>True</td>
-      <td>False</td>
-      <td>True</td>
+      <td>domo-governance-d14c2fef-49a8-4898-8ddd-f64998...</td>
+      <td>fields</td>
+      <td>1616777681000</td>
+      <td>1893952720</td>
+      <td>1672872810000</td>
+      <td>1893952720</td>
+      <td>{}</td>
+      <td>None</td>
+      <td>None</td>
+      <td>5</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>1012895591</td>
+      <td>27</td>
       <td>1893952720</td>
-      <td>JeMiller</td>
-      <td>JeMiller@marketaxess.com</td>
-      <td>JeMiller@marketaxess.com</td>
+      <td>DataSet Copy Account</td>
+      <td>DataSet Copy Account</td>
+      <td>data</td>
       <td>True</td>
-      <td>USER</td>
-      <td>NaN</td>
-      <td>1657051684429</td>
-      <td>1657049419</td>
-      <td>NaN</td>
-      <td>2097317660</td>
-      <td>NaN</td>
-      <td>True</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
+      <td>domo-csv</td>
+      <td>fields</td>
+      <td>1619083568000</td>
+      <td>1893952720</td>
+      <td>1619083568000</td>
+      <td>1893952720</td>
+      <td>{}</td>
+      <td>None</td>
+      <td>None</td>
+      <td>27</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>1024352013</td>
+      <td>45</td>
       <td>1893952720</td>
-      <td>Michael Shrifteylik</td>
-      <td>mshrifteylik@sportsresearch.com</td>
-      <td>mshrifteylik@sportsresearch.com</td>
+      <td>onyxReporting@gmail.com</td>
+      <td>onyxReporting@gmail.com</td>
+      <td>data</td>
       <td>True</td>
-      <td>USER</td>
-      <td>NaN</td>
-      <td>1669658030028</td>
-      <td>1667838056</td>
-      <td>Privileged</td>
-      <td>2</td>
-      <td>31.0</td>
-      <td>True</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>1026684838</td>
+      <td>google-spreadsheets</td>
+      <td>oauth</td>
+      <td>1664924354000</td>
       <td>1893952720</td>
-      <td>Ghofrane Yahmadi</td>
-      <td>ghofrane.yahmadi@audibene.de</td>
-      <td>ghofrane.yahmadi@audibene.de</td>
-      <td>False</td>
-      <td>USER</td>
-      <td>NaN</td>
-      <td>1618579110000</td>
-      <td>1618579109</td>
-      <td>Privileged</td>
-      <td>2</td>
-      <td>31.0</td>
-      <td>True</td>
-      <td>True</td>
-      <td>False</td>
-      <td>True</td>
+      <td>1664924354000</td>
+      <td>1893952720</td>
+      <td>{}</td>
+      <td>None</td>
+      <td>None</td>
+      <td>45</td>
     </tr>
   </tbody>
 </table>
 </div>
 </div>
 </div>
-</section>
-</section>
-</section>
-<section id="search-users" class="level1">
-<h1>Search Users</h1>
-<p>This series of functions searchse the v1_users_api. The body of the search api can be retrieved by searching admin in the Domo User interface.</p>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/user.py#L26" target="_blank" style="float:right; font-size:smaller">source</a></p>
-<section id="generate_search_users_body_by_id" class="level3">
-<h3 class="anchored" data-anchor-id="generate_search_users_body_by_id">generate_search_users_body_by_id</h3>
-<blockquote class="blockquote">
-<pre><code> generate_search_users_body_by_id (user_ids:list[str])</code></pre>
-</blockquote>
-<p>search v1_users_search_api</p>
-<table class="table">
-<colgroup>
-<col style="width: 9%">
-<col style="width: 38%">
-<col style="width: 52%">
-</colgroup>
-<thead>
-<tr class="header">
-<th></th>
-<th><strong>Type</strong></th>
-<th><strong>Details</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>user_ids</td>
-<td>list</td>
-<td>list of user ids to search</td>
-</tr>
-<tr class="even">
-<td><strong>Returns</strong></td>
-<td><strong>dict</strong></td>
-<td><strong>dict to pass to search v1_users_search_api</strong></td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/user.py#L42" target="_blank" style="float:right; font-size:smaller">source</a></p>
 </section>
-<section id="generate_search_users_body_by_email" class="level3">
-<h3 class="anchored" data-anchor-id="generate_search_users_body_by_email">generate_search_users_body_by_email</h3>
-<blockquote class="blockquote">
-<pre><code> generate_search_users_body_by_email (user_email_ls:list[str])</code></pre>
-</blockquote>
-<p>search v1_users_search_api</p>
-<table class="table">
-<colgroup>
-<col style="width: 9%">
-<col style="width: 38%">
-<col style="width: 52%">
-</colgroup>
-<thead>
-<tr class="header">
-<th></th>
-<th><strong>Type</strong></th>
-<th><strong>Details</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>user_email_ls</td>
-<td>list</td>
-<td>list of user emails to search. Note: search does not appear to be case sensitive</td>
-</tr>
-<tr class="even">
-<td><strong>Returns</strong></td>
-<td><strong>dict</strong></td>
-<td><strong>dict to pass to search v1_users_search_api</strong></td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/user.py#L65" target="_blank" style="float:right; font-size:smaller">source</a></p>
 </section>
-<section id="process_v1_search_users" class="level3">
-<h3 class="anchored" data-anchor-id="process_v1_search_users">process_v1_search_users</h3>
+<section id="get_account_from_id" class="level3">
+<h3 class="anchored" data-anchor-id="get_account_from_id">get_account_from_id</h3>
 <blockquote class="blockquote">
-<pre><code> process_v1_search_users (v1_user_ls:list[dict])</code></pre>
+<pre><code> get_account_from_id (auth:domolibrary.client.DomoAuth.DomoAuth,
+                      account_id:int, debug_api:bool=False,
+                      session:aiohttp.client.ClientSession=None)</code></pre>
 </blockquote>
-<p>sanitizes the response from v1_users_search API and removes unecessary attributes</p>
-<table class="table">
-<thead>
-<tr class="header">
-<th></th>
-<th><strong>Type</strong></th>
-<th><strong>Details</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>v1_user_ls</td>
-<td>list</td>
-<td>list of users from v1_users_search API</td>
-</tr>
-<tr class="even">
-<td><strong>Returns</strong></td>
-<td><strong>list</strong></td>
-<td><strong>sanitized list of users.</strong></td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/user.py#L85" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<p>retrieves metadata about an account</p>
+<section id="sample-implementation-of-get_account_from_id" class="level4">
+<h4 class="anchored" data-anchor-id="sample-implementation-of-get_account_from_id">sample implementation of get_account_from_id</h4>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-dojo"</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>]</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="cf">await</span> get_account_from_id(auth<span class="op">=</span>token_auth, account_id <span class="op">=</span> <span class="dv">1</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>res.response</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>{'id': 1,
+ 'userId': 1893952720,
+ 'name': 'DataSet Copy Account',
+ 'displayName': 'DataSet Copy Account',
+ 'type': 'data',
+ 'valid': True,
+ 'dataProviderType': 'dataset-copy',
+ 'credentialsType': 'fields',
+ 'createdAt': 1589100087000,
+ 'createdBy': 1893952720,
+ 'modifiedAt': 1589100087000,
+ 'modifiedBy': 1893952720,
+ 'configurations': {},
+ 'accountTemplateId': None,
+ 'accountTemplateAuthorizationId': None,
+ 'accountId': 1}</code></pre>
+</div>
+</div>
 </section>
-<section id="search_users" class="level3">
-<h3 class="anchored" data-anchor-id="search_users">search_users</h3>
+</section>
+<section id="account-config" class="level1">
+<h1>Account Config</h1>
+<hr>
+<section id="get_account_config" class="level3">
+<h3 class="anchored" data-anchor-id="get_account_config">get_account_config</h3>
 <blockquote class="blockquote">
-<pre><code> search_users (auth:domolibrary.client.DomoAuth.DomoAuth, body:dict,
-               debug_api:bool=False, process_users:bool=True)</code></pre>
+<pre><code> get_account_config (auth:domolibrary.client.DomoAuth.DomoAuth,
+                     account_id:int, data_provider_type:str,
+                     debug_api:bool=False, session:Union[aiohttp.client.Cl
+                     ientSession,httpx.AsyncClient,NoneType]=None)</code></pre>
 </blockquote>
-<section id="sample-implementation-of-search_users" class="level4">
-<h4 class="anchored" data-anchor-id="sample-implementation-of-search_users">sample implementation of search_users</h4>
+<hr>
+</section>
+<section id="accountconfig_invaliddataprovider" class="level3">
+<h3 class="anchored" data-anchor-id="accountconfig_invaliddataprovider">AccountConfig_InvalidDataProvider</h3>
+<blockquote class="blockquote">
+<pre><code> AccountConfig_InvalidDataProvider (account_id:str,
+                                    data_provider_type:str,
+                                    domo_instance:str)</code></pre>
+</blockquote>
+<p>Common base class for all non-exit exceptions.</p>
+<section id="sample-implementation-of-get_account_config" class="level4">
+<h4 class="anchored" data-anchor-id="sample-implementation-of-get_account_config">sample implementation of get_account_config</h4>
 <div class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-dojo"</span>, </span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>]</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>search_email_body <span class="op">=</span> generate_search_users_body_by_email(</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    user_email_ls<span class="op">=</span>[<span class="st">"jae@onyxreporting.com"</span>]</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="cf">await</span> search_users(</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    auth<span class="op">=</span>token_auth, </span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    body<span class="op">=</span>search_email_body, </span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    process_users<span class="op">=</span><span class="va">True</span>, </span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    debug_api<span class="op">=</span><span class="va">False</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(res.response)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-dojo"</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>]</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="cf">await</span> get_account_config(auth<span class="op">=</span>token_auth, account_id<span class="op">=</span><span class="dv">1</span>, data_provider_type<span class="op">=</span><span class="st">'dataset-copy'</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>res.response</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
-
-<div>
-
-<table class="dataframe table table-sm table-striped">
-  <thead>
-    <tr>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-  </tbody>
-</table>
+<pre><code>{'instance': 'northshore-io-partner.domo.com', 'accessToken': '********'}</code></pre>
 </div>
 </div>
-</div>
+<hr>
 </section>
 </section>
-</section>
-<section id="publish-and-virtual-users" class="level1">
-<h1>Publish and Virtual Users</h1>
+<section id="update_account_config" class="level3">
+<h3 class="anchored" data-anchor-id="update_account_config">update_account_config</h3>
 <blockquote class="blockquote">
-<p>Virtual Users are necessary for assigning PDP policies when publish jobs are created.</p>
+<pre><code> update_account_config (auth:domolibrary.client.DomoAuth.DomoAuth,
+                        account_id:int, config_body:dict,
+                        data_provider_type:str, debug_api:bool=False,
+                        session:aiohttp.client.ClientSession=None)</code></pre>
 </blockquote>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/user.py#L109" target="_blank" style="float:right; font-size:smaller">source</a></p>
-<section id="search_virtual_user_by_subscriber_instance" class="level3">
-<h3 class="anchored" data-anchor-id="search_virtual_user_by_subscriber_instance">search_virtual_user_by_subscriber_instance</h3>
+</section>
+<section id="update_account_name" class="level3">
+<h3 class="anchored" data-anchor-id="update_account_name">update_account_name</h3>
 <blockquote class="blockquote">
-<pre><code> search_virtual_user_by_subscriber_instance
-                                             (auth:domolibrary.client.Domo
-                                             Auth.DomoAuth, subscriber_ins
-                                             tance_ls:list[str],
-                                             debug_api:bool=False)</code></pre>
-</blockquote>
-<p>retrieve virtual users for subscriber instances tied to one publisher</p>
-<section id="sample-of-search-virtual-users-by-subscriber_instance" class="level4">
-<h4 class="anchored" data-anchor-id="sample-of-search-virtual-users-by-subscriber_instance">sample of search virtual users by subscriber_instance</h4>
-<div class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-dojo"</span>, </span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>]</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="cf">await</span> search_virtual_user_by_subscriber_instance(</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    auth <span class="op">=</span> token_auth,</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    subscriber_instance_ls <span class="op">=</span> [<span class="st">'domo-dojo'</span>, <span class="st">'test'</span>],</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    debug_api <span class="op">=</span> <span class="va">False</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(res.response)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="9">
-
-<div>
-
-<table class="dataframe table table-sm table-striped">
-  <thead>
-    <tr>
-      <th></th>
-      <th>id</th>
-      <th>publisherDomain</th>
-      <th>customerId</th>
-      <th>subscriberDomain</th>
-      <th>virtualUserId</th>
-      <th>created</th>
-      <th>activeSubscriptions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>2bcabab7-128e-4f47-8219-c8548588d7fc</td>
-      <td>domo-dojo.domo.com</td>
-      <td>mmmm-0012-0200</td>
-      <td>domo-dojo.domo.com</td>
-      <td>fc:ce69e5f0-ab88-46df-94ab-32b5f6dfd4e7</td>
-      <td>1674251102000</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>57999e9b-e8a2-48ab-80c6-edf2627b71fc</td>
-      <td>domo-dojo.domo.com</td>
-      <td>mmmm-0012-0200</td>
-      <td>test.domo.com</td>
-      <td>fc:b3d7aaa1-9bc8-4481-9d34-c153a9b91b22</td>
-      <td>1674253476000</td>
-      <td>0</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-</div>
-</section>
-</section>
-</section>
-<section id="crud-routes-and-user-attributes" class="level1">
-<h1>CRUD Routes and User Attributes</h1>
-<hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/user.py#L130" target="_blank" style="float:right; font-size:smaller">source</a></p>
-<section id="create_user" class="level3">
-<h3 class="anchored" data-anchor-id="create_user">create_user</h3>
-<blockquote class="blockquote">
-<pre><code> create_user (auth:domolibrary.client.DomoAuth.DomoAuth, display_name:str,
-              email:str, role_id:int, debug_api:bool=False)</code></pre>
+<pre><code> update_account_name (auth:domolibrary.client.DomoAuth.DomoAuth,
+                      account_id:int, account_name:str,
+                      debug_api:bool=False,
+                      session:aiohttp.client.ClientSession=None)</code></pre>
 </blockquote>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/user.py#L147" target="_blank" style="float:right; font-size:smaller">source</a></p>
 </section>
-<section id="set_user_landing_page" class="level3">
-<h3 class="anchored" data-anchor-id="set_user_landing_page">set_user_landing_page</h3>
+<section id="create_account" class="level3">
+<h3 class="anchored" data-anchor-id="create_account">create_account</h3>
 <blockquote class="blockquote">
-<pre><code> set_user_landing_page (auth:domolibrary.client.DomoAuth.DomoAuth,
-                        user_id:str, page_id:str, debug_api:bool=False)</code></pre>
+<pre><code> create_account (auth:domolibrary.client.DomoAuth.DomoAuth,
+                 config_body:dict, debug_api:bool=False,
+                 session:aiohttp.client.ClientSession=None)</code></pre>
 </blockquote>
 <hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/user.py#L162" target="_blank" style="float:right; font-size:smaller">source</a></p>
 </section>
-<section id="reset_password" class="level3">
-<h3 class="anchored" data-anchor-id="reset_password">reset_password</h3>
+<section id="delete_account" class="level3">
+<h3 class="anchored" data-anchor-id="delete_account">delete_account</h3>
 <blockquote class="blockquote">
-<pre><code> reset_password (auth:domolibrary.client.DomoAuth.DomoAuth, user_id:str,
-                 new_password:str, debug_api:bool=False)</code></pre>
-</blockquote>
-<hr>
-<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/routes/user.py#L182" target="_blank" style="float:right; font-size:smaller">source</a></p>
-</section>
-<section id="request_password_reset" class="level3">
-<h3 class="anchored" data-anchor-id="request_password_reset">request_password_reset</h3>
-<blockquote class="blockquote">
-<pre><code> request_password_reset (domo_instance:str, email:str, locale='en-us',
-                         debug_api:bool=False)</code></pre>
+<pre><code> delete_account (auth:domolibrary.client.DomoAuth.DomoAuth,
+                 account_id:str, debug_api:bool=False,
+                 session:aiohttp.client.ClientSession=None)</code></pre>
 </blockquote>
 
 
