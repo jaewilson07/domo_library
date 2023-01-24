@@ -25,7 +25,7 @@ jobs:
         uses: "google-github-actions/auth@v1"
         with:
           token_format: "access_token"
-          credentials_json: "${{ secrets.GCP_KEY }}"
+          credentials_json: ${{ secrets.GCP_KEY }}
           access_token_scopes: "https://www.googleapis.com/auth/drive"
 
       - run: |-
