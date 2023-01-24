@@ -1,0 +1,765 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>domolibrary</title>
+<link>https://jaewilson07.github.io/domo_library/blog/index.html</link>
+<atom:link href="https://jaewilson07.github.io/domo_library/blog/index.xml" rel="self" type="application/rss+xml"/>
+<description></description>
+<generator>quarto-1.2.313</generator>
+<lastBuildDate>Tue, 24 Jan 2023 00:00:00 GMT</lastBuildDate>
+<item>
+  <title>Domo Distribution and Governance Strategy across Instances</title>
+  <dc:creator>Jae Wilson</dc:creator>
+  <link>https://jaewilson07.github.io/domo_library/blog/posts/2023-01-24-Domo_Everywhere_MultiInstance/index.html</link>
+  <description><![CDATA[ 
+
+
+
+<p>This is a framework for managing data distribution within an organization that has several departments using standalone instances of domo.</p>
+<p>domo-accounting.domo.com</p>
+<p>domo-sales.domo.com</p>
+<p>domo-marketing.domo.com</p>
+<p>domo-engineering.domo.com</p>
+<p>There are several highly bespoke datastores that provide high value data to different departments, they’ll have their own instances of domo too.</p>
+<p>domo-aa.domo.com</p>
+<p>domo-sfdc.domo.com</p>
+<p>domo-snowflake.domo.com</p>
+<p>We need a single place where users can find trusted dashboards builton a consistent and validated data pipeline that will consume input datasets from different departments or a chain of transformed datasets.</p>
+<p>Ex. The executive dashboard gets prepared by domo-engineering but consumes data from accounting, sales, and marketing.</p>
+<section id="types-of-datasets-and-which-ones-we-publish" class="level2">
+<h2 class="anchored" data-anchor-id="types-of-datasets-and-which-ones-we-publish">4 Types of Datasets and Which ones we Publish</h2>
+</section>
+<section id="non-publishable-datasets" class="level2">
+<h2 class="anchored" data-anchor-id="non-publishable-datasets">Non-publishable Datasets</h2>
+<p>Avoid publishing datasets that require additional lookups or external data to understand.</p>
+<ol type="1">
+<li><h3 id="raw-datasets" class="anchored">Raw Datasets</h3></li>
+</ol>
+<ul>
+<li>Come straight from the source system.</li>
+<li>Minimize ETL during Ingest.</li>
+</ul>
+<ol start="2" type="1">
+<li><h3 id="staging-dataset-int" class="anchored">Staging Dataset (INT)</h3></li>
+</ol>
+<ul>
+<li><p>Exist exclusively in Department or Clearinghouse instances.</p></li>
+<li><p>Represent intermediate steps required to transform a dataset into a usable shape.</p></li>
+<li><p>This will include dimension tables that are not golden records</p></li>
+</ul>
+</section>
+<section id="publishable-datasets" class="level2">
+<h2 class="anchored" data-anchor-id="publishable-datasets">Publishable Datasets</h2>
+<p>We promote the publishing of datasets that can stand on their own and do not require additional context to understand.</p>
+<ol start="3" type="1">
+<li><h3 id="data-warehouse-dwh" class="anchored">Data Warehouse (DWH)</h3></li>
+</ol>
+<ul>
+<li>The building blocks (inputs) to DASH datasets</li>
+</ul>
+<p>ither facts or dimensional tables that have NOT been shaped for a specific analytic use case.</p>
+<ul>
+<li><p>Do not publish cards or dashboards built on DWH datasets.</p></li>
+<li><p>Fact tables can take the form of transactional, accumulating snapshot, periodic balance.</p></li>
+<li><p>Period and accumulating snapshots should be avoided unless there’s a tradeoff for data volume optimization OR rigid reporting requirements where taking snapshots make sense (ex. Financial reporting)</p></li>
+<li><p>DWH datasets will be fact tables representing a single fact type (ex. Sales, Sales Forecast or Inventory), joined with the minimum dimensional attributes to be useful in a stand-alone setting.</p></li>
+<li><p>Avoid subsetting similar datasets (ex. Inventory 2019 vs Inventory 2022)</p></li>
+<li><p>DWH datasets&nbsp;includes conformed dimensional tables (like a Calendar Dimension with FY attributes or golden record customer master)</p></li>
+</ul>
+<ol start="4" type="1">
+<li><h3 id="dashboard-dataset-dash" class="anchored">Dashboard Dataset (DASH)</h3></li>
+</ol>
+<ul>
+<li><p>Represent stand-alone datasets that dashboards and cards are built against.</p></li>
+<li><p>Publishable only to distribution centers.</p></li>
+<li><p>Typically will combine multiple DWH fact tables and conformed dimensions.</p></li>
+<li><p>Datasets shaped for analysis (PIVOT or UNPIVOT metrics, or POP (CY vs PY etc. are classified as DASH datasets).</p></li>
+<li><p>Do not conduct ETL on DASH datasets</p></li>
+</ul>
+<hr>
+</section>
+<section id="types-of-instances" class="level1">
+<h1>3 Types of Instances</h1>
+<ol type="1">
+<li><h2 id="data-clearinghouse" class="anchored" data-anchor-id="types-of-instances">Data Clearinghouse</h2></li>
+</ol>
+<p>A domo instance for a specific type of data or data from a highly bespoke functional area or dataset that must be managed very closely. &nbsp;This data will tend to be high volume and require domain expertise to manage.</p>
+<p>Clearinghouses are exclusively data prep and management focused, so should house RAW, INT or DWH datasets.</p>
+<ul>
+<li>No project or data pipelines should be assembled here – and by extension no DASH datasets. &nbsp;Those should be handled in a Department instance.</li>
+</ul>
+<ol start="2" type="1">
+<li><h2 id="department" class="anchored">Department</h2></li>
+</ol>
+<p>An instance where projects are implemented.</p>
+<p>Datasources can be RAW or subscriptions of DWH datasets from another department.</p>
+<ul>
+<li>We do not publish DASH datasets between departments</li>
+</ul>
+<p>Every dataset should terminate as a DWH or DASH dataset.</p>
+<ul>
+<li>Only DASH datasets can be published to a Distribution Center</li>
+<li>Only DWH datasets can be published to other departments.</li>
+</ul>
+<ol start="3" type="1">
+<li><h2 id="distribution-center" class="anchored">Distribution Center</h2></li>
+</ol>
+<p>An instance that hosts certified dashboards and datasets (DASH)</p>
+<p>There can be a public datacenter and a private datacenter for highly sensitive dashboards.</p>
+<p>To prevent data manipulation in the distribution center, DataCenter along with any form of ETL access or content manipulation is disabled (no Participants or Editor rights).</p>
+<ul>
+<li>The instance can only receive datasets shared via Publish / Subscriber.</li>
+</ul>
+<section id="responsibility-for-governance" class="level3">
+<h3 class="anchored" data-anchor-id="responsibility-for-governance">Responsibility for Governance</h3>
+<p>Public and private distribution centers are differentiated by who owns responsibility for governance – the publisher versus central BI.</p>
+</section>
+<section id="public-distribution-center" class="level3">
+<h3 class="anchored" data-anchor-id="public-distribution-center">Public Distribution Center&nbsp;</h3>
+<p>Subscriber jobs INTO the public DC must be managed by the departmental data owners</p>
+<ul>
+<li>We only publish DASH datasets into the public DC</li>
+</ul>
+<p>Content sharing is managed by the dashboard publisher (using groups).</p>
+<ul>
+<li>By default PDP is NOT enabled on any dataset.</li>
+</ul>
+</section>
+<section id="private-distribution-center" class="level3">
+<h3 class="anchored" data-anchor-id="private-distribution-center">Private Distribution Center</h3>
+<p>Subscriber jobs INTO the private DC must be managed by Central BI</p>
+<p>All content sharing is managed by central BI – instance admins.</p>
+<ul>
+<li>By default PDP is enabled on all datasets that enter the distribution center.</li>
+</ul>
+</section>
+</section>
+<section id="sample-use-cases" class="level1">
+<h1>Sample Use Cases</h1>
+<section id="engineering-produces-a-dashboard" class="level2">
+<h2 class="anchored" data-anchor-id="engineering-produces-a-dashboard">1. Engineering produces a dashboard</h2>
+<p>Engineering owns “database_monitoring” (dbm) and publishes a dashboard to the PDC (public distribution center)</p>
+<ul>
+<li>DATASOURCE via raw - dbm_RAW</li>
+<li>ETL to produce dbm_DWH and dbm_DASH</li>
+<li>DISTRIBUTE via publish to PDC (dbm_DASH)</li>
+</ul>
+</section>
+<section id="infosec-augments-engineerings-dashboard" class="level2">
+<h2 class="anchored" data-anchor-id="infosec-augments-engineerings-dashboard">2. Infosec augments Engineering’s dashboard</h2>
+<p>Infosec wants to augment database_monitoring (dbm) published by Engineering and publish it as a new asset in PDC (public distribution center)</p>
+<ul>
+<li><p>DATASOURCES</p></li>
+<li><p>via subscription from engineering (dbm_DWH)</p></li>
+<li><p>Because we do not do publish DASH between departmental instances</p></li>
+<li><p>RAW data from internal sources</p></li>
+<li><p>ETL produces infosec_DWH and infosec_DASH</p></li>
+<li><p>DISTRIBUTE via publish to PDC (infosec_DASH)</p></li>
+</ul>
+</section>
+<section id="secops-chooses-the-most-downstream-branch" class="level2">
+<h2 class="anchored" data-anchor-id="secops-chooses-the-most-downstream-branch">3. SecOps chooses the most downstream branch</h2>
+<p>Security Operations wants to augment the work from Infosec and publish it as a new asset in PDC.</p>
+<ul>
+<li>This introduces a 3-step ETL chain (RAW, engineering (dbm_DWH), or infosec (infosec_DWH) that SecOps must choose where to branch from.</li>
+</ul>
+<p>Publish / Subscriber requests should be configured from the most downstream certified data owner – in this case infosec.</p>
+<ul>
+<li>If an update is made to how engineering handles database_monitoring, this ensures the update is passed to infosec. If infosec updates their ornamentation, that update passes down to SecOps and anyone who has branched off of it.</li>
+</ul>
+
+
+</section>
+</section>
+
+ ]]></description>
+  <category>Domo Everywhere</category>
+  <guid>https://jaewilson07.github.io/domo_library/blog/posts/2023-01-24-Domo_Everywhere_MultiInstance/index.html</guid>
+  <pubDate>Tue, 24 Jan 2023 00:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Domo Variables</title>
+  <dc:creator>Jae Wilson</dc:creator>
+  <link>https://jaewilson07.github.io/domo_library/blog/posts/2023-01-24_DomoVariables/index.html</link>
+  <description><![CDATA[ 
+
+
+
+<p>Sample Dashboard * <a href="https://domo-dojo.domo.com/page/1880852133">https://domo-dojo.domo.com/page/1880852133</a></p>
+<p>Variable Types</p>
+<ul>
+<li>Text,number, date</li>
+<li>Controls</li>
+</ul>
+<p>Variable Grant</p>
+<p><img src="https://jaewilson07.github.io/domo_library/blog/posts/2023-01-24_DomoVariables/https:/lh6.googleusercontent.com/7nAzmGrj-zkJc2y02x1-XKtsG2NqZ16sZvkgeVFmIiqwxJKYT0lHppHGzfHBTXcSJSuMwYMetBE3dRUbeU8UreflmRD5pKVtujahfq2ShBmkVDNZiOushKc8t9Mr_rV9ZgQ_i7Lsv0f0RUQaJjqfUIpPTR2q3G_6wafDbSoW6osJNFh6Y0lxZifGnFotkA.png" class="img-fluid"></p>
+<p>Three new Variable and Beast Mode, Domo Stats Datasets</p>
+<section id="faq" class="level1">
+<h1>FAQ</h1>
+<p>Does Variables support dynamic formatting – no</p>
+<p>Unknown if supports Optimization by Domo Engineering</p>
+<p>Variable is added as a dataset column</p>
+<p>Variables exist at a Global Scope across Domo and a Card Scope</p>
+<p>The GRANT does not prevent users from altering variables</p>
+</section>
+<section id="questions-from-oct-cab" class="level1">
+<h1>Questions from Oct CAB</h1>
+<p>Variables for WHAT-IF Analysis</p>
+<ul>
+<li><p>Previously would have to CROSS JOIN a webform to add a column to the dataset</p></li>
+<li><p>Save Variable / Dataset</p></li>
+<li><p>TO EXPLORE - column switching</p></li>
+<li><p>CASE WHEN VARIABLE = ‘value’ THEN <column name=""> END</column></p></li>
+<li><p>Variables for switching EXCHANGE RATE</p></li>
+<li><p>CASE WHEN VARIABLE = ‘USD’ then <usd exchange="" rate=""> END</usd></p></li>
+<li><p>Variables + Publish?</p></li>
+<li><p>Variables + Smart Text?</p></li>
+<li><p>Grants for separating Global vs.&nbsp;Personal variables?</p></li>
+<li><p>Impact when data changes with large datasets?</p></li>
+<li><p>WHY IS THERE NO KB?? - because it’s not in GA :)</p></li>
+<li><p>BECAUSE THEY DON’T CARE ABOUT DOCUMENTATION - true</p></li>
+</ul>
+
+
+</section>
+
+ ]]></description>
+  <category>Variables</category>
+  <guid>https://jaewilson07.github.io/domo_library/blog/posts/2023-01-24_DomoVariables/index.html</guid>
+  <pubDate>Tue, 24 Jan 2023 00:00:00 GMT</pubDate>
+  <media:content url="https://lh6.googleusercontent.com/7nAzmGrj-zkJc2y02x1-XKtsG2NqZ16sZvkgeVFmIiqwxJKYT0lHppHGzfHBTXcSJSuMwYMetBE3dRUbeU8UreflmRD5pKVtujahfq2ShBmkVDNZiOushKc8t9Mr_rV9ZgQ_i7Lsv0f0RUQaJjqfUIpPTR2q3G_6wafDbSoW6osJNFh6Y0lxZifGnFotkA" medium="image"/>
+</item>
+<item>
+  <title>Domo Onboarding</title>
+  <dc:creator>Jae Wilson</dc:creator>
+  <link>https://jaewilson07.github.io/domo_library/blog/posts/2023-01-24_Domo_Onboarding/index.html</link>
+  <description><![CDATA[ 
+
+
+
+<p>This document describes the best practices for beginner Domo users. There are different personas use cases covered in this document:</p>
+<ul>
+<li>Data Engineer</li>
+<li>Product Stakeholder</li>
+<li>Data Consumer</li>
+<li>Visualization engineer</li>
+<li>Support engineer</li>
+</ul>
+<p>🖊️ this is a working document (ish). &nbsp;Leave comments if specific content doesn’t make sense or you need more information.</p>
+<section id="motivation" class="level2">
+<h2 class="anchored" data-anchor-id="motivation">Motivation</h2>
+<p>This document contains a set of recommendations which will help end users:</p>
+<ul>
+<li>Optimize the development process</li>
+<li>Reduce development efforts</li>
+<li>Be integrated into SIE process</li>
+<li>Understand how to improve the content searchability and accessibility</li>
+<li>Understand Domo tooling that can lead to improved customer satisfaction and engagement.</li>
+</ul>
+</section>
+<section id="relevant-links" class="level2">
+<h2 class="anchored" data-anchor-id="relevant-links">Relevant Links</h2>
+<p><a href="https://www.domo.com/product/new-features#/">New Features</a></p>
+<p><a href="https://domohelp.domo.com/hc/en-us/articles/360042936114-Current-Release-Notes">Current Release Notes</a></p>
+<p>🧵 Domo Training <a href="https://sie.slack.com/archives/C03QE172D33">Slack Channel</a></p>
+<hr>
+</section>
+<section id="basic-terms-from-immersion-training" class="level1">
+<h1>🗂️Basic Terms from Immersion Training</h1>
+<section id="core-domo-terms" class="level2">
+<h2 class="anchored" data-anchor-id="core-domo-terms">Core Domo Terms</h2>
+<ul>
+<li><p>DataSet: In Domo, a DataSet is a single flat table of data consisting of columns and rows.</p></li>
+<li><p>Datasets are stored as flat files in “Vault” (Amazon S3) before getting loaded into “Adrenaline” (parallel distributed database layer)</p></li>
+<li><p>DataFlow: a job in the Domo Data Center that makes transformations (e.g.&nbsp;joins, edits, calculations, etc.) to existing DataSets inside of Domo.</p></li>
+<li><p>The output of a DataFlow is a new dataset (flat file) stored in Vault.</p></li>
+<li><p>Analyzer: we design a Card in the Analyzer. The Analyzer is where we create and edit the card.<br>
+﻿</p></li>
+<li><p>Card: synonymous with “chart”, “graph”, or “plot”</p></li>
+<li><p>Understanding Cards <a href="https://domohelp.domo.com/hc/en-us/articles/360043428573-Understanding-Cards">KB link</a></p></li>
+<li><p>Each card gets reduced to a SQL Query against the underlying dataset<br>
+﻿</p></li>
+<li><p>Dashboard/Page: a group of cards ﻿</p></li>
+<li><p>Managing Cards and Dashboards <a href="https://domohelp.domo.com/hc/en-us/sections/360007295674-Card-and-Dashboard-Management">KB Link</a></p></li>
+</ul>
+</section>
+<section id="unofficial-terms-scotts-terms" class="level2">
+<h2 class="anchored" data-anchor-id="unofficial-terms-scotts-terms">Unofficial Terms / “Scott’s Terms”</h2>
+<ul>
+<li><p>Wall: a term to represent Pages in Domo (e.g.&nbsp;“I can see a bunch of different walls in Domo”)</p></li>
+<li><p>Pretty Picture: a term to represent Cards in Domo (e.g.&nbsp;I can see a bunch of pretty pictures hanging on a wall in Domo”)</p></li>
+<li><p>Shell: A Card is like a Shell - we design the Shell in the Analyzer and the data from the chosen DataSet flows in the Shell and is displayed according to the Shell parameters (i.e.&nbsp;filters, time frame, etc.)</p></li>
+</ul>
+</section>
+<section id="business-terms" class="level2">
+<h2 class="anchored" data-anchor-id="business-terms">“Business” Terms</h2>
+<ul>
+<li><p>Charts, graphs: Any sort of graphic to visualize data</p></li>
+<li><p>Dashboards: A collection of key business indicators organized and arranged on a single page</p></li>
+</ul>
+</section>
+</section>
+<section id="working-with-datasets" class="level1">
+<h1>🗂️ Working with Datasets</h1>
+<section id="jae-recommendations" class="level2">
+<h2 class="anchored" data-anchor-id="jae-recommendations">Jae Recommendations</h2>
+<section id="recommended-naming-conventions-for-datasetsdataflows" class="level3">
+<h3 class="anchored" data-anchor-id="recommended-naming-conventions-for-datasetsdataflows">Recommended naming conventions for datasets/dataflows</h3>
+<p>Use snake_case as it is easier to read.</p>
+<p>Ex. MYPROJ_01_historisation_v1_PROD</p>
+<p><project code="">_&lt;STAGE_ 1/2/X&gt;_<description>_&lt;Version 1/2/X&gt;_<dev uat="" prod=""></dev></description></project></p>
+<p>Naming conventions allow the DSO team to track your utilization as well as facilitate data categorization.</p>
+<ul>
+<li>The status of this dataset/dataflow. Also if you would like to create a copy and work on parallel development you just need to change the prefix to DEV and work on it.</li>
+<li>Project Code should be unique and will help us to monitor the rows allocation per project per instance</li>
+<li>Stage allows you better to define the data lineage and identify dependencies</li>
+<li>Description provides more information about the nature of transformation or business logic</li>
+<li>Versioning allows you to better manage the versioning (you might have PROD____ V1 and then you create DEV____ V2 to work on in the new version). This approach allows you to better control and separate different versions of dataflow.</li>
+</ul>
+</section>
+<section id="account-creation-and-dataset-continuity" class="level3">
+<h3 class="anchored" data-anchor-id="account-creation-and-dataset-continuity">Account Creation and Dataset Continuity</h3>
+<section id="managing-accounts-dataset-credentials-when-individuals-go-on-pto-or-leave-the-company" class="level4">
+<h4 class="anchored" data-anchor-id="managing-accounts-dataset-credentials-when-individuals-go-on-pto-or-leave-the-company">Managing Accounts / Dataset Credentials when individuals go on PTO or leave the Company</h4>
+<p>Domo KB <a href="https://domohelp.domo.com/hc/en-us/articles/360042926054-Managing-User-Accounts-for-Connectors">Link</a></p>
+<p>“I’d like to know what is the current way we use the service account to manage connectors / credentials in Domo so that the management of those connectors can be spread across a few individuals. &nbsp;Currently, our team members are creating those connectors in their own account causing maintenance issues when those individual is on PTO or left the company.”</p>
+<p>Datasets will continue executing using the stored credentials in an account object as long as the credentials are valid. &nbsp;If a user is removed from Domo, the account is not automatically assigned, admins will need the Manage All Accounts&nbsp;role Grant to administer accounts that have not explicitly been shared with them.</p>
+<p>Assign Account ownership to a service account OR a Domo Group (beta)</p>
+<p>Take note that there are different account sharing levels, Read, Edit, Owner etc.</p>
+</section>
+<section id="creating-accounts" class="level4">
+<h4 class="anchored" data-anchor-id="creating-accounts">Creating Accounts</h4>
+<p>Accounts are created when users enter credentials for a datasource (Adobe Analytics, Salesforce, Snowflake etc). These credentials cannot be seen in plain text anywhere in Domo but are exchanged when a connector requests access from the source system.</p>
+<p>Accounts are owned by a user(s) or group.</p>
+<ul>
+<li>Owners can rename accounts and update the stored credentials (cycling credentials). &nbsp;</li>
+<li>Users who have Read access to an account can impersonate the stored credentials and create new data extracts from the source system.</li>
+</ul>
+</section>
+</section>
+<section id="recommended-naming-conventions-for-dataset-columns" class="level3">
+<h3 class="anchored" data-anchor-id="recommended-naming-conventions-for-dataset-columns">Recommended naming conventions for dataset columns</h3>
+<p>We recommend using snake case (<a href="https://betterprogramming.pub/string-case-styles-camel-pascal-snake-and-kebab-case-981407998841">article</a>) for column names.</p>
+</section>
+<section id="recommended-tagging-structure" class="level3">
+<h3 class="anchored" data-anchor-id="recommended-tagging-structure">Recommended tagging structure</h3>
+<p>To facilitate dataset classification, Jae requires the use of tags. &nbsp;</p>
+<p>Tags can be applied to datasets AND dataflows but they do not transfer automatically from a parent object to a child object.</p>
+<section id="prefix-breakdown" class="level4">
+<h4 class="anchored" data-anchor-id="prefix-breakdown">Prefix Breakdown</h4>
+<p>cl_</p>
+<p>Content lifecycle</p>
+<p>cl_PROD</p>
+<p>cl_DEV</p>
+<p>cl_UAT</p>
+<p>cl_ARCHIVE</p>
+<p>cl_DELETE</p>
+<p>pj_</p>
+<p>Project</p>
+<p>pj_MONIT</p>
+</section>
+<section id="known-project-prefixes" class="level4">
+<h4 class="anchored" data-anchor-id="known-project-prefixes">Known Project Prefixes</h4>
+<p>pj_MONIT</p>
+<p>For instance monitoring datasets (Domo_Governance, Domo_Stats etc).</p>
+</section>
+</section>
+<section id="etl-and-data-pipeline-development" class="level3">
+<h3 class="anchored" data-anchor-id="etl-and-data-pipeline-development">ETL and Data Pipeline Development</h3>
+<p><a href="https://www.youtube.com/watch?v=rS2e2_fv5yk">How to Structure your DataCenter - video</a></p>
+<ul>
+<li><p>Always comment you code (for MySQL/Redshift/Adrenaline flows) Each temporary table should be commented on purpose and what is the output</p></li>
+<li><p>Try to use clear names for Magic tiles (instead of generated one like Select Columns 1/2/3 or Remove duplicates)</p></li>
+<li><p>Use a bus matrix to organize and play your pipeline</p></li>
+<li><p>Categorize datasets as Fact or Dimension (and wait till the late steps to JOIN them</p></li>
+<li><p>Always apply GROUP BY or DEDUPLICATION before JOIN’ing in ETL</p></li>
+<li><p>Try to UNION facts. &nbsp;Do Not JOIN facts together.</p></li>
+<li><p>Use the ALTER COLUMNS tile to standardize data types</p></li>
+<li><p>UNION columns with an Activity_Type and Activity_Date for standard Filtering</p></li>
+<li><p>Using WebForms you can join in descriptive information to augment datasets</p></li>
+<li><p>Don’t filter your output datasets in ETL. Filter in Cards or a DSV used as a Semantic Layer.</p></li>
+<li><p>Rationalize when it’s appropriate to write business logic into Magic (Formula tiles), webform_lookups, vs.&nbsp;Beast Modes.</p></li>
+<li><p>Do not leverage DSVs for data transformation if you’re also using Magic. Try to keep all your transformation logic in the same place.</p></li>
+<li><p>If you are writing the same code multiple times, find a different implementation strategy</p></li>
+<li><p>during this stage of adoption (and given the small data) JUST do Magic &amp; Beast Modes. Don’t use DSVs until Users demand an intermediate semantic layer.</p></li>
+</ul>
+</section>
+<section id="use-change-log-and-versioning" class="level3">
+<h3 class="anchored" data-anchor-id="use-change-log-and-versioning">Use Change Log and Versioning</h3>
+<p>Domo allows you to keep track of changes in the dataflow (all types).</p>
+</section>
+<section id="archiving-and-deleting-content" class="level3">
+<h3 class="anchored" data-anchor-id="archiving-and-deleting-content">Archiving and Deleting Content</h3>
+<p>🚀 Deleting a dataflow does not automatically delete connected datasets.</p>
+<p>To properly decommission dataflows:</p>
+<ol type="1">
+<li>Relabel the output datasets, DELETE_&lt;dataset_name&gt;</li>
+<li>Relabel the dataflow, DELETE_&lt;dataflow_name&gt;</li>
+<li>Delete dataflows and datasets</li>
+</ol>
+<p>There is no archive feature built into Domo. &nbsp;As a surrogate for archiving, users can</p>
+<ol type="1">
+<li>Disable execution of dataflows, workbench jobs, or connector datasources</li>
+<li>Use Lineage to confirm datasets are not part of an operational pipeline</li>
+<li>Relabel and retag assets.</li>
+<li>Cards and Pages can be moved from production pages and relabeled as appropriate.</li>
+</ol>
+</section>
+</section>
+<section id="supporting-features-from-domo" class="level2">
+<h2 class="anchored" data-anchor-id="supporting-features-from-domo">Supporting Features from Domo</h2>
+<ul>
+<li>Adrenaline Dataflows</li>
+<li>Magic 2.0</li>
+<li>CLI</li>
+<li>Dataset Views</li>
+<li>Publish</li>
+<li>Certification</li>
+<li>Advanced tools (Stacker, Data Assembler)</li>
+</ul>
+</section>
+<section id="which-tool-is-the-best-for-which-use-case" class="level2">
+<h2 class="anchored" data-anchor-id="which-tool-is-the-best-for-which-use-case">Which tool is the best for which use case</h2>
+</section>
+<section id="upsert-and-partitioning-tools" class="level2">
+<h2 class="anchored" data-anchor-id="upsert-and-partitioning-tools">Upsert and Partitioning tools</h2>
+<hr>
+</section>
+</section>
+<section id="visualize" class="level1">
+<h1>🗂️ Visualize</h1>
+<section id="understanding-pages-and-dashboards" class="level2">
+<h2 class="anchored" data-anchor-id="understanding-pages-and-dashboards">Understanding Pages and Dashboards</h2>
+<p>In addition to default system dashboards (Overview, Favorites, Shared), as well as company-defined default dashboards, users can display content and cards on dashboards.</p>
+<p>Page owners and users with manage pages rights can lock a page to prevent alterations to a page. &nbsp;Consider the use of Certification workflows for ‘official’ content that should not be altered.</p>
+</section>
+<section id="change-card-interactions-to-control-what-happens-when-users-click-on-a-dashboard" class="level2">
+<h2 class="anchored" data-anchor-id="change-card-interactions-to-control-what-happens-when-users-click-on-a-dashboard">Change Card Interactions to control what happens when Users click on a Dashboard</h2>
+<p>Default behavior is to apply filters on click, but dashboard designers change interaction behavior on a card by card basis.</p>
+<p>Ex. Can have drilldown in place, or click to open a link to another Domo Page or external link.</p>
+<p>Interactions <a href="https://domohelp.domo.com/hc/en-us/articles/360043428433-Creating-Domo-Stories#7.">KB Link</a></p>
+<p>URL Links to pages can include predefined column filters using PFilters. &nbsp;<a href="https://domohelp.domo.com/hc/en-us/articles/360042933114-Using-Pfilters-to-Apply-Filters-from-URL-Query-Parameters-to-Embedded-Dashboards">KB Link</a></p>
+<section id="additional-resources" class="level3">
+<h3 class="anchored" data-anchor-id="additional-resources">Additional Resources</h3>
+<ul>
+<li>Design better Dashboards / Tell Better Data Stories (📹 <a href="https://www.youtube.com/watch?v=Cpz2ecelaow">YouTube Video</a>)</li>
+<li>Understanding Pages (System Defaults - Overview, Favorites, Shared – <a href="https://domohelp.domo.com/hc/en-us/articles/360043428553-Understanding-Pages">KB Link</a>)</li>
+</ul>
+</section>
+</section>
+<section id="understanding-cards" class="level2">
+<h2 class="anchored" data-anchor-id="understanding-cards">Understanding Cards</h2>
+<p>Cards are the Domo equivalent of charts, plots, or graphs.</p>
+<p>Filtering, Sorting, cards in the Details view</p>
+<section id="sharing-cards-to-pages-vs-save-as-creating-a-copy" class="level3">
+<h3 class="anchored" data-anchor-id="sharing-cards-to-pages-vs-save-as-creating-a-copy">Sharing Cards to Pages vs Save As (creating a copy)</h3>
+<p>Sharing and Removing Access to Cards and Pages <a href="https://domohelp.domo.com/hc/en-us/articles/360042932994-Sharing-and-Removing-Access-to-Cards-and-Pages">Link to KB</a></p>
+</section>
+<section id="lock-your-cards-and-pages-to-prevent-users-from-editing-the-content." class="level3">
+<h3 class="anchored" data-anchor-id="lock-your-cards-and-pages-to-prevent-users-from-editing-the-content.">Lock your Cards and Pages to prevent users from editing the content.</h3>
+</section>
+<section id="chart-colors" class="level3">
+<h3 class="anchored" data-anchor-id="chart-colors">Chart Colors</h3>
+<p>Color Rules (“conditional formatting”) <a href="https://domohelp.domo.com/hc/en-us/articles/360043428813-Setting-Color-Rules-for-a-Chart">Link to KB</a></p>
+<p>Changing Default Colors in different Chart Types <a href="https://domohelp.domo.com/hc/en-us/articles/360043429653-Changing-the-Default-Colors-in-Your-Chart">Link to KB</a></p>
+<p>🚀 Only one Default Theme (color palette) can exist per instance in the form of the Brand Kit feature. &nbsp;This standard will be set and configured by the Jae team. &nbsp;The standard is intended to conform with overall Sony SIE branding. &nbsp;<a href="https://domohelp.domo.com/hc/en-us/articles/5428851518999-Brand-Kit">Link to KB</a></p>
+<p>❓ “In Tableau when you select a field to color, it automatically assigns each distinct value a color. This is useful for say Department separation. We can then manually change it if needed. &nbsp;How do you do it in Domo?”</p>
+<ul>
+<li>Either set color rules (for metrics) OR if you have a chart type that allows you to add a Series (ex. Grouped bar chart) it will assign a color to each unique value</li>
+</ul>
+</section>
+<section id="aggregation-across-categories-window-functions-cumulative-sum" class="level3">
+<h3 class="anchored" data-anchor-id="aggregation-across-categories-window-functions-cumulative-sum">Aggregation across Categories / Window Functions / Cumulative Sum</h3>
+<p>There are 3 ways to compare aggregates outside of the window of data you’re currently in</p>
+<p>Segments</p>
+<p><a href="https://domohelp.domo.com/hc/en-us/articles/4403089503383-Creating-Segments-in-Analyzer">KB Link</a></p>
+<p>Window Functions &amp; Fixed Functions</p>
+<p>Ultimate 2020 Window Function Tutorial 📹 <a href="https://www.youtube.com/watch?v=eifSYZIcPzg">YouTube Video</a></p>
+<p>3 Month Average Lag 📹 <a href="https://www.youtube.com/watch?v=cnc6gMKZ9R8">YouTube Video</a></p>
+<p>Certain Card Types allow cross category aggregation</p>
+<p>Period over Period</p>
+<p>Running Total</p>
+</section>
+<section id="beast-modes-are-formulas-defined-in-analyzer-cards" class="level3">
+<h3 class="anchored" data-anchor-id="beast-modes-are-formulas-defined-in-analyzer-cards">Beast Modes are formulas defined in Analyzer / Cards</h3>
+<p>Beast Mode calculations will frequently use MySQL (and sometimes Redshift) syntax.</p>
+<p>🚀 Beast Modes can be applied before aggregation (at the row level) or after aggregation</p>
+<p>In most cases, any CASE statement should occur INSIDE a beast mode.</p>
+<p>CASE statements and date-specific transforms that exist independently of aggregate functions should often move upstream and persist in the dataset itself.</p>
+</section>
+<section id="understanding-card-sharing-and-data-security" class="level3">
+<h3 class="anchored" data-anchor-id="understanding-card-sharing-and-data-security">Understanding Card Sharing and Data Security</h3>
+<p>Card and Page sharing versus data security are two very different functions with different implications. &nbsp;</p>
+<p>⚠️ If you share a card or dashboard, you are implicitly giving READ access to the underlying dataset(s) represented in the entity.</p>
+<p>⚠️ If there is content that needs to be filtered on a per-user basis consider using PDP (Personalized Data Permissions) to apply row-level security to limit the rows of data in a dataset a user has access to.</p>
+</section>
+</section>
+<section id="jae-recommendations-1" class="level2">
+<h2 class="anchored" data-anchor-id="jae-recommendations-1">Jae Recommendations</h2>
+<section id="card-design" class="level3">
+<h3 class="anchored" data-anchor-id="card-design">Card Design</h3>
+<p>🚀 Naming Convention Tip: &nbsp;Update the card title to indicate cards with a drill path.</p>
+<ul>
+<li>Consider an asterisk, *, &nbsp;or ALT &nbsp;+ 16, ►, to indicate cards with a drill path.</li>
+</ul>
+<p>🚀 There is a toggle to prevent users from drilling down to raw data</p>
+</section>
+<section id="beast-mode-management" class="level3">
+<h3 class="anchored" data-anchor-id="beast-mode-management">Beast Mode Management</h3>
+<ul>
+<li>Use Beast Mode Manager and DomoGovernance_BeastModes dataset to monitor beast mode proliferation in your instance</li>
+<li>Card performance is directly correlated SQL commands issued in beast modes where possible to avoid COUNT(DISTINCT) and text-based operations (REGEX or LIKE).</li>
+<li>When reasonable, materialize row-based transforms (date conversions) onto the dataset.</li>
+<li>Sharing beast modes to datasets will improve card performance but will slow dataset indexing.</li>
+<li>There is a difference between sharing a card versus making a copy of a card. &nbsp;Cards can be shared (linked) to multiple pages making it easy to have one object to maintain.</li>
+</ul>
+</section>
+<section id="card-and-dashboard-management" class="level3">
+<h3 class="anchored" data-anchor-id="card-and-dashboard-management">Card and Dashboard Management</h3>
+<ul>
+<li>Each card has its own URN. &nbsp;You can either create a copy / duplicate of a card and embed it on a page (it will have its own URN) OR simply move or share a card to a page (it retains the original URN).</li>
+</ul>
+</section>
+</section>
+<section id="card-faq" class="level2">
+<h2 class="anchored" data-anchor-id="card-faq">Card FAQ</h2>
+<p>Is there a difference between “Save As” / “Duplicating” vs “Sharing” a card?</p>
+<ul>
+<li>Save As or Duplicate will create a new object in Domo that is separate from the original entity. &nbsp;</li>
+<li>Changes made to the duplicated card or the original card will not impact the other. &nbsp;</li>
+<li><a href="https://domohelp.domo.com/hc/en-us/articles/360042923274-Duplicating-Cards-Save-As-">Duplicating Cards KB</a></li>
+</ul>
+<p>Can I prevent users from altering my card or page?</p>
+<ul>
+<li>Yes, lock your content. &nbsp;<a href="https://domohelp.domo.com/hc/en-us/articles/360042923814-Locking-or-Unlocking-Page-Content">KB Link</a></li>
+<li>Consider a certification flow for ‘official content’. &nbsp;<a href="https://domohelp.domo.com/hc/en-us/articles/360043430613-Certifying-Cards-and-DataSets">KB Link</a></li>
+</ul>
+<p>How can I alias data (fix values) or create a custom calculated metric in a card?</p>
+<ul>
+<li><p>Create a Beast Mode <a href="https://domohelp.domo.com/hc/en-us/sections/360007295754-Beast-Mode">Link KB</a>&nbsp;using MySQL syntax functions</p></li>
+<li><p>Ex. CASE WHEN END or SUM(CASE WHEN … &nbsp;END)</p></li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="interacting-with-domo-content" class="level1">
+<h1>🗂️ Interacting with Domo Content</h1>
+<section id="card-features-for-participants-non-editors" class="level2">
+<h2 class="anchored" data-anchor-id="card-features-for-participants-non-editors">Card Features for Participants (non-editors)</h2>
+<section id="use-annotations-to-share-insights" class="level3">
+<h3 class="anchored" data-anchor-id="use-annotations-to-share-insights">Use Annotations to share insights</h3>
+<p>Create card annotations and find or document interesting insights using annotations</p>
+<ul>
+<li><a href="https://domohelp.domo.com/hc/en-us/articles/360042923974-Adding-Chart-Annotations">Annotation KB</a></li>
+</ul>
+</section>
+<section id="use-alerts-to-update-users-with-changes-in-domo" class="level3">
+<h3 class="anchored" data-anchor-id="use-alerts-to-update-users-with-changes-in-domo">Use Alerts to update users with changes in Domo</h3>
+<ul>
+<li><a href="https://domohelp.domo.com/hc/en-us/sections/360007334393-Notifications-and-Alerts">Alerts KB</a></li>
+</ul>
+<p>Alerts can be configured for cards and metrics represented in cards as well as datasets.</p>
+</section>
+</section>
+<section id="card-features-for-editors" class="level2">
+<h2 class="anchored" data-anchor-id="card-features-for-editors">Card Features for Editors</h2>
+<section id="use-quick-filters-to-encourage-data-exploration" class="level3">
+<h3 class="anchored" data-anchor-id="use-quick-filters-to-encourage-data-exploration">Use Quick Filters to encourage data exploration</h3>
+<ul>
+<li><a href="https://domohelp.domo.com/hc/en-us/articles/360042924074-Adding-Filters-to-Your-Chart">Quick Filters KB</a>&nbsp;</li>
+</ul>
+</section>
+<section id="use-page-level-filter-views-to-create-preset-combinations-of-filters-for-a-guided-user-experience" class="level3">
+<h3 class="anchored" data-anchor-id="use-page-level-filter-views-to-create-preset-combinations-of-filters-for-a-guided-user-experience">Use Page-level Filter Views to create preset combinations of filters for a guided user experience</h3>
+<ul>
+<li><a href="https://domohelp.domo.com/hc/en-us/articles/360042923914-Applying-Page-Level-Filters-with-Filter-Views">Filter Views KB</a></li>
+</ul>
+</section>
+<section id="add-drill-paths-to-cards-to-control-the-exploration-experience" class="level3">
+<h3 class="anchored" data-anchor-id="add-drill-paths-to-cards-to-control-the-exploration-experience">Add Drill Paths to Cards to control the exploration experience</h3>
+<ul>
+<li><a href="https://domohelp.domo.com/hc/en-us/articles/360042924094-Adding-a-Drill-Path-to-Your-Chart">Drill Paths KB</a></li>
+</ul>
+<hr>
+</section>
+</section>
+</section>
+<section id="project-handover-moving-into-production" class="level1">
+<h1>🗂️ Project Handover / Moving into Production</h1>
+<section id="documentation" class="level2">
+<h2 class="anchored" data-anchor-id="documentation">Documentation</h2>
+<ul>
+<li>High Level Design / Solution overview</li>
+<li>New Users’ guide</li>
+<li>Data Dictionary (see section below)</li>
+</ul>
+</section>
+<section id="data-quality" class="level2">
+<h2 class="anchored" data-anchor-id="data-quality">Data Quality</h2>
+</section>
+<section id="domo-momentum---certification" class="level2">
+<h2 class="anchored" data-anchor-id="domo-momentum---certification">Domo Momentum - Certification</h2>
+</section>
+<section id="dev-prod-maintenance" class="level2">
+<h2 class="anchored" data-anchor-id="dev-prod-maintenance">Dev / Prod &amp; Maintenance</h2>
+<section id="use-domo-sandbox-for-managing-same-instance-and-cross-instance-devprod-content" class="level3">
+<h3 class="anchored" data-anchor-id="use-domo-sandbox-for-managing-same-instance-and-cross-instance-devprod-content">Use Domo Sandbox for managing same instance and cross-instance dev/prod content</h3>
+<ul>
+<li><p>By default SIE Domo instances will not have a second Domo instance to separate Dev from Prod. &nbsp;Within the same instance however, Domo Sandbox can help manage the promotion of development assets to production and back. <a href="https://domohelp.domo.com/hc/en-us/articles/4403367344023-Domo-Sandbox">Sandbox KB</a>&nbsp;</p></li>
+<li><p>Do not make full copies of production datasets into Dev; instead, consider developing against randomized samples of data. &nbsp;This will both help manage developer experience (faster execution times) and instance rowcount.</p></li>
+</ul>
+</section>
+<section id="transfer-assets-to-appropriate-stakeholders" class="level3">
+<h3 class="anchored" data-anchor-id="transfer-assets-to-appropriate-stakeholders">Transfer Assets to Appropriate Stakeholders</h3>
+<hr>
+</section>
+</section>
+</section>
+<section id="governance-themes" class="level1">
+<h1>🗂️ Governance Themes</h1>
+<p>KB Domo Enterprise Toolkit - <a href="https://domohelp.domo.com/hc/en-us/articles/5299662679447-Domo-Enterprise-Toolkit">https://domohelp.domo.com/hc/en-us/articles/5299662679447-Domo-Enterprise-Toolkit</a></p>
+<section id="single-sign-on-sso-and-okta-authentication" class="level2">
+<h2 class="anchored" data-anchor-id="single-sign-on-sso-and-okta-authentication">Single Sign On (SSO) and OKTA Authentication</h2>
+<p><a href="https://domohelp.domo.com/hc/en-us/sections/360007334573-User-and-Group-Management">User and Group Management KB</a>&nbsp;link</p>
+<p>Users can be aJaed to Domo at will. &nbsp;The SIE Domo contract does not charge licensing fees on a per user basis.</p>
+<p>See <a href="https://domohelp.domo.com/hc/en-us/articles/360042934274-Adding-Users-to-Domo">Adding Users to Domo KB</a>&nbsp;link</p>
+<p>Out of the box, Domo user authentication is handled with email and login. &nbsp;User provisioning and authentication can be handled via SSO (<a href="https://domohelp.domo.com/hc/en-us/articles/360042934374-Understanding-and-Configuring-Domo-Single-Sign-On-Using-SAML">SSO using SAML KB</a>&nbsp;link)</p>
+<section id="logging-into-domo-via-direct-sign-on-in-an-environment-with-sso" class="level3">
+<h3 class="anchored" data-anchor-id="logging-into-domo-via-direct-sign-on-in-an-environment-with-sso">Logging into Domo via Direct Sign On in an environment with SSO</h3>
+<p>To bypass SSO Authentication, users must first be added to the <a href="https://domohelp.domo.com/hc/en-us/articles/360042934374-Understanding-and-Configuring-Domo-Single-Sign-On-Using-SAML#4.">Direct Sign On (DSO) List</a>. &nbsp;</p>
+<p>Once aJaed to DSO, users can bypass SSO by adding /auth/index?domoManualLogin=true to the url.</p>
+</section>
+</section>
+<section id="users-groups-roles" class="level2">
+<h2 class="anchored" data-anchor-id="users-groups-roles">Users, Groups, Roles</h2>
+<section id="sie-standard-roles" class="level3">
+<h3 class="anchored" data-anchor-id="sie-standard-roles">⚖️ SIE Standard Roles</h3>
+<p>Roles are comprised of Grants which determine actions users can take in Domo.</p>
+<p>Jae will create standard roles and groups to which instance members will be assigned by default. &nbsp;Instance admins can create their own custom roles for departmental users as necessary.</p>
+<ul>
+<li><p>SIE_Admin</p></li>
+<li><p>SIE_Reset</p></li>
+<li><p>SIE_Priviliged</p></li>
+<li><p>Privileged + ADR Flows</p></li>
+<li><p>SIE_Test</p></li>
+</ul>
+<p>To monitor role &amp; Grant configuration:</p>
+<ul>
+<li>Go To Admin &gt; Governance &gt; Roles &gt; Grid</li>
+</ul>
+</section>
+<section id="define-custom-roles" class="level3">
+<h3 class="anchored" data-anchor-id="define-custom-roles">Define Custom Roles</h3>
+<ul>
+<li><a href="https://knowledge.domo.com/Administer/Controlling_Access_in_Domo/Managing_Custom_Roles">https://knowledge.domo.com/Administer/Controlling_Access_in_Domo/Managing_Custom_Roles</a></li>
+<li><a href="https://knowledge.domo.com/Administer/Controlling_Access_in_Domo/04Security_Role_Reference">https://knowledge.domo.com/Administer/Controlling_Access_in_Domo/04Security_Role_Reference</a></li>
+</ul>
+</section>
+<section id="sie-default-groups" class="level3">
+<h3 class="anchored" data-anchor-id="sie-default-groups">⚖️ SIE Default Groups</h3>
+<ul>
+<li>SIE Admin</li>
+<li>SIE User</li>
+</ul>
+</section>
+<section id="defining-groups" class="level3">
+<h3 class="anchored" data-anchor-id="defining-groups">Defining Groups</h3>
+<p>Where Roles and Grants define what users can do, Group membership should be used to either:</p>
+<ul>
+<li>Manage content ownership</li>
+<li>Share content</li>
+</ul>
+<p>Avoid the temptation to manage content by individuals, instead try to adopt the practice of sharing content with groups.</p>
+<ul>
+<li><a href="https://domohelp.domo.com/hc/en-us/articles/360042934294-Creating-and-Managing-User-Groups">https://domohelp.domo.com/hc/en-us/articles/360042934294-Creating-and-Managing-User-Groups</a></li>
+</ul>
+</section>
+<section id="implement-row-level-security-with-personalized-data-permissions-pdp-policies" class="level3">
+<h3 class="anchored" data-anchor-id="implement-row-level-security-with-personalized-data-permissions-pdp-policies">Implement Row-Level Security with Personalized Data Permissions (PDP) &nbsp;Policies</h3>
+<p>🚀 Monitoring card sharing is NOT a replacement for applying PDP policies. &nbsp;Jae strongly recommends applying PDP policies to all sensitive data in Domo.</p>
+<p>🚀 A card gets reduced to a SQL query against a dataset which is executed at runtime (i.e.&nbsp;when Michelle tries to view the card). &nbsp;AND PDP creates row-level security to the dataset which limits what gets returned by the query.</p>
+<p>ex. Michelle can create a card against any dataset that has been shared with her, but she will only see the rows the pdp policy allows her to see.</p>
+<p>ex. SELECT Product, sum(amount) GROUP BY Product.</p>
+<p>🚀 PDP policies are additive (each policy you’re a part of adds an OR clause for the data you can see).</p>
+<section id="pdp-links" class="level4">
+<h4 class="anchored" data-anchor-id="pdp-links">PDP Links</h4>
+<ul>
+<li>Personalized Data Permissions - <a href="https://domohelp.domo.com/hc/en-us/sections/360007334593-Personalized-Data-Permissions-PDP-">KB Link</a></li>
+<li><a href="https://domohelp.domo.com/hc/en-us/articles/4415800746391-Governance-Toolkit-PDP-Automation">https://domohelp.domo.com/hc/en-us/articles/4415800746391-Governance-Toolkit-PDP-Automation</a></li>
+<li><a href="https://domohelp.domo.com/hc/en-us/articles/360043439353-PDP-Policy-Autocreation">https://domohelp.domo.com/hc/en-us/articles/360043439353-PDP-Policy-Autocreation</a></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="datacenter-audits" class="level2">
+<h2 class="anchored" data-anchor-id="datacenter-audits">Datacenter Audits</h2>
+<ul>
+<li>Create a schedule with your technology &amp; business users to clean up on a regular basis and monitor the results through governance and activity logs</li>
+<li>Set cleaning campaigns to a theme to make it fun</li>
+<li>Check to make sure your instance objects are in security compliance with other parts of the business</li>
+<li>Set alerts on ETL jobs to monitor failure – can set up as SMS message</li>
+<li>Check schedules for ETL jobs and make sure they are available when needed for the business dashboard users</li>
+</ul>
+<section id="security" class="level3">
+<h3 class="anchored" data-anchor-id="security">Security</h3>
+<p>⚠️ By default, most users will not see all the data available in the datacenter; however, sharing a card automatically shares the underlying dataset. &nbsp;Therefore PDP (<a href="https://domohelp.domo.com/hc/en-us/sections/360007334593-Personalized-Data-Permissions-PDP-">personalized data permissions KB</a>) is the only way to implement proper data security. &nbsp;</p>
+</section>
+</section>
+<section id="manage-data-using-metadata" class="level2">
+<h2 class="anchored" data-anchor-id="manage-data-using-metadata">Manage Data using Metadata</h2>
+<ul>
+<li><p>Use Tags facilitate dataset audits and provide additional dataset metadata (<a href="https://domohelp.domo.com/hc/en-us/articles/4415839139863-Governance-Toolkit-DataSet-Tagging">KB</a>)</p></li>
+<li><p>Utilize the Governance Connectors <a href="https://domohelp.domo.com/hc/en-us/articles/360056318074-Domo-Governance-Datasets-Connector">(KB)</a>&nbsp;to access data schemas, beastmodes, access rights to dataset, and tags</p></li>
+<li><p>Create a data dictionary dashboard</p></li>
+</ul>
+</section>
+<section id="monitor-domo-instance-and-projects" class="level2">
+<h2 class="anchored" data-anchor-id="monitor-domo-instance-and-projects">Monitor Domo Instance and Projects</h2>
+<hr>
+</section>
+</section>
+<section id="domo-pipeline-optimization" class="level1">
+<h1>🗂️ Domo Pipeline Optimization</h1>
+<section id="domo-architecture-review" class="level2">
+<h2 class="anchored" data-anchor-id="domo-architecture-review">Domo Architecture Review</h2>
+</section>
+</section>
+<section id="domo-features" class="level1">
+<h1>🗂️ Domo Features</h1>
+<section id="data-science-toolkit" class="level2">
+<h2 class="anchored" data-anchor-id="data-science-toolkit">Data Science Toolkit</h2>
+<section id="jupyter-notebook" class="level3">
+<h3 class="anchored" data-anchor-id="jupyter-notebook">Jupyter Notebook</h3>
+<p><a href="https://domohelp.domo.com/hc/en-us/articles/360047400753-Jupyter-Workspaces">KB</a>&nbsp;link</p>
+<p>Primary Advantages</p>
+<ul>
+<li>Notebooks can be scheduled to run as a dataflow</li>
+<li>Datasets can be read in or updated using the domo jupyter package</li>
+<li>During development, the performance of the notebooks will feel much faster than Magic 2.0 Scripting Tiles</li>
+</ul>
+<p>Disadvantages</p>
+<ul>
+<li>No built-in version control (no access to private GitHub)</li>
+<li>No easy way to “download all files”</li>
+</ul>
+</section>
+</section>
+<section id="extending-domo-with-apis" class="level2">
+<h2 class="anchored" data-anchor-id="extending-domo-with-apis">Extending Domo with APIs</h2>
+<p>📚 Jae <a href="https://documenter.getpostman.com/view/5049119/UyxbppB2">Private API documentation</a></p>
+
+
+</section>
+</section>
+
+ ]]></description>
+  <category>new user</category>
+  <guid>https://jaewilson07.github.io/domo_library/blog/posts/2023-01-24_Domo_Onboarding/index.html</guid>
+  <pubDate>Tue, 24 Jan 2023 00:00:00 GMT</pubDate>
+</item>
+</channel>
+</rss>

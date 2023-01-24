@@ -1,6 +1,11 @@
 ---
-title: Sample Dashboard
+title: Domo Variables
+author: [Jae Wilson]
+date: 2023-01-24
+categories: ['Variables']
 ---
+
+Sample Dashboard
 *   [https://domo-dojo.domo.com/page/1880852133](https://domo-dojo.domo.com/page/1880852133)
 
 Variable Types
@@ -12,7 +17,7 @@ Variable Grant
 
 ![](https://lh6.googleusercontent.com/7nAzmGrj-zkJc2y02x1-XKtsG2NqZ16sZvkgeVFmIiqwxJKYT0lHppHGzfHBTXcSJSuMwYMetBE3dRUbeU8UreflmRD5pKVtujahfq2ShBmkVDNZiOushKc8t9Mr_rV9ZgQ_i7Lsv0f0RUQaJjqfUIpPTR2q3G_6wafDbSoW6osJNFh6Y0lxZifGnFotkA)
 
-Three new Variable and Beast Mode, Domo STats Datasets
+Three new Variable and Beast Mode, Domo Stats Datasets
 
 FAQ
 ===
