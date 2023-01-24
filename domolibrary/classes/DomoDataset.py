@@ -17,11 +17,12 @@ import json
 
 import aiohttp
 
+import io
+
 # import datetime as dt
 
 # import asyncio
 # import importlib
-# import io
 # import json
 # from enum import Enum, auto
 # from pprint import pprint
@@ -113,7 +114,7 @@ class DomoDataset_Schema:
 
             return self.columns
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 11
+# %% ../../nbs/classes/50_DomoDataset.ipynb 12
 class DatasetTags_AuthNotProvidedError(Exception):
     """return if DatasetTags request cannot access an auth object"""
 
@@ -206,7 +207,7 @@ class DomoDataset_Tags:
 
         return self.tag_ls
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 14
+# %% ../../nbs/classes/50_DomoDataset.ipynb 15
 @patch
 async def add(
     self: DomoDataset_Tags,
@@ -231,7 +232,7 @@ async def add(
         session=session,
     )
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 16
+# %% ../../nbs/classes/50_DomoDataset.ipynb 17
 @patch
 async def remove(self: DomoDataset_Tags,
                  remove_tag_ls: [str],
@@ -255,7 +256,7 @@ async def remove(self: DomoDataset_Tags,
                           debug_api=debug_api, session=session)
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 19
+# %% ../../nbs/classes/50_DomoDataset.ipynb 21
 @dataclass
 class DomoDataset:
     "interacts with domo datasets"
@@ -290,7 +291,7 @@ class DomoDataset:
     def display_url(self):
         return f"https://{self.auth.domo_instance }.domo.com/datasources/{self.id}/details/overview"
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 23
+# %% ../../nbs/classes/50_DomoDataset.ipynb 25
 @patch(cls_method=True)
 async def get_from_id(
     cls: DomoDataset,
@@ -335,7 +336,7 @@ async def get_from_id(
     return ds
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 27
+# %% ../../nbs/classes/50_DomoDataset.ipynb 29
 class QueryExecutionError(Exception):
     def __init__(self, sql, dataset_id, domo_instance):
         self.message = f"error executing {sql} against dataset {dataset_id} in {domo_instance}"
