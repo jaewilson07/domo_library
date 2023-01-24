@@ -34,6 +34,6 @@ jobs:
       - uses: r7kamura/google-docs-to-github@v3
         with:
           google_drive_folder_id: 11lDtJ_2H_CogZjpsvju-ucKVPGIPoO58
-          github_branch: blog
+          github_branch: "blog"
           github_directory: "google_docs"
           github_token: ${{ secrets.GITHUB_TOKEN }}
