@@ -3,7 +3,8 @@
 # %% auto 0
 __all__ = ['DatasetNotFoundError', 'QueryRequestError', 'query_dataset_public', 'query_dataset_private', 'get_dataset_by_id',
            'get_schema', 'set_dataset_tags', 'UploadDataError', 'upload_dataset_stage_1', 'upload_dataset_stage_2_file',
-           'upload_dataset_stage_2_df', 'upload_dataset_stage_3', 'index_dataset', 'index_status']
+           'upload_dataset_stage_2_df', 'upload_dataset_stage_3', 'index_dataset', 'index_status',
+           'generate_list_partitions_body', 'list_partitions']
 
 # %% ../../nbs/routes/dataset.ipynb 3
 from typing import Optional
@@ -129,8 +130,6 @@ async def get_dataset_by_id(
         method="GET",
         debug_api=debug_api, session = session
     )
-
-    print(res)
 
     if res.status == 404 and res.response == 'Not Found':
         raise DatasetNotFoundError(dataset_id=dataset_id, domo_instance=auth.domo_instance)
@@ -379,4 +378,60 @@ async def index_status(
         method="GET", url=url, 
         session=session, debug_api=debug_api
     )
+
+
+# %% ../../nbs/routes/dataset.ipynb 27
+def generate_list_partitions_body(limit=100, offset=0):
+    return {
+        "paginationFields": [{
+            "fieldName": "datecompleted",
+            "sortOrder": "DESC",
+            "filterValues": {
+                "MIN": None,
+                "MAX": None
+            }
+        }],
+        "limit": 1000,
+        "offset": 0
+    }
+
+
+async def list_partitions(auth: dmda.DomoAuth,
+                          dataset_id: str,
+                          body: dict = None,
+                          session: aiohttp.ClientSession = None,
+                          debug_api: bool = False,
+                          debug_loop: bool = False,
+
+
+                          ):
+
+    body = body or generate_list_partitions_body()
+
+    url = f"https://{auth.domo_instance}.domo.com/api/query/v1/datasources/{dataset_id}/partition/list"
+
+    offset_params = {
+        'offset': 'offset',
+        'limit': 'limit',
+    }
+
+    def arr_fn(res) -> list[dict]:
+        return res.response
+
+    res = await gd.looper(auth=auth,
+                       method='POST',
+                       url=url,
+                       arr_fn=arr_fn,
+                       body=body,
+                       offset_params_in_body=True,
+                       offset_params=offset_params,
+                       loop_until_end=True,
+                       session=session,
+                       debug_loop=debug_loop,
+                       debug_api = debug_api)
+
+    if res.status == 404 and res.response == 'Not Found':
+        raise DatasetNotFoundError(
+            dataset_id=dataset_id, domo_instance=auth.domo_instance)
+    return res
 
