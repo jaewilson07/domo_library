@@ -4,7 +4,7 @@
 __all__ = ['DatasetNotFoundError', 'QueryRequestError', 'query_dataset_public', 'query_dataset_private', 'get_dataset_by_id',
            'get_schema', 'set_dataset_tags', 'UploadDataError', 'upload_dataset_stage_1', 'upload_dataset_stage_2_file',
            'upload_dataset_stage_2_df', 'upload_dataset_stage_3', 'index_dataset', 'index_status',
-           'generate_list_partitions_body', 'list_partitions']
+           'generate_list_partitions_body', 'list_partitions', 'generate_create_dataset_body', 'create']
 
 # %% ../../nbs/routes/dataset.ipynb 3
 from typing import Optional
@@ -434,4 +434,42 @@ async def list_partitions(auth: dmda.DomoAuth,
         raise DatasetNotFoundError(
             dataset_id=dataset_id, domo_instance=auth.domo_instance)
     return res
+
+
+# %% ../../nbs/routes/dataset.ipynb 29
+def generate_create_dataset_body(dataset_name: str, dataset_type: str = 'API', schema: dict = {
+    "columns": [
+        {"type": "STRING", "name": "Friend"},
+        {"type": "STRING",  "name": "Attending"}
+    ]}
+):
+
+    return {
+        "userDefinedType": dataset_type,
+        "dataSourceName": dataset_name,
+        "schema": schema
+    }
+
+
+async def create(auth: dmda.DomoAuth,
+                 dataset_name: str,
+                 dataset_type: str = 'api',
+                 session: aiohttp.ClientSession = None,
+                 schema: dict = None,
+                 debug_api: bool = False):
+
+    body = generate_create_dataset_body(dataset_name=dataset_name,
+                                        dataset_type=dataset_type,
+                                        schema=schema)
+
+    url = f"https://{auth.domo_instance}.domo.com/api/data/v2/datasources"
+
+    return await gd.get_data(
+        auth=auth,
+        method="POST",
+        url=url,
+        body=body,
+        session=session,
+        debug_api=debug_api
+    )
 

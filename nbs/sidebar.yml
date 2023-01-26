@@ -26,6 +26,7 @@ website:
                   - blog/posts/2023-01-24_Domo_Onboarding/index.qmd
       - section: classes
         contents:
+          - classes/50_DomoAccount.ipynb
           - classes/50_DomoActivityLog.ipynb
           - classes/50_DomoDataset.ipynb
           - classes/50_DomoUser.ipynb
@@ -40,10 +41,11 @@ website:
           - integrations/DomoJupyter.ipynb
       - section: routes
         contents:
+          - routes/account.ipynb
           - routes/activity_log.ipynb
           - routes/dataset.ipynb
           - routes/user.ipynb
       - section: utils
         contents:
-          - utils/50_utils.convert.ipynb
-          - utils/99_DictDot.ipynb
+          - utils/DictDot.ipynb
+          - utils/convert.ipynb
