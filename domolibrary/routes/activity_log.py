@@ -4,7 +4,7 @@
 __all__ = ['get_activity_log_object_types', 'search_activity_log']
 
 # %% ../../nbs/routes/activity_log.ipynb 3
-import aiohttp
+import httpx
 
 import domolibrary.client.get_data as gd
 import domolibrary.client.ResponseGetData as rgd
@@ -26,7 +26,7 @@ async def search_activity_log(
     end_time: int,  # epoch time in milliseconds
     maximum: int,
     object_type: str = None,
-    session: aiohttp.ClientSession = None,
+    session: httpx.AsyncClient = None,
     debug_api: bool = False,
     debug_loop: bool = False,
 ) -> rgd.ResponseGetData:
@@ -35,7 +35,7 @@ async def search_activity_log(
     is_close_session = False
 
     if not session:
-        session = aiohttp.ClientSession()
+        session = httpx.AsyncClient()
         is_close_session = True
 
     url = f"https://{auth.domo_instance}.domo.com/api/audit/v1/user-audits"
@@ -67,7 +67,7 @@ async def search_activity_log(
     )
 
     if is_close_session:
-        await session.close()
+        await session.aclose()
 
     return res
 

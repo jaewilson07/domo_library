@@ -14,7 +14,7 @@ import datetime as dt
 import re
 
 
-import aiohttp
+import httpx
 
 from fastcore.basics import patch_to
 
@@ -23,12 +23,15 @@ import domolibrary.utils.DictDot as util_dd
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.routes.account as account_routes
 
+
 # %% ../../nbs/classes/50_DomoAccount.ipynb 5
 class DomoAccount_Config(ABC):
     """DomoAccount Config abstract base class"""
-    data_provider_type : str
 
-    @abstractclassmethod
+    data_provider_type: str
+
+    @classmethod
+    @abstractmethod
     def _from_json(cls, obj):
         """convert accounts API response into a class object"""
         pass
@@ -41,11 +44,8 @@ class DomoAccount_Config(ABC):
 # %% ../../nbs/classes/50_DomoAccount.ipynb 6
 @dataclass
 class DomoAccount_Config_AbstractCredential(DomoAccount_Config):
-    data_provider_type = 'abstract-credential-store'
+    data_provider_type = "abstract-credential-store"
     credentials: dict
-
-    def __post_init_(self):
-        super().__init__(self)
 
     @classmethod
     def _from_json(cls, obj):
@@ -65,27 +65,17 @@ class DomoAccount_Config_DatasetCopy(DomoAccount_Config):
     domo_instance: str
     access_token: str = field(repr=False)
 
-    data_provider_type = 'dataset-copy'
-    
-
-    def __post_init_(self):
-        super().__init__(self)
+    data_provider_type = "dataset-copy"
 
     @classmethod
     def _from_json(cls, obj):
 
         dd = util_dd.DictDot(obj)
 
-        return cls(
-            access_token=dd.accessToken,
-            domo_instance=dd.instance
-        )
+        return cls(access_token=dd.accessToken, domo_instance=dd.instance)
 
     def to_json(self):
-        return {"accessToken": self.access_token,
-                "instance": self.domo_instance
-                }
-
+        return {"accessToken": self.access_token, "instance": self.domo_instance}
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 8
 @dataclass
@@ -93,26 +83,17 @@ class DomoAccount_Config_Governance(DomoAccount_Config):
     domo_instance: str
     access_token: str = field(repr=False)
 
-    data_provider_type = 'domo-governance-d14c2fef-49a8-4898-8ddd-f64998005600'
-
-    def __post_init_(self):
-        super().__init__(self)
+    data_provider_type = "domo-governance-d14c2fef-49a8-4898-8ddd-f64998005600"
 
     @classmethod
     def _from_json(cls, obj):
 
         dd = util_dd.DictDot(obj)
 
-        return cls(
-            access_token=dd.apikey,
-            domo_instance=dd.customer
-        )
+        return cls(access_token=dd.apikey, domo_instance=dd.customer)
 
     def to_json(self):
-        return {"apikey": self.access_token,
-                "customer": self.domo_instance
-                }
-
+        return {"apikey": self.access_token, "customer": self.domo_instance}
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 9
 @dataclass
@@ -121,11 +102,8 @@ class DomoAccount_Config_HighBandwidthConnector(DomoAccount_Config):
     aws_secret_key: str = field(repr=False)
     s3_staging_dir: str
     region: str = "us-west-2"
-    
-    data_provider_type = "amazon-athena-high-bandwidth"
 
-    def __post_init_(self):
-        super().__init__(self)
+    data_provider_type = "amazon-athena-high-bandwidth"
 
     @classmethod
     def _from_json(cls, obj):
@@ -150,7 +128,7 @@ class DomoAccount_Config_HighBandwidthConnector(DomoAccount_Config):
 # %% ../../nbs/classes/50_DomoAccount.ipynb 10
 class AccountConfig(Enum):
     """
-    Enum provides appropriate spelling for data_provider_type and config object.  
+    Enum provides appropriate spelling for data_provider_type and config object.
     The name of the enum should correspond with the data_provider_type with hyphens replaced with underscores.
     """
 
@@ -161,7 +139,6 @@ class AccountConfig(Enum):
     dataset_copy = DomoAccount_Config_DatasetCopy
 
     domo_governance_d14c2fef_49a8_4898_8ddd_f64998005600 = DomoAccount_Config_Governance
-
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 12
 @dataclass
@@ -190,15 +167,17 @@ class DomoAccount:
             modified_dt=cd.convert_epoch_millisecond_to_datetime(dd.modifiedAt),
             auth=auth,
         )
-    
-    async def _get_config(self, session = None, debug_api : bool = None, return_raw: bool = False):
-    
+
+    async def _get_config(
+        self, session=None, debug_api: bool = None, return_raw: bool = False
+    ):
+
         res_config = await account_routes.get_account_config(
             auth=self.auth,
             account_id=self.id,
             data_provider_type=self.data_provider_type,
             session=session,
-            debug_api=debug_api
+            debug_api=debug_api,
         )
 
         if return_raw:
@@ -209,12 +188,9 @@ class DomoAccount:
         if not enum_clean in AccountConfig.__members__:
             return None
 
-        self.config = (
-            AccountConfig[enum_clean].value._from_json(res_config.response)
-        )
+        self.config = AccountConfig[enum_clean].value._from_json(res_config.response)
 
         return self.config
-
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 13
 @patch_to(DomoAccount, cls_method=True)
@@ -222,13 +198,13 @@ async def get_from_id(
     cls,
     auth: dmda.DomoAuth,
     account_id: int,
-    session: aiohttp.ClientSession = None,
+    session: httpx.AsyncClient = None,
     return_raw: bool = False,
-    debug_api: bool = False
+    debug_api: bool = False,
 ):
 
     res = await account_routes.get_account_from_id(
-        auth=auth, account_id=account_id, session=session, debug_api = debug_api
+        auth=auth, account_id=account_id, session=session, debug_api=debug_api
     )
     if return_raw:
         return res
@@ -239,27 +215,33 @@ async def get_from_id(
     obj = res.response
     acc = cls._from_json(obj, auth)
 
-    await acc._get_config(session = session, debug_api = debug_api)
+    await acc._get_config(session=session, debug_api=debug_api)
 
     return acc
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 17
 @patch_to(DomoAccount)
-async def update_config(self: DomoAccount,
-                        auth: dmda.DomoAuth = None,
-                        debug_api: bool = False,
-                        config : DomoAccount_Config = None,
-                        session: aiohttp.ClientSession = None, return_raw: bool = False):
+async def update_config(
+    self: DomoAccount,
+    auth: dmda.DomoAuth = None,
+    debug_api: bool = False,
+    config: DomoAccount_Config = None,
+    session: httpx.AsyncClient = None,
+    return_raw: bool = False,
+):
 
     auth = auth or self.auth
 
     config = config or self.config
 
-    res = await account_routes.update_account_config(auth=auth,
-                                                     account_id=self.id,
-                                                     data_provider_type=self.data_provider_type,
-                                                     config_body=config.to_json(),
-                                                     debug_api=debug_api, session=session)
+    res = await account_routes.update_account_config(
+        auth=auth,
+        account_id=self.id,
+        data_provider_type=self.data_provider_type,
+        config_body=config.to_json(),
+        debug_api=debug_api,
+        session=session,
+    )
 
     if return_raw:
         return res
@@ -268,99 +250,114 @@ async def update_config(self: DomoAccount,
 
     return self
 
-
 # %% ../../nbs/classes/50_DomoAccount.ipynb 20
 class DomoAccount_UpdateName_Error(Exception):
     pass
 
+
 @patch_to(DomoAccount)
-async def update_name(self: DomoAccount,
-                      account_name: str = None,
-                      auth: dmda.DomoAuth = None,
-                      debug_api: bool = False,
-                      session: aiohttp.ClientSession = None,
-                      return_raw: bool = False):
+async def update_name(
+    self: DomoAccount,
+    account_name: str = None,
+    auth: dmda.DomoAuth = None,
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+    return_raw: bool = False,
+):
 
     auth = auth or self.auth
 
     # print(auth, self.id, self.data_provider_type, self.config.to_json())
 
-    res = await account_routes.update_account_name(auth=auth,
-                                                   account_id=self.id,
-                                                   account_name=account_name or self.name,
-                                                   debug_api=debug_api,
-                                                   session=session)
+    res = await account_routes.update_account_name(
+        auth=auth,
+        account_id=self.id,
+        account_name=account_name or self.name,
+        debug_api=debug_api,
+        session=session,
+    )
 
     if return_raw:
         return res
 
     if not res.is_success:
         raise DomoAccount_UpdateName_Error()
-    
-    self = await self.get_from_id(auth=auth, account_id=self.id)
-    
-    return self
 
+    self = await self.get_from_id(auth=auth, account_id=self.id)
+
+    return self
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 24
 class DomoAccount_CreateAccount_Error(Exception):
     def __init__(self, account_name, domo_instance, status, reason):
         message = f"CreateAccount Error :: {account_name} in {domo_instance} :: {status} - {reason}"
-        super.__init__(message)
+        super().__init__(message)
 
 
 @patch_to(DomoAccount, cls_method=True)
 def generate_create_body(cls, account_name, config):
-    return {'displayName': account_name,
-            'dataProviderType': config.data_provider_type,
-            'name': config.data_provider_type,
-            'configurations': config.to_json()}
+    return {
+        "displayName": account_name,
+        "dataProviderType": config.data_provider_type,
+        "name": config.data_provider_type,
+        "configurations": config.to_json(),
+    }
 
 
 @patch_to(DomoAccount, cls_method=True)
-async def create_account(cls: DomoAccount,
-                         account_name: str, 
-                         config: DomoAccount_Config,
-                         auth: dmda.DomoAuth,
-                         debug_api: bool = False,
-                         session: aiohttp.ClientSession = None):
+async def create_account(
+    cls: DomoAccount,
+    account_name: str,
+    config: DomoAccount_Config,
+    auth: dmda.DomoAuth,
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+):
 
     body = cls.generate_create_body(account_name=account_name, config=config)
 
-    res = await account_routes.create_account(auth=auth,
-                                              config_body=body,
-                                              debug_api=debug_api, session=session)
+    res = await account_routes.create_account(
+        auth=auth, config_body=body, debug_api=debug_api, session=session
+    )
 
     if not res.is_success:
-        raise DomoAccount_CreateAccount_Error(account_name=account_name,
-                                              domo_instance=auth.domo_instance,
-                                              status=res.status, reason=res.response)
+        raise DomoAccount_CreateAccount_Error(
+            account_name=account_name,
+            domo_instance=auth.domo_instance,
+            status=res.status,
+            reason=res.response,
+        )
 
-    return await cls.get_from_id(auth=auth, account_id=res.response.get('id'))
-
+    return await cls.get_from_id(auth=auth, account_id=res.response.get("id"))
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 25
 class DomoAccount_DeleteAccount_Error(Exception):
-    def __init__(self, account_id, domo_instance, status, reason) -> bool:
+    def __init__(self, account_id, domo_instance, status, reason):
+
         message = f"DeleteAccount Error :: {account_id} in {domo_instance} :: {status} - {reason}"
-        super.__init__(message)
+        super().__init__(message)
 
 
 @patch_to(DomoAccount)
-async def delete_account(self: DomoAccount,
-                         auth: dmda.DomoAuth = None,
-                         debug_api: bool = False, session: aiohttp.ClientSession = None):
+async def delete_account(
+    self: DomoAccount,
+    auth: dmda.DomoAuth = None,
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+):
 
     auth = auth or self.auth
 
-    res = await account_routes.delete_account(auth=auth,
-                                              account_id=self.id,
-                                              debug_api=debug_api,
-                                              session=session)
+    res = await account_routes.delete_account(
+        auth=auth, account_id=self.id, debug_api=debug_api, session=session
+    )
 
     if not res.is_success:
         raise DomoAccount_DeleteAccount_Error(
-            account_id = self.id, domo_instance = auth.domo_instance, status = res.status, reason = res.response)
+            account_id=self.id,
+            domo_instance=auth.domo_instance,
+            status=res.status,
+            reason=res.response,
+        )
 
     return True
-

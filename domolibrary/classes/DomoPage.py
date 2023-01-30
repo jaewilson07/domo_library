@@ -10,7 +10,7 @@ from fastcore.basics import patch_to
 from dataclasses import dataclass, field
 
 # import asyncio
-# import aiohttp
+# import httpx
 
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.classes.DomoUser as dmdu
@@ -65,4 +65,10 @@ def _from_bootstrap(cls: DomoPage, page_obj, auth: dmda.DomoAuth = None):
             if other_dd.type != "page"]
 
     return domo_page
+
+
+# %% ../../nbs/classes/50_DomoPage.ipynb 7
+@patch_to(DomoPage)
+def _ol_fn():
+    pass
 

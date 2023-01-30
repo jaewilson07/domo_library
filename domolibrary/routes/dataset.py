@@ -4,7 +4,7 @@
 __all__ = ['DatasetNotFoundError', 'QueryRequestError', 'query_dataset_public', 'query_dataset_private', 'get_dataset_by_id',
            'get_schema', 'set_dataset_tags', 'UploadDataError', 'upload_dataset_stage_1', 'upload_dataset_stage_2_file',
            'upload_dataset_stage_2_df', 'upload_dataset_stage_3', 'index_dataset', 'index_status',
-           'generate_list_partitions_body', 'list_partitions', 'generate_create_dataset_body', 'create']
+           'generate_list_partitions_body', 'list_partitions', 'generate_create_dataset_body', 'create', 'delete']
 
 # %% ../../nbs/routes/dataset.ipynb 3
 from typing import Optional
@@ -12,7 +12,7 @@ from typing import Optional
 import io
 import pandas as pd
 
-import aiohttp
+import httpx
 
 import domolibrary.client.get_data as gd
 import domolibrary.client.ResponseGetData as rgd
@@ -37,7 +37,7 @@ async def query_dataset_public(
     dev_auth: dmda.DomoDeveloperAuth,
     dataset_id: str,
     sql: str,
-    session: aiohttp.ClientSession,
+    session: httpx.AsyncClient,
     debug_api: bool = False,
 ):
 
@@ -56,7 +56,7 @@ async def query_dataset_private(
     auth: dmda.DomoAuth,  # DomoFullAuth or DomoTokenAuth
     dataset_id: str,
     sql: str,
-    session: Optional[aiohttp.ClientSession] = None,
+    session: Optional[httpx.AsyncClient] = None,
     loop_until_end: bool = False,  # retrieve all available rows
     limit=100,  # maximum rows to return per request.  refers to PAGINATION
     skip=0,
@@ -118,7 +118,7 @@ async def get_dataset_by_id(
     dataset_id: str, # dataset id from URL
     auth: Optional[dmda.DomoAuth] = None, # requires full authentication
     debug_api: bool = False, # for troubleshooting API request
-    session: Optional[aiohttp.ClientSession] = None
+    session: Optional[httpx.AsyncClient] = None
 ) -> rgd.ResponseGetData: # returns metadata about a dataset
     """retrieve dataset metadata"""
 
@@ -152,7 +152,7 @@ async def set_dataset_tags(auth: dmda.DomoFullAuth,
                            tag_ls: [str], # complete list of tags for dataset
                            dataset_id: str,
                            debug_api: bool = False,
-                           session: Optional[aiohttp.ClientSession] = None,
+                           session: Optional[httpx.AsyncClient] = None,
                            return_raw : bool = False
                            ):
     
@@ -192,7 +192,7 @@ async def upload_dataset_stage_1(auth: dmda.DomoAuth,
                                  dataset_id: str,
                                  #  restate_data_tag: str = None, # deprecated
                                  partition_tag: str = None,  # synonymous with data_tag
-                                 session: Optional[aiohttp.ClientSession] = None,
+                                 session: Optional[httpx.AsyncClient] = None,
                                  debug_api: bool = False,
                                  ) -> rgd.ResponseGetData:
 
@@ -233,7 +233,7 @@ async def upload_dataset_stage_2_file(
     dataset_id: str,
     upload_id: str,  # must originate from  a stage_1 upload response
     data_file: Optional[io.TextIOWrapper] = None,
-    session: Optional[aiohttp.ClientSession] = None,
+    session: Optional[httpx.AsyncClient] = None,
     # only necessary if streaming multiple files into the same partition (multi-part upload)
     part_id: str = 2,
     debug_api: bool = False,
@@ -267,7 +267,7 @@ async def upload_dataset_stage_2_df(
     dataset_id: str,
     upload_id: str,  # must originate from  a stage_1 upload response
     upload_df: pd.DataFrame,
-    session: Optional[aiohttp.ClientSession] = None,
+    session: Optional[httpx.AsyncClient] = None,
     part_id: str = 2,  # only necessary if streaming multiple files into the same partition (multi-part upload)
     debug_api: bool = False,
 ) -> rgd.ResponseGetData:
@@ -303,7 +303,7 @@ async def upload_dataset_stage_3(
     auth: dmda.DomoAuth,
     dataset_id: str,
     upload_id: str,  # must originate from  a stage_1 upload response
-    session: Optional[aiohttp.ClientSession] = None,
+    session: Optional[httpx.AsyncClient] = None,
     update_method: str = "REPLACE",  # accepts REPLACE or APPEND
     #  restate_data_tag: str = None, # deprecated
     partition_tag: str = None,  # synonymous with data_tag
@@ -348,7 +348,7 @@ async def upload_dataset_stage_3(
 async def index_dataset(
     auth: dmda.DomoAuth,
     dataset_id: str,
-    session: Optional[aiohttp.ClientSession] = None,
+    session: Optional[httpx.AsyncClient] = None,
     debug_api: bool = False,
 ) -> rgd.ResponseGetData:
     """manually index a dataset"""
@@ -366,7 +366,7 @@ async def index_status(
     auth: dmda.DomoAuth,
     dataset_id: str,
     index_id: str,
-    session: Optional[aiohttp.ClientSession] = None,
+    session: Optional[httpx.AsyncClient] = None,
     debug_api: bool = False,
 ) -> rgd.ResponseGetData:
     """get the completion status of an index"""
@@ -399,7 +399,7 @@ def generate_list_partitions_body(limit=100, offset=0):
 async def list_partitions(auth: dmda.DomoAuth,
                           dataset_id: str,
                           body: dict = None,
-                          session: aiohttp.ClientSession = None,
+                          session: httpx.AsyncClient = None,
                           debug_api: bool = False,
                           debug_loop: bool = False,
 
@@ -454,7 +454,7 @@ def generate_create_dataset_body(dataset_name: str, dataset_type: str = 'API', s
 async def create(auth: dmda.DomoAuth,
                  dataset_name: str,
                  dataset_type: str = 'api',
-                 session: aiohttp.ClientSession = None,
+                 session: httpx.AsyncClient = None,
                  schema: dict = None,
                  debug_api: bool = False):
 
@@ -469,6 +469,20 @@ async def create(auth: dmda.DomoAuth,
         method="POST",
         url=url,
         body=body,
+        session=session,
+        debug_api=debug_api
+    )
+
+
+# %% ../../nbs/routes/dataset.ipynb 34
+async def delete(auth: dmda.DomoAuth,
+                 dataset_id: str, session: httpx.AsyncClient = None, debug_api: bool = False):
+    url = f"https://{auth.domo_instance}.domo.com/api/data/v3/datasources/{dataset_id}?deleteMethod=hard"
+
+    return await gd.get_data(
+        auth=auth,
+        method="DELETE",
+        url=url,
         session=session,
         debug_api=debug_api
     )
