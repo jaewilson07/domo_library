@@ -26,9 +26,11 @@ website:
                   - blog/posts/2023-01-24_Domo_Onboarding/index.qmd
       - section: classes
         contents:
+          - classes/50_.DomoBootstrap.ipynb
           - classes/50_DomoAccount.ipynb
           - classes/50_DomoActivityLog.ipynb
           - classes/50_DomoDataset.ipynb
+          - classes/50_DomoPage.ipynb
           - classes/50_DomoUser.ipynb
       - section: client
         contents:
@@ -43,6 +45,7 @@ website:
         contents:
           - routes/account.ipynb
           - routes/activity_log.ipynb
+          - routes/bootstrap.ipynb
           - routes/dataset.ipynb
           - routes/user.ipynb
       - section: utils

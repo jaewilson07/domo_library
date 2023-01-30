@@ -2,8 +2,10 @@
 
 # %% auto 0
 __all__ = ['NoConfigCompanyError', 'GetInstanceConfig', 'GetDomains_Query_Exception_PW_Col_Error',
-           'GetDomains_Query_AuthMatch_Error', 'InvalidAccountTypeError', 'DomoAccount_InstanceAuth',
-           'InvalidAccountNameError', 'GenerateAuth_InvalidDomoInstanceList', 'GenerateAuth_CredentialsNotProvided']
+           'GetDomains_Query_AuthMatch_Error', 'GetJupyter_ErrorRetrievingAccount',
+           'GetJupyter_ErrorRetrievingAccountProperty', 'get_jupyter_account', 'InvalidAccountTypeError',
+           'DomoAccount_InstanceAuth', 'InvalidAccountNameError', 'GenerateAuth_InvalidDomoInstanceList',
+           'GenerateAuth_CredentialsNotProvided']
 
 # %% ../../nbs/integrations/DomoJupyter.ipynb 2
 from dataclasses import dataclass, field
@@ -266,18 +268,16 @@ def get_jupyter_account(account_name: str,  # name of account as it appears in t
                 value = dj.get_account_property_value(
                     account_name, account_properties[index])
             
-                except Exception as e:
+            except Exception as e:
                 print(f"trying again - {prop}")
                 time.sleep(2)
 
-            
         if not value:
             raise GetJupyter_ErrorRetrievingAccountProperty(account_name=account_name, property_name = prop)
             
         obj.update({prop: value})
 
     return account_properties, obj
-
 
 # %% ../../nbs/integrations/DomoJupyter.ipynb 15
 class InvalidAccountTypeError(Exception):

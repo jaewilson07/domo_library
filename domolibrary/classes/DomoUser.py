@@ -56,7 +56,20 @@ class DomoUser:
             virtual_user_id=user_dd.virtualUserId,
         )
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 7
+    @classmethod
+    def _from_bootstrap_json(cls, auth, user_obj):
+
+        dd = user_obj
+        if isinstance( user_obj, dict):
+            dd = util_dd.DictDot(user_obj)
+
+
+        return cls(
+            id = dd.id,
+            display_name = dd.displayName
+        )
+
+# %% ../../nbs/classes/50_DomoUser.ipynb 8
 @patch_to(DomoUser)
 async def reset_password(self: DomoUser, new_password: str, debug_api: bool = False):
     """reset your password, will respect password restrictions set up in the Domo UI"""
@@ -67,7 +80,7 @@ async def reset_password(self: DomoUser, new_password: str, debug_api: bool = Fa
 
     return res
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 8
+# %% ../../nbs/classes/50_DomoUser.ipynb 9
 @patch_to(DomoUser, cls_method=True)
 async def request_password_reset(
     cls, domo_instance: str, email: str, locale: str = "en-us", debug_api: bool = False
@@ -78,7 +91,7 @@ async def request_password_reset(
         domo_instance=domo_instance, email=email, locale=locale, debug_api=debug_api
     )
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 9
+# %% ../../nbs/classes/50_DomoUser.ipynb 10
 @patch_to(DomoUser, cls_method=True)
 async def create_user(
     cls: DomoUser,
@@ -149,7 +162,7 @@ async def set_user_landing_page(
 
     return True
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 11
+# %% ../../nbs/classes/50_DomoUser.ipynb 12
 @dataclass
 class DomoUsers:
     """a class for searching for Users"""
@@ -171,7 +184,7 @@ class DomoUsers:
     def _generate_logger(self, logger: Optional[lc.Logger] = None):
         self.logger = logger or self.logger or lc.loger()
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 12
+# %% ../../nbs/classes/50_DomoUser.ipynb 13
 @patch_to(DomoUsers, cls_method=True)
 async def all_users(
     cls: DomoUsers,
@@ -200,7 +213,7 @@ async def all_users(
 
     return cls._users_to_domo_user(user_ls=users_ls, auth=auth)
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 15
+# %% ../../nbs/classes/50_DomoUser.ipynb 16
 @patch_to(DomoUsers, cls_method=True)
 async def by_id(
     cls: DomoUsers,
@@ -235,7 +248,7 @@ async def by_id(
 
     return domo_users
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 19
+# %% ../../nbs/classes/50_DomoUser.ipynb 20
 @patch_to(DomoUsers, cls_method=True)
 def util_match_domo_users_to_emails(
     cls: DomoUsers, domo_users: list[DomoUser], user_email_ls: list[str]
@@ -313,7 +326,7 @@ async def by_email(
 
     return domo_users
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 22
+# %% ../../nbs/classes/50_DomoUser.ipynb 23
 @patch_to(DomoUsers, cls_method=True)
 async def virtual_user_by_subscriber_instance(
     cls: DomoUsers,
