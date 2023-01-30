@@ -128,13 +128,13 @@ class DomoJob:
                    remote_instance=dd.executionPayload.remoteInstance.replace(
                        '.domo.com', '') if dd.executionPayload.remoteInstance else None,
                    execution_timeout = dd.executionTimeout,
-                   entity_ids = dd.executionPayload.watcherParameters.entityIds,
-                   job_type = dd.executionPayload.watcherParameters.type,
-                   entity_type=dd.executionPayload.watcherParameters.entityType,
-                   max_indexing_time_min = dd.executionPayload.watcherParameters.maxIndexingTimeInMinutes,
-                   variance_percent = dd.executionPayload.watcherParameters.variancePercent,
-                   min_update_frequency_min = dd.executionPayload.watcherParameters.minDataUpdateFrequencyInMinutes,
-                   sql_query=dd.executionPayload.watcherParameters.sqlQuery,
+                   entity_ids = dd.executionPayload.watcherParameters.entityIds if dd.executionPayload.watcherParameters else [],
+                   job_type = dd.executionPayload.watcherParameters.type if dd.executionPayload.watcherParameters else [],
+                   entity_type=dd.executionPayload.watcherParameters.entityType if dd.executionPayload.watcherParameters else [],
+                   max_indexing_time_min = dd.executionPayload.watcherParameters.maxIndexingTimeInMinutes if dd.executionPayload.watcherParameters else [],
+                   variance_percent = dd.executionPayload.watcherParameters.variancePercent if dd.executionPayload.watcherParameters else [],
+                   min_update_frequency_min = dd.executionPayload.watcherParameters.minDataUpdateFrequencyInMinutes if dd.executionPayload.watcherParameters else [],
+                   sql_query=dd.executionPayload.watcherParameters.sqlQuery if dd.executionPayload.watcherParameters else [],
                    notify_user_ids=dd.executionPayload.notifyUserIds,
                    metrics_dataset_id=dd.executionPayload.metricsDatasetId,
                    notify_group_ids=dd.executionPayload.notifyGroupIds,
@@ -211,9 +211,30 @@ class DomoJob:
     @classmethod
     async def create_watchdog_job(cls,
                                    full_auth: DomoFullAuth,
+                                   body : str,
+                                   debug: bool = False, log_results: bool = False,
+                                   session: aiohttp.ClientSession = None):
+            
+            
+        res = await job_routes.add_job(full_auth=full_auth,
+                                       application_id=application_id,
+                                       body=body,
+                                       debug=debug,
+                                       log_results=log_results,
+                                       session=session)
+
+#         if debug:
+#             print(res)
+
+        if res.status != 200:
+            return False
+
+        return True
+    
+    @classmethod
+    async def generate_watchdog_body(cls,
                                    watchdog_report_type : WatchDogType,
                                    watchdog_schedule: DomoTrigger_Schedule,
-                                   application_id: str,
                                    job_name: str,
                                    notify_user_ids_ls: list,
                                    notify_group_ids_ls: list,
@@ -226,9 +247,7 @@ class DomoJob:
                                    max_indexing_time_mins: int = 30,
                                    execution_timeout: int = 1440,
                                    min_update_frequency_min: int = 1440,
-                                   debug: bool = False, log_results: bool = False,
-                                   session: aiohttp.ClientSession = None):
-
+                           ):
         schedule_obj = watchdog_schedule.to_schedule_obj()
 
         body = job_routes.generate_body_watchdog_generic(job_name=job_name,
@@ -265,21 +284,10 @@ class DomoJob:
             body["executionPayload"]["watcherParameters"].update(child)
             
             
-        res = await job_routes.add_job(full_auth=full_auth,
-                                       application_id=application_id,
-                                       body=body,
-                                       debug=debug,
-                                       log_results=log_results,
-                                       session=session)
-
-#         if debug:
-#             print(res)
-
-        if res.status != 200:
-            return False
-
-        return True
-    
+        return body
+                            
+                            
+                            
     @classmethod
     async def update_job(cls,
                          full_auth: DomoFullAuth,
