@@ -148,6 +148,24 @@ class _DomoAuth_Optional:
         """returns auth header appropriate for this authentication method"""
         pass
 
+    async def print_is_token(self, token_name=None) -> None:
+        self.token_name = token_name or self.token_name
+
+        if not self.token:
+            await self.get_auth_token()
+
+        token_str = f"{self.token_name} "
+
+        if not self.token:
+            print(
+                f"🚧 failed to retrieve {token_str if token_name else ''}token from {self.domo_instance}")
+            return False
+
+        print(
+            f"🎉 {token_str if token_name else ''}token retrieved from {self.domo_instance} ⚙️")
+        return True
+
+
 # %% ../../nbs/client/95_DomoAuth.ipynb 21
 @dataclass
 class DomoAuth(_DomoAuth_Optional, _DomoAuth_Required):
