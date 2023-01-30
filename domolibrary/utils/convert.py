@@ -6,9 +6,6 @@ __all__ = ['convert_epoch_millisecond_to_datetime', 'convert_datetime_to_epoch_m
 # %% ../../nbs/utils/convert.ipynb 2
 import datetime as dt
 
-# %% ../../nbs/utils/convert.ipynb 3
-import fastcore.test as fctest
-
 # %% ../../nbs/utils/convert.ipynb 4
 def convert_epoch_millisecond_to_datetime(epoch: int):
     '''convert Epoch time with miliseconds to Date time'''

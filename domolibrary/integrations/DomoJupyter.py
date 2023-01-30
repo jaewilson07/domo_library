@@ -4,7 +4,7 @@
 __all__ = ['NoConfigCompanyError', 'GetInstanceConfig', 'GetDomains_Query_Exception_PW_Col_Error',
            'GetDomains_Query_AuthMatch_Error', 'GetJupyter_ErrorRetrievingAccount',
            'GetJupyter_ErrorRetrievingAccountProperty', 'get_jupyter_account', 'InvalidAccountTypeError',
-           'DomoAccount_InstanceAuth', 'InvalidAccountNameError', 'GenerateAuth_InvalidDomoInstanceList',
+           'DojoAccount_InstanceAuth', 'InvalidAccountNameError', 'GenerateAuth_InvalidDomoInstanceList',
            'GenerateAuth_CredentialsNotProvided']
 
 # %% ../../nbs/integrations/DomoJupyter.ipynb 2
@@ -81,7 +81,7 @@ class GetInstanceConfig:
 
         if debug_prn:
             print(message)
-        logger.log_info(message, debug_log=debug_log)
+        self.logger.log_info(message, debug_log=debug_log)
 
         return df
 
@@ -236,6 +236,7 @@ class GetJupyter_ErrorRetrievingAccountProperty(Exception):
         super().__init__(self.message)
 
 def get_jupyter_account(account_name: str,  # name of account as it appears in the
+                        domojupyter_fn : callable,
                         maximum_retry: int = 10
                         ) -> (list, dict):  # returns account properties list and a dictionary of the properties.
     """import a domojupyter account, will loop until success"""
@@ -244,18 +245,17 @@ def get_jupyter_account(account_name: str,  # name of account as it appears in t
     retry_attempt = 0
     while not account_properties and retry_attempt <= maximum_retry:
         try:
-            account_properties = dj.get_account_property_keys(account_name)
+            account_properties = domojupyter_fn.get_account_property_keys(
+                account_name)
             retry_attempt += 1
 
-        except ErrorRetrievingAccount as e:
-            return None
-
         except Exception as e:
-            print(f"trying again - {account_name}")
+            print(f"Error:  retry attempt {retry_attempt} - {account_name}")
             time.sleep(2)
     
     if not account_properties:
-        raise GetJupyter_ErrorRetrievingAccount(account_name=account_name)
+        raise GetJupyter_ErrorRetrievingAccount(
+            account_name=account_name)
 
     obj = {}
 
@@ -265,7 +265,7 @@ def get_jupyter_account(account_name: str,  # name of account as it appears in t
 
         while not value and retry_attempt <= maximum_retry:
             try:
-                value = dj.get_account_property_value(
+                value = domojupyter_fn.get_account_property_value(
                     account_name, account_properties[index])
             
             except Exception as e:
@@ -291,7 +291,7 @@ class InvalidAccountTypeError(Exception):
     pass
 
 @dataclass
-class DomoAccount_InstanceAuth:
+class DojoAccount_InstanceAuth:
 
     account_name: str
 
@@ -348,8 +348,8 @@ class InvalidAccountNameError(Exception):
 
         super().__init__(self.message)
 
-@patch_to(DomoAccount_InstanceAuth, cls_method=True)
-def get_domo_account(cls: DomoAccount_InstanceAuth, account_name: str,  # domojupyter account to retrieve
+@patch_to(DojoAccount_InstanceAuth, cls_method=True)
+def get_domo_instance_auth_account(cls: DojoAccount_InstanceAuth, account_name: str,  # domojupyter account to retrieve
                      # Domo's domojupyter module, pass in b/c can only be retrieved inside Domo jupyter notebook environment
                      domojupyter_fn: callable,
                      # set the domo_instance or retrieve from the domojupyter_account credential store
@@ -395,7 +395,7 @@ class GenerateAuth_CredentialsNotProvided(Exception):
         super().__init__(message)
 
 
-@patch_to(DomoAccount_InstanceAuth)
+@patch_to(DojoAccount_InstanceAuth)
 def _generate_auth(self, domo_instance):
     if self.domo_access_token:
             auth = dmda.DomoTokenAuth(
@@ -412,8 +412,8 @@ def _generate_auth(self, domo_instance):
     
     return auth
 
-@patch_to(DomoAccount_InstanceAuth)
-def generate_auth_ls(self : DomoAccount_InstanceAuth,
+@patch_to(DojoAccount_InstanceAuth)
+def generate_auth_ls(self : DojoAccount_InstanceAuth,
                           domo_instance_ls: list[str] = None # list of domo_instances
                           ) -> list[dmda.DomoAuth]: # list of domo auth objects
                           

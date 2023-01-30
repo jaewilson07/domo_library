@@ -4,8 +4,6 @@
 __all__ = ['GetBootstrap_InvalidAuthMethod', 'get_bootstrap', 'get_bootstrap_features', 'get_bootstrap_pages']
 
 # %% ../../nbs/routes/bootstrap.ipynb 3
-import aiohttp
-
 import httpx
 
 import domolibrary.client.get_data as gd
@@ -20,7 +18,7 @@ class GetBootstrap_InvalidAuthMethod(Exception):
 
 async def get_bootstrap(
     auth: dmda.DomoFullAuth, ## only works with DomoFullAuth authentication, do not use TokenAuth
-    debug_api: bool = False, session: aiohttp.ClientSession = None
+    debug_api: bool = False, session: httpx.AsyncClient = None
 ) -> rgd.ResponseGetData:
     """get bootstrap data"""
 
@@ -39,7 +37,7 @@ async def get_bootstrap(
 
 # %% ../../nbs/routes/bootstrap.ipynb 8
 async def get_bootstrap_features(   
-    auth: dmda.DomoAuth, session: aiohttp.ClientSession = None, debug_api: bool = False
+    auth: dmda.DomoAuth, session: httpx.AsyncClient = None, debug_api: bool = False
 ) -> rgd.ResponseGetData:
     res = await get_bootstrap(auth=auth, session=session, debug_api=debug_api)
 
@@ -51,7 +49,7 @@ async def get_bootstrap_features(
 
 # %% ../../nbs/routes/bootstrap.ipynb 11
 async def get_bootstrap_pages(
-    auth: dmda.DomoAuth, session: aiohttp.ClientSession = None, debug_api: bool = False
+    auth: dmda.DomoAuth, session: httpx.AsyncClient = None, debug_api: bool = False
 ) -> rgd.ResponseGetData:
     res = await get_bootstrap(auth=auth, session=session, debug_api=debug_api)
 
