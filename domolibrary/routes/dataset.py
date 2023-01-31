@@ -344,7 +344,7 @@ async def upload_dataset_stage_3(
 
     return res
 
-# %% ../../nbs/routes/dataset.ipynb 24
+# %% ../../nbs/routes/dataset.ipynb 25
 async def index_dataset(
     auth: dmda.DomoAuth,
     dataset_id: str,
@@ -361,7 +361,7 @@ async def index_dataset(
         auth=auth, method="POST", body=body, url=url, session=session, debug_api = debug_api
     )
 
-# %% ../../nbs/routes/dataset.ipynb 25
+# %% ../../nbs/routes/dataset.ipynb 26
 async def index_status(
     auth: dmda.DomoAuth,
     dataset_id: str,
@@ -380,7 +380,7 @@ async def index_status(
     )
 
 
-# %% ../../nbs/routes/dataset.ipynb 27
+# %% ../../nbs/routes/dataset.ipynb 28
 def generate_list_partitions_body(limit=100, offset=0):
     return {
         "paginationFields": [{
@@ -436,7 +436,7 @@ async def list_partitions(auth: dmda.DomoAuth,
     return res
 
 
-# %% ../../nbs/routes/dataset.ipynb 29
+# %% ../../nbs/routes/dataset.ipynb 30
 def generate_create_dataset_body(dataset_name: str, dataset_type: str = 'API', schema: dict = {
     "columns": [
         {"type": "STRING", "name": "Friend"},
@@ -474,7 +474,7 @@ async def create(auth: dmda.DomoAuth,
     )
 
 
-# %% ../../nbs/routes/dataset.ipynb 34
+# %% ../../nbs/routes/dataset.ipynb 35
 async def delete(auth: dmda.DomoAuth,
                  dataset_id: str, session: httpx.AsyncClient = None, debug_api: bool = False):
     url = f"https://{auth.domo_instance}.domo.com/api/data/v3/datasources/{dataset_id}?deleteMethod=hard"

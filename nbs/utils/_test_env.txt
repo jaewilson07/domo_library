@@ -1,0 +1,8 @@
+APPLICATION_ID = "id_str"
+DATASET_ID="ds_id_str"
+ACCOUNT_ID=25
+SAMPLE_ARRAY = '{
+                    "AccessTokens": "a",
+                    "AccountPermissions": "b",
+                    "Cards": "c"
+                }'

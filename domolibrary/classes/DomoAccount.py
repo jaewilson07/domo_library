@@ -21,6 +21,7 @@ from fastcore.basics import patch_to
 import domolibrary.utils.convert as cd
 import domolibrary.utils.DictDot as util_dd
 import domolibrary.client.DomoAuth as dmda
+import domolibrary.client.DomoError as de
 import domolibrary.routes.account as account_routes
 
 
@@ -251,8 +252,16 @@ async def update_config(
     return self
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 20
-class DomoAccount_UpdateName_Error(Exception):
-    pass
+class DomoAccount_UpdateName_Error(de.DomoError):
+    def __init__(self,
+                 domo_instance,
+                 status, message,
+                 entity_id,
+                 function_name="update_name",
+                 ):
+
+        super().__init__(function_name=function_name, entity_id=entity_id,
+                         domo_instance=domo_instance, status=status, message=message)
 
 
 @patch_to(DomoAccount)
@@ -281,17 +290,28 @@ async def update_name(
         return res
 
     if not res.is_success:
-        raise DomoAccount_UpdateName_Error()
+        raise DomoAccount_UpdateName_Error(entity_id=self.id,
+                                           domo_instance=auth.domo_instance,
+                                           status=res.status,
+                                           message=res.response,)
 
     self = await self.get_from_id(auth=auth, account_id=self.id)
 
     return self
 
+
 # %% ../../nbs/classes/50_DomoAccount.ipynb 24
-class DomoAccount_CreateAccount_Error(Exception):
-    def __init__(self, account_name, domo_instance, status, reason):
-        message = f"CreateAccount Error :: {account_name} in {domo_instance} :: {status} - {reason}"
-        super().__init__(message)
+class DomoAccount_CreateAccount_Error(de.DomoError):
+    def __init__(self,
+                entity_id,
+                 domo_instance,
+                 status, 
+                 message,
+                 function_name="create_account",
+                 ):
+
+        super().__init__(function_name=function_name, entity_id = entity_id,
+                         domo_instance=domo_instance, status=status, message=message)
 
 
 @patch_to(DomoAccount, cls_method=True)
@@ -322,20 +342,26 @@ async def create_account(
 
     if not res.is_success:
         raise DomoAccount_CreateAccount_Error(
-            account_name=account_name,
+            entity_id=account_name,
             domo_instance=auth.domo_instance,
             status=res.status,
-            reason=res.response,
+            message=res.response,
         )
 
     return await cls.get_from_id(auth=auth, account_id=res.response.get("id"))
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 25
-class DomoAccount_DeleteAccount_Error(Exception):
-    def __init__(self, account_id, domo_instance, status, reason):
 
-        message = f"DeleteAccount Error :: {account_id} in {domo_instance} :: {status} - {reason}"
-        super().__init__(message)
+# %% ../../nbs/classes/50_DomoAccount.ipynb 25
+class DomoAccount_DeleteAccount_Error(de.DomoError):
+    def __init__(self,
+                entity_id,
+                 domo_instance,
+                 status, message,
+                 function_name="delete_account",
+                 ):
+
+        super().__init__(function_name=function_name, entity_id = entity_id,
+                         domo_instance=domo_instance, status=status, message=message)
 
 
 @patch_to(DomoAccount)
@@ -353,11 +379,12 @@ async def delete_account(
     )
 
     if not res.is_success:
+        
         raise DomoAccount_DeleteAccount_Error(
-            account_id=self.id,
+            entity_id=self.id,
             domo_instance=auth.domo_instance,
             status=res.status,
-            reason=res.response,
+            message=res.response,
         )
 
     return True
