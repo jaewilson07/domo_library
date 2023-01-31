@@ -38,6 +38,7 @@ website:
           - client/95_DomoAuth.ipynb
           - client/95_Logger.ipynb
           - client/99_ResponseGetData.ipynb
+          - client/DomoError.ipynb
       - section: integrations
         contents:
           - integrations/DomoJupyter.ipynb

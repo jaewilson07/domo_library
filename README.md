@@ -53,7 +53,7 @@ auth objects.
 import os
 import domolibrary.client.DomoAuth as dmda
 
-token_auth = dmda.DomoTokenAuth( domo_instance = 'domo-dojoo', domo_access_token = os.environ['DOMO_DOJO_ACCESS_TOKEN'])
+token_auth = dmda.DomoTokenAuth( domo_instance = 'domo-dojo', domo_access_token = os.environ['DOMO_DOJO_ACCESS_TOKEN'])
 ```
 
 ### Option 1: class based programming
