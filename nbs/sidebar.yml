@@ -26,9 +26,9 @@ website:
                   - blog/posts/2023-01-24_Domo_Onboarding/index.qmd
       - section: classes
         contents:
-          - classes/50_.DomoBootstrap.ipynb
           - classes/50_DomoAccount.ipynb
           - classes/50_DomoActivityLog.ipynb
+          - classes/50_DomoBootstrap.ipynb
           - classes/50_DomoDataset.ipynb
           - classes/50_DomoPage.ipynb
           - classes/50_DomoUser.ipynb
@@ -51,4 +51,7 @@ website:
       - section: utils
         contents:
           - utils/DictDot.ipynb
+          - utils/chunk_execution.ipynb
           - utils/convert.ipynb
+          - utils/read_creds_from_dotenv.ipynb
+          - utils/upload_data.ipynb

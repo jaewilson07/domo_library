@@ -2,7 +2,7 @@
 
 # %% auto 0
 __all__ = ['get_full_auth', 'get_developer_auth', 'test_access_token', 'DomoAuth', 'InvalidCredentialsError',
-           'InvalidInstanceError', 'DomoFullAuth', 'DomoTokenAuth', 'DomoDeveloperAuth']
+           'InvalidInstanceError', 'NoAccessTokenReturned', 'DomoFullAuth', 'DomoTokenAuth', 'DomoDeveloperAuth']
 
 # %% ../../nbs/client/95_DomoAuth.ipynb 3
 from dataclasses import dataclass, field
@@ -12,6 +12,7 @@ from typing import Optional, Union
 import httpx
 
 import domolibrary.client.ResponseGetData as rgd
+import domolibrary.client.DomoError as de
 
 # %% ../../nbs/client/95_DomoAuth.ipynb 5
 async def get_full_auth(
@@ -172,27 +173,12 @@ class DomoAuth(_DomoAuth_Optional, _DomoAuth_Required):
     """abstract DomoAuth class"""
 
 # %% ../../nbs/client/95_DomoAuth.ipynb 25
-class DomoErrror(Exception):
-    """base exception"""
-
-    def __init__(
-        self,
-        status: Optional[int] = None,  # API request status
-        message: str = "error",  # <domo_instance>.domo.com
-        domo_instance: Optional[str] = None,
-    ):
-
-        instance_str = f" at {domo_instance}" if domo_instance else ""
-        status_str = f"Status {status} - " if status else ""
-        self.message = f"{status_str}{message}{instance_str}"
-        super().__init__(self.message)
-
-# %% ../../nbs/client/95_DomoAuth.ipynb 26
-class InvalidCredentialsError(DomoErrror):
+class InvalidCredentialsError(de.DomoError):
     """return invalid credentials sent to API"""
 
     def __init__(
         self,
+        function_name: Optional[str] = None,
         status: Optional[int] = None,  # API request status
         message="invalid credentials",
         domo_instance: Optional[str] = None,
@@ -201,18 +187,30 @@ class InvalidCredentialsError(DomoErrror):
         super().__init__(status=status, message=message, domo_instance=domo_instance)
 
 
-class InvalidInstanceError(DomoErrror):
+class InvalidInstanceError(de.DomoError):
     """return if invalid domo_instance sent to API"""
 
     def __init__(
         self,
+        function_name: Optional[str] = None,
         status: Optional[int] = None,
         message="invalid instance",
         domo_instance: Optional[str] = None,
     ):
         super().__init__(status=status, message=message, domo_instance=domo_instance)
+    
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 29
+class NoAccessTokenReturned(de.DomoError):
+    def __init__(
+        self,
+        function_name: Optional[str] = None,
+        status: Optional[int] = None,
+        message :str = "No AccessToken returned",
+        domo_instance: Optional[str] = None,
+    ):
+        super().__init__(status = status, message = message, domo_instance = domo_instance)
+
+# %% ../../nbs/client/95_DomoAuth.ipynb 28
 @dataclass
 class _DomoFullAuth_Required(_DomoAuth_Required):
     """mix requied parameters for DomoFullAuth"""
@@ -221,7 +219,7 @@ class _DomoFullAuth_Required(_DomoAuth_Required):
     domo_password: str = field(repr=False)
 
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 30
+# %% ../../nbs/client/95_DomoAuth.ipynb 29
 @dataclass
 class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required):
     """use for full authentication token"""
@@ -247,6 +245,7 @@ class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required):
 
         if res.is_success and res.response.get("reason") == "INVALID_CREDENTIALS":
             raise InvalidCredentialsError(
+                function_name = "get_auth_token",
                 status=res.status,
                 message=str(res.response.get("reason")),
                 domo_instance=self.domo_instance,
@@ -254,10 +253,17 @@ class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required):
 
         if res.status == 403:
             raise InvalidInstanceError(
+                function_name = "get_auth_token",
                 status=res.status,
                 message="INVALID INSTANCE",
                 domo_instance=self.domo_instance,
             )
+        
+        if res.is_success and res.response == {}:
+            raise NoAccessTokenReturned(
+                function_name="get_auth_token",
+                status=res.status, 
+                domo_instance=self.domo_instance)
 
         token = str(res.response.get("sessionToken"))
         self.token = token
@@ -270,14 +276,14 @@ class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required):
 
         return self.token
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 37
+# %% ../../nbs/client/95_DomoAuth.ipynb 36
 @dataclass
 class _DomoTokenAuth_Required(_DomoAuth_Required):
     """mix requied parameters for DomoFullAuth"""
 
     domo_access_token: str = field(repr=False)
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 38
+# %% ../../nbs/client/95_DomoAuth.ipynb 37
 @dataclass
 class DomoTokenAuth(_DomoAuth_Optional, _DomoTokenAuth_Required):
     """
@@ -323,7 +329,7 @@ class DomoTokenAuth(_DomoAuth_Optional, _DomoTokenAuth_Required):
 
         return self.token
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 42
+# %% ../../nbs/client/95_DomoAuth.ipynb 41
 @dataclass
 class _DomoDeveloperAuth_Required(_DomoAuth_Required):
     """mix requied parameters for DomoFullAuth"""
@@ -331,7 +337,7 @@ class _DomoDeveloperAuth_Required(_DomoAuth_Required):
     domo_client_id: str
     domo_client_secret: str = field(repr=False)
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 43
+# %% ../../nbs/client/95_DomoAuth.ipynb 42
 @dataclass(init=False)
 class DomoDeveloperAuth(_DomoAuth_Optional, _DomoDeveloperAuth_Required):
     """use for full authentication token"""
