@@ -472,7 +472,7 @@ class DomoDataset_UploadData_UploadData_Error(DomoDataset_UploadData_Error):
                          stage=stage, status=status, reason=reason,
                          partition_key=partition_key)
 
-    class DomoDataset_UploadData_DatasetUploadId_Error(DomoDataset_UploadData_Error):
+    class DomoDataset_UploadData_CommitDatasetUploadId_Error(DomoDataset_UploadData_Error):
         def __init__(self, domo_instance: str, dataset_id: str,
                      stage: int = 3, status="", reason="",
                      partition_key: str = None):
