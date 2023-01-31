@@ -347,7 +347,6 @@ class PageLayout:
             for template_item in self.compact.template:
                 temp_list.append(template_item.get_body())
             body["compact"]["template"]= temp_list
-        pprint (body)
         return body
 
 @dataclass
@@ -380,7 +379,6 @@ class DomoPage(Base):
 
         if res.status == 200:
             dd = DictDot(res.response)
-            pprint (dd)
             pg = cls(
                 id=dd.id,
                 domo_instance=full_auth.domo_instance,
