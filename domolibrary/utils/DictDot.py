@@ -3,10 +3,10 @@
 # %% auto 0
 __all__ = ['DictDot', 'split_str_to_obj']
 
-# %% ../../nbs/utils/DictDot.ipynb 2
+# %% ../../nbs/utils/DictDot.ipynb 3
 from types import SimpleNamespace
 
-# %% ../../nbs/utils/DictDot.ipynb 3
+# %% ../../nbs/utils/DictDot.ipynb 4
 class DictDot(SimpleNamespace):
     """a utility class that converts json into an object that supports data retrieval with dot notation"""
 
@@ -32,7 +32,7 @@ class DictDot(SimpleNamespace):
         return None
 
 
-# %% ../../nbs/utils/DictDot.ipynb 6
+# %% ../../nbs/utils/DictDot.ipynb 7
 def split_str_to_obj(piped_str: str, key_ls: list[str]):
     """
     split a pipe separated list into an object with keys defined by the list of keys

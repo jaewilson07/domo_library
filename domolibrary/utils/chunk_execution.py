@@ -7,15 +7,16 @@ __all__ = ['run_sequence', 'chunk_list']
 from typing import Any, Awaitable
 
 # %% ../../nbs/utils/chunk_execution.ipynb 3
-async def run_sequence(*functions: Awaitable[Any] ) -> None:
-    """execute a list of functions in a sequence"""
+async def run_sequence(*functions: Awaitable[Any] # comma separated list of functions
+ ) -> None: # no explicit return
+    """executes a sequence of functions"""
 
     for function in functions:
         await function
 
 # %% ../../nbs/utils/chunk_execution.ipynb 5
-def chunk_list(obj_ls,  # list of entities to split into n chunks
-               chunk_size  # entities per sub list
+def chunk_list(obj_ls :list[any],  # list of entities to split into n chunks
+               chunk_size:int  # entities per sub list
                ) -> list[list[dict]]:  # returns a list of chunk_size lists of objects
 
     return [obj_ls[i * chunk_size:(i + 1) * chunk_size] for i in range((len(obj_ls) + chunk_size - 1) // chunk_size)]
