@@ -84,7 +84,7 @@ domo_ds = await dmds.DomoDataset.get_from_id(auth = token_auth, dataset_id = os.
 domo_ds
 ```
 
-    DomoDataset(id='04c1574e-c8be-4721-9846-c6ffa491144b', display_type='domo-jupyterdata', data_provider_type='domo-jupyterdata', name='domo_kbs', description=None, row_count=1185, column_count=7, stream_id=825, owner=DictDot(id='1893952720', name='Jae Wilson', type='USER', group=False), formula=DictDot(), schema=DomoDataset_Schema(dataset=..., columns=[]))
+    KeyError: 'DOJO_DATASET_ID'
 
 Once instantiated, you can call methods to interact with that object.
 You typically won’t have to pass auth creds again because they are saved
