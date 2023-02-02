@@ -2,23 +2,24 @@
 
 # %% auto 0
 __all__ = ['get_full_auth', 'get_developer_auth', 'test_access_token', 'DomoAuth', 'InvalidCredentialsError',
-           'InvalidInstanceError', 'DomoFullAuth', 'DomoTokenAuth', 'DomoDeveloperAuth']
+           'InvalidInstanceError', 'NoAccessTokenReturned', 'DomoFullAuth', 'DomoTokenAuth', 'DomoDeveloperAuth']
 
 # %% ../../nbs/client/95_DomoAuth.ipynb 3
 from dataclasses import dataclass, field
 from abc import abstractmethod
 from typing import Optional, Union
 
-import aiohttp
+import httpx
 
 import domolibrary.client.ResponseGetData as rgd
+import domolibrary.client.DomoError as de
 
 # %% ../../nbs/client/95_DomoAuth.ipynb 5
 async def get_full_auth(
     domo_instance: str,  # domo_instance.domo.com
     domo_username: str,  # email address
     domo_password: str,
-    session: Optional[aiohttp.ClientSession] = None,
+    session: Optional[httpx.AsyncClient] = None,
     debug_api: bool = False
 ) -> rgd.ResponseGetData:
     """uses username and password authentication to retrieve a full_auth access token"""
@@ -27,7 +28,7 @@ async def get_full_auth(
 
     if not session:
         is_close_session = True
-        session = aiohttp.ClientSession()
+        session = httpx.AsyncClient()
 
     url = f"https://{domo_instance}.domo.com/api/content/v2/authentication"
 
@@ -45,15 +46,15 @@ async def get_full_auth(
     res = await session.request(method="POST", url=url, headers=tokenHeaders, json=body)
 
     if is_close_session:
-        await session.close()
+        await session.aclose()
 
-    return await rgd.ResponseGetData._from_aiohttp_response(res)
+    return rgd.ResponseGetData._from_httpx_response(res)
 
 # %% ../../nbs/client/95_DomoAuth.ipynb 12
 async def get_developer_auth(
     domo_client_id: str,
     domo_client_secret: str,
-    session: Optional[aiohttp.ClientSession] = None,
+    session: Optional[httpx.AsyncClient] = None,
     debug_api: bool = False
 ) -> rgd.ResponseGetData:
 
@@ -64,8 +65,8 @@ async def get_developer_auth(
 
     if not session:
         is_close_session = True
-        session = aiohttp.ClientSession(
-            auth=aiohttp.BasicAuth(domo_client_id, domo_client_secret)
+        session = httpx.AsyncClient(
+            auth=httpx.BasicAuth(domo_client_id, domo_client_secret)
         )
 
     url = f"https://api.domo.com/oauth/token?grant_type=client_credentials"
@@ -76,15 +77,15 @@ async def get_developer_auth(
     res = await session.request(method="GET", url=url)
 
     if is_close_session:
-        await session.close()
+        await session.aclose()
 
-    return await rgd.ResponseGetData._from_aiohttp_response(res)
+    return rgd.ResponseGetData._from_httpx_response(res)
 
 # %% ../../nbs/client/95_DomoAuth.ipynb 16
 async def test_access_token(
     domo_access_token: str,  # as provided in Domo > Admin > Authentication > AccessTokens
     domo_instance: str,  # <domo_instance>.domo.com
-    session: Optional[aiohttp.ClientSession] = None,
+    session: Optional[httpx.AsyncClient] = None,
     debug_api: bool = False
 ):
     """
@@ -96,7 +97,7 @@ async def test_access_token(
 
     if not session:
         is_close_session = True
-        session = aiohttp.ClientSession()
+        session = httpx.AsyncClient()
 
     url = f"https://{domo_instance}.domo.com/api/content/v2/users/me"
 
@@ -108,9 +109,9 @@ async def test_access_token(
     res = await session.request(method="GET", headers=tokenHeaders, url=url)
 
     if is_close_session:
-        await session.close()
+        await session.aclose()
 
-    return await rgd.ResponseGetData._from_aiohttp_response(res)
+    return rgd.ResponseGetData._from_httpx_response(res)
 
 # %% ../../nbs/client/95_DomoAuth.ipynb 20
 @dataclass
@@ -148,33 +149,36 @@ class _DomoAuth_Optional:
         """returns auth header appropriate for this authentication method"""
         pass
 
+    async def print_is_token(self, token_name=None) -> None:
+        self.token_name = token_name or self.token_name
+
+        if not self.token:
+            await self.get_auth_token()
+
+        token_str = f"{self.token_name} "
+
+        if not self.token:
+            print(
+                f"🚧 failed to retrieve {token_str if token_name else ''}token from {self.domo_instance}")
+            return False
+
+        print(
+            f"🎉 {token_str if token_name else ''}token retrieved from {self.domo_instance} ⚙️")
+        return True
+
+
 # %% ../../nbs/client/95_DomoAuth.ipynb 21
 @dataclass
 class DomoAuth(_DomoAuth_Optional, _DomoAuth_Required):
     """abstract DomoAuth class"""
 
 # %% ../../nbs/client/95_DomoAuth.ipynb 25
-class DomoErrror(Exception):
-    """base exception"""
-
-    def __init__(
-        self,
-        status: Optional[int] = None,  # API request status
-        message: str = "error",  # <domo_instance>.domo.com
-        domo_instance: Optional[str] = None,
-    ):
-
-        instance_str = f" at {domo_instance}" if domo_instance else ""
-        status_str = f"Status {status} - " if status else ""
-        self.message = f"{status_str}{message}{instance_str}"
-        super().__init__(self.message)
-
-# %% ../../nbs/client/95_DomoAuth.ipynb 26
-class InvalidCredentialsError(DomoErrror):
+class InvalidCredentialsError(de.DomoError):
     """return invalid credentials sent to API"""
 
     def __init__(
         self,
+        function_name: Optional[str] = None,
         status: Optional[int] = None,  # API request status
         message="invalid credentials",
         domo_instance: Optional[str] = None,
@@ -183,18 +187,30 @@ class InvalidCredentialsError(DomoErrror):
         super().__init__(status=status, message=message, domo_instance=domo_instance)
 
 
-class InvalidInstanceError(DomoErrror):
+class InvalidInstanceError(de.DomoError):
     """return if invalid domo_instance sent to API"""
 
     def __init__(
         self,
+        function_name: Optional[str] = None,
         status: Optional[int] = None,
         message="invalid instance",
         domo_instance: Optional[str] = None,
     ):
         super().__init__(status=status, message=message, domo_instance=domo_instance)
+    
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 29
+class NoAccessTokenReturned(de.DomoError):
+    def __init__(
+        self,
+        function_name: Optional[str] = None,
+        status: Optional[int] = None,
+        message :str = "No AccessToken returned",
+        domo_instance: Optional[str] = None,
+    ):
+        super().__init__(status = status, message = message, domo_instance = domo_instance)
+
+# %% ../../nbs/client/95_DomoAuth.ipynb 28
 @dataclass
 class _DomoFullAuth_Required(_DomoAuth_Required):
     """mix requied parameters for DomoFullAuth"""
@@ -203,7 +219,7 @@ class _DomoFullAuth_Required(_DomoAuth_Required):
     domo_password: str = field(repr=False)
 
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 30
+# %% ../../nbs/client/95_DomoAuth.ipynb 29
 @dataclass
 class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required):
     """use for full authentication token"""
@@ -214,7 +230,7 @@ class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required):
 
     async def get_auth_token(
         self,
-        session: Optional[aiohttp.ClientSession] = None,
+        session: Optional[httpx.AsyncClient] = None,
         debug_api : bool = False
     ) -> str:
         """returns `token` if valid credentials provided else raises Exception and returns None"""
@@ -229,6 +245,7 @@ class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required):
 
         if res.is_success and res.response.get("reason") == "INVALID_CREDENTIALS":
             raise InvalidCredentialsError(
+                function_name = "get_auth_token",
                 status=res.status,
                 message=str(res.response.get("reason")),
                 domo_instance=self.domo_instance,
@@ -236,10 +253,17 @@ class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required):
 
         if res.status == 403:
             raise InvalidInstanceError(
+                function_name = "get_auth_token",
                 status=res.status,
                 message="INVALID INSTANCE",
                 domo_instance=self.domo_instance,
             )
+        
+        if res.is_success and res.response == {}:
+            raise NoAccessTokenReturned(
+                function_name="get_auth_token",
+                status=res.status, 
+                domo_instance=self.domo_instance)
 
         token = str(res.response.get("sessionToken"))
         self.token = token
@@ -273,7 +297,7 @@ class DomoTokenAuth(_DomoAuth_Optional, _DomoTokenAuth_Required):
         return self.auth_header
 
     async def get_auth_token(
-        self, session: Optional[aiohttp.ClientSession] = None,
+        self, session: Optional[httpx.AsyncClient] = None,
         debug_api : bool = False
     ) -> str:
         """
@@ -329,7 +353,7 @@ class DomoDeveloperAuth(_DomoAuth_Optional, _DomoDeveloperAuth_Required):
 
     async def get_auth_token(
         self,
-        session: Optional[aiohttp.ClientSession] = None,
+        session: Optional[httpx.AsyncClient] = None,
         debug_api : bool = False
     ) -> str:
 

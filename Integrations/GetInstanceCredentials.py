@@ -1,3 +1,5 @@
+# import this file domolibrary.integrations.DomoJupyter
+
 from dataclasses import dataclass, field
 
 import pandas as pd
@@ -5,6 +7,8 @@ import importlib
 import datetime as dt
 
 import Library.DomoClasses.DomoAuth as dmda
+# import domolibrary.client.DomoAuth as dmda
+
 import Library.utils.LoggerClass as lc
 import Library.utils.Exceptions as ex
 
@@ -326,3 +330,4 @@ async def get_domains_with_instance_auth(config_auth: dmda.DomoFullAuth,
                 logger.log_error(f"Error with {instance} instance. Exception : {e}")
 
     return df
+

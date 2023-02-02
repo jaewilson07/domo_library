@@ -5,18 +5,18 @@ __all__ = ['API_Response', 'STREAM_FILE_PATH', 'ResponseGetData']
 
 # %% ../../nbs/client/99_ResponseGetData.ipynb 2
 # pylint: disable=no-member
+
 from dataclasses import dataclass, field
 from typing import Optional
 
-import json
 import orjson
-
 
 import asyncio
 import requests
+import httpx
 import aiohttp
 
-from fastcore.utils import patch_to, patch
+from fastcore.utils import patch_to
 
 # %% ../../nbs/client/99_ResponseGetData.ipynb 4
 API_Response = any
@@ -78,7 +78,7 @@ def _from_httpx_response(
 # %% ../../nbs/client/99_ResponseGetData.ipynb 15
 STREAM_FILE_PATH = '__large-file.json'
 
-async def _write_stream(res: aiohttp.ClientResponse,
+async def _write_stream(res: httpx.Response,
                         file_name: str = STREAM_FILE_PATH,
                         stream_chunks=10):
     
@@ -104,7 +104,7 @@ async def _read_stream(file_name : str = STREAM_FILE_PATH):
 
 
 # %% ../../nbs/client/99_ResponseGetData.ipynb 16
-@patch(cls_method=True)
+@patch_to(ResponseGetData, cls_method=True)
 async def _from_aiohttp_response(
     cls: ResponseGetData, 
     res: aiohttp.ClientResponse,  # requests response object
@@ -148,7 +148,7 @@ async def _from_aiohttp_response(
         return cls(status=res.status, response=res.reason, is_success=False, auth = auth)
 
 # %% ../../nbs/client/99_ResponseGetData.ipynb 20
-@patch(cls_method=True)
+@patch_to(ResponseGetData, cls_method=True)
 async def _from_looper(cls: ResponseGetData,
                        res: ResponseGetData,  # requests response object
                        array: list

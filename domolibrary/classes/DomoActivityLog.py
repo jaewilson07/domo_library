@@ -10,7 +10,7 @@ from typing import Optional
 import datetime as dt
 from pprint import pprint
 
-import aiohttp
+import httpx
 
 import domolibrary.utils.convert as convert
 import domolibrary.client.DomoAuth as dmda
@@ -103,7 +103,7 @@ class DomoActivityLog:
         end_time: dt.datetime,
         object_type: Optional[ActivityLog_ObjectType] = None,
         maximum: int = 1000,
-        session: Optional[aiohttp.ClientSession] = None,
+        session: Optional[httpx.AsyncClient] = None,
         debug_api: bool = False,
         debug_loop: bool = False,
     ):
