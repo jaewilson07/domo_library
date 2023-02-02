@@ -29,6 +29,7 @@ website:
           - classes/50_DomoAccount.ipynb
           - classes/50_DomoActivityLog.ipynb
           - classes/50_DomoBootstrap.ipynb
+          - classes/50_DomoDataflow.ipynb
           - classes/50_DomoDataset.ipynb
           - classes/50_DomoPage.ipynb
           - classes/50_DomoUser.ipynb
@@ -50,6 +51,13 @@ website:
               - section: 2023-02-02_DojoFeatures
                 contents:
                   - projects/posts/2023-02-02_DojoFeatures/index.ipynb
+      - section: projects
+        contents:
+          - section: posts
+            contents:
+              - section: 2023-02-02_DojoSQL
+                contents:
+                  - projects/posts/2023-02-02_DojoSQL/index.ipynb
       - section: routes
         contents:
           - routes/account.ipynb
