@@ -155,7 +155,7 @@ async def set_user_landing_page(
         method="PUT",
         auth=auth,
         # body = body,
-        debug=debug,
+        debug_api=debug_api,
     )
 
 # %% ../../nbs/routes/user.ipynb 23
