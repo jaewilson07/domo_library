@@ -5,9 +5,6 @@ __all__ = ['generate_body_create_group', 'create_group', 'generate_body_update_g
 
 # %% ../../nbs/routes/group.ipynb 2
 import httpx
-#from .get_data import get_data
-#from ..DomoAuth import DomoFullAuth
-#from ...utils.ResponseGetData import ResponseGetData
 
 import utils.DictDot as dd
 import domolibrary.client.get_data as gd

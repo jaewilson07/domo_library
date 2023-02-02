@@ -29,6 +29,7 @@ website:
           - classes/50_DomoAccount.ipynb
           - classes/50_DomoActivityLog.ipynb
           - classes/50_DomoBootstrap.ipynb
+          - classes/50_DomoDataflow.ipynb
           - classes/50_DomoDataset.ipynb
           - classes/50_DomoPage.ipynb
           - classes/50_DomoUser.ipynb
