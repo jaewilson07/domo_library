@@ -14,7 +14,7 @@ async def run_sequence(*functions: Awaitable[Any] # comma separated list of func
     for function in functions:
         await function
 
-# %% ../../nbs/utils/chunk_execution.ipynb 5
+# %% ../../nbs/utils/chunk_execution.ipynb 6
 def chunk_list(obj_ls :list[any],  # list of entities to split into n chunks
                chunk_size:int  # entities per sub list
                ) -> list[list[dict]]:  # returns a list of chunk_size lists of objects
