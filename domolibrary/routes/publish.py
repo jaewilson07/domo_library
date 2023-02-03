@@ -4,6 +4,13 @@
 __all__ = ['search_publications', 'get_publication_by_id', 'get_subscription_summaries', 'get_subscription_invititations',
            'accept_invite_by_id', 'refresh_publish_jobs']
 
+# %% ../../nbs/routes/publish.ipynb 2
+import httpx
+
+import domolibrary.client.get_data as gd
+import domolibrary.client.ResponseGetData as rgd
+import domolibrary.client.DomoAuth as dmda
+
 # %% ../../nbs/routes/publish.ipynb 4
 async def search_publications(auth: dmda.DomoAuth,
                               search_term: str = None, 
@@ -27,14 +34,16 @@ async def search_publications(auth: dmda.DomoAuth,
 
 
 # %% ../../nbs/routes/publish.ipynb 6
-async def get_publication_by_id(auth: dmda.DomoAuth, publication_id: str, session: httpx.AsyncClient = None, debug_api: bool = False) -> rgd.ResponseGetData:
+async def get_publication_by_id(auth: dmda.DomoAuth,
+                                publication_id: str,
+                                session: httpx.AsyncClient = None, debug_api: bool = False) -> rgd.ResponseGetData:
     url = f"https://{auth.domo_instance}.domo.com/api/publish/v2/publication/{publication_id}"
 
-    res = await get_data(auth=auth,
-                         method='GET',
-                         url=url,
-                         session=session,
-                         debug_api=debug_api )
+    res = await gd.get_data(auth=auth,
+                            method='GET',
+                            url=url,
+                            session=session,
+                            debug_api=debug_api)
 
     return res
 
@@ -42,7 +51,7 @@ async def get_publication_by_id(auth: dmda.DomoAuth, publication_id: str, sessio
 # generate publish body
 
 
-# %% ../../nbs/routes/publish.ipynb 11
+# %% ../../nbs/routes/publish.ipynb 12
 async def get_subscription_summaries(
     auth: dmda.DomoAuth, session: httpx.AsyncClient = None, debug_api: bool = False
 ) -> rgd.ResponseGetData:
@@ -55,7 +64,7 @@ async def get_subscription_summaries(
     )
     return res
 
-# %% ../../nbs/routes/publish.ipynb 13
+# %% ../../nbs/routes/publish.ipynb 14
 async def get_subscription_invititations(
     auth: dmda.DomoAuth, session: httpx.AsyncClient = None, debug_api: bool = False
 ) -> rgd.ResponseGetData:
@@ -68,22 +77,22 @@ async def get_subscription_invititations(
     )
     return res
 
-# %% ../../nbs/routes/publish.ipynb 15
+# %% ../../nbs/routes/publish.ipynb 17
 async def accept_invite_by_id(auth: dmda.DomoAuth,
-                              subscription_id: str, session: httpx.AsyncClient = None,
-                              debug_api: bool = False) -> rgd.ResponseGetData:
+                              subscription_id: str, 
+                              session: httpx.AsyncClient = None, debug_api: bool = False) -> rgd.ResponseGetData:
     """this takes get_subscription_invites_list into account and accepts - not instant"""
 
     url = f'https://{auth.domo_instance}.domo.com/api/publish/v2/subscription/{subscription_id}'
 
-    res = await get_data(auth=auth,
+    res = await gd.get_data(auth=auth,
                         method='POST',
                         url=url,
                         session=session,
                         debug_api=debug_api)
     return res
 
-# %% ../../nbs/routes/publish.ipynb 16
+# %% ../../nbs/routes/publish.ipynb 18
 async def refresh_publish_jobs(auth: dmda.DomoAuth,
                                publish_ids: list,
                                session: httpx.AsyncClient = None, debug_api: bool = False) -> rgd.ResponseGetData:
@@ -95,7 +104,7 @@ async def refresh_publish_jobs(auth: dmda.DomoAuth,
         'publicationIds': publish_ids
     }
 
-    res = await get_data(auth=dev_auth,
+    res = await gd.get_data(auth=dev_auth,
                          method='PUT',
                          url=url,
                          body=body,
