@@ -267,7 +267,7 @@ Color Rules (“conditional formatting”) [Link to KB](https://domohelp.domo.co
 
 Changing Default Colors in different Chart Types [Link to KB](https://domohelp.domo.com/hc/en-us/articles/360043429653-Changing-the-Default-Colors-in-Your-Chart)
 
-🚀 Only one Default Theme (color palette) can exist per instance in the form of the Brand Kit feature.  This standard will be set and configured by the Jae team.  The standard is intended to conform with overall Sony SIE branding.  [Link to KB](https://domohelp.domo.com/hc/en-us/articles/5428851518999-Brand-Kit)
+🚀 Only one Default Theme (color palette) can exist per instance in the form of the Brand Kit feature.   [Link to KB](https://domohelp.domo.com/hc/en-us/articles/5428851518999-Brand-Kit)
 
 ❓ “In Tableau when you select a field to color, it automatically assigns each distinct value a color. This is useful for say Department separation. We can then manually change it if needed.  How do you do it in Domo?”
 

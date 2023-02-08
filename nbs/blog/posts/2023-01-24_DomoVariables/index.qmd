@@ -5,7 +5,6 @@ date: 2023-01-24
 categories: ['Variables']
 ---
 
-Sample Dashboard
 *   [https://domo-dojo.domo.com/page/1880852133](https://domo-dojo.domo.com/page/1880852133)
 
 Variable Types
@@ -15,9 +14,9 @@ Variable Types
 
 Variable Grant
 
-![](https://lh6.googleusercontent.com/7nAzmGrj-zkJc2y02x1-XKtsG2NqZ16sZvkgeVFmIiqwxJKYT0lHppHGzfHBTXcSJSuMwYMetBE3dRUbeU8UreflmRD5pKVtujahfq2ShBmkVDNZiOushKc8t9Mr_rV9ZgQ_i7Lsv0f0RUQaJjqfUIpPTR2q3G_6wafDbSoW6osJNFh6Y0lxZifGnFotkA)
+![](https://lh6.googleusercontent.com/o3j1gyjLi0pbF1mZ0ZyxgWDzMD95Y36ChSrmksDlh93exTuy3m_PHGInYxKB4vBlHRhoiVsD0CK5av3aBV9Z3EXmlx9DBRV_V01s82vp3hBLuZIoxVIYc3AuXY9KqiBYVio3iE62gWH47rJIC3Mlx68)
 
-Three new Variable and Beast Mode, Domo Stats Datasets
+Three new Variable and Beast Mode, Domo STats Datasets
 
 FAQ
 ===
