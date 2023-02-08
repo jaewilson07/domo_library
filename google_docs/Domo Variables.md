@@ -1,10 +1,6 @@
 ---
-title: Domo Variables
-author: [Jae Wilson]
-date: 2023-01-24
-categories: ['Variables']
+title: Sample Dashboard
 ---
-
 *   [https://domo-dojo.domo.com/page/1880852133](https://domo-dojo.domo.com/page/1880852133)
 
 Variable Types

@@ -50,6 +50,66 @@ class PageLayoutTemplate:
             "virtualAppendix":self.virtual_appendix
         }
 
+@dataclass
+class PageLayoutBackground:
+    id: int
+    crop_height: int
+    crop_width: int
+    x: int
+    y: str
+    data_file_id: int
+    image_brightness: int
+    image_height: int
+    image_width: int
+    selected_color: str
+    text_color: str
+    type: str
+    is_darkMode: bool
+    alpha: float
+    src: str
+    
+    @classmethod
+    def _from_json(cls, dd):
+        if dd is not None:
+            return cls(
+            id=dd.id,
+            crop_height=dd.cropHeight,
+            crop_width=dd.cropWidth,
+            x = dd.x,
+            y = dd.y,
+            data_file_id = dd.dataFileId,
+            image_brightness = dd.imageBrightness,
+            image_height = dd.imageHeight,
+            image_width = dd.imageWidth,
+            selected_color = dd.selectedColor,
+            text_color = dd.textColor,
+            type = dd.type,
+            is_darkMode = dd.darkMode,
+            alpha = dd.alpha,
+            src = dd.src
+            
+            )
+        else:
+            return None
+
+    def get_body(self):
+        return {
+            "id": self.id,
+            "cropHeight": self.crop_height,
+            "cropWidth": self.crop_width,
+            "x": self.x,
+            "y": self.y,
+            "dataFileId": self.data_file_id,
+            "imageBrightness": self.image_brightness,
+            "imageHeight": self.image_height,
+            "imageWidth": self.image_width,
+            "selectedColor": self.selected_color,
+            "textColor": self.text_color,
+            "type": self.type,
+            "darkMode": self.is_darkMode,
+            "alpha": self.alpha,
+            "src": self.src
+        }
 
 @dataclass
 class PageLayoutContent:
@@ -74,6 +134,8 @@ class PageLayoutContent:
     summary_number_only:bool
     type: str
     text: str
+    background_id : int
+    background : PageLayoutBackground
     
     
     
@@ -95,16 +157,20 @@ class PageLayoutContent:
             hide_margins = dd.hideMargins,
             hide_summary = dd.hideSummary,
             hide_timeframe = dd.hideTimeframe,
-            hide_title = dd.hiteTitle,
+            hide_title = dd.hideTitle,
             hide_wrench = dd.hideWrench,
             id = dd.id,
             summary_number_only=dd.summaryNumberOnly,
             type = dd.type,
-            text = dd.text
+            text = dd.text,
+            background_id = dd.backgroundId,
+            background = PageLayoutBackground._from_json(
+                    dd=dd.background)
+            
         )
     
     def get_body(self):
-        return {
+        body = {
             "acceptDateFilter": self.accept_date_filter,
             "acceptFilters": self.accept_filters,
             "acceptSegments":self.accept_segments,
@@ -120,13 +186,18 @@ class PageLayoutContent:
             "hideMargins":self.hide_margins,
             "hideSummary":self.hide_summary,
             "hideTimeframe":self.hide_timeframe,
-            "hiteTitle":self.hide_title,
+            "hideTitle":self.hide_title,
             "hideWrench":self.hide_wrench,
             "id":self.id,
             "summaryNumberOnly":self.summary_number_only,
             "type":self.type,
-            "text":self.text
+            "text":self.text,
+            "backgroundId":self.background_id
         }
+        
+        if self.background is not None:
+            body["background"] = self.background.get_body()
+        return body
         
     
 @dataclass
@@ -185,49 +256,6 @@ class PageLayoutCompact:
                     obj.template.append(dc)
         return obj
     
-@dataclass
-class PageLayoutBackground:
-    id: int
-    crop_height: int
-    crop_width: int
-    x: int
-    y: str
-    data_file_id: int
-    image_brightness: int
-    image_height: int
-    image_width: int
-    selected_color: str
-    text_color: str
-    type: str
-    is_darkMode: bool
-    alpha: float
-    src: str
-    
-    @classmethod
-    def _from_json(cls, dd):
-        if dd is not None:
-            return cls(
-            id=dd.id,
-            crop_height=dd.cropHeight,
-            crop_width=dd.cropWidth,
-            x = dd.x,
-            y = dd.y,
-            data_file_id = dd.dataFileId,
-            image_brightness = dd.imageBrightness,
-            image_height = dd.imageHeight,
-            image_width = dd.imageWidth,
-            selected_color = dd.selectedColor,
-            text_color = dd.textColor,
-            type = dd.type,
-            is_darkMode = dd.darkMode,
-            alpha = dd.alpha,
-            src = dd.src
-            
-            )
-        else:
-            return None
-
-
 @dataclass
 class PageLayout:
     id: str
@@ -306,23 +334,8 @@ class PageLayout:
             }
          }
         if self.background is not None:
-            body["background"] = {
-            "id": self.background.id,
-            "cropHeight": self.background.crop_height,
-            "cropWidth": self.background.crop_width,
-            "x": self.background.x,
-            "y": self.background.y,
-            "dataFileId": self.background.data_file_id,
-            "imageBrightness": self.background.image_brightness,
-            "imageHeight": self.background.image_height,
-            "imageWidth": self.background.image_width,
-            "selectedColor": self.background.selected_color,
-            "textColor": self.background.text_color,
-            "type": self.background.type,
-            "darkMode": self.background.is_darkMode,
-            "alpha": self.background.alpha,
-            "src": self.background.src
-            }
+            body["background"] = self.background.get_body()
+
         if  self.content ==[] or self.content is None:
             body["content"] = []
         else:
