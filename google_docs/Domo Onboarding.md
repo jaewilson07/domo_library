@@ -1,8 +1,5 @@
 ---
-title: "Domo Onboarding "
-categories: ['new user']
-author: [Jae Wilson]
-date: 2023-01-24
+title: "\U0001F5C2️ Introduction "
 ---
 This document describes the best practices for beginner Domo users. There are different personas use cases covered in this document:
 
