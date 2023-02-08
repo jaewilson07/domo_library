@@ -10,7 +10,7 @@ Variable Types
 
 Variable Grant
 
-![](https://lh4.googleusercontent.com/Kyahxb6sLuwgZgLrGSG7UuFaHbFcKgtOGGwk4OUn2FKYioY0OHtAdVSC1Q6BE3OrNXB-4r1JYsmfAlhE6JmTOlRoW-piAyvVU3TdPOtoPQVvDR4Ex6rksIsq8WdvHUULnCiYUFNfeeBLtOdn62nJJ575vuZgqOH3LQF0ACPgNDwGRRfZMsmmJtEAbsZutQ)
+![](https://lh6.googleusercontent.com/o3j1gyjLi0pbF1mZ0ZyxgWDzMD95Y36ChSrmksDlh93exTuy3m_PHGInYxKB4vBlHRhoiVsD0CK5av3aBV9Z3EXmlx9DBRV_V01s82vp3hBLuZIoxVIYc3AuXY9KqiBYVio3iE62gWH47rJIC3Mlx68)
 
 Three new Variable and Beast Mode, Domo STats Datasets
 
