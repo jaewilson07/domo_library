@@ -1,9 +1,0 @@
-project:
-  output-dir: _docs
-
-website:
-  title: "domolibrary"
-  site-url: "https://jaewilson07.github.io/domo_library"
-  description: ""
-  repo-branch: main
-  repo-url: "https://github.com/jaewilson07/domo_library"
