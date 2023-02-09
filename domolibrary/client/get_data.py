@@ -110,7 +110,8 @@ async def get_data(
     params: Optional[dict] = None,
     debug_api: bool = False,
     session : httpx.AsyncClient = None ,
-    return_raw : bool = False
+    return_raw : bool = False,
+    is_follow_redirects: bool = False
     ) -> rgd.ResponseGetData:
     """async wrapper for asyncio requests"""
 
@@ -156,7 +157,9 @@ async def get_data(
             res = await getattr(session, method.lower())(url=url,
                                                  headers=headers,
                                                  json=body,
-                                                 params=params)
+                                                 params=params,
+                                                 follow_redirects = is_follow_redirects
+                                                 )
         
         elif body:
             if debug_api:
@@ -165,7 +168,9 @@ async def get_data(
             res = await getattr(session, method.lower())(url=url,
                                                  headers=headers,
                                                  data=body,
-                                                 params=params)
+                                                 params=params,
+                                                         
+                                                         follow_redirects=is_follow_redirects)
 
 
         else:
@@ -173,7 +178,8 @@ async def get_data(
                 print("get_data: no body")
 
             res = await getattr(session, method.lower())(
-                url=url, headers=headers, params=params)
+                url=url, headers=headers, params=params,
+                follow_redirects=is_follow_redirects)
 
     except Exception as e:
         print(e)

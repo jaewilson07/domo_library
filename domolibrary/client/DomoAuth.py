@@ -2,7 +2,8 @@
 
 # %% auto 0
 __all__ = ['get_full_auth', 'get_developer_auth', 'test_access_token', 'DomoAuth', 'InvalidCredentialsError',
-           'InvalidInstanceError', 'NoAccessTokenReturned', 'DomoFullAuth', 'DomoTokenAuth', 'DomoDeveloperAuth']
+           'InvalidAuthTypeError', 'InvalidInstanceError', 'NoAccessTokenReturned', 'DomoFullAuth', 'DomoTokenAuth',
+           'DomoDeveloperAuth']
 
 # %% ../../nbs/client/95_DomoAuth.ipynb 3
 from dataclasses import dataclass, field
@@ -186,6 +187,19 @@ class InvalidCredentialsError(de.DomoError):
 
         super().__init__(status=status, message=message, domo_instance=domo_instance)
 
+
+class InvalidAuthTypeError(de.DomoError):
+    """return invalid Auth type sent to API"""
+
+    def __init__(
+        self,
+        required_auth_type :DomoAuth ,
+        function_name: Optional[str] = None,
+        domo_instance: Optional[str] = None,
+    ):
+        message = f"This API rquires {required_auth_type.__name__}"
+
+        super().__init__(message=message, domo_instance=domo_instance, function_name = function_name)
 
 class InvalidInstanceError(de.DomoError):
     """return if invalid domo_instance sent to API"""
