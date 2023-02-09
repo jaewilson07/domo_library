@@ -109,14 +109,14 @@ async def get_data(
     body: Union[dict, str, None] = None,
     params: Optional[dict] = None,
     debug_api: bool = False,
-    session : httpx.AsyncClient = None ,
-    return_raw : bool = False,
+    session: httpx.AsyncClient = None,
+    return_raw: bool = False,
     is_follow_redirects: bool = False
-    ) -> rgd.ResponseGetData:
+) -> rgd.ResponseGetData:
     """async wrapper for asyncio requests"""
 
     if debug_api:
-        print( f"🐛 debugging get_data")
+        print(f"🐛 debugging get_data")
 
     if auth and not auth.token:
         await auth.get_auth_token()
@@ -144,9 +144,9 @@ async def get_data(
                 "params": params,
             }
         )
-    
+
     is_close_session = False if session else True
-        
+
     session = session or httpx.AsyncClient()
 
     res = None
@@ -155,30 +155,30 @@ async def get_data(
             if debug_api:
                 print("get_data: sending json")
             res = await getattr(session, method.lower())(url=url,
-                                                 headers=headers,
-                                                 json=body,
-                                                 params=params,
-                                                 follow_redirects = is_follow_redirects
-                                                 )
-        
+                                                         headers=headers,
+                                                         json=body,
+                                                         params=params,
+                                                         follow_redirects=is_follow_redirects
+                                                         )
+
         elif body:
             if debug_api:
                 print("get_data: sending data")
 
             res = await getattr(session, method.lower())(url=url,
-                                                 headers=headers,
-                                                 data=body,
-                                                 params=params,
-                                                         
+                                                         headers=headers,
+                                                         data=body,
+                                                         params=params,
                                                          follow_redirects=is_follow_redirects)
-
 
         else:
             if debug_api:
                 print("get_data: no body")
 
             res = await getattr(session, method.lower())(
-                url=url, headers=headers, params=params,
+                url=url, 
+                headers=headers,
+                 params=params,
                 follow_redirects=is_follow_redirects)
 
     except Exception as e:
@@ -189,10 +189,9 @@ async def get_data(
             print('get_data_response', res)
         if is_close_session:
             await session.aclose()
-    
+
     if return_raw:
         return res
-
 
     return rgd.ResponseGetData._from_httpx_response(res, auth=auth, debug_api=debug_api)
 
