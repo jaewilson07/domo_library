@@ -12,6 +12,7 @@ class MonitDataset_Record:
     id: str = None
     stream_account_id: int = None
     stream_account_userid: int = None
+    stream_account_display_name: str = None
     nb_partitions: int = 0
     name: str = None
     data_provider_type: str = None
