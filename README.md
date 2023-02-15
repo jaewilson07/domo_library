@@ -80,11 +80,11 @@ offer users the ability to write concurrently executing code.
 import domolibrary.classes.DomoDataset as dmds
 
 # this is a class method
-domo_ds = await dmds.DomoDataset.get_from_id(auth = token_auth, dataset_id = os.environ['DOJO_DATASET_ID'])
+domo_ds = await dmds.DomoDataset.get_from_id(auth=token_auth, dataset_id=os.environ['DOJO_DATASET_ID'])
 domo_ds
 ```
 
-    KeyError: 'DOJO_DATASET_ID'
+    DomoDataset(id='04c1574e-c8be-4721-9846-c6ffa491144b', display_type='domo-jupyterdata', data_provider_type='domo-jupyterdata', name='domo_kbs', description=None, row_count=1185, column_count=7, stream_id=825, owner=DictDot(id='1893952720', name='Jae Wilson', type='USER', group=False), formula=DictDot(), schema=DomoDataset_Schema(dataset=..., columns=[]))
 
 Once instantiated, you can call methods to interact with that object.
 You typically won’t have to pass auth creds again because they are saved
@@ -120,7 +120,7 @@ Typically all information about an entity is saved in the object
 domo_ds.__dict__
 ```
 
-    {'auth': DomoTokenAuth(domo_instance='domo-dojoo', token_name='token_auth', url_manual_login='https://domo-dojoo.domo.com/auth/index?domoManualLogin=true'),
+    {'auth': DomoTokenAuth(domo_instance='domo-dojo', token_name='token_auth', url_manual_login='https://domo-dojo.domo.com/auth/index?domoManualLogin=true'),
      'id': '04c1574e-c8be-4721-9846-c6ffa491144b',
      'display_type': 'domo-jupyterdata',
      'data_provider_type': 'domo-jupyterdata',
