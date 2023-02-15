@@ -1,8 +1,10 @@
-import aiohttp
-import pandas as pd
 import asyncio
 
-import Library.utils.LoggerClass as lc
+import aiohttp
+import pandas as pd
+
+import domolibrary.client.Logger as lc
+
 
 async def upload_data(instance_auth,
                       consol_auth,
@@ -15,8 +17,9 @@ async def upload_data(instance_auth,
 
     try:
         # await asyncio.sleep(randrange(5))
-        if logger : 
-            logger.log_info (f" Upload_data function - starting {instance_auth.domo_instance} - {data_fn.__name__}")
+        if logger:
+            logger.log_info(
+                f" Upload_data function - starting {instance_auth.domo_instance} - {data_fn.__name__}")
         if debug_prn:
             print(
                 f"starting {instance_auth.domo_instance} - {data_fn.__name__}")
@@ -38,7 +41,7 @@ async def upload_data(instance_auth,
 
     except Exception as e:
         print(f"upload_data : unexpected error: {e}")
-        if logger : 
+        if logger:
             logger.log_error(f"upload_data : unexpected error: {e}")
         return None
 
