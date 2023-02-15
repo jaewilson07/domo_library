@@ -590,6 +590,4 @@ d = { 'settings': { 'branch': 'main',
             'domolibrary.utils.upload_data': { 'domolibrary.utils.upload_data.loop_upload': ( 'utils/upload_data.html#loop_upload',
                                                                                               'domolibrary/utils/upload_data.py'),
                                                'domolibrary.utils.upload_data.upload_data': ( 'utils/upload_data.html#upload_data',
-                                                                                              'domolibrary/utils/upload_data.py'),
-                                               'domolibrary.utils.upload_data.upload_data_with_date': ( 'utils/upload_data.html#upload_data_with_date',
-                                                                                                        'domolibrary/utils/upload_data.py')}}}
+                                                                                              'domolibrary/utils/upload_data.py')}}}
