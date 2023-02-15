@@ -79,6 +79,8 @@ def process_v1_search_users(v1_user_ls: list[dict] # list of users from v1_users
             "userName": dd_user.userName,
             "emailAddress": dd_user.emailAddress,
         })
+    
+    return clean_users
 
 
 # %% ../../nbs/routes/user.ipynb 13

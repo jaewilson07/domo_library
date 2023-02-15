@@ -4,11 +4,11 @@
 __all__ = ['DomoUser', 'DomoUsers']
 
 # %% ../../nbs/classes/50_DomoUser.ipynb 3
-from fastcore.basics import patch, patch_to
+from fastcore.basics import patch_to
 
 # %% ../../nbs/classes/50_DomoUser.ipynb 4
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import Optional
 
 import domolibrary.utils.DictDot as util_dd
 import domolibrary.client.DomoAuth as dmda
@@ -107,7 +107,7 @@ async def create_user(
     """class method that creates a new Domo user"""
 
     res = await user_routes.create_user(
-        full_auth=full_auth,
+        auth=auth,
         display_name=display_name,
         email=email,
         role_id=role_id,
@@ -123,8 +123,8 @@ async def create_user(
 
     dd = util_dd.DictDot(res.response)
     u = cls(
-        domo_instance=full_auth.domo_instance,
-        full_auth=full_auth,
+        domo_instance=auth.domo_instance,
+        auth=auth,
         id=dd.id or dd.userId,
         display_name=dd.displayName,
         email_address=dd.emailAddress,
@@ -135,7 +135,7 @@ async def create_user(
 
     if send_password_reset_email:
         await u.request_password_reset(
-            domo_instance=full_auth.domo_instance, email=u.email_address
+            domo_instance=auth.domo_instance, email=u.email_address
         )
 
     return u
@@ -169,13 +169,15 @@ class DomoUsers:
 
     logger: Optional[lc.Logger] = None
 
-    def _users_to_domo_user(user_ls, auth: dmda.DomoAuth):
+    @classmethod
+    def _users_to_domo_user(cls, user_ls, auth: dmda.DomoAuth):
         return [
             DomoUser._from_search_json(auth=auth, user_obj=user_obj)
             for user_obj in user_ls
         ]
 
-    def _users_to_virtual_user(user_ls, auth: dmda.DomoAuth):
+    @classmethod
+    def _users_to_virtual_user(cls, user_ls, auth: dmda.DomoAuth):
         return [
             DomoUser._from_virtual_json(auth=auth, user_obj=user_obj)
             for user_obj in user_ls
