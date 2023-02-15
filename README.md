@@ -23,7 +23,7 @@ The DataCrew team is hard at work expanding the list of available
 matter of migrating and documenting the code into this library.
 
 ``` sh
-pip install domo_library
+pip install domolibrary
 ```
 
 ## How to use

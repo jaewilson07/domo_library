@@ -93,6 +93,9 @@ async def upload_data(
             logger.log_info(message)
             print(message)
             return None
+        
+        if debug_prn:
+            print(upload_df[0:5])
 
         res = await loop_upload(
             upload_df=upload_df,
