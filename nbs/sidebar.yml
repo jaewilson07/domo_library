@@ -31,7 +31,6 @@ website:
           - classes/50_DomoBootstrap.ipynb
           - classes/50_DomoDataflow.ipynb
           - classes/50_DomoDataset.ipynb
-          - classes/50_DomoInstanceConfig.ipynb
           - classes/50_DomoPage.ipynb
           - classes/50_DomoUser.ipynb
       - section: client
@@ -68,7 +67,6 @@ website:
           - routes/dataflow.ipynb
           - routes/dataset.ipynb
           - routes/group.ipynb
-          - routes/instance_config.ipynb
           - routes/publish.ipynb
           - routes/user.ipynb
       - section: utils
