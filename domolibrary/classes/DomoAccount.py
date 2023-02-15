@@ -303,17 +303,20 @@ async def update_name(
 # %% ../../nbs/classes/50_DomoAccount.ipynb 24
 class DomoAccount_CreateAccount_Error(de.DomoError):
     def __init__(self,
-                entity_id,
+                 entity_id,
                  domo_instance,
-                 status, 
+                 status,
                  message,
                  function_name="create_account",
                  ):
 
-        super().__init__(function_name=function_name, entity_id = entity_id,
-                         domo_instance=domo_instance, status=status, message=message)
+        super().__init__(function_name=function_name,
+                         entity_id=entity_id,
+                         domo_instance=domo_instance,
+                         status=status, message=message)
 
 
+# %% ../../nbs/classes/50_DomoAccount.ipynb 25
 @patch_to(DomoAccount, cls_method=True)
 def generate_create_body(cls, account_name, config):
     return {
@@ -351,7 +354,7 @@ async def create_account(
     return await cls.get_from_id(auth=auth, account_id=res.response.get("id"))
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 25
+# %% ../../nbs/classes/50_DomoAccount.ipynb 26
 class DomoAccount_DeleteAccount_Error(de.DomoError):
     def __init__(self,
                 entity_id,
@@ -361,7 +364,9 @@ class DomoAccount_DeleteAccount_Error(de.DomoError):
                  ):
 
         super().__init__(function_name=function_name, entity_id = entity_id,
-                         domo_instance=domo_instance, status=status, message=message)
+                         domo_instance=domo_instance, 
+                         status=status, 
+                         message=message)
 
 
 @patch_to(DomoAccount)
