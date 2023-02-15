@@ -104,7 +104,7 @@ async def refresh_publish_jobs(auth: dmda.DomoAuth,
         'publicationIds': publish_ids
     }
 
-    res = await gd.get_data(auth=dev_auth,
+    res = await gd.get_data(auth=auth,
                          method='PUT',
                          url=url,
                          body=body,

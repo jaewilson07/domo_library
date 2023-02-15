@@ -96,7 +96,7 @@ async def get_data_aiohttp(
         if is_close_session:
             await session.close()
         
-    return await rgd.ResponseGetData._from_aiohttp_response(res, auth=auth, debug_api=debug_api, process_stream=process_stream, stream_chunks=stream_chunks)
+    return await rgd.ResponseGetData._from_aiohttp_response(res, auth=auth, process_stream=process_stream, stream_chunks=stream_chunks)
 
 
 # %% ../../nbs/client/10_get_data.ipynb 6
@@ -116,7 +116,7 @@ async def get_data(
     """async wrapper for asyncio requests"""
 
     if debug_api:
-        print(f"🐛 debugging get_data")
+        print("🐛 debugging get_data")
 
     if auth and not auth.token:
         await auth.get_auth_token()
@@ -193,7 +193,7 @@ async def get_data(
     if return_raw:
         return res
 
-    return rgd.ResponseGetData._from_httpx_response(res, auth=auth, debug_api=debug_api)
+    return rgd.ResponseGetData._from_httpx_response(res, auth=auth)
 
 
 # %% ../../nbs/client/10_get_data.ipynb 9
@@ -222,6 +222,8 @@ async def looper(
     debug_loop: bool = False
 ) -> rgd.ResponseGetData:
 
+    maximum = maximum or 0
+    
     is_close_session = False
     
     if not session:
@@ -234,7 +236,7 @@ async def looper(
 
     res = None
 
-    if maximum < limit:
+    if maximum < limit and not loop_until_end:
         limit = maximum
 
     while isLoop:
@@ -254,7 +256,7 @@ async def looper(
             
             except Exception as e:
                 await session.aclose()
-                raise LooperError(loop_stage = "processing body_fn", message = str(e))
+                raise LooperError(loop_stage = "processing body_fn", message = str(e)) from e
             
 
         if debug_loop:
@@ -284,7 +286,7 @@ async def looper(
         
         except Exception as e:
             await session.aclose()
-            raise LooperError(loop_stage = "processing arr_fn", message = str(e))
+            raise LooperError(loop_stage = "processing arr_fn", message = str(e)) from e
         
         allRows += newRecords
 
@@ -306,8 +308,8 @@ async def looper(
         if skip + limit > maximum:
             limit = maximum - len(allRows)
 
-            if debug_loop:
-                print(f"skip: {skip}, limit: {limit}")
+        if debug_loop:
+            print(f"skip: {skip}, limit: {limit}")
     
     if is_close_session:
         await session.aclose()
@@ -366,7 +368,8 @@ async def looper_aiohttp(
             
             except Exception as e:
                 await session.aclose()
-                raise LooperError(loop_stage = "processing body_fn", message = str(e))
+                raise LooperError(loop_stage = "processing body_fn", message = str(e)) from e
+                
             
 
         if debug_loop:
@@ -396,7 +399,7 @@ async def looper_aiohttp(
         
         except Exception as e:
             await session.close()
-            raise LooperError(loop_stage = "processing arr_fn", message = str(e))
+            raise LooperError(loop_stage = "processing arr_fn", message = str(e)) from e
         
         allRows += newRecords
 

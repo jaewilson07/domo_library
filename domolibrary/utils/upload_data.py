@@ -131,7 +131,7 @@ async def upload_data(
                 logger.log_info(message)
             else:
                 message = f"💀⚠️ failure to index {consol_ds.name} in {consol_ds.auth.domo_instance}"
-                loger.log_error(message)
+                logger.log_error(message)
             
             print(message)
 
@@ -141,14 +141,13 @@ async def upload_data(
 # %% ../../nbs/utils/upload_data.ipynb 7
 async def upload_data_with_date(
     instance_auth,
-    consol_auth,
     data_fn,
     consol_ds,
     partition_date_col,
     partition_delimiter,
     start_date,
     end_date,
-    debug: bool = False,
+    debug_api: bool = False,
     debug_prn: bool = False,
 ):
 

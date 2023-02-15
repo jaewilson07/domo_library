@@ -7,7 +7,6 @@ __all__ = ['get_full_auth', 'get_developer_auth', 'test_access_token', 'DomoAuth
 
 # %% ../../nbs/client/95_DomoAuth.ipynb 3
 from dataclasses import dataclass, field
-from abc import abstractmethod
 from typing import Optional, Union
 
 import httpx
@@ -70,7 +69,7 @@ async def get_developer_auth(
             auth=httpx.BasicAuth(domo_client_id, domo_client_secret)
         )
 
-    url = f"https://api.domo.com/oauth/token?grant_type=client_credentials"
+    url = "https://api.domo.com/oauth/token?grant_type=client_credentials"
 
     if debug_api:
         print(url, domo_client_id, domo_client_secret)

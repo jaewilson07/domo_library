@@ -78,6 +78,7 @@ async def set_allowlist(
         debug_api=debug_api,
         is_follow_redirects=True,
         return_raw=return_raw,
+        session = session,
         headers={"accept": "text/plain"},
     )
     if not res.is_success:

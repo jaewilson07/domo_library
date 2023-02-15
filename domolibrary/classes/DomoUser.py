@@ -9,6 +9,7 @@ from fastcore.basics import patch_to
 # %% ../../nbs/classes/50_DomoUser.ipynb 4
 from dataclasses import dataclass, field
 from typing import Optional
+import httpx
 
 import domolibrary.utils.DictDot as util_dd
 import domolibrary.client.DomoAuth as dmda
@@ -66,12 +67,15 @@ class DomoUser:
 
         return cls(
             id = dd.id,
-            display_name = dd.displayName
+            display_name = dd.displayName,
+            auth = auth
         )
 
 # %% ../../nbs/classes/50_DomoUser.ipynb 8
 @patch_to(DomoUser)
-async def reset_password(self: DomoUser, new_password: str, debug_api: bool = False):
+async def reset_password(self: DomoUser,
+                         new_password: str,
+                         debug_api: bool = False):
     """reset your password, will respect password restrictions set up in the Domo UI"""
 
     res = await user_routes.reset_password(
@@ -80,15 +84,19 @@ async def reset_password(self: DomoUser, new_password: str, debug_api: bool = Fa
 
     return res
 
+
 # %% ../../nbs/classes/50_DomoUser.ipynb 9
 @patch_to(DomoUser, cls_method=True)
 async def request_password_reset(
-    cls, domo_instance: str, email: str, locale: str = "en-us", debug_api: bool = False
+    cls, domo_instance: str, email: str, locale: str = "en-us", 
+    debug_api: bool = False,
+    session : httpx.AsyncClient = None
+
 ):
     """request password reset email.  Note: does not require authentication."""
 
     return await user_routes.request_password_reset(
-        domo_instance=domo_instance, email=email, locale=locale, debug_api=debug_api
+        domo_instance=domo_instance, email=email, locale=locale, debug_api=debug_api, session = session
     )
 
 # %% ../../nbs/classes/50_DomoUser.ipynb 10
@@ -101,8 +109,8 @@ async def create_user(
     role_id,
     password: str = None,
     send_password_reset_email: bool = False,
-    debug: bool = False,
-    log_results: bool = False,
+    debug_api: bool = False,
+    
 ):
     """class method that creates a new Domo user"""
 
@@ -111,12 +119,8 @@ async def create_user(
         display_name=display_name,
         email=email,
         role_id=role_id,
-        debug=debug,
-        log_results=log_results,
+        debug_api=debug_api,
     )
-
-    if debug:
-        print(res)
 
     if res.status != 200:
         return None

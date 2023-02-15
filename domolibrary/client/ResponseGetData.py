@@ -84,7 +84,6 @@ def find_ip(html,   html_tag: str = 'p'):
 def _from_httpx_response(
     cls, res: requests.Response,  # requests response object
     auth : Optional[any] = None,
-    debug_api : bool = False
 ) -> ResponseGetData:
     """returns ResponseGetData"""
 
@@ -135,8 +134,8 @@ async def _write_stream(res: httpx.Response,
     return None
 
 
-async def _read_stream(file_name : str = STREAM_FILE_PATH):
-    with open(STREAM_FILE_PATH, "rb") as f:
+async def _read_stream(file_name : str):
+    with open(file_name, "rb") as f:
         return f.read()
 
 
@@ -148,7 +147,8 @@ async def _from_aiohttp_response(
     auth : Optional[any] = None,
     process_stream: bool = False,
     stream_chunks : int = 10,
-    debug_api : bool = False
+    debug_api : bool = False,
+    response_file_name: str = None
 ) -> ResponseGetData:
 
     """async method returns ResponseGetData"""
@@ -161,7 +161,7 @@ async def _from_aiohttp_response(
 
         if process_stream:
             await _write_stream(res = res, stream_chunks = stream_chunks)
-            data =await _read_stream()
+            data = await _read_stream(response_file_name)
         
         else:        
             data = await res.text()
