@@ -6,7 +6,8 @@ __all__ = ['upload_data']
 # %% ../../nbs/utils/upload_data.ipynb 2
 import httpx
 import pandas as pd
-import asyncio
+
+# import asyncio
 
 import domolibrary.client.Logger as lc
 import domolibrary.client.DomoAuth as dmda
