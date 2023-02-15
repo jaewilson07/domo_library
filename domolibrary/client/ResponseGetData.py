@@ -6,6 +6,9 @@ __all__ = ['API_Response', 'STREAM_FILE_PATH', 'BlockedByVPN', 'ResponseGetData'
 # %% ../../nbs/client/99_ResponseGetData.ipynb 2
 # pylint: disable=no-member
 
+import re
+from bs4 import BeautifulSoup
+
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -16,8 +19,8 @@ import requests
 import httpx
 import aiohttp
 
-import domolibrary.client.DomoError as de
 from fastcore.utils import patch_to
+import domolibrary.client.DomoError as de
 
 # %% ../../nbs/client/99_ResponseGetData.ipynb 5
 class BlockedByVPN(de.DomoError):
@@ -68,10 +71,6 @@ def _from_requests_response(
     return cls(status=res.status_code, response=res.reason, is_success=False)
 
 # %% ../../nbs/client/99_ResponseGetData.ipynb 16
-import re
-from bs4 import BeautifulSoup
-
-# %% ../../nbs/client/99_ResponseGetData.ipynb 17
 def find_ip(html,   html_tag: str = 'p'):
     ip_address_regex = r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
     soup = BeautifulSoup(html, 'html.parser')
@@ -79,7 +78,7 @@ def find_ip(html,   html_tag: str = 'p'):
     return re.findall(ip_address_regex, str(soup.find(html_tag)))[0]
                                  
 
-# %% ../../nbs/client/99_ResponseGetData.ipynb 18
+# %% ../../nbs/client/99_ResponseGetData.ipynb 17
 @patch_to(ResponseGetData, cls_method=True)
 def _from_httpx_response(
     cls, res: requests.Response,  # requests response object
@@ -100,7 +99,7 @@ def _from_httpx_response(
         try:
             return cls(status=res.status_code, response=res.json(), is_success=True, auth = auth)
 
-        except:
+        except Exception as e:
             return cls(status=res.status_code, response=res.text, is_success=True, auth=auth)
 
     # default text responses
@@ -111,7 +110,7 @@ def _from_httpx_response(
     return cls(status=res.status_code, response=res.reason_phrase, is_success=False, auth=auth)
 
 
-# %% ../../nbs/client/99_ResponseGetData.ipynb 20
+# %% ../../nbs/client/99_ResponseGetData.ipynb 19
 STREAM_FILE_PATH = '__large-file.json'
 
 async def _write_stream(res: httpx.Response,
@@ -139,7 +138,7 @@ async def _read_stream(file_name : str):
         return f.read()
 
 
-# %% ../../nbs/client/99_ResponseGetData.ipynb 21
+# %% ../../nbs/client/99_ResponseGetData.ipynb 20
 @patch_to(ResponseGetData, cls_method=True)
 async def _from_aiohttp_response(
     cls: ResponseGetData, 
@@ -178,7 +177,7 @@ async def _from_aiohttp_response(
     if res.ok and "application/json" in res.headers.get("Content-Type", {}):
         try:
             return cls(status=res.status, response= orjson.loads(data), is_success=True, auth = auth)
-        except:
+        except Exception as e:
             return cls(status=res.status, response=data, is_success=True, auth=auth)
 
     elif res.ok:
@@ -190,7 +189,7 @@ async def _from_aiohttp_response(
 
 
 
-# %% ../../nbs/client/99_ResponseGetData.ipynb 25
+# %% ../../nbs/client/99_ResponseGetData.ipynb 24
 @patch_to(ResponseGetData, cls_method=True)
 async def _from_looper(cls: ResponseGetData,
                        res: ResponseGetData,  # requests response object

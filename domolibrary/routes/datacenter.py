@@ -5,8 +5,9 @@ __all__ = ['Datacenter_Enum', 'Dataflow_Type_Filter_Enum', 'generate_search_data
            'generate_search_datacenter_account_body', 'search_datacenter', 'get_lineage_upstream']
 
 # %% ../../nbs/routes/datacenter.ipynb 2
-import httpx
 from enum import Enum
+
+import httpx
 
 import domolibrary.client.get_data as gd
 import domolibrary.client.ResponseGetData as rgd

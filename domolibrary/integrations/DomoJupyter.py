@@ -13,18 +13,17 @@ from enum import Enum
 
 
 import re
-import pandas as pd
 import time
-
 import json
 
-# import domojupyter as dj
+import pandas as pd
+
+from fastcore.basics import patch_to
 
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.Logger as lc
 import domolibrary.classes.DomoDataset as dmds
 
-from fastcore.basics import patch_to
 
 # %% ../../nbs/integrations/DomoJupyter.ipynb 4
 class GetJupyter_ErrorRetrievingAccount(Exception):
