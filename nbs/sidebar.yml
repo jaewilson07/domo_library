@@ -29,6 +29,7 @@ website:
           - classes/50_DomoAccount.ipynb
           - classes/50_DomoActivityLog.ipynb
           - classes/50_DomoBootstrap.ipynb
+          - classes/50_DomoDatacenter.ipynb
           - classes/50_DomoDataflow.ipynb
           - classes/50_DomoDataset.ipynb
           - classes/50_DomoPage.ipynb
@@ -67,6 +68,7 @@ website:
           - routes/dataflow.ipynb
           - routes/dataset.ipynb
           - routes/group.ipynb
+          - routes/instance_config.ipynb
           - routes/publish.ipynb
           - routes/user.ipynb
       - section: utils

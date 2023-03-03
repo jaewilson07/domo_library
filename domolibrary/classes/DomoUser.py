@@ -11,6 +11,8 @@ from dataclasses import dataclass, field
 from typing import Optional
 import httpx
 
+from pprint import pprint
+
 import domolibrary.utils.DictDot as util_dd
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.Logger as lc
@@ -300,14 +302,18 @@ def util_match_users_obj_to_emails(
 @patch_to(DomoUsers, cls_method=True)
 async def by_email(
     cls: DomoUsers,
-    user_email_ls: list,
+    user_email_ls: list[str],
     auth: dmda.DomoAuth,
     only_allow_one: bool = True,
     debug_api: bool = False,
+    debug_prn:bool = False,
     return_raw: bool = False,
 ) -> list:
 
     body = user_routes.generate_search_users_body_by_email(user_email_ls=user_email_ls)
+
+    if debug_prn:
+        pprint(body)
 
     res = await user_routes.search_users(
         body=body, auth=auth, process_users=False, debug_api=debug_api
