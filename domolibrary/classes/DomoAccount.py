@@ -479,9 +479,10 @@ async def delete_account(
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 29
 class ShareAccount_AccessLevel(Enum):
+    "enumerates access levels for Domo Users and Domo Accounts"
     CAN_VIEW = "CAN_VIEW"
-    CAN_EDIT = "CAN_EDIT"
-    CAN_SHARE = "CAN_SHARE"
+    CAN_EDIT = "CAN_EDIT" # only available with accounts_v2 feature switch (group ownership beta)
+    CAN_SHARE = "CAN_SHARE" # only available with accounts_v2 feature switch (group ownership beta)
 
 
 @patch_to(DomoAccount)
@@ -520,18 +521,18 @@ async def share_account(
     )
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 30
+# %% ../../nbs/classes/50_DomoAccount.ipynb 31
 @dataclass
 class DomoAccounts:
     auth: dmda.DomoAuth
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 31
+# %% ../../nbs/classes/50_DomoAccount.ipynb 32
 @patch_to(DomoAccounts, cls_method=True)
 async def get_accounts(
     cls: DomoAccounts,
     auth: dmda.DomoAuth,
-    account_name: str = None,
-    account_type: AccountConfig = None,
+    account_name: str = None, # account string to search for, must be an exact match in spelling.  case insensitive
+    account_type: AccountConfig = None, #to retrieve a specific account type
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
     return_raw: bool = False,

@@ -21,24 +21,31 @@ import domolibrary.routes.datacenter as datacenter_routes
 
 # %% ../../nbs/classes/50_DomoDatacenter.ipynb 4
 class DomoEntity(Enum):
-    DATASET = "DATA_SOURCE"
-    DATAFLOW = "DATAFLOW"
-    PAGE = "PAGE"
-    CARD = "CARD"
-    ACCOUNT = "account"
+    "enumerates the entities that can be passed to the datacenter Search API"
+    
+    DATASET = "DATA_SOURCE" #dataset
+    DATAFLOW = "DATAFLOW" #  dataflow
+    PAGE = "PAGE" # page
+    CARD = "CARD" # card
+    ACCOUNT = "account" #account type
+
 
 # %% ../../nbs/classes/50_DomoDatacenter.ipynb 5
 class DomoDatacenter:
+    "class for quering entities in the datacenter"
     auth: dmda.DomoAuth = None
+
+    def __init__(self, auth):
+        self.auth = auth
 
 # %% ../../nbs/classes/50_DomoDatacenter.ipynb 6
 @patch_to(DomoDatacenter, cls_method=True)
 def generate_search_datacenter_body(
     cls,
-    entity_name : str = None,
-    entity_ls: list[str] = list[DomoEntity],
-    filter_ls: [dict] = None,
-    combineResults: bool = False,
+    entity_name : str = None, # entity to search for, uses fuzzy logic
+    entity_ls: list[str] = list[DomoEntity], # list of entity types to search
+    filter_ls: [dict] = None, # filter parameters
+    combineResults: bool = False, # facet / split results
     count: int = 100,
     offset: int = 0,
 ):
