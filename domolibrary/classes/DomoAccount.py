@@ -10,7 +10,7 @@ __all__ = ['DomoAccount_Config', 'DomoAccount_Config_AbstractCredential', 'DomoA
 # %% ../../nbs/classes/50_DomoAccount.ipynb 3
 from enum import Enum
 from dataclasses import dataclass, field
-from abc import ABC, abstractclassmethod, abstractmethod
+from abc import ABC, abstractmethod
 
 import datetime as dt
 import re
