@@ -2,14 +2,15 @@
 
 # %% auto 0
 __all__ = ['get_all_users', 'generate_search_users_body_by_id', 'generate_search_users_body_by_email', 'process_v1_search_users',
-           'search_users', 'search_virtual_user_by_subscriber_instance', 'create_user', 'set_user_landing_page',
-           'reset_password', 'request_password_reset']
+           'SearchUser_NoResults', 'search_users', 'search_virtual_user_by_subscriber_instance', 'create_user',
+           'set_user_landing_page', 'reset_password', 'request_password_reset']
 
 # %% ../../nbs/routes/user.ipynb 3
 import utils.DictDot as dd
 import domolibrary.client.get_data as gd
 import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
+import domolibrary.client.DomoError as de
 
 
 # %% ../../nbs/routes/user.ipynb 5
@@ -61,7 +62,7 @@ def generate_search_users_body_by_email(
         ],
     }
 
-# %% ../../nbs/routes/user.ipynb 12
+# %% ../../nbs/routes/user.ipynb 11
 def process_v1_search_users(v1_user_ls: list[dict] # list of users from v1_users_search API
 ) -> list[dict]: # sanitized list of users.
     """sanitizes the response from v1_users_search API and removes unecessary attributes"""
@@ -83,12 +84,16 @@ def process_v1_search_users(v1_user_ls: list[dict] # list of users from v1_users
     return clean_users
 
 
-# %% ../../nbs/routes/user.ipynb 13
+# %% ../../nbs/routes/user.ipynb 12
+class SearchUser_NoResults(de.DomoError):
+    def __init__(self, domo_instance,  function_name = "search_users"):
+        super().__init__(message = "query returned no users", function_name = function_name)
+
 async def search_users(
     auth: dmda.DomoAuth,
     body: dict,
     debug_api: bool = False,
-    process_users: bool = True,
+    return_raw: bool = False
 ) -> rgd.ResponseGetData:
 
     url = f"https://{auth.domo_instance}.domo.com/api/identity/v1/users/search"
@@ -101,13 +106,21 @@ async def search_users(
         debug_api=debug_api,
     )
 
-    if process_users and res.is_success:
-        res.response = process_v1_search_users(res.response.get('users'))
+    if return_raw:
+        return res
 
+    if not res.is_success:
+        return res
+
+    if res.is_success and len(res.response.get('users')) == 0:
+        raise SearchUser_NoResults(domo_instance = auth.domo_instance)
+    
+    res.response = process_v1_search_users(res.response.get('users'))
     return res
 
 
-# %% ../../nbs/routes/user.ipynb 17
+
+# %% ../../nbs/routes/user.ipynb 16
 async def search_virtual_user_by_subscriber_instance(
     auth: dmda.DomoAuth, # domo auth object
     subscriber_instance_ls : list[str], # list of subscriber domo instances
@@ -128,7 +141,7 @@ async def search_virtual_user_by_subscriber_instance(
         debug_api=debug_api,
     )
 
-# %% ../../nbs/routes/user.ipynb 21
+# %% ../../nbs/routes/user.ipynb 20
 async def create_user(
     auth: dmda.DomoAuth,
     display_name: str,
@@ -145,7 +158,7 @@ async def create_user(
         url=url, method="POST", body=body, auth=auth, debug_api=debug_api
     )
 
-# %% ../../nbs/routes/user.ipynb 22
+# %% ../../nbs/routes/user.ipynb 21
 async def set_user_landing_page(
     auth: dmda.DomoAuth, user_id: str, page_id: str, debug_api: bool = False
 ):
@@ -160,7 +173,7 @@ async def set_user_landing_page(
         debug_api=debug_api,
     )
 
-# %% ../../nbs/routes/user.ipynb 23
+# %% ../../nbs/routes/user.ipynb 22
 async def reset_password(
     auth: dmda.DomoAuth,
     user_id: str,
@@ -180,7 +193,7 @@ async def reset_password(
         debug_api=debug_api,
     )
 
-# %% ../../nbs/routes/user.ipynb 24
+# %% ../../nbs/routes/user.ipynb 23
 async def request_password_reset(
     domo_instance: str, email: str, locale="en-us", debug_api: bool = False
 ):
