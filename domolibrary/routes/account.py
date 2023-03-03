@@ -2,10 +2,13 @@
 
 # %% auto 0
 __all__ = ['get_accounts', 'GetAccount_NoMatch', 'get_account_from_id', 'AccountConfig_InvalidDataProvider', 'get_account_config',
-           'update_account_config', 'update_account_name', 'create_account', 'delete_account']
+           'update_account_config', 'update_account_name', 'create_account', 'delete_account',
+           'ShareAccount_V1_AccessLevel', 'ShareAccount_V2_AccessLevel', 'generate_share_account_payload_v1',
+           'generate_share_account_payload_v2', 'share_account_v2', 'share_account_v1']
 
 # %% ../../nbs/routes/account.ipynb 3
 from typing import Union
+from enum import Enum
 import httpx
 
 import domolibrary.client.get_data as gd
@@ -54,7 +57,7 @@ async def get_account_from_id(auth: dmda.DomoAuth, account_id: int,
         session=session
     )
 
-    if not res.is_success and res.response == 'Forbidden' :
+    if not res.is_success and (res.response == 'Forbidden' or res.response == 'Not Found'):
         raise GetAccount_NoMatch(
             account_id=account_id, domo_instance=auth.domo_instance, status=res.status)
     
@@ -173,3 +176,64 @@ async def delete_account(auth:dmda.DomoAuth,
         debug_api=debug_api,
         session=session
     )
+
+# %% ../../nbs/routes/account.ipynb 19
+class ShareAccount_V1_AccessLevel(Enum):
+    CAN_VIEW = 'READ'
+
+
+class ShareAccount_V2_AccessLevel(Enum):
+    CAN_VIEW = 'CAN_VIEW'
+    CAN_EDIT = 'CAN_EDIT'
+    CAN_SHARE = 'CAN_SHARE'
+
+
+def generate_share_account_payload_v1(user_id: int, access_level: str):
+    return {"type": "USER", "id": user_id, "permissions": [ShareAccount_V1_AccessLevel[access_level].value]}
+
+
+def generate_share_account_payload_v2(user_id: int,
+                                      access_level: str
+                                      ):
+
+    return {"type": "USER", "id": user_id, "accessLevel": ShareAccount_V2_AccessLevel[access_level].value}
+
+
+# %% ../../nbs/routes/account.ipynb 21
+async def share_account_v2(auth: dmda.DomoAuth,
+                           account_id: str,
+                           share_payload: dict,
+                           debug_api: bool = False,
+                           session: httpx.AsyncClient = None
+                           ):
+
+    url = f"https://{auth.domo_instance}.domo.com/api/data/v2/accounts/share/{account_id}"
+
+    return await gd.get_data(
+        auth=auth,
+        url=url,
+        method='PUT',
+        body=share_payload,
+        debug_api=debug_api,
+        session=session
+    )
+
+
+async def share_account_v1(auth: dmda.DomoAuth,
+                           account_id: str,
+                           share_payload: dict,
+                           debug_api: bool = False,
+                           session: httpx.AsyncClient = None
+                           ):
+
+    url = f"https://{auth.domo_instance}.domo.com/api/data/v1/accounts/{account_id}/share"
+
+    return await gd.get_data(
+        auth=auth,
+        url=url,
+        method='PUT',
+        body=share_payload,
+        debug_api=debug_api,
+        session=session
+    )
+
