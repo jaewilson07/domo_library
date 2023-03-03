@@ -2,13 +2,15 @@
 
 # %% auto 0
 __all__ = ['DomoAccount_Config', 'DomoAccount_Config_AbstractCredential', 'DomoAccount_Config_DatasetCopy',
-           'DomoAccount_Config_Governance', 'DomoAccount_Config_HighBandwidthConnector', 'AccountConfig', 'DomoAccount',
-           'DomoAccount_UpdateName_Error', 'DomoAccount_CreateAccount_Error', 'DomoAccount_DeleteAccount_Error']
+           'DomoAccount_Config_Governance', 'DomoAccount_Config_HighBandwidthConnector', 'DomoAccount_Config_AwsAthena',
+           'AccountConfig', 'DomoAccount', 'DomoAccount_DataProviderType_ConfigNotDefined',
+           'DomoAccount_UpdateName_Error', 'DomoAccount_CreateAccount_Error', 'DomoAccount_DeleteAccount_Error',
+           'DomoAccounts']
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 3
 from enum import Enum
 from dataclasses import dataclass, field
-from abc import ABC, abstractclassmethod, abstractmethod
+from abc import ABC, abstractmethod
 
 import datetime as dt
 import re
@@ -102,8 +104,8 @@ class DomoAccount_Config_HighBandwidthConnector(DomoAccount_Config):
     aws_access_key: str
     aws_secret_key: str = field(repr=False)
     s3_staging_dir: str
-    region: str = "us-west-2"
 
+    region: str = "us-west-2"
     data_provider_type = "amazon-athena-high-bandwidth"
 
     @classmethod
@@ -127,6 +129,40 @@ class DomoAccount_Config_HighBandwidthConnector(DomoAccount_Config):
         }
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 10
+@dataclass
+class DomoAccount_Config_AwsAthena(DomoAccount_Config):
+    aws_access_key: str
+    aws_secret_key: str = field(repr=False)
+    s3_staging_dir: str
+    workgroup: str
+    
+    region: str = "us-west-2"
+    data_provider_type = "aws-athena"
+
+    @classmethod
+    def _from_json(cls, obj):
+
+        dd = util_dd.DictDot(obj)
+
+        return cls(
+            aws_access_key=dd.awsAccessKey,
+            aws_secret_key=dd.awsSecretKey,
+            s3_staging_dir=dd.s3StagingDir,
+            region=dd.region,
+            workgroup = dd.workgroup
+        )
+
+    def to_json(self):
+        return {
+            "awsAccessKey": self.aws_access_key,
+            "awsSecretKey": self.aws_secret_key,
+            "s3StagingDir": self.s3_staging_dir,
+            "region": self.region,
+            "workgroup" : self.workgroup
+        }
+
+
+# %% ../../nbs/classes/50_DomoAccount.ipynb 11
 class AccountConfig(Enum):
     """
     Enum provides appropriate spelling for data_provider_type and config object.
@@ -141,7 +177,10 @@ class AccountConfig(Enum):
 
     domo_governance_d14c2fef_49a8_4898_8ddd_f64998005600 = DomoAccount_Config_Governance
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 12
+    aws_athena = DomoAccount_Config_AwsAthena
+
+
+# %% ../../nbs/classes/50_DomoAccount.ipynb 13
 @dataclass
 class DomoAccount:
     name: str
@@ -169,31 +208,51 @@ class DomoAccount:
             auth=auth,
         )
 
-    async def _get_config(
-        self, session=None, debug_api: bool = None, return_raw: bool = False
-    ):
+    
 
-        res_config = await account_routes.get_account_config(
-            auth=self.auth,
-            account_id=self.id,
-            data_provider_type=self.data_provider_type,
-            session=session,
-            debug_api=debug_api,
-        )
+# %% ../../nbs/classes/50_DomoAccount.ipynb 14
+class DomoAccount_DataProviderType_ConfigNotDefined(de.DomoError):
+    def __init__(self, 
+    account_id,
+                 data_provider_type,
+                 domo_instance,
+                 function_name='_get_config'):
 
-        if return_raw:
-            return res_config
+        message = f"🛑 data provider type {data_provider_type} for account_id {account_id} not defined yet.  Extend the AccountConfig class"
 
-        enum_clean = re.sub("-", "_", self.data_provider_type)
+        super().__init__(message=message,
+                         function_name=function_name, domo_instance=domo_instance)
 
-        if not enum_clean in AccountConfig.__members__:
-            return None
 
-        self.config = AccountConfig[enum_clean].value._from_json(res_config.response)
+@patch_to(DomoAccount)
+async def _get_config(
+    self: DomoAccount, session=None, debug_api: bool = None, return_raw: bool = False
+):
 
-        return self.config
+    res_config = await account_routes.get_account_config(
+        auth=self.auth,
+        account_id=self.id,
+        data_provider_type=self.data_provider_type,
+        session=session,
+        debug_api=debug_api,
+    )
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 13
+    if return_raw:
+        return res_config
+
+    enum_clean = re.sub("-", "_", self.data_provider_type)
+
+    if not enum_clean in AccountConfig.__members__:
+        raise DomoAccount_DataProviderType_ConfigNotDefined(
+            account_id=self.id, data_provider_type=self.data_provider_type, domo_instance=self.auth.domo_instance)
+
+    self.config = AccountConfig[enum_clean].value._from_json(
+        res_config.response)
+
+    return self.config
+
+
+# %% ../../nbs/classes/50_DomoAccount.ipynb 15
 @patch_to(DomoAccount, cls_method=True)
 async def get_from_id(
     cls,
@@ -207,6 +266,7 @@ async def get_from_id(
     res = await account_routes.get_account_from_id(
         auth=auth, account_id=account_id, session=session, debug_api=debug_api
     )
+
     if return_raw:
         return res
 
@@ -216,11 +276,15 @@ async def get_from_id(
     obj = res.response
     acc = cls._from_json(obj, auth)
 
-    await acc._get_config(session=session, debug_api=debug_api)
+    try:
+        await acc._get_config(session=session, debug_api=debug_api)
+        
+    except DomoAccount_DataProviderType_ConfigNotDefined as e:
+        print(e)
 
     return acc
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 17
+# %% ../../nbs/classes/50_DomoAccount.ipynb 19
 @patch_to(DomoAccount)
 async def update_config(
     self: DomoAccount,
@@ -251,7 +315,7 @@ async def update_config(
 
     return self
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 20
+# %% ../../nbs/classes/50_DomoAccount.ipynb 22
 class DomoAccount_UpdateName_Error(de.DomoError):
     def __init__(self,
                  domo_instance,
@@ -300,20 +364,23 @@ async def update_name(
     return self
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 24
+# %% ../../nbs/classes/50_DomoAccount.ipynb 26
 class DomoAccount_CreateAccount_Error(de.DomoError):
     def __init__(self,
-                entity_id,
+                 entity_id,
                  domo_instance,
-                 status, 
+                 status,
                  message,
                  function_name="create_account",
                  ):
 
-        super().__init__(function_name=function_name, entity_id = entity_id,
-                         domo_instance=domo_instance, status=status, message=message)
+        super().__init__(function_name=function_name,
+                         entity_id=entity_id,
+                         domo_instance=domo_instance,
+                         status=status, message=message)
 
 
+# %% ../../nbs/classes/50_DomoAccount.ipynb 27
 @patch_to(DomoAccount, cls_method=True)
 def generate_create_body(cls, account_name, config):
     return {
@@ -351,7 +418,7 @@ async def create_account(
     return await cls.get_from_id(auth=auth, account_id=res.response.get("id"))
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 25
+# %% ../../nbs/classes/50_DomoAccount.ipynb 28
 class DomoAccount_DeleteAccount_Error(de.DomoError):
     def __init__(self,
                 entity_id,
@@ -361,7 +428,9 @@ class DomoAccount_DeleteAccount_Error(de.DomoError):
                  ):
 
         super().__init__(function_name=function_name, entity_id = entity_id,
-                         domo_instance=domo_instance, status=status, message=message)
+                         domo_instance=domo_instance, 
+                         status=status, 
+                         message=message)
 
 
 @patch_to(DomoAccount)
@@ -388,3 +457,49 @@ async def delete_account(
         )
 
     return True
+
+# %% ../../nbs/classes/50_DomoAccount.ipynb 29
+@dataclass
+class DomoAccounts:
+    auth :dmda.DomoAuth
+
+
+
+# %% ../../nbs/classes/50_DomoAccount.ipynb 30
+@patch_to(DomoAccounts, cls_method=True)
+async def get_accounts(cls: DomoAccounts,
+                       auth: dmda.DomoAuth,
+
+                       account_name: str = None,
+                       account_type: AccountConfig = None,
+            
+                       debug_api: bool = False,
+                       session: httpx.AsyncClient = None,
+                       return_raw: bool = False
+                       ):
+
+    res = await account_routes.get_accounts(auth=auth, debug_api=debug_api, session=session)
+
+    if return_raw:
+        return res
+
+    if not res.is_success:
+        return None
+    
+    domo_account_ls = [DomoAccount._from_json(account_obj, auth=auth) for account_obj in res.response]
+
+    if not account_name and not account_type:
+        return domo_account_ls
+    
+    
+    filtered_account_ls = domo_account_ls
+    if account_name:
+        filtered_account_ls = [
+            domo_account for domo_account in filtered_account_ls if domo_account.name.lower() == account_name.lower()]
+
+    if account_type:
+        filtered_account_ls = [
+            domo_account for domo_account in filtered_account_ls if domo_account.data_provider_type == account_type.value.data_provider_type]
+
+    return filtered_account_ls
+

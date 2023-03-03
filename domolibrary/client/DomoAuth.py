@@ -2,11 +2,11 @@
 
 # %% auto 0
 __all__ = ['get_full_auth', 'get_developer_auth', 'test_access_token', 'DomoAuth', 'InvalidCredentialsError',
-           'InvalidInstanceError', 'NoAccessTokenReturned', 'DomoFullAuth', 'DomoTokenAuth', 'DomoDeveloperAuth']
+           'InvalidAuthTypeError', 'InvalidInstanceError', 'NoAccessTokenReturned', 'DomoFullAuth', 'DomoTokenAuth',
+           'DomoDeveloperAuth']
 
 # %% ../../nbs/client/95_DomoAuth.ipynb 3
 from dataclasses import dataclass, field
-from abc import abstractmethod
 from typing import Optional, Union
 
 import httpx
@@ -69,7 +69,7 @@ async def get_developer_auth(
             auth=httpx.BasicAuth(domo_client_id, domo_client_secret)
         )
 
-    url = f"https://api.domo.com/oauth/token?grant_type=client_credentials"
+    url = "https://api.domo.com/oauth/token?grant_type=client_credentials"
 
     if debug_api:
         print(url, domo_client_id, domo_client_secret)
@@ -186,6 +186,19 @@ class InvalidCredentialsError(de.DomoError):
 
         super().__init__(status=status, message=message, domo_instance=domo_instance)
 
+
+class InvalidAuthTypeError(de.DomoError):
+    """return invalid Auth type sent to API"""
+
+    def __init__(
+        self,
+        required_auth_type :DomoAuth ,
+        function_name: Optional[str] = None,
+        domo_instance: Optional[str] = None,
+    ):
+        message = f"This API rquires {required_auth_type.__name__}"
+
+        super().__init__(message=message, domo_instance=domo_instance, function_name = function_name)
 
 class InvalidInstanceError(de.DomoError):
     """return if invalid domo_instance sent to API"""

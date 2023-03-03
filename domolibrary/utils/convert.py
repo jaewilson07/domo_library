@@ -19,10 +19,10 @@ def convert_datetime_to_epoch_millisecond(datetime: dt.datetime):
     return int(datetime.timestamp() * 1000)
 
 # %% ../../nbs/utils/convert.ipynb 10
-def convert_snake_to_pascal(str):
+def convert_snake_to_pascal(clean_str):
     """converts 'snake_case_str' to 'snakeCaseStr'"""
     
-    clean_str = str.replace("_", " ").title().replace(" ", "")
+    clean_str = clean_str.replace("_", " ").title().replace(" ", "")
     return clean_str[0].lower()+clean_str[1:]
 
 # %% ../../nbs/utils/convert.ipynb 14

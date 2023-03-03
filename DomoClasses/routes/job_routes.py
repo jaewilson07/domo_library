@@ -184,3 +184,30 @@ async def update_job(full_auth: DomoFullAuth,
         debug=debug,
         session=session
     )
+
+#update trigger
+
+async def update_job_trigger(full_auth: DomoFullAuth,
+                  body: dict,
+                  job_id :str,
+                  trigger_id : str,  
+                  application_id: str,
+                  session: aiohttp.ClientSession = None,
+                  debug: bool = False,
+                  log_results: bool = False
+                  ):
+
+    url = f'https://{full_auth.domo_instance}.domo.com/api/executor/v1/applications/{application_id}/jobs/{job_id}/triggers/{trigger_id}'
+
+    if debug:
+        print(url)
+
+    return await get_data(
+        auth=full_auth,
+        url=url,
+        method='PUT',
+        body=body,
+        log_results=log_results,
+        debug=debug,
+        session=session
+    )

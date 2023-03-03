@@ -41,7 +41,7 @@ class DomoTrigger_Schedule:
             parsed_hour =s_text.split(' ')[2]
             parsed_minute=s_text.split(' ')[1]
             
-            if "*" in parsed_hour:
+            if "*" in parsed_hour or "/" in parsed_hour:
                 sched.hour_str = parsed_hour
             else:
                 sched.hour = int(float(parsed_hour))
@@ -84,7 +84,7 @@ class DomoJob:
     name: str
     description :str
     remote_instance: str
-    user_id: int
+    user_id: str
     application_id: str
     customer_id: str
     execution_timeout: int
@@ -107,7 +107,8 @@ class DomoJob:
     @classmethod
     def _from_json(cls, obj):
         dd = DictDot(obj)
-
+        print (dd.jobName)
+        #print (dd)
         triggers_ls = obj.get('triggers', None)
 
         triggers_dj = [DomoTrigger(
@@ -193,7 +194,7 @@ class DomoJob:
                                                          schedule_ls=[
                                                              schedule_obj],
                                                          execution_timeout=execution_timeout)
-
+        
         res = await job_routes.add_job(full_auth=full_auth,
                                        application_id=application_id,
                                        body=body,
@@ -264,22 +265,22 @@ class DomoJob:
         
 
         
-        if watchdog_report_type.DATASET_INDEX_TIME:
+        if watchdog_report_type == watchdog_report_type.DATASET_INDEX_TIME:
             child ={ "maxIndexingTimeInMinutes": max_indexing_time_mins }
             body["executionPayload"]["watcherParameters"].update(child)
 
   
         
-        if watchdog_report_type.ROW_COUNT_CHANGE or watchdog_report_type.OUTLIER_EXECUTION:
+        if watchdog_report_type == watchdog_report_type.ROW_COUNT_CHANGE or watchdog_report_type == watchdog_report_type.OUTLIER_EXECUTION:
             child ={ "variancePercent": variance_percent }
             body["executionPayload"]["watcherParameters"].update(child)
             
         
-        if watchdog_report_type.CUSTOM_QUERY:
+        if watchdog_report_type == watchdog_report_type.CUSTOM_QUERY:
             child ={ "sqlQuery": sql_query }
             body["executionPayload"]["watcherParameters"].update(child)
             
-        if watchdog_report_type.LAST_UPDATED_DATA:
+        if watchdog_report_type == watchdog_report_type.LAST_UPDATED_DATA:
             child ={ "minDataUpdateFrequencyInMinutes": min_update_frequency_min }
             body["executionPayload"]["watcherParameters"].update(child)
             

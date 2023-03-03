@@ -23,25 +23,20 @@ The DataCrew team is hard at work expanding the list of available
 matter of migrating and documenting the code into this library.
 
 ``` sh
-pip install domo_library
+pip install domolibrary
 ```
 
 ## How to use
 
 ### Authentication
 
-For each task, consider the appropriate
-[`DomoAuth`](https://jaewilson07.github.io/domo_library/client/domoauth.html#domoauth)
-mechanism. In most cases
-[`DomoFullAuth`](https://jaewilson07.github.io/domo_library/client/domoauth.html#domofullauth)
-or
-[`DomoTokenAuth`](https://jaewilson07.github.io/domo_library/client/domoauth.html#domotokenauth)
-will be appropriate as this library predominately accesses private APIs.
+For each task, consider the appropriate `DomoAuth` mechanism. In most
+cases `DomoFullAuth` or `DomoTokenAuth` will be appropriate as this
+library predominately accesses private APIs.
 
 Any Public routes or methods will be labeled appropriately in which case
-you should use
-[`DomoDeveloperAuth`](https://jaewilson07.github.io/domo_library/client/domoauth.html#domodeveloperauth).
-Public routes are APIs enumerated and documented under
+you should use `DomoDeveloperAuth`. Public routes are APIs enumerated
+and documented under
 <a href = "https://developer.domo.com/" target="_blank">Developer.Domo.com</a>.
 
 Typically each project will begin with configuring an auth object. If
@@ -58,83 +53,49 @@ token_auth = dmda.DomoTokenAuth( domo_instance = 'domo-dojo', domo_access_token 
 
 ### Option 1: class based programming
 
-In this project domo entities,
-[`DomoActivityLog`](https://jaewilson07.github.io/domo_library/classes/domoactivitylog.html#domoactivitylog),
-[`DomoDataset`](https://jaewilson07.github.io/domo_library/classes/domodataset.html#domodataset)
-are all prefixed ‘Domo’ and can be found in the `classes` folder. Each
-class method will call one or more `routes`. Each route will interact
-with one and only one API.
+In this project domo entities, `DomoActivityLog`, `DomoDataset` are all
+prefixed ‘Domo’ and can be found in the `classes` folder. Each class
+method will call one or more `routes`. Each route will interact with one
+and only one API.
 
 Although most methods will be standard methods that will be called after
 creating an instance of the class, some methods will be classmethods
 which return an instance of the class.
 
-In the example below,
-[`DomoDataset.get_from_id`](https://jaewilson07.github.io/domo_library/classes/domodataset.html#domodataset.get_from_id)
-is a classmethod.
+In the example below, `DomoDataset.get_from_id` is a classmethod.
 
 Note: DomoLibrary uses the asynchronous `aiohttp` requests library to
 offer users the ability to write concurrently executing code.
 
 ``` python
-import domolibrary.classes.DomoDataset as dmds
+# import domolibrary.classes.DomoDataset as dmds
 
-# this is a class method
-domo_ds = await dmds.DomoDataset.get_from_id(auth = token_auth, dataset_id = os.environ['DOJO_DATASET_ID'])
-domo_ds
+# # this is a class method
+# domo_ds = await dmds.DomoDataset.get_from_id(auth=token_auth, dataset_id=os.environ['DOJO_DATASET_ID'])
+# domo_ds
 ```
-
-    KeyError: 'DOJO_DATASET_ID'
 
 Once instantiated, you can call methods to interact with that object.
 You typically won’t have to pass auth creds again because they are saved
 to the object.
 
-In the example below we are retrieving the
-[`DomoDataset_Schema`](https://jaewilson07.github.io/domo_library/classes/domodataset.html#domodataset_schema)
-which consists of subclass
-[`DomoDataset_Schema_Column`](https://jaewilson07.github.io/domo_library/classes/domodataset.html#domodataset_schema_column)
-using the
-[`DomoDataset_Schema.get`](https://jaewilson07.github.io/domo_library/classes/domodataset.html#domodataset_schema.get)
-method.
+In the example below we are retrieving the `DomoDataset_Schema` which
+consists of subclass `DomoDataset_Schema_Column` using the
+`DomoDataset_Schema.get` method.
 
 We take the approach of where possible converting dictionaries from Domo
 APIs into classes because it provides greater predictability when users
 are creating integrations between platforms (ex. Domo to Trello).
 
 ``` python
-await domo_ds.schema.get()
+# await domo_ds.schema.get()
 ```
-
-    [DomoDataset_Schema_Column(name='objectID', id='objectID', type='STRING'),
-     DomoDataset_Schema_Column(name='url', id='url', type='STRING'),
-     DomoDataset_Schema_Column(name='Title', id='Title', type='STRING'),
-     DomoDataset_Schema_Column(name='article', id='article', type='STRING'),
-     DomoDataset_Schema_Column(name='views', id='views', type='LONG'),
-     DomoDataset_Schema_Column(name='created_dt', id='created_dt', type='DATETIME'),
-     DomoDataset_Schema_Column(name='published_dt', id='published_dt', type='DATETIME')]
 
 Typically all information about an entity is saved in the object
 
 ``` python
-domo_ds.__dict__
+# domo_ds.__dict__
 ```
-
-    {'auth': DomoTokenAuth(domo_instance='domo-dojoo', token_name='token_auth', url_manual_login='https://domo-dojoo.domo.com/auth/index?domoManualLogin=true'),
-     'id': '04c1574e-c8be-4721-9846-c6ffa491144b',
-     'display_type': 'domo-jupyterdata',
-     'data_provider_type': 'domo-jupyterdata',
-     'name': 'domo_kbs',
-     'description': None,
-     'row_count': 1185,
-     'column_count': 7,
-     'stream_id': 825,
-     'owner': namespace(id='1893952720',
-               name='Jae Wilson',
-               type='USER',
-               group=False),
-     'formula': namespace(),
-     'schema': DomoDataset_Schema(dataset=DomoDataset(id='04c1574e-c8be-4721-9846-c6ffa491144b', display_type='domo-jupyterdata', data_provider_type='domo-jupyterdata', name='domo_kbs', description=None, row_count=1185, column_count=7, stream_id=825, owner=DictDot(id='1893952720', name='Jae Wilson', type='USER', group=False), formula=DictDot(), schema=...), columns=[DomoDataset_Schema_Column(name='objectID', id='objectID', type='STRING'), DomoDataset_Schema_Column(name='url', id='url', type='STRING'), DomoDataset_Schema_Column(name='Title', id='Title', type='STRING'), DomoDataset_Schema_Column(name='article', id='article', type='STRING'), DomoDataset_Schema_Column(name='views', id='views', type='LONG'), DomoDataset_Schema_Column(name='created_dt', id='created_dt', type='DATETIME'), DomoDataset_Schema_Column(name='published_dt', id='published_dt', type='DATETIME')])}
 
 ### Option 2 functional programming
 
@@ -142,14 +103,10 @@ Although classes add a pretty wrapper for interacting with Domo APIs,
 users can opt to interact directly with APIs by way of `routes`.
 
 All route functions will exclusively call one API and will always return
-a
-[`ResponseGetData`](https://jaewilson07.github.io/domo_library/client/responsegetdata.html#responsegetdata)
-object OR raise an `Exception` if appropriate.
+a `ResponseGetData` object OR raise an `Exception` if appropriate.
 
 For example we can implement similar functionality as the Option 1
-example by calling the
-[`get_dataset_by_id`](https://jaewilson07.github.io/domo_library/routes/dataset.html#get_dataset_by_id)
-function.
+example by calling the `get_dataset_by_id` function.
 
 ``` python
 import domolibrary.routes.dataset as dataset_routes
@@ -160,9 +117,8 @@ ds_res
 
     ResponseGetData(status=200, response={'id': '04c1574e-c8be-4721-9846-c6ffa491144b', 'displayType': 'domo-jupyterdata', 'dataProviderType': 'domo-jupyterdata', 'type': 'Jupyter', 'name': 'domo_kbs', 'owner': {'id': '1893952720', 'name': 'Jae Wilson', 'type': 'USER', 'group': False}, 'status': 'SUCCESS', 'created': 1668379680000, 'lastTouched': 1668385822000, 'lastUpdated': 1668385822045, 'rowCount': 1185, 'columnCount': 7, 'cardInfo': {'cardCount': 0, 'cardViewCount': 0}, 'properties': {'formulas': {'formulas': {}}}, 'state': 'SUCCESS', 'validConfiguration': True, 'validAccount': True, 'streamId': 825, 'transportType': 'API', 'adc': False, 'adcExternal': False, 'cloudId': 'domo', 'cloudName': 'Domo', 'permissions': 'READ_WRITE_DELETE_SHARE_ADMIN', 'hidden': False, 'tags': '["developer_documentation","hackercore"]', 'scheduleActive': True, 'cryoStatus': 'ADRENALINE'}, is_success=True)
 
-[`ResponseGetData`](https://jaewilson07.github.io/domo_library/client/responsegetdata.html#responsegetdata)
-will always include a boolean `is_success`, the API `status`, and raw
-API `response`.
+`ResponseGetData` will always include a boolean `is_success`, the API
+`status`, and raw API `response`.
 
 Typically the route methods will not alter the response unless the API
 does not include a descriptive response (ex,
@@ -220,10 +176,7 @@ ds_res.response
 A hidden advantage of using the DomoLibrary is that paginated API
 requests are baked into the route’s definition.
 
-Consider
-[`query_dataset_private`](https://jaewilson07.github.io/domo_library/routes/dataset.html#query_dataset_private)
-from the `routes.dataset`.
+Consider `query_dataset_private` from the `routes.dataset`.
 
-Inside this function we are using
-[`looper`](https://jaewilson07.github.io/domo_library/client/get_data.html#looper)
-from `client.get_data` to paginate over the API response.
+Inside this function we are using `looper` from `client.get_data` to
+paginate over the API response.

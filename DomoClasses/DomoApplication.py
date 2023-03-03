@@ -111,5 +111,5 @@ class DomoApplication:
         schedules_interpolated.reset_index(drop=True, inplace=True)
 
         return dmdj.DomoTrigger_Schedule(
-            hour=schedules_interpolated.loc[0].get('hour'),
-            minute=schedules_interpolated.loc[0].get('minute'))
+            hour=int(schedules_interpolated.loc[0].get('hour')),
+            minute=int(schedules_interpolated.loc[0].get('minute')))

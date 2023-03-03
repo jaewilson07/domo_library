@@ -4,11 +4,14 @@
 __all__ = ['DomoUser', 'DomoUsers']
 
 # %% ../../nbs/classes/50_DomoUser.ipynb 3
-from fastcore.basics import patch, patch_to
+from fastcore.basics import patch_to
 
 # %% ../../nbs/classes/50_DomoUser.ipynb 4
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import Optional
+import httpx
+
+from pprint import pprint
 
 import domolibrary.utils.DictDot as util_dd
 import domolibrary.client.DomoAuth as dmda
@@ -66,12 +69,15 @@ class DomoUser:
 
         return cls(
             id = dd.id,
-            display_name = dd.displayName
+            display_name = dd.displayName,
+            auth = auth
         )
 
 # %% ../../nbs/classes/50_DomoUser.ipynb 8
 @patch_to(DomoUser)
-async def reset_password(self: DomoUser, new_password: str, debug_api: bool = False):
+async def reset_password(self: DomoUser,
+                         new_password: str,
+                         debug_api: bool = False):
     """reset your password, will respect password restrictions set up in the Domo UI"""
 
     res = await user_routes.reset_password(
@@ -80,15 +86,19 @@ async def reset_password(self: DomoUser, new_password: str, debug_api: bool = Fa
 
     return res
 
+
 # %% ../../nbs/classes/50_DomoUser.ipynb 9
 @patch_to(DomoUser, cls_method=True)
 async def request_password_reset(
-    cls, domo_instance: str, email: str, locale: str = "en-us", debug_api: bool = False
+    cls, domo_instance: str, email: str, locale: str = "en-us", 
+    debug_api: bool = False,
+    session : httpx.AsyncClient = None
+
 ):
     """request password reset email.  Note: does not require authentication."""
 
     return await user_routes.request_password_reset(
-        domo_instance=domo_instance, email=email, locale=locale, debug_api=debug_api
+        domo_instance=domo_instance, email=email, locale=locale, debug_api=debug_api, session = session
     )
 
 # %% ../../nbs/classes/50_DomoUser.ipynb 10
@@ -101,30 +111,26 @@ async def create_user(
     role_id,
     password: str = None,
     send_password_reset_email: bool = False,
-    debug: bool = False,
-    log_results: bool = False,
+    debug_api: bool = False,
+    
 ):
     """class method that creates a new Domo user"""
 
     res = await user_routes.create_user(
-        full_auth=full_auth,
+        auth=auth,
         display_name=display_name,
         email=email,
         role_id=role_id,
-        debug=debug,
-        log_results=log_results,
+        debug_api=debug_api,
     )
-
-    if debug:
-        print(res)
 
     if res.status != 200:
         return None
 
     dd = util_dd.DictDot(res.response)
     u = cls(
-        domo_instance=full_auth.domo_instance,
-        full_auth=full_auth,
+        domo_instance=auth.domo_instance,
+        auth=auth,
         id=dd.id or dd.userId,
         display_name=dd.displayName,
         email_address=dd.emailAddress,
@@ -135,7 +141,7 @@ async def create_user(
 
     if send_password_reset_email:
         await u.request_password_reset(
-            domo_instance=full_auth.domo_instance, email=u.email_address
+            domo_instance=auth.domo_instance, email=u.email_address
         )
 
     return u
@@ -169,13 +175,15 @@ class DomoUsers:
 
     logger: Optional[lc.Logger] = None
 
-    def _users_to_domo_user(user_ls, auth: dmda.DomoAuth):
+    @classmethod
+    def _users_to_domo_user(cls, user_ls, auth: dmda.DomoAuth):
         return [
             DomoUser._from_search_json(auth=auth, user_obj=user_obj)
             for user_obj in user_ls
         ]
 
-    def _users_to_virtual_user(user_ls, auth: dmda.DomoAuth):
+    @classmethod
+    def _users_to_virtual_user(cls, user_ls, auth: dmda.DomoAuth):
         return [
             DomoUser._from_virtual_json(auth=auth, user_obj=user_obj)
             for user_obj in user_ls
@@ -294,14 +302,18 @@ def util_match_users_obj_to_emails(
 @patch_to(DomoUsers, cls_method=True)
 async def by_email(
     cls: DomoUsers,
-    user_email_ls: list,
+    user_email_ls: list[str],
     auth: dmda.DomoAuth,
     only_allow_one: bool = True,
     debug_api: bool = False,
+    debug_prn:bool = False,
     return_raw: bool = False,
 ) -> list:
 
     body = user_routes.generate_search_users_body_by_email(user_email_ls=user_email_ls)
+
+    if debug_prn:
+        pprint(body)
 
     res = await user_routes.search_users(
         body=body, auth=auth, process_users=False, debug_api=debug_api

@@ -4,7 +4,8 @@
 __all__ = ['DatasetSchema_Types', 'DomoDataset_Schema_Column', 'DomoDataset_Schema', 'DatasetTags_SetTagsError',
            'DomoDataset_Tags', 'DomoDataset', 'QueryExecutionError', 'DomoDataset_DeleteDataset_Error',
            'DomoDataset_UploadData_Error', 'DomoDataset_UploadData_DatasetUploadId_Error',
-           'DomoDataset_UploadData_UploadData_Error', 'DomoDataset_CreateDataset_Error']
+           'DomoDataset_UploadData_UploadData_Error', 'DomoDataset_UploadData_CommitDatasetUploadId_Error',
+           'DomoDataset_CreateDataset_Error']
 
 # %% ../../nbs/classes/50_DomoDataset.ipynb 4
 from fastcore.basics import patch_to
@@ -12,8 +13,8 @@ import pandas as pd
 
 # %% ../../nbs/classes/50_DomoDataset.ipynb 5
 from dataclasses import dataclass, field
-from typing import Any, List, Optional
-from enum import Enum, auto
+from typing import List, Optional
+from enum import Enum
 
 import json
 import io
@@ -472,17 +473,17 @@ class DomoDataset_UploadData_UploadData_Error(DomoDataset_UploadData_Error):
                          stage=stage, status=status, reason=reason,
                          partition_key=partition_key)
 
-    class DomoDataset_UploadData_CommitDatasetUploadId_Error(DomoDataset_UploadData_Error):
-        def __init__(self, domo_instance: str, dataset_id: str,
-                     stage: int = 3, status="", reason="",
-                     partition_key: str = None):
+class DomoDataset_UploadData_CommitDatasetUploadId_Error(DomoDataset_UploadData_Error):
+    def __init__(self, domo_instance: str, dataset_id: str,
+                    stage: int = 3, status="", reason="",
+                    partition_key: str = None):
 
-            message_error = "while commiting dataset_upload_id"
+        message_error = "while commiting dataset_upload_id"
 
-            super().__init__(message_error=message_error,
-                              domo_instance=domo_instance, dataset_id=dataset_id,
-                              stage=stage, status=status, reason=reason,
-                              partition_key=partition_key)
+        super().__init__(message_error=message_error,
+                            domo_instance=domo_instance, dataset_id=dataset_id,
+                            stage=stage, status=status, reason=reason,
+                            partition_key=partition_key)
 
 
 # %% ../../nbs/classes/50_DomoDataset.ipynb 35
@@ -638,6 +639,7 @@ async def list_partitions(self : DomoDataset,
 class DomoDataset_CreateDataset_Error(Exception):
     def __init__(self, domo_instance: str, dataset_name: str, status: int, reason: str):
         message = f"Failure to create dataset {dataset_name} in {domo_instance} :: {status} - {reason}"
+        super().__init__(message)
 
 
 @patch_to(DomoDataset, cls_method=True)
@@ -645,14 +647,15 @@ async def create(cls: DomoDataset,
                  dataset_name: str,
                  dataset_type='api',
 
-                 schema={"columns": [
-                     {"name": 'col1', "type": 'LONG', "upsertKey": False},
-                     {"name": 'col2', "type": 'STRING', "upsertKey": False}
-                 ]},
+                 schema=None,
                  auth: dmda.DomoAuth = None,
                  debug_api: bool = False, 
                  session : httpx.AsyncClient = None
                  ):
+    schema = schema or {"columns": [
+        {"name": 'col1', "type": 'LONG', "upsertKey": False},
+        {"name": 'col2', "type": 'STRING', "upsertKey": False}
+    ]}
     
 
     res = await dataset_routes.create(dataset_name=dataset_name,

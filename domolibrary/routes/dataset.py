@@ -18,6 +18,7 @@ import domolibrary.client.get_data as gd
 import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
 
+
 # %% ../../nbs/routes/dataset.ipynb 5
 class DatasetNotFoundError(Exception):
     def __init__(self, dataset_id, domo_instance):
@@ -31,6 +32,7 @@ class QueryRequestError(Exception):
         message = f"dataset - {dataset_id} in {domo_instance} received a bad request.  Check your SQL \n {sql}"
 
         super().__init__(message)
+
 
 # typically do not use
 async def query_dataset_public(
@@ -48,10 +50,15 @@ async def query_dataset_public(
     body = {"sql": sql}
 
     return await gd.get_data(
-        auth=dev_auth, url=url, method="POST", body=body, session=session, debug_api=debug_api)
-        
+        auth=dev_auth,
+        url=url,
+        method="POST",
+        body=body,
+        session=session,
+        debug_api=debug_api,
+    )
 
-        
+
 async def query_dataset_private(
     auth: dmda.DomoAuth,  # DomoFullAuth or DomoTokenAuth
     dataset_id: str,
@@ -101,38 +108,40 @@ async def query_dataset_private(
         body_fn=body_fn,
         debug_api=debug_api,
         debug_loop=debug_loop,
-        loop_until_end=loop_until_end
+        loop_until_end=loop_until_end,
     )
 
-    if res.status == 404 and res.response == 'Not Found':
-        raise DatasetNotFoundError(dataset_id=dataset_id , domo_instance=auth.domo_instance)
-    
-    if res.status == 400 and res.response == 'Bad Request':
-        raise QueryRequestError(dataset_id=dataset_id , domo_instance=auth.domo_instance, sql = sql)
-    
-    return res
+    if res.status == 404 and res.response == "Not Found":
+        raise DatasetNotFoundError(
+            dataset_id=dataset_id, domo_instance=auth.domo_instance
+        )
 
+    if res.status == 400 and res.response == "Bad Request":
+        raise QueryRequestError(
+            dataset_id=dataset_id, domo_instance=auth.domo_instance, sql=sql
+        )
+
+    return res
 
 # %% ../../nbs/routes/dataset.ipynb 9
 async def get_dataset_by_id(
-    dataset_id: str, # dataset id from URL
-    auth: Optional[dmda.DomoAuth] = None, # requires full authentication
-    debug_api: bool = False, # for troubleshooting API request
-    session: Optional[httpx.AsyncClient] = None
-) -> rgd.ResponseGetData: # returns metadata about a dataset
+    dataset_id: str,  # dataset id from URL
+    auth: Optional[dmda.DomoAuth] = None,  # requires full authentication
+    debug_api: bool = False,  # for troubleshooting API request
+    session: Optional[httpx.AsyncClient] = None,
+) -> rgd.ResponseGetData:  # returns metadata about a dataset
     """retrieve dataset metadata"""
 
     url = f"https://{auth.domo_instance}.domo.com/api/data/v3/datasources/{dataset_id}"
 
-    res= await gd.get_data(
-        auth=auth,
-        url=url,
-        method="GET",
-        debug_api=debug_api, session = session
+    res = await gd.get_data(
+        auth=auth, url=url, method="GET", debug_api=debug_api, session=session
     )
 
-    if res.status == 404 and res.response == 'Not Found':
-        raise DatasetNotFoundError(dataset_id=dataset_id, domo_instance=auth.domo_instance)
+    if res.status == 404 and res.response == "Not Found":
+        raise DatasetNotFoundError(
+            dataset_id=dataset_id, domo_instance=auth.domo_instance
+        )
 
     return res
 
@@ -146,16 +155,16 @@ async def get_schema(
 
     return await gd.get_data(auth=auth, url=url, method="GET", debug_api=debug_api)
 
-
 # %% ../../nbs/routes/dataset.ipynb 16
-async def set_dataset_tags(auth: dmda.DomoFullAuth,
-                           tag_ls: [str], # complete list of tags for dataset
-                           dataset_id: str,
-                           debug_api: bool = False,
-                           session: Optional[httpx.AsyncClient] = None,
-                           return_raw : bool = False
-                           ):
-    
+async def set_dataset_tags(
+    auth: dmda.DomoFullAuth,
+    tag_ls: [str],  # complete list of tags for dataset
+    dataset_id: str,
+    debug_api: bool = False,
+    session: Optional[httpx.AsyncClient] = None,
+    return_raw: bool = False,
+):
+
     """REPLACE tags on this dataset with a new list"""
 
     url = f"https://{auth.domo_instance}.domo.com/api/data/ui/v3/datasources/{dataset_id}/tags"
@@ -163,69 +172,71 @@ async def set_dataset_tags(auth: dmda.DomoFullAuth,
     res = await gd.get_data(
         auth=auth,
         url=url,
-        method='POST',
+        method="POST",
         debug_api=debug_api,
         body=tag_ls,
         session=session,
-        return_raw = return_raw
+        return_raw=return_raw,
     )
 
     if return_raw:
         return res
 
     if res.status == 200:
-        res.set_response (response = f'Dataset {dataset_id} tags updated to [{ ", ".join(tag_ls) }]')
-    
-    return res
+        res.set_response(
+            response=f'Dataset {dataset_id} tags updated to [{ ", ".join(tag_ls) }]'
+        )
 
+    return res
 
 # %% ../../nbs/routes/dataset.ipynb 19
 class UploadDataError(Exception):
     """raise if unable to upload data to Domo"""
-    
-    def __init__(self, stage_num : int, dataset_id : str, domo_instance : str):
+
+    def __init__(self, stage_num: int, dataset_id: str, domo_instance: str):
         message = f"error uploading data to {dataset_id} during Stage { stage_num} in {domo_instance}"
         super().__init__(message)
 
 # %% ../../nbs/routes/dataset.ipynb 20
-async def upload_dataset_stage_1(auth: dmda.DomoAuth,
-                                 dataset_id: str,
-                                 #  restate_data_tag: str = None, # deprecated
-                                 partition_tag: str = None,  # synonymous with data_tag
-                                 session: Optional[httpx.AsyncClient] = None,
-                                 debug_api: bool = False,
-                                 ) -> rgd.ResponseGetData:
+async def upload_dataset_stage_1(
+    auth: dmda.DomoAuth,
+    dataset_id: str,
+    #  restate_data_tag: str = None, # deprecated
+    partition_tag: str = None,  # synonymous with data_tag
+    session: Optional[httpx.AsyncClient] = None,
+    debug_api: bool = False,
+) -> rgd.ResponseGetData:
 
     """preps dataset for upload by creating an upload_id (upload session key) pass to stage 2 as a parameter"""
 
     url = f"https://{auth.domo_instance}.domo.com/api/data/v3/datasources/{dataset_id}/uploads"
 
     # base body assumes no paritioning
-    body = {
-        "action": None,
-        "appendId": None
-    }
+    body = {"action": None, "appendId": None}
 
     params = None
 
     if partition_tag:
         # params = {'dataTag': restate_data_tag or data_tag} # deprecated
-        params = {'dataTag': partition_tag}
-        body.update({'appendId': 'latest'})
+        params = {"dataTag": partition_tag}
+        body.update({"appendId": "latest"})
 
-    res = await gd.get_data(auth=auth,
-                         url=url, method='POST',
-                         body=body,
-                         session=session,
-                         debug_api=debug_api,
-                         params=params)
+    res = await gd.get_data(
+        auth=auth,
+        url=url,
+        method="POST",
+        body=body,
+        session=session,
+        debug_api=debug_api,
+        params=params,
+    )
 
     if not res.is_success:
         raise UploadDataError(
-            stage_num=1, dataset_id=dataset_id, domo_instance=auth.domo_instance)
+            stage_num=1, dataset_id=dataset_id, domo_instance=auth.domo_instance
+        )
 
     return res
-
 
 # %% ../../nbs/routes/dataset.ipynb 21
 async def upload_dataset_stage_2_file(
@@ -253,7 +264,9 @@ async def upload_dataset_stage_2_file(
         debug_api=debug_api,
     )
     if not res.is_success:
-        raise UploadDataError(stage_num = 2 , dataset_id = dataset_id, domo_instance = auth.domo_instance)
+        raise UploadDataError(
+            stage_num=2, dataset_id=dataset_id, domo_instance=auth.domo_instance
+        )
 
     res.upload_id = upload_id
     res.dataset_id = dataset_id
@@ -290,7 +303,9 @@ async def upload_dataset_stage_2_df(
     )
 
     if not res.is_success:
-        raise UploadDataError(stage_num = 2 , dataset_id = dataset_id, domo_instance = auth.domo_instance)
+        raise UploadDataError(
+            stage_num=2, dataset_id=dataset_id, domo_instance=auth.domo_instance
+        )
 
     res.upload_id = upload_id
     res.dataset_id = dataset_id
@@ -333,11 +348,18 @@ async def upload_dataset_stage_3(
         )
 
     res = await gd.get_data(
-        auth=auth, method="PUT", url=url, body=body, session=session, debug_api=debug_api
+        auth=auth,
+        method="PUT",
+        url=url,
+        body=body,
+        session=session,
+        debug_api=debug_api,
     )
 
     if not res.is_success:
-        raise UploadDataError(stage_num = 3 , dataset_id = dataset_id, domo_instance = auth.domo_instance)
+        raise UploadDataError(
+            stage_num=3, dataset_id=dataset_id, domo_instance=auth.domo_instance
+        )
 
     res.upload_id = upload_id
     res.dataset_id = dataset_id
@@ -358,7 +380,12 @@ async def index_dataset(
     body = {"dataIds": []}
 
     return await gd.get_data(
-        auth=auth, method="POST", body=body, url=url, session=session, debug_api = debug_api
+        auth=auth,
+        method="POST",
+        body=body,
+        url=url,
+        session=session,
+        debug_api=debug_api,
     )
 
 # %% ../../nbs/routes/dataset.ipynb 26
@@ -374,93 +401,95 @@ async def index_status(
     url = f"https://{auth.domo_instance}.domo.com/api/data/v3/datasources/{dataset_id}/indexes/{index_id}/statuses"
 
     return await gd.get_data(
-        auth=auth, 
-        method="GET", url=url, 
-        session=session, debug_api=debug_api
+        auth=auth, method="GET", url=url, session=session, debug_api=debug_api
     )
-
 
 # %% ../../nbs/routes/dataset.ipynb 28
 def generate_list_partitions_body(limit=100, offset=0):
     return {
-        "paginationFields": [{
-            "fieldName": "datecompleted",
-            "sortOrder": "DESC",
-            "filterValues": {
-                "MIN": None,
-                "MAX": None
+        "paginationFields": [
+            {
+                "fieldName": "datecompleted",
+                "sortOrder": "DESC",
+                "filterValues": {"MIN": None, "MAX": None},
             }
-        }],
-        "limit": 1000,
-        "offset": 0
+        ],
+        "limit": limit,
+        "offset": offset,
     }
 
 
-async def list_partitions(auth: dmda.DomoAuth,
-                          dataset_id: str,
-                          body: dict = None,
-                          session: httpx.AsyncClient = None,
-                          debug_api: bool = False,
-                          debug_loop: bool = False,
-
-
-                          ):
+async def list_partitions(
+    auth: dmda.DomoAuth,
+    dataset_id: str,
+    body: dict = None,
+    session: httpx.AsyncClient = None,
+    debug_api: bool = False,
+    debug_loop: bool = False,
+):
 
     body = body or generate_list_partitions_body()
 
     url = f"https://{auth.domo_instance}.domo.com/api/query/v1/datasources/{dataset_id}/partition/list"
 
     offset_params = {
-        'offset': 'offset',
-        'limit': 'limit',
+        "offset": "offset",
+        "limit": "limit",
     }
 
     def arr_fn(res) -> list[dict]:
         return res.response
 
-    res = await gd.looper(auth=auth,
-                       method='POST',
-                       url=url,
-                       arr_fn=arr_fn,
-                       body=body,
-                       offset_params_in_body=True,
-                       offset_params=offset_params,
-                       loop_until_end=True,
-                       session=session,
-                       debug_loop=debug_loop,
-                       debug_api = debug_api)
+    res = await gd.looper(
+        auth=auth,
+        method="POST",
+        url=url,
+        arr_fn=arr_fn,
+        body=body,
+        offset_params_in_body=True,
+        offset_params=offset_params,
+        loop_until_end=True,
+        session=session,
+        debug_loop=debug_loop,
+        debug_api=debug_api,
+    )
 
-    if res.status == 404 and res.response == 'Not Found':
+    if res.status == 404 and res.response == "Not Found":
         raise DatasetNotFoundError(
-            dataset_id=dataset_id, domo_instance=auth.domo_instance)
+            dataset_id=dataset_id, domo_instance=auth.domo_instance
+        )
     return res
 
-
 # %% ../../nbs/routes/dataset.ipynb 30
-def generate_create_dataset_body(dataset_name: str, dataset_type: str = 'API', schema: dict = {
-    "columns": [
-        {"type": "STRING", "name": "Friend"},
-        {"type": "STRING",  "name": "Attending"}
-    ]}
+def generate_create_dataset_body(
+    dataset_name: str, dataset_type: str = "API", schema: dict = None
 ):
+    schema = schema or {
+        "columns": [
+            {"type": "STRING", "name": "Friend"},
+            {"type": "STRING", "name": "Attending"},
+        ]
+    }
 
     return {
         "userDefinedType": dataset_type,
         "dataSourceName": dataset_name,
-        "schema": schema
+        "schema": schema,
     }
 
 
-async def create(auth: dmda.DomoAuth,
-                 dataset_name: str,
-                 dataset_type: str = 'api',
-                 session: httpx.AsyncClient = None,
-                 schema: dict = None,
-                 debug_api: bool = False):
+async def create(
+    auth: dmda.DomoAuth,
+    dataset_name: str,
+    dataset_type: str = "api",
+    session: httpx.AsyncClient = None,
+    schema: dict = None,
+    debug_api: bool = False,
+):
 
-    body = generate_create_dataset_body(dataset_name=dataset_name,
-                                        dataset_type=dataset_type,
-                                        schema=schema)
+    body = generate_create_dataset_body(
+        dataset_name=dataset_name, dataset_type=dataset_type, schema=schema
+    )
 
     url = f"https://{auth.domo_instance}.domo.com/api/data/v2/datasources"
 
@@ -470,20 +499,18 @@ async def create(auth: dmda.DomoAuth,
         url=url,
         body=body,
         session=session,
-        debug_api=debug_api
+        debug_api=debug_api,
     )
 
-
 # %% ../../nbs/routes/dataset.ipynb 35
-async def delete(auth: dmda.DomoAuth,
-                 dataset_id: str, session: httpx.AsyncClient = None, debug_api: bool = False):
+async def delete(
+    auth: dmda.DomoAuth,
+    dataset_id: str,
+    session: httpx.AsyncClient = None,
+    debug_api: bool = False,
+):
     url = f"https://{auth.domo_instance}.domo.com/api/data/v3/datasources/{dataset_id}?deleteMethod=hard"
 
     return await gd.get_data(
-        auth=auth,
-        method="DELETE",
-        url=url,
-        session=session,
-        debug_api=debug_api
+        auth=auth, method="DELETE", url=url, session=session, debug_api=debug_api
     )
-
