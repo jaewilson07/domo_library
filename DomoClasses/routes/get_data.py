@@ -57,7 +57,7 @@ async def get_data(url, method, auth: DomoAuth,
                                     url=url, headers=headers,
                                     json=body,
                                     params=params)
-
+        
     elif body is not None:
         res = await session.request(method=method.upper(),
                                     url=url,

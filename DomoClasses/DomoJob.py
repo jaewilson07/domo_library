@@ -107,8 +107,6 @@ class DomoJob:
     @classmethod
     def _from_json(cls, obj):
         dd = DictDot(obj)
-        print (dd.jobName)
-        #print (dd)
         triggers_ls = obj.get('triggers', None)
 
         triggers_dj = [DomoTrigger(
@@ -213,6 +211,7 @@ class DomoJob:
     async def create_watchdog_job(cls,
                                    full_auth: DomoFullAuth,
                                    body : str,
+                                    application_id : str,
                                    debug: bool = False, log_results: bool = False,
                                    session: aiohttp.ClientSession = None):
             

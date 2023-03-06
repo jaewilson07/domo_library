@@ -13,7 +13,7 @@ async def upload_data(instance_auth,
                       is_index: bool = False,
                       debug: bool = False,
                       debug_prn: bool = False,
-                      logger: lc.MyLogger = None):
+                      logger: lc.Logger = None):
 
     try:
         # await asyncio.sleep(randrange(5))
