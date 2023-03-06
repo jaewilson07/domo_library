@@ -32,7 +32,9 @@ website:
           - classes/50_DomoDatacenter.ipynb
           - classes/50_DomoDataflow.ipynb
           - classes/50_DomoDataset.ipynb
+          - classes/50_DomoInstanceConfig.ipynb
           - classes/50_DomoPage.ipynb
+          - classes/50_DomoPublish.ipynb
           - classes/50_DomoUser.ipynb
       - section: client
         contents:
