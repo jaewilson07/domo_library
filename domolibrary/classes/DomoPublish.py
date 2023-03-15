@@ -5,9 +5,6 @@ __all__ = ['DomoPublication_Subscription', 'DomoPublications', 'DomoPublication_
            'DomoPublication']
 
 # %% ../../nbs/classes/50_DomoPublish.ipynb 2
-from fastcore.basics import patch_to
-
-# %% ../../nbs/classes/50_DomoPublish.ipynb 3
 from dataclasses import dataclass, field
 
 from typing import Optional
@@ -15,6 +12,8 @@ from typing import Optional
 import datetime as dt
 import asyncio
 import httpx
+
+from fastcore.basics import patch_to
 
 # import importlib
 # import json
@@ -29,7 +28,7 @@ import domolibrary.routes.publish as publish_routes
 # import Library.DomoClasses.DomoDataset as dmda
 # import Library.DomoClasses.DomoLineage as dmdl
 
-# %% ../../nbs/classes/50_DomoPublish.ipynb 5
+# %% ../../nbs/classes/50_DomoPublish.ipynb 4
 @dataclass
 class DomoPublication_Subscription:
     subscription_id: str
@@ -56,11 +55,11 @@ class DomoPublication_Subscription:
 
 
 
-# %% ../../nbs/classes/50_DomoPublish.ipynb 7
+# %% ../../nbs/classes/50_DomoPublish.ipynb 6
 class DomoPublications:
     auth : dmda.DomoAuth
 
-# %% ../../nbs/classes/50_DomoPublish.ipynb 8
+# %% ../../nbs/classes/50_DomoPublish.ipynb 7
 @dataclass
 class DomoPublication_Content:
     content_id: str
@@ -98,12 +97,12 @@ class DomoPublication_Content:
         return temp_dict
 
 
-# %% ../../nbs/classes/50_DomoPublish.ipynb 10
+# %% ../../nbs/classes/50_DomoPublish.ipynb 9
 class DomoPublication_UnexpectedContentType(Exception):
     def __init__(self, publication_id, content_type, domo_instance):
         super().__init__(f"DomoPublication_Instantiation: Unexpected content type {content_type} in publication {publication_id} in {domo_instance}")
 
-# %% ../../nbs/classes/50_DomoPublish.ipynb 11
+# %% ../../nbs/classes/50_DomoPublish.ipynb 10
 @dataclass
 class DomoPublication:
     id: str
@@ -172,7 +171,7 @@ class DomoPublication:
         return domo_pub
 
 
-# %% ../../nbs/classes/50_DomoPublish.ipynb 21
+# %% ../../nbs/classes/50_DomoPublish.ipynb 20
 @patch_to(DomoPublications, cls_method=True)
 async def search_publications(cls: DomoPublications,
                               auth = dmda.DomoAuth,

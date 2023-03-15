@@ -81,7 +81,8 @@ def find_ip(html,   html_tag: str = 'p'):
 # %% ../../nbs/client/99_ResponseGetData.ipynb 17
 @patch_to(ResponseGetData, cls_method=True)
 def _from_httpx_response(
-    cls, res: requests.Response,  # requests response object
+    cls, 
+    res: requests.Response,  # requests response object
     auth : Optional[any] = None,
 ) -> ResponseGetData:
     """returns ResponseGetData"""
