@@ -24,6 +24,13 @@ website:
               - section: 2023-01-24_Domo_Onboarding
                 contents:
                   - blog/posts/2023-01-24_Domo_Onboarding/index.qmd
+      - section: blog
+        contents:
+          - section: posts
+            contents:
+              - section: 2023-03-13-Custom_Roles
+                contents:
+                  - blog/posts/2023-03-13-Custom_Roles/index.ipynb
       - section: classes
         contents:
           - classes/50_DomoAccount.ipynb
@@ -32,7 +39,11 @@ website:
           - classes/50_DomoDatacenter.ipynb
           - classes/50_DomoDataflow.ipynb
           - classes/50_DomoDataset.ipynb
+          - classes/50_DomoGrant.ipynb
+          - classes/50_DomoInstanceConfig.ipynb
           - classes/50_DomoPage.ipynb
+          - classes/50_DomoPublish.ipynb
+          - classes/50_DomoRole.ipynb
           - classes/50_DomoUser.ipynb
       - section: client
         contents:
@@ -67,9 +78,11 @@ website:
           - routes/datacenter.ipynb
           - routes/dataflow.ipynb
           - routes/dataset.ipynb
+          - routes/grant.ipynb
           - routes/group.ipynb
           - routes/instance_config.ipynb
           - routes/publish.ipynb
+          - routes/role.ipynb
           - routes/user.ipynb
       - section: utils
         contents:

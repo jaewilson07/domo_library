@@ -63,7 +63,7 @@ def generate_search_datacenter_body(
         })
 
         if entity_name:
-            body.update({field: "name_sort", filterType: "wildcard", query: f"*{entity_name}*"})
+            body.update({"field": "name_sort", "filterType": "wildcard", "query": f"*{entity_name}*"})
 
     body.update({
         "count": count, "offset": offset,

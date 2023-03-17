@@ -360,6 +360,7 @@ async def query_dataset_private(cls: DomoDataset,
                                 maximum=100,  # equivalent to the LIMIT or TOP clause in SQL, the number of rows to return total
                                 debug_api: bool = False,
                                 debug_loop: bool = False,
+                                timeout = 10 # larger API requests may require a longer response time
                                 ) -> pd.DataFrame:
 
     res = await dataset_routes.query_dataset_private(auth=auth,
@@ -371,7 +372,8 @@ async def query_dataset_private(cls: DomoDataset,
                                                      loop_until_end=loop_until_end,
                                                      session=session,
                                                      debug_loop=debug_loop,
-                                                     debug_api=debug_api
+                                                     debug_api=debug_api,
+                                                     timeout = timeout
                                                      )
 
     if not res.is_success:
