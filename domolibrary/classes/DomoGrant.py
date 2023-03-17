@@ -26,7 +26,7 @@ class DomoGrant:
 
     def __eq__(self, other):
         if not isinstance(other, DomoGrant):
-            return false
+            return False
 
         return self.id == other.id
 

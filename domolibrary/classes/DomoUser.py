@@ -132,7 +132,7 @@ class DomoUsers:
         ]
 
     def _generate_logger(self, logger: Optional[lc.Logger] = None):
-        self.logger = logger or self.logger or lc.Logger()
+        self.logger = logger or self.logger or lc.Logger(app_name = "domo_users")
 
 # %% ../../nbs/classes/50_DomoUser.ipynb 15
 @patch_to(DomoUsers, cls_method=True)
