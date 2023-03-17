@@ -1,0 +1,10 @@
+ROLE_NAME = dl_department_admin
+ROLE_DESCRIPTION = 'deployed via domo_library script'
+ROLE_GRANTS='alert.edit, alert.actions, content.card.embed, content.export, content.variable.edit, audit, datastore.create, dataset.manage, dataset.export, publish.subscribers.manage, user.invite, group.edit, certifiedcontent.admin, certifiedcontent.request'
+ROLE_EMAILS= 'test1@test.com, test2@test.com'
+
+
+ROLE_NAME2 = dl_test
+ROLE_DESCRIPTION2 = 'deployed via domo_library script'
+ROLE_GRANTS2 ='alert.edit, alert.actions, content.card.embed'
+ROLE_EMAILS2= 'test3@test.com, test3@test.com, test4@test.com'

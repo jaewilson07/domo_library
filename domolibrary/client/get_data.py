@@ -10,6 +10,7 @@ from pprint import pprint
 
 import httpx
 import aiohttp
+import asyncio
 
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.ResponseGetData as rgd
@@ -161,8 +162,6 @@ async def get_data(
     max_attempt = 4
     
     while attempt <= max_attempt:
-        res = None
-
         try:
             if isinstance(body, dict) or isinstance(body, list):
                 if debug_api:
@@ -208,13 +207,15 @@ async def get_data(
                 return res
 
             return rgd.ResponseGetData._from_httpx_response(res, auth=auth)
-
-        except Exception as e:
+        
+        except httpx.TransportError as e:
             print(f"ℹ️ get_data error - {e} at {url}")
             attempt +=1
 
             if attempt == max_attempt:
                 raise GetData_Error(url=url, message=e)
+
+            await asyncio.sleep(5)
 
 
         finally:
@@ -247,6 +248,7 @@ async def looper(
     maximum=2000,
     debug_api: bool = False,
     debug_loop: bool = False,
+    timeout : bool = 10
 ) -> rgd.ResponseGetData:
 
     maximum = maximum or 0
@@ -298,6 +300,7 @@ async def looper(
             session=session,
             body=body,
             debug_api=debug_api,
+            timeout = timeout
         )
 
         if not res.is_success:

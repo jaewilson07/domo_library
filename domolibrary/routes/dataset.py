@@ -70,6 +70,7 @@ async def query_dataset_private(
     maximum=100,  # equivalent to the LIMIT or TOP clause in SQL, the number of rows to return total
     debug_api: bool = False,
     debug_loop: bool = False,
+    timeout :int = 10
 ):
     """execute SQL queries against private APIs, requires DomoFullAuth or DomoTokenAuth"""
 
@@ -109,6 +110,7 @@ async def query_dataset_private(
         debug_api=debug_api,
         debug_loop=debug_loop,
         loop_until_end=loop_until_end,
+        timeout = timeout
     )
 
     if res.status == 404 and res.response == "Not Found":

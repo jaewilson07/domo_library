@@ -171,6 +171,53 @@ class DomoPublication:
         return domo_pub
 
 
+# %% ../../nbs/classes/50_DomoPublish.ipynb 12
+@patch_to(DomoPublication, cls_method=True)
+async def get_from_id(cls, publication_id=None, auth: dmda.DomoAuth = None):
+
+    auth = auth or cls.auth
+
+    publication_id = publication_id or cls.publication_id
+
+    res = await publish_routes.get_publication_by_id(
+        auth=auth, publication_id=publication_id
+    )
+
+    if not res.is_success:
+        return None
+
+    return cls._from_json(obj=res.response, auth=auth)
+
+# %% ../../nbs/classes/50_DomoPublish.ipynb 17
+@dataclass
+class DomoPublications:
+
+    @classmethod
+    async def get_subscription_summaries(cls, 
+                                         auth: dmda.DomoAuth,
+                                         session: httpx.AsyncClient = None,
+                                         return_raw: bool = False,
+                                         debug_api: bool = False):
+        """get instances subscription summaries"""
+
+        res = await publish_routes.get_subscription_summaries(auth=auth,
+                                                              session=session,
+                                                              debug_api=debug_api
+                                                              )
+
+        if return_raw:
+            return res
+
+        if not res.is_success:
+            return res
+
+        sub_ls = res.response
+
+        return [ sub for sub in sub_ls]
+        
+        
+
+
 # %% ../../nbs/classes/50_DomoPublish.ipynb 20
 @patch_to(DomoPublications, cls_method=True)
 async def search_publications(cls: DomoPublications,

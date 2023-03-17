@@ -15,11 +15,21 @@ import domolibrary.routes.grant as grant_routes
 @dataclass
 class DomoGrant:
     id: str
-    display_group: str
-    title: str
-    depends_on_ls: list[str]
+    display_group: str = None
+    title: str = None
+    depends_on_ls: list[str] = None
     description: str = None
     role_membership_ls: list[str] = field(default=None)
+
+    def __post_init__(self):
+        self.id = str(self.id)
+
+    def __eq__(self, other):
+        if not isinstance(other, DomoGrant):
+            return false
+
+        return self.id == other.id
+
 
     @classmethod
     def _from_json(cls, obj):
