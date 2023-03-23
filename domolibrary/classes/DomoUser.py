@@ -54,7 +54,7 @@ class DomoUser:
             auth=auth,
             id=str(user_dd.id or user_dd.userId),
             display_name=user_dd.displayName,
-            email_address=user_dd.emailAddress,
+            email_address=user_dd.emailAddress or user_dd.email,
             role_id=user_dd.roleId,
         )
 

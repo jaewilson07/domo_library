@@ -139,6 +139,8 @@ class _DomoAuth_Optional:
     user_id: Optional[str] = field(default=None, repr=False)
     auth_header: dict = field(default_factory=dict, repr=False)
 
+    is_valid_token: bool = None
+
     url_manual_login: Optional[str] = None
 
     async def get_auth_token(self) -> Union[str, None]:
@@ -257,6 +259,7 @@ class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required):
         )
 
         if res.is_success and res.response.get("reason") == "INVALID_CREDENTIALS":
+            self.is_valid_token = False
             raise InvalidCredentialsError(
                 function_name = "get_auth_token",
                 status=res.status,
@@ -265,6 +268,7 @@ class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required):
             )
 
         if res.status == 403:
+            self.is_valid_token = False
             raise InvalidInstanceError(
                 function_name = "get_auth_token",
                 status=res.status,
@@ -273,10 +277,13 @@ class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required):
             )
         
         if res.is_success and res.response == {}:
+            self.is_valid_token = False
             raise NoAccessTokenReturned(
                 function_name="get_auth_token",
                 status=res.status, 
                 domo_instance=self.domo_instance)
+        
+        self.is_valid_token = True
 
         token = str(res.response.get("sessionToken"))
         self.token = token
@@ -299,6 +306,8 @@ class _DomoTokenAuth_Required(_DomoAuth_Required):
 # %% ../../nbs/client/95_DomoAuth.ipynb 37
 @dataclass
 class DomoTokenAuth(_DomoAuth_Optional, _DomoTokenAuth_Required):
+    
+
     """
     use for access_token authentication.
     Tokens are generated in domo > admin > access token
@@ -326,11 +335,15 @@ class DomoTokenAuth(_DomoAuth_Optional, _DomoTokenAuth_Required):
         )
 
         if res.status == 401 and res.response == "Unauthorized":
+            self.is_valid_token = False
             raise InvalidCredentialsError(
                 status=res.status,
                 message=res.response,
                 domo_instance=self.domo_instance,
             )
+
+        if res.status == 200:
+            self.is_valid_token = True
 
         self.token = self.domo_access_token
         self.user_id = res.response.get("id")
@@ -378,11 +391,14 @@ class DomoDeveloperAuth(_DomoAuth_Optional, _DomoDeveloperAuth_Required):
         )
 
         if res.status == 401:
+            self.is_valid_token = False
             raise InvalidCredentialsError(
                 status=res.status,
                 message=str(res.response),
                 domo_instance=self.domo_instance,
             )
+
+        self.is_valid_token = True
 
         token = str(res.response.get("access_token"))
         self.token = token

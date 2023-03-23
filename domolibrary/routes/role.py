@@ -2,7 +2,8 @@
 
 # %% auto 0
 __all__ = ['Role_NotRetrieved', 'get_roles', 'get_role_grants', 'get_role_membership', 'create_role', 'delete_role',
-           'set_default_role', 'update_role_metadata', 'set_role_grants', 'role_membership_add_users']
+           'get_default_role', 'set_default_role', 'update_role_metadata', 'set_role_grants',
+           'role_membership_add_users']
 
 # %% ../../nbs/routes/role.ipynb 2
 import httpx
@@ -181,7 +182,28 @@ async def delete_role(auth: dmda.DomoAuth,
     return res
 
 
-# %% ../../nbs/routes/role.ipynb 19
+# %% ../../nbs/routes/role.ipynb 20
+async def get_default_role(auth, debug_api: bool = False, session :httpx.AsyncClient= None):
+
+    url = f"https://{auth.domo_instance}.domo.com/api/content/v1/customer-states/user.roleid.default"
+
+    params = {'defaultValue': 2, 'ignoreCache': True}
+
+    res = await gd.get_data(auth=auth,
+                             method='GET',
+                             url=url,
+                             params=params,
+                             debug_api=debug_api, session = session)
+
+    
+    if res.is_success:
+        res.response = res.response.get('value')
+    
+    return res
+
+
+
+# %% ../../nbs/routes/role.ipynb 23
 async def set_default_role(auth: dmda.DomoAuth,
                            role_id: str,
                            debug_api: bool = False,
@@ -204,7 +226,7 @@ async def set_default_role(auth: dmda.DomoAuth,
     return res
 
 
-# %% ../../nbs/routes/role.ipynb 20
+# %% ../../nbs/routes/role.ipynb 25
 async def update_role_metadata(auth: dmda.DomoAuth,
                                role_id,
                                role_name,
@@ -231,7 +253,7 @@ async def update_role_metadata(auth: dmda.DomoAuth,
     return res
 
 
-# %% ../../nbs/routes/role.ipynb 23
+# %% ../../nbs/routes/role.ipynb 28
 async def set_role_grants(auth: dmda.DomoAuth,
                              role_id: str,
                              role_grant_ls: list[str],
@@ -247,7 +269,7 @@ async def set_role_grants(auth: dmda.DomoAuth,
                          debug_api=debug_api, body=role_grant_ls)
     return res
 
-# %% ../../nbs/routes/role.ipynb 24
+# %% ../../nbs/routes/role.ipynb 29
 async def role_membership_add_users(auth: dmda.DomoAuth,
                                    role_id: str,
                                    user_list: list[str], # list of user ids

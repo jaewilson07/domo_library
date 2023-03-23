@@ -27,13 +27,14 @@ class DomoRole:
     id: str
     name: str = None
     description: str = None
-    is_system_role: int = None
+    is_system_role: bool = False
+    is_default_role: bool = False
 
     grant_ls: [dmg.DomoGrant] = field(default_factory=list)
     membership_ls: list = field(default_factory=list)
 
     def __post_init__(self):
-        self.is_system_role = 1 if self.id <= 5 else 0
+        self.is_system_role = True if self.id <= 5 else 0
         
         if self.grant_ls:
             self.grant_ls = self._valid_grant_ls(self.grant_ls)
@@ -58,7 +59,7 @@ class DomoRole:
     #             )
 
     @classmethod
-    def _from_json(cls, obj, auth=dmda.DomoAuth):
+    def _from_json(cls, obj, auth=dmda.DomoAuth, is_default_role = None):
 
         dd = obj
         if not isinstance(dd, util_dd.DictDot):
@@ -67,7 +68,8 @@ class DomoRole:
         return cls(id=dd.id,
                    name=dd.name,
                    description=dd.description,
-                   auth=auth
+                   auth=auth,
+                   is_default_role = is_default_role
                    )
 
 
@@ -287,7 +289,11 @@ async def get_roles(cls: DomoRoles,
 
     role_ls = res.response
 
-    return [ DomoRole._from_json(role, auth) for role in res.response]
+    default_role_res = await role_routes.get_default_role(auth=auth, session=session, debug_api=debug_api)
+
+    return [DomoRole._from_json(role,
+                                auth, 
+                                is_default_role=str(default_role_res.response) == str(role.get('id'))) for role in res.response]
 
 
 # %% ../../nbs/classes/50_DomoRole.ipynb 32
@@ -302,17 +308,23 @@ class SearchRole_NotFound(de.DomoError):
 
 @patch_to(DomoRoles, cls_method=True)
 async def search_role(cls: DomoRoles,
-                    role_name: str,
                     auth: dmda.DomoAuth,
+                    role_name: str = None,
+                    role_id : str = None,
                     debug_api: bool = False,
                     session: httpx.AsyncClient = None,
                     return_raw: bool = False
                     ):
 
     all_roles = await DomoRoles.get_roles( auth=auth)
+
+    if role_name:
+        domo_role = next(
+            (role for role in all_roles if role.name == role_name), None)
     
-    domo_role = next(
-        (role for role in all_roles if role.name == role_name), None)
+    if role_id:
+        domo_role = next(
+            (role for role in all_roles if str(role.id) == str(role_id)), None)
 
     if not domo_role:
         raise SearchRole_NotFound(domo_instance=auth.domo_instance, role_id=role_name)
