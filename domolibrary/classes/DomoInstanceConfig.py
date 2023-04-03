@@ -101,7 +101,7 @@ async def upsert_allowlist(self : DomoInstanceConfig,
                                    debug_api=debug_api, session=session)
 
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 13
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 14
 @patch_to(DomoInstanceConfig)
 async def get_grants(self: DomoInstanceConfig,
                      auth: dmda.DomoAuth = None,
@@ -130,7 +130,7 @@ async def get_grants(self: DomoInstanceConfig,
         return [dmdg.DomoGrant._from_json(obj) for obj in json_list]
 
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 16
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 17
 @patch_to(DomoInstanceConfig)
 async def get_roles(self, auth: dmda.DomoAuth = None,
                     debug_api: bool = False,
@@ -149,4 +149,26 @@ async def get_roles(self, auth: dmda.DomoAuth = None,
         json_list = res.response
         return [dmr.DomoRole._from_json(obj = obj, auth = auth
                                    ) for obj in json_list]
+
+
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 21
+@patch_to(DomoInstanceConfig)
+async def get_authorized_domains(self: DomoInstanceConfig,
+                                 auth: dmda.DomoAuth = None, 
+                                 debug_api: bool = False,
+                                 session: httpx.AsyncClient = None,
+                                 return_raw :bool = False
+                                 ):
+    auth = auth or self.auth
+                                 
+    res = await instance_config_routes.get_authorized_domains(auth=auth,
+                                                              debug_api=debug_api,
+                                                              session=session,
+                                                              return_raw = return_raw
+                                                              )
+
+    if return_raw:
+        return res
+
+    return res
 
