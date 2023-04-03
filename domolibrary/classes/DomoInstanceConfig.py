@@ -170,5 +170,5 @@ async def get_authorized_domains(self: DomoInstanceConfig,
     if return_raw:
         return res
 
-    return res
+    return res.response
 

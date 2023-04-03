@@ -337,7 +337,7 @@ async def create_user(
         return None
 
     dd = util_dd.DictDot(res.response)
-    u = cls(
+    u = DomoUser(
         auth=auth,
         id=dd.id or dd.userId,
         display_name=dd.displayName,
