@@ -115,6 +115,9 @@ async def set_grants(self: DomoRole,
                      auth: dmda.DomoAuth = None,
                      debug_api: bool = False):
 
+    auth = auth or self.auth
+    role_id = role_id or self.id
+
     domo_grants = self._valid_grant_ls(grant_ls)
 
     # dmic = dic.DomoInstanceConfig(auth = auth)
@@ -132,12 +135,8 @@ async def set_grants(self: DomoRole,
     #                 if match_grant:
     #                     filtered_grant_ls.append(match_grant.id)
 
-    print(domo_grants)
-
-
-    auth = auth or self.auth
-    role_id = role_id or self.id
-
+    
+    
     # set grants
     res = await role_routes.set_role_grants(auth=auth,
                                             role_id=role_id,
