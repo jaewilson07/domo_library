@@ -2,15 +2,18 @@
 
 # %% auto 0
 __all__ = ['DomoRole', 'SetRoleGrants_MissingGrants', 'AddUser_Error', 'DeleteRole_Error', 'DomoRoles', 'SearchRole_NotFound',
-           'CreateRole_Error']
+           'CreateRole_Error', 'set_as_default_role']
 
 # %% ../../nbs/classes/50_DomoRole.ipynb 2
 from dataclasses import dataclass, field
 import httpx
+import asyncio
+
 
 from fastcore.basics import patch_to
 
 import domolibrary.client.DomoAuth as dmda
+import domolibrary.classes.DomoInstanceConfig as dic
 import domolibrary.client.DomoError as de
 
 import domolibrary.utils.DictDot as util_dd
@@ -40,7 +43,7 @@ class DomoRole:
             self.grant_ls = self._valid_grant_ls(self.grant_ls)
     
     @staticmethod
-    def _valid_grant_ls(grant_ls ):
+    def _valid_grant_ls(grant_ls ) -> [dmg.DomoGrant]:
 
         if isinstance(grant_ls[0], str):
             return [dmg.DomoGrant(grant_str) for grant_str in grant_ls]
@@ -100,8 +103,9 @@ async def get_grants(self: DomoRole,
 
 # %% ../../nbs/classes/50_DomoRole.ipynb 8
 class SetRoleGrants_MissingGrants(de.DomoError):
-    def __init__(self, role_id, missing_grants,domo_instance):
-        super().__init__(domo_instance = domo_instance, entity_id = role_id, message = f"failed to add grants: {', '.join(missing_grants)}")
+    def __init__(self, role_id, missing_grants: [str], domo_instance):
+        super().__init__(domo_instance=domo_instance, entity_id=role_id,
+                         message=f"failed to add grants: {', '.join(missing_grants)}")
 
 
 @patch_to(DomoRole)
@@ -111,27 +115,47 @@ async def set_grants(self: DomoRole,
                      auth: dmda.DomoAuth = None,
                      debug_api: bool = False):
 
-    grant_ls = self._valid_grant_ls(grant_ls)
-    
     auth = auth or self.auth
     role_id = role_id or self.id
 
+    domo_grants = self._valid_grant_ls(grant_ls)
+
+    # dmic = dic.DomoInstanceConfig(auth = auth)
+    # all_grants = await dmic.get_grants()
+
+    # filtered_grant_ls = []
+    
+    # for domo_grant in all_grants:
+    #     if domo_grant.id in grant_ls:
+    #         filtered_grant_ls.append(domo_grant.id)
+
+    #         if domo_grant.depends_on_ls:
+    #             for parent_grant_id in domo_grant.depends_on_ls:
+    #                 match_grant = next(( domo_grant for domo_grant in all_grants if parent_grant_id == domo_grant.id ))
+    #                 if match_grant:
+    #                     filtered_grant_ls.append(match_grant.id)
+
+    
+    
     # set grants
     res = await role_routes.set_role_grants(auth=auth,
                                             role_id=role_id,
-                                            role_grant_ls=[grant.id for grant in grant_ls],
+                                            role_grant_ls=[domo_grant.id for domo_grant in domo_grants],
                                             debug_api=debug_api)
-    
+
     # validate grants
-    domo_grants = await self.get_grants(auth=auth,
-                            debug_api=debug_api)
-    
+    await asyncio.sleep(2)
+
+    all_grants = await self.get_grants(auth=auth,
+                                        debug_api=debug_api)
+
     missing_grants = [
-        grant for grant in grant_ls if grant not in domo_grants]
+        grant.id for domo_grant in domo_grants if domo_grant not in all_grants]
 
     if missing_grants:
-        raise SetRoleGrants_MissingGrants(role_id = role_id, missing_grants = missing_grants, domo_instance = auth.domo_instance)
-        
+        raise SetRoleGrants_MissingGrants(
+            role_id=role_id, missing_grants=missing_grants, domo_instance=auth.domo_instance)
+
     return domo_grants
 
 
@@ -417,7 +441,7 @@ async def upsert_role(cls: DomoRoles,
             print(
                 f'No role match -- creating new role in {auth.domo_instance}')
 
-        await DomoRoles.create_role(auth=auth,
+        domo_role = await DomoRoles.create_role(auth=auth,
                                            name=name, description=description,
                                            debug_api=debug_api, session=session)
     
@@ -428,4 +452,12 @@ async def upsert_role(cls: DomoRoles,
             
 
         return domo_role
+
+
+# %% ../../nbs/classes/50_DomoRole.ipynb 44
+async def set_as_default_role(self, debug_api: bool = False, session : httpx.AsyncClient = None):
+    return await role_routes.set_default_role(auth=self.auth,
+                                                role_id=self.id,
+                                                debug_api=debug_api, session = session
+                                                )
 

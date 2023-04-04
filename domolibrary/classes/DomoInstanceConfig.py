@@ -51,8 +51,17 @@ async def get_allowlist(self: DomoInstanceConfig,
     """retrieves the allowlist for an instance"""
 
     auth = auth or self.auth
+    
+    res = None
+    loop = 0
 
-    res =  await instance_config_routes.get_allowlist(auth=auth,  debug_api=debug_api, session = session)
+    while not res and loop <= 5:
+        try:
+            res =  await instance_config_routes.get_allowlist(auth=auth,  debug_api=debug_api, session = session)
+        except Exception as e:
+            print(e)
+        finally:
+            loop += 1
 
     if return_raw:
         return res
@@ -170,5 +179,5 @@ async def get_authorized_domains(self: DomoInstanceConfig,
     if return_raw:
         return res
 
-    return res
+    return res.response
 
