@@ -15,7 +15,7 @@ import domolibrary.client.DomoAuth as dmda
 async def get_activity_log_object_types(auth: dmda.DomoAuth) -> rgd.ResponseGetData:
     """retrieves a list of valid objectTypes that can be used to search the activity_log API"""
 
-    url = "https://domo-dojo.domo.com/api/audit/v1/user-audits/objectTypes"
+    url = "https://domo-community.domo.com/api/audit/v1/user-audits/objectTypes"
 
     return await gd.get_data(url=url, method="GET", auth=auth)
 
