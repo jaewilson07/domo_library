@@ -167,7 +167,7 @@ class DomoDataset_Tags:
             return None
 
         if res.is_success == True:
-            tag_ls = json.loads(res.response.get("tags"))
+            tag_ls = json.loads(res.response.get("tags", []))
             self.tag_ls = tag_ls
 
             return tag_ls
