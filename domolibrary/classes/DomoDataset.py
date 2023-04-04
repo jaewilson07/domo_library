@@ -166,11 +166,14 @@ class DomoDataset_Tags:
             print(res)
             return None
 
-        if res.is_success == True:
-            tag_ls = json.loads(res.response.get("tags", []))
-            self.tag_ls = tag_ls
+        tag_ls = []
 
-            return tag_ls
+        if res.response.get("tags"):
+            tag_ls = json.loads(res.response.get("tags"))
+        
+        self.tag_ls = tag_ls
+
+        return tag_ls
 
     async def set(
         self,
@@ -215,7 +218,7 @@ async def add(
 
     auth, dataset_id = await _have_prereqs(self = self, auth=auth, dataset_id=dataset_id, function_name = "DomoDataset_Tags.add")
 
-    existing_tag_ls = await self.get(dataset_id=dataset_id, auth=auth)
+    existing_tag_ls = await self.get(dataset_id=dataset_id, auth=auth) or []
     
     add_tag_ls += existing_tag_ls
 
