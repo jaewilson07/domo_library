@@ -35,7 +35,6 @@ website:
           - classes/50_DomoGrant.ipynb
           - classes/50_DomoInstanceConfig.ipynb
           - classes/50_DomoPage.ipynb
-          - classes/50_DomoPublish.ipynb
           - classes/50_DomoRole.ipynb
           - classes/50_DomoUser.ipynb
       - section: client
