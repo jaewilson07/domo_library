@@ -134,7 +134,8 @@ def generate_body_update_group_membership(group_id: str,
 async def update_group_membership(auth: dmda.DomoAuth,
                                   body: dict, # first need to create body with generate_body_update_group_membership() 
                                   log_results: bool = False, 
-                                  debug_api: bool = False) -> rgd.ResponseGetData:
+                                  debug_api: bool = False
+                                  ) -> rgd.ResponseGetData:
     # body = [{
     #     "groupId":"GROUP_ID",
     #     "removeMembers": [{"type":"USER","id":"USER_ID"}],
