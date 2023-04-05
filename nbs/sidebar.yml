@@ -35,7 +35,6 @@ website:
           - classes/50_DomoGrant.ipynb
           - classes/50_DomoInstanceConfig.ipynb
           - classes/50_DomoPage.ipynb
-          - classes/50_DomoPublish.ipynb
           - classes/50_DomoRole.ipynb
           - classes/50_DomoUser.ipynb
       - section: client
@@ -51,13 +50,6 @@ website:
       - section: projects
         contents:
           - projects/index.qmd
-          - section: posts
-            contents:
-              - section: 2023--04-03_AutomatedTagging
-                contents:
-                  - projects/posts/2023--04-03_AutomatedTagging/index.ipynb
-      - section: projects
-        contents:
           - section: posts
             contents:
               - section: 2023-02-02_DojoFeatures
@@ -77,6 +69,13 @@ website:
               - section: 2023-03-13-Custom_Roles
                 contents:
                   - projects/posts/2023-03-13-Custom_Roles/index.ipynb
+      - section: projects
+        contents:
+          - section: posts
+            contents:
+              - section: 2023-04-03_AutomatedTagging
+                contents:
+                  - projects/posts/2023-04-03_AutomatedTagging/index.ipynb
       - section: routes
         contents:
           - routes/account.ipynb

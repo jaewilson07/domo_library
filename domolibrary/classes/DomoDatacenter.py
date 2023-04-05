@@ -8,6 +8,7 @@ import asyncio
 import importlib
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Union
 
 import httpx
 
@@ -15,13 +16,128 @@ from fastcore.basics import patch_to
 
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.classes.DomoDataset as dmds
+import domolibrary.classes.DomoAccount as dma
 
 import domolibrary.routes.account as account_routes
 import domolibrary.routes.datacenter as datacenter_routes
 
-# %% ../../nbs/classes/50_DomoDatacenter.ipynb 5
+
+# %% ../../nbs/classes/50_DomoDatacenter.ipynb 4
 @dataclass
 class DomoDatacenter:
     "class for quering entities in the datacenter"
     auth: dmda.DomoAuth = None
 
+# %% ../../nbs/classes/50_DomoDatacenter.ipynb 5
+@patch_to(DomoDatacenter, cls_method=True)
+async def search_datacenter(
+    cls,
+    auth: dmda.DomoAuth,
+    maximum: int = None,  # maximum number of results to return
+    body: dict = None,  # either pass a body or generate a body in the function using search_text, entity_type, and additional_filters parameters
+    search_text=None,
+    # can accept one value or a list of values
+    entity_type: Union[str, list] = "dataset",
+    additional_filters_ls=None,
+    return_raw: bool = False,
+    session: httpx.AsyncClient = None,
+    debug_api: bool = False,
+) -> list:
+
+    res = await datacenter_routes.search_datacenter(
+        auth=auth,
+        maximum=maximum,
+        body=body,
+        session=session,
+        search_text=search_text,
+        entity_type=entity_type,
+        additional_filters_ls=additional_filters_ls,
+        debug_api=debug_api,
+    )
+
+    if return_raw:
+        return res
+
+    return res.response
+
+# %% ../../nbs/classes/50_DomoDatacenter.ipynb 8
+@patch_to(DomoDatacenter, cls_method=True)
+async def search_datasets(
+    cls,
+    auth=dmda.DomoAuth,
+    maximum: int = None,  # maximum number of results to return
+    search_text=None,
+    # can accept one value or a list of values
+    additional_filters_ls=None,
+    return_raw: bool = False,
+    debug_api: bool = False,
+    debug_prn: bool = False,
+    session: httpx.AsyncClient = None,
+) -> list[dmds.DomoDataset]:
+
+    json_list = await cls.search_datacenter(
+        auth=auth,
+        maximum=maximum,
+        search_text=search_text,
+        entity_type=datacenter_routes.Datacenter_Enum.DATASET.value,
+        additional_filters_ls=additional_filters_ls,
+        return_raw=return_raw,
+        session=session,
+        debug_api=debug_api,
+    )
+
+    if return_raw or len(json_list) == 0:
+        return json_list
+
+    return await asyncio.gather(
+        *[
+            dmds.DomoDataset.get_from_id(
+                dataset_id=json_obj.get("databaseId"),
+                auth=auth,
+                debug_api=debug_api,
+                session=session,
+            )
+            for json_obj in json_list
+        ]
+    )
+
+# %% ../../nbs/classes/50_DomoDatacenter.ipynb 11
+@patch_to(DomoDatacenter, cls_method=True)
+async def get_accounts(
+    cls,
+    auth=dmda.DomoAuth,
+    maximum: int = None,  # maximum number of results to return
+    search_text=None,
+    # can accept one value or a list of values
+    additional_filters_ls=None,
+    return_raw: bool = False,
+    debug_api: bool = False,
+    debug_prn: bool = False,
+    session: httpx.AsyncClient = None,
+) -> list[dma.DomoAccount]:
+
+    json_list = await cls.search_datacenter(
+        auth=auth,
+        maximum=maximum,
+        entity_type=datacenter_routes.Datacenter_Enum.ACCOUNT.value,
+        additional_filters_ls=additional_filters_ls,
+        return_raw=return_raw,
+        session=session,
+        debug_api=debug_api,
+    )
+
+    if return_raw or len(json_list) == 0:
+        return json_list
+
+    domo_account_ls = await asyncio.gather(
+        *[
+            dma.DomoAccount.get_from_id(
+                account_id=json_obj.get("databaseId"),
+                auth=auth,
+                debug_api=debug_api,
+                session=session,
+            )
+            for json_obj in json_list
+        ]
+    )
+    return domo_account_ls
