@@ -320,7 +320,7 @@ async def create_user(
     password: str = None,
     send_password_reset_email: bool = False,
     debug_api: bool = False,
-    session = httpx.AsyncClient
+    session : httpx.AsyncClient = None
 ):
     """class method that creates a new Domo user"""
 
@@ -333,7 +333,7 @@ async def create_user(
         session = session
     )
 
-    if res.status != 200:
+    if not res.is_success:
         return None
 
     dd = util_dd.DictDot(res.response)
@@ -355,7 +355,7 @@ async def create_user(
     return u
 
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 29
+# %% ../../nbs/classes/50_DomoUser.ipynb 30
 @patch_to(DomoUsers, cls_method=True)
 async def upsert_user(cls: DomoUsers,
                       auth: dmda.DomoAuth,
@@ -405,7 +405,8 @@ async def upsert_user(cls: DomoUsers,
                                      display_name=display_name or f"{email_address} - via dl {dt.date.today()}",
                                      email_address=email_address,
                                      role_id=role_id,
-                                     debug_api=debug_api, session=session)
+                                     debug_api=debug_api, 
+                                     session=session)
 
     # finally:
     #     if grant_ls:

@@ -172,16 +172,21 @@ async def create_user(
 
     url = f"https://{auth.domo_instance}.domo.com/api/content/v3/users"
 
-    body = {"displayName": display_name, "detail": {
-        "email": email_address}, "roleId": role_id}
+    body = {"displayName": display_name,
+            "detail": {
+                "email": email_address},
+            "roleId": role_id
+            }
 
     return await gd.get_data(
-        url=url, method="POST", body=body,
+        url=url,
+        method="POST",
+        body=body,
         auth=auth, debug_api=debug_api, session=session
     )
 
 
-# %% ../../nbs/routes/user.ipynb 22
+# %% ../../nbs/routes/user.ipynb 23
 async def set_user_landing_page(
     auth: dmda.DomoAuth, user_id: str, page_id: str, debug_api: bool = False
 ):
@@ -197,7 +202,7 @@ async def set_user_landing_page(
     )
 
 
-# %% ../../nbs/routes/user.ipynb 23
+# %% ../../nbs/routes/user.ipynb 24
 async def reset_password(
     auth: dmda.DomoAuth,
     user_id: str,
@@ -218,7 +223,7 @@ async def reset_password(
     )
 
 
-# %% ../../nbs/routes/user.ipynb 24
+# %% ../../nbs/routes/user.ipynb 25
 async def request_password_reset(
     domo_instance: str, 
     email: str, locale="en-us", debug_api: bool = False,
@@ -233,7 +238,7 @@ async def request_password_reset(
     )
 
 
-# %% ../../nbs/routes/user.ipynb 26
+# %% ../../nbs/routes/user.ipynb 27
 class UserProperty_Type(Enum):
     display_name = "displayName"
     email_address = "emailAddress"
@@ -267,13 +272,13 @@ class UserProperty:
             "values": self._valid_value(self.values),
         }
 
-# %% ../../nbs/routes/user.ipynb 27
+# %% ../../nbs/routes/user.ipynb 28
 def generate_patch_user_property_body(user_property_ls: [UserProperty]):
     return {
         "attributes": [user_property.to_json() for user_property in user_property_ls]
     }
 
-# %% ../../nbs/routes/user.ipynb 30
+# %% ../../nbs/routes/user.ipynb 31
 async def update_user(
     user_id: str,
     user_property_ls: [UserProperty],
