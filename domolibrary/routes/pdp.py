@@ -67,6 +67,7 @@ async def get_pdp_policies(
 # %% ../../nbs/routes/pdp.ipynb 11
 def generate_policy_parameter_simple(
     column_name: str,
+    type: str = "COLUMN",
     column_values_ls: list[str] = None,
     operator="EQUALS",
     ignore_case: bool = True,
@@ -75,7 +76,7 @@ def generate_policy_parameter_simple(
         column_values_ls = [column_values_ls]
 
     return {
-        "type": "COLUMN",
+        "type": type,
         "name": column_name,
         "values": column_values_ls,
         "operator": operator,
