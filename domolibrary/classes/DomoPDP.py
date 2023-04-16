@@ -40,14 +40,14 @@ class PDP_Parameter:
 
 # %% ../../nbs/classes/50_DomoPDP.ipynb 5
 @patch_to(PDP_Parameter)
-# def generate_parameter_simple(column_name, column_values_list, operator='EQUALS', ignore_case: bool = True):
 def generate_parameter_simple(obj):
 
         return pdp_routes.generate_policy_parameter_simple(column_name=obj.name,
+                                                           type=obj.type,
                                                            column_values_ls=obj.values,
                                                            operator=obj.operator,
-                                                           ignore_case=obj.ignoreCase,
-                                                           type=obj.type)
+                                                           ignore_case=obj.ignoreCase
+                                                           )
 
 # %% ../../nbs/classes/50_DomoPDP.ipynb 7
 @dataclass
@@ -56,11 +56,10 @@ class PDP_Policy:
     filter_group_id: str
     name: str
     #resources: list
-    parameters_ls: list
-    user_ls: list
-    group_ls: list
-    virtual_user_ls: list
-    
+    parameters_ls: list[dict]
+    user_ls: list[str]
+    group_ls: list[str]
+    virtual_user_ls: list[str]
 
     @classmethod
     def _from_json(cls, obj):
@@ -75,23 +74,6 @@ class PDP_Policy:
                    group_ls=dd.groupIds,
                    virtual_user_ls=dd.virtualUserIds)
 
-    # @staticmethod
-    # def generate_parameter_simple(column_name, column_values_list, operator='EQUALS', ignore_case: bool = True):
-    #     return pdp_routes.generate_policy_parameter_simple(column_name=column_name,
-    #                                                        column_values_list=column_values_list,
-    #                                                        operator=operator,
-    #                                                        ignore_case=ignore_case)
-
-    # @staticmethod
-    # def generate_body(policy_name, dataset_id, parameters_list, policy_id=None, user_ids=None, group_ids=None, virtual_user_ids=None):
-    #     return pdp_routes.generate_policy_body(policy_name=policy_name,
-    #                                            dataset_id=dataset_id,
-    #                                            parameters_list=parameters_list,
-    #                                            policy_id=policy_id,
-    #                                            user_ids=user_ids,
-    #                                            group_ids=group_ids,
-    #                                            virtual_user_ids=virtual_user_ids)
-
     @classmethod
     async def upsert_policy(cls, 
                             auth: dmda.DomoAuth,
@@ -101,18 +83,17 @@ class PDP_Policy:
                             debug_prn: bool = False
                             ):
         
-        # print(policy_definition)
-        
-        if policy_definition.get('filterGroupId'):
+        #print(policy_definition)
+        policy_id = policy_definition.get('filterGroupId')
+        if policy_id:
             if debug_prn:
-                print(f'Updating policy in {auth.domo_instance}')    
+                print(f'Updating policy {policy_id} in {auth.domo_instance}')    
             res = await pdp_routes.update_policy(auth=auth,
                                                  dataset_id=dataset_id,
-                                                 filter_group_id=policy_definition.get(
-                                                     'filterGroupId'),
+                                                 policy_id=policy_id,
                                                  body=policy_definition,
                                                  debug_api=debug_api)
-            return cls._from_json(res.response)
+            return res
         else:
             if debug_prn:
                 print(f'Policy does not exist. Creating policy in {auth.domo_instance}')
@@ -120,8 +101,7 @@ class PDP_Policy:
                                                  dataset_id=dataset_id,
                                                  body=policy_definition,
                                                  debug_api=debug_api)
-
-            return cls._from_json(res.response)
+            return res
     
 
 # %% ../../nbs/classes/50_DomoPDP.ipynb 8
@@ -131,7 +111,6 @@ def add_parameter(self: PDP_Policy, parameter_obj):
 
 # %% ../../nbs/classes/50_DomoPDP.ipynb 9
 @patch_to(PDP_Policy)
-#def generate_body(policy_name, dataset_id, parameters_list, policy_id=None, user_ids=None, group_ids=None, virtual_user_ids=None):
 def generate_body(
         self: PDP_Policy, 
         #params: list[dict] = ''
@@ -155,7 +134,31 @@ class Dataset_PDP_Policies:
         self.dataset = dataset
         self.policies = []
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 22
+# %% ../../nbs/classes/50_DomoPDP.ipynb 12
+@patch_to(Dataset_PDP_Policies)
+async def get_policies(
+        self: Dataset_PDP_Policies, 
+        auth: dmda.DomoAuth = None, 
+        dataset_id: str = None, 
+        return_raw: bool = False,
+        debug_api: bool = False
+    ):
+
+        dataset_id = dataset_id or self.dataset.id
+        auth = auth or self.dataset.auth
+
+        res = await pdp_routes.get_pdp_policies(auth=auth, dataset_id=dataset_id, debug_api=debug_api)
+
+        if return_raw:
+              return res
+
+        if res.status == 200:
+            domo_policy = [PDP_Policy._from_json(
+                policy_obj) for policy_obj in res.response]
+            self.policies = domo_policy
+            return domo_policy
+
+# %% ../../nbs/classes/50_DomoPDP.ipynb 20
 class SearchPDP_NotFound(de.DomoError):
     def __init__(self, 
                  domo_instance,
@@ -223,7 +226,7 @@ async def search_pdp_policies(
     return policy_search    
     
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 26
+# %% ../../nbs/classes/50_DomoPDP.ipynb 24
 @patch_to(Dataset_PDP_Policies, cls_method=True)
 async def toggle_dataset_pdp(
     cls: Dataset_PDP_Policies,
