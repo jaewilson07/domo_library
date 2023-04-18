@@ -271,6 +271,16 @@ async def get_group_membership(
     res.response = res.response.get('groupUserList')
     return res
 
+# %% ../../nbs/routes/group.ipynb 30
+def generate_body_update_group_membership_entity(id: Union[str, int],
+                                                 type: str  # USER or GROUP
+                                                 ):
+    if type == 'USER':
+        return {"type": "USER", "id": str(id)}
+    elif type == 'GROUP':
+        return {"type": "GROUP", "id": int(id)}
+
+
 # %% ../../nbs/routes/group.ipynb 31
 def generate_body_update_group_membership(group_id: str,
                                           add_member_arr: list[str] = None,

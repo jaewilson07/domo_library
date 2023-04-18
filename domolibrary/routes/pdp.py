@@ -2,7 +2,7 @@
 
 # %% auto 0
 __all__ = ['PDP_NotRetrieved', 'get_pdp_policies', 'generate_policy_parameter_simple', 'generate_policy_body',
-           'CreatePolicy_Error', 'create_policy', 'update_policy', 'toggle_pdp']
+           'CreatePolicy_Error', 'create_policy', 'update_policy', 'delete_policy', 'toggle_pdp']
 
 # %% ../../nbs/routes/pdp.ipynb 2
 import httpx
@@ -121,7 +121,7 @@ def generate_policy_body(
 
     return body
 
-# %% ../../nbs/routes/pdp.ipynb 14
+# %% ../../nbs/routes/pdp.ipynb 15
 class CreatePolicy_Error(de.DomoError):
     def __init__(self, status, message, domo_instance, function_name = "create_policy"):
         super().__init__(function_name = function_name, status = status, message = message , domo_instance = domo_instance)
@@ -178,7 +178,7 @@ async def create_policy(
 
     return res
 
-# %% ../../nbs/routes/pdp.ipynb 18
+# %% ../../nbs/routes/pdp.ipynb 23
 async def update_policy(
     auth: dmda.DomoAuth,
     dataset_id: str,
@@ -204,7 +204,31 @@ async def update_policy(
 
     return res
 
-# %% ../../nbs/routes/pdp.ipynb 21
+# %% ../../nbs/routes/pdp.ipynb 27
+async def delete_policy(
+    auth: dmda.DomoAuth,
+    dataset_id: str = None,
+    policy_id: str = None,
+    session: httpx.AsyncClient = None,
+    debug_api: bool = False,
+) -> rgd.ResponseGetData:
+
+    url = f"https://{auth.domo_instance}.domo.com/api/query/v1/data-control/{dataset_id}/filter-groups/{policy_id}"
+
+    if debug_api:
+        print(url)
+
+    res = await gd.get_data(
+        auth=auth,
+        url=url,
+        method="DELETE",
+        debug_api=debug_api,
+        session=session,
+    )
+
+    return res
+
+# %% ../../nbs/routes/pdp.ipynb 31
 async def toggle_pdp(
         auth: dmda.DomoAuth,
         dataset_id: str,
