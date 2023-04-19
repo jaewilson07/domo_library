@@ -172,6 +172,36 @@ async def get_owners(
     # return domo_users
 
 
+# %% ../../nbs/classes/50_DomoGroup.ipynb 7
+@patch_to(GroupMembership)
+async def get_members(
+    self: GroupMembership,
+    auth: dmda.DomoAuth = None,
+    return_raw: bool = False,
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+):
+    import domolibrary.classes.DomoUser as dmu
+
+    auth = auth or self.group.auth
+
+    self._current_member_ls = []
+
+    res = await group_routes.get_group_membership(group_id=self.group.id, auth=self.group.auth)
+    if return_raw:
+        return res
+    
+    user_ids = [obj.get('userId') for obj in res.response ]
+    if user_ids:
+        domo_users = await dmu.DomoUsers.by_id(user_ids=user_ids, auth=auth, only_allow_one = False)
+        self._current_member_ls += domo_users
+
+    self.group.members_id_ls = user_ids
+    self.group.members_ls = self._current_member_ls
+
+    return self.group.members_ls
+
+
 # %% ../../nbs/classes/50_DomoGroup.ipynb 9
 @patch_to(GroupMembership)
 async def add_members(
@@ -389,7 +419,7 @@ async def get_by_id(
         return res
 
     if res.status != 200:
-        raise Error
+        raise Exception()
 
     dg = cls._from_group_json(auth=auth, json_obj=res.response)
 
