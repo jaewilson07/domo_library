@@ -294,18 +294,18 @@ def generate_body_update_group_membership(group_id: str,
 
     body = {"groupId": int(group_id)}
 
-    if add_owner_arr:
+    if add_owner_arr and len(add_owner_arr) > 0 :
         body.update({"addOwners": [generate_body_update_group_membership_entity(
             id=obj.get('id'), type=obj.get('type')) for obj in add_owner_arr]})
 
-    if remove_owner_arr:
+    if remove_owner_arr and len(remove_owner_arr) > 0:
         body.update({"removeOwners": [generate_body_update_group_membership_entity(
             id=obj.get('id'), type=obj.get('type')) for obj in remove_owner_arr]})
 
-    if remove_member_arr:
+    if remove_member_arr and len(remove_member_arr) > 0:
         body.update({"removeMembers": [
                     generate_body_update_group_membership_entity(id=obj.get('id'), type=obj.get('type')) for obj in remove_member_arr]})
-    if add_member_arr:
+    if add_member_arr and len(add_member_arr) > 0:
         body.update(
             {"addMembers": [generate_body_update_group_membership_entity(id=obj.get('id'), type=obj.get('type')) for obj in add_member_arr]})
 

@@ -16,16 +16,15 @@ from fastcore.basics import patch_to
 import httpx
 import pandas as pd
 
-#from ..utils.chunk_execution import chunk_list
-#from ..utils.DictDot import DictDot
 import domolibrary.utils.DictDot as util_dd
-#from . import DomoCertification as dmdc
-#from .DomoAuth import DomoDeveloperAuth, DomoFullAuth
 import domolibrary.client.DomoAuth as dmda
-#from .routes import pdp_routes
 import domolibrary.routes.pdp as pdp_routes
 import domolibrary.client.DomoError as de
 import domolibrary.classes.DomoDataset as dmd
+
+#from ..utils.chunk_execution import chunk_list
+#from ..utils.DictDot import DictDot
+#from . import DomoCertification as dmdc
 
 
 
