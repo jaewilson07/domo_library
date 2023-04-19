@@ -93,12 +93,17 @@ class GroupMembership:
         return self._add_to_list(member, self._add_member_ls, debug_prn)
 
     def _remove_member(self, member, debug_prn: bool = False):
+        if type(member).__name__ == 'DomoGroup' and member.type == 'system':
+            return
         return self._add_to_list(member, self._remove_member_ls, debug_prn)
 
     def _add_owner(self, member, debug_prn: bool = False):
         return self._add_to_list(member, self._add_owner_ls, debug_prn)
 
     def _remove_owner(self, member, debug_prn: bool = False):
+        if type(member).__name__ == 'DomoGroup' and member.type == 'system':
+
+            return23
         return self._add_to_list(member, self._remove_owner_ls, debug_prn)
 
     def _reset_obj(self):
