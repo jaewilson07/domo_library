@@ -230,7 +230,7 @@ async def set_members(
     return await self.get_members()
 
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 11
+# %% ../../nbs/classes/50_DomoGroup.ipynb 10
 @patch_to(GroupMembership)
 async def add_owners(
     self: GroupMembership,
@@ -297,7 +297,7 @@ async def set_owners(
     return await self.get_owners()
 
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 13
+# %% ../../nbs/classes/50_DomoGroup.ipynb 12
 @dataclass
 class DomoGroup:
     auth: dmda.DomoAuth = field(repr=False, default=None)
@@ -389,7 +389,36 @@ async def get_by_id(
     return dg
 
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 38
+# %% ../../nbs/classes/50_DomoGroup.ipynb 17
+@patch_to(DomoGroup, cls_method=True)
+async def search_by_name(
+    cls,
+    auth: dmda.DomoAuth,
+    group_name: str,
+    is_exact_match: bool = True,
+    return_raw: bool = False,
+    debug_api: bool = False,
+    debug_prn: bool = False,
+    session: httpx.AsyncClient = None,
+):
+    
+    res = await group_routes.search_groups_by_name(
+        auth=auth,
+        search_name=group_name,
+        debug_api=debug_api,
+        is_exact_match=is_exact_match,
+        session=session,
+    )
+
+    if return_raw:
+        return res
+
+    if isinstance(res.response, list):
+        return cls._groups_to_domo_group(res.response, auth)
+
+    return cls._from_group_json(auth=auth, json_obj=res.response)
+
+# %% ../../nbs/classes/50_DomoGroup.ipynb 39
 @patch_to(DomoGroup, cls_method=True)
 async def create_from_name(
     cls: DomoGroup,
@@ -414,60 +443,82 @@ async def create_from_name(
 
 
 # %% ../../nbs/classes/50_DomoGroup.ipynb 42
+@patch_to(DomoGroup)
+async def update_metadata(
+    self: DomoGroup,
+    auth: dmda.DomoAuth = None,
+
+    group_name: str = None,
+    group_type: str = None,  # use GroupType_Enum
+    description: str = None,
+    debug_api: bool = False,
+    return_raw: bool = False,
+    session: httpx.AsyncClient = None,
+):
+    auth = auth or self.auth
+    
+    res = await group_routes.update_group(
+        auth=auth,
+        group_id = self.id,
+        group_name = group_name,
+        group_type = group_type,
+        description = description,
+        debug_api = debug_api,
+        session = session)
+
+    if return_raw:
+        return res
+    
+    updated_group = await DomoGroup.get_by_id(auth = auth, group_id = self.id )
+    
+
+    self.name = updated_group.name or self.name
+    self.description = updated_group.description or self.description
+    self.type = updated_group.type or self.type
+
+    return self
+
+# %% ../../nbs/classes/50_DomoGroup.ipynb 45
 @patch_to(DomoGroup, cls_method=True)
-async def search_by_name(
-    cls,
+async def upsert(
+    cls: DomoGroup,
     auth: dmda.DomoAuth,
     group_name: str,
-    is_exact_match: bool = True,
-    create_if_not_exist: bool = False,  # will set is_exact_match = True if enabled
-    group_type: str = 'closed', # if create_group, use routes.class.GroupType_Enum
+    group_type: str = None, # if create_group, use routes.class.GroupType_Enum
     description: str = None,
-    return_raw : bool = False,
     debug_api: bool = False,
     debug_prn: bool = False,
     session: httpx.AsyncClient = None,
 ):
-
-    if create_if_not_exist:
-        is_exact_match = True
 
     try:
         res = await group_routes.search_groups_by_name(
             auth=auth,
             search_name=group_name,
             debug_api=debug_api,
-            is_exact_match=is_exact_match,
+            is_exact_match=True,
             session=session,
         )
 
-        if return_raw:
-            return res
+        domo_group = cls._from_group_json(auth=auth, json_obj=res.response)
         
-        if isinstance(res.response, list):
-            return cls._groups_to_domo_group(res.response, auth)
-
-        return cls._from_group_json(auth=auth, json_obj=res.response)
+        return await domo_group.update_metadata(
+            group_type = group_type,
+            description = description,
+            debug_api = debug_api)
 
     except group_routes.SearchGroups_Error as e:
         
-        if create_if_not_exist:
-            return await DomoGroup.create_from_name(
-                
+        return await DomoGroup.create_from_name(
                 auth=auth, 
                 group_name=group_name, 
                 group_type = group_type,
                 description = description,
-                debug_api=debug_api, session=session
-        )
+                debug_api=debug_api, session=session)
 
         return e
-    except Exception as e:
-        print('why are ou thre?"')
 
-
-
-# %% ../../nbs/classes/50_DomoGroup.ipynb 46
+# %% ../../nbs/classes/50_DomoGroup.ipynb 49
 class DomoGroups:
     def __init__(self):
         pass
@@ -480,7 +531,7 @@ class DomoGroups:
             for json_obj in json_list
         ]
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 47
+# %% ../../nbs/classes/50_DomoGroup.ipynb 50
 @patch_to(DomoGroups, cls_method=True)
 async def get_all_groups(
     cls: DomoGroups,
