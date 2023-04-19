@@ -94,6 +94,8 @@ class GroupMembership:
 
     def _remove_member(self, member, debug_prn: bool = False):
         if type(member).__name__ == 'DomoGroup' and member.type == 'system':
+            if debug_prn:
+                print(f"remove_owner - skipping {member.name} type is {member.type}")
             return
         return self._add_to_list(member, self._remove_member_ls, debug_prn)
 
@@ -102,8 +104,10 @@ class GroupMembership:
 
     def _remove_owner(self, member, debug_prn: bool = False):
         if type(member).__name__ == 'DomoGroup' and member.type == 'system':
-
-            return23
+            if debug_prn:
+                print(f"remove_owner - skipping {member.name} type is {member.type}")
+            return
+            
         return self._add_to_list(member, self._remove_owner_ls, debug_prn)
 
     def _reset_obj(self):
