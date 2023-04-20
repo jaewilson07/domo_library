@@ -2,7 +2,7 @@
 
 # %% auto 0
 __all__ = ['DomoRole', 'SetRoleGrants_MissingGrants', 'AddUser_Error', 'DeleteRole_Error', 'DomoRoles', 'SearchRole_NotFound',
-           'CreateRole_Error', 'set_as_default_role']
+           'CreateRole_Error']
 
 # %% ../../nbs/classes/50_DomoRole.ipynb 2
 from dataclasses import dataclass, field
@@ -455,7 +455,8 @@ async def upsert_role(cls: DomoRoles,
 
 
 # %% ../../nbs/classes/50_DomoRole.ipynb 44
-async def set_as_default_role(self, debug_api: bool = False, session : httpx.AsyncClient = None):
+@patch_to(DomoRole)
+async def set_as_default_role(self: DomoRole, debug_api: bool = False, session : httpx.AsyncClient = None):
     return await role_routes.set_default_role(auth=self.auth,
                                                 role_id=self.id,
                                                 debug_api=debug_api, session = session
