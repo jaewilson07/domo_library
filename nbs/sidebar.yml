@@ -78,11 +78,19 @@ website:
               - section: 2023-04-03_AutomatedTagging
                 contents:
                   - projects/posts/2023-04-03_AutomatedTagging/index.ipynb
+      - section: projects
+        contents:
+          - section: posts
+            contents:
+              - section: 2023-04-14_BackupCards
+                contents:
+                  - projects/posts/2023-04-14_BackupCards/index.ipynb
       - section: routes
         contents:
           - routes/account.ipynb
           - routes/activity_log.ipynb
           - routes/bootstrap.ipynb
+          - routes/card.ipynb
           - routes/datacenter.ipynb
           - routes/dataflow.ipynb
           - routes/dataset.ipynb

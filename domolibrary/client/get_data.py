@@ -15,6 +15,7 @@ import asyncio
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoError as de
+import time
 
 
 # %% ../../nbs/client/10_get_data.ipynb 3
@@ -248,7 +249,8 @@ async def looper(
     maximum=2000,
     debug_api: bool = False,
     debug_loop: bool = False,
-    timeout : bool = 10
+    timeout : bool = 10,
+    wait_sleep : int = 0
 ) -> rgd.ResponseGetData:
 
     maximum = maximum or 0
@@ -338,6 +340,8 @@ async def looper(
 
         if debug_loop:
             print(f"skip: {skip}, limit: {limit}")
+        
+        time.sleep(wait_sleep)
 
     if is_close_session:
         await session.aclose()
