@@ -27,6 +27,8 @@ class DomoUser:
     """a class for interacting with a Domo User"""
 
     id: str
+    title: str = None
+    department: str = None
     display_name: str = None
     email_address: str = None
     role_id: str = None
@@ -54,6 +56,8 @@ class DomoUser:
             auth=auth,
             id=str(user_dd.id or user_dd.userId),
             display_name=user_dd.displayName,
+            title = user_dd.title,
+            department = user_dd.department,
             email_address=user_dd.emailAddress or user_dd.email,
             role_id=user_dd.roleId,
         )
@@ -139,6 +143,7 @@ class DomoUsers:
 async def all_users(
     cls: DomoUsers,
     auth: dmda.DomoAuth,
+    return_raw: bool = False,
     debug_api: bool = False,
     debug_prn: bool = False,
     debug_log: bool = False,
@@ -149,6 +154,9 @@ async def all_users(
     logger = logger or lc.Logger(app_name="all_users")
 
     res = await user_routes.get_all_users(auth=auth, debug_api=debug_api)
+
+    if return_raw:
+        return res
 
     if not res.is_success:
         return None

@@ -109,3 +109,25 @@ async def get_by_id(cls: DomoPage,
 
     return pg
 
+
+# %% ../../nbs/classes/50_DomoPage.ipynb 10
+@patch_to(DomoPage)
+async def get_accesslist(self,
+                         auth: dmda.DomoAuth = None,
+                         return_raw: bool = False,
+                         debug_api: bool = False):
+
+    auth = auth or self.auth
+
+    res = await page_routes.get_page_accesslist(auth=auth,
+                                                page_id=self.id, 
+                                                debug_api=debug_api
+                                                )
+    
+    if return_raw:
+        return res
+
+    import domolibrary.classes.DomoUser as dmu
+    
+    return res
+
