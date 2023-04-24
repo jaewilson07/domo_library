@@ -54,7 +54,8 @@ async def get_account_from_id(auth: dmda.DomoAuth, account_id: int,
         url=url,
         method='GET',
         debug_api=debug_api,
-        session=session
+        session=session, 
+        timeout = 20 # occasionally this API has a long response time
     )
 
     if not res.is_success and (res.response == 'Forbidden' or res.response == 'Not Found'):

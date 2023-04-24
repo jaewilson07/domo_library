@@ -114,20 +114,33 @@ async def get_by_id(cls: DomoPage,
 @patch_to(DomoPage)
 async def get_accesslist(self,
                          auth: dmda.DomoAuth = None,
+                         is_expand_users: bool = False,
                          return_raw: bool = False,
                          debug_api: bool = False):
 
     auth = auth or self.auth
 
-    res = await page_routes.get_page_accesslist(auth=auth,
-                                                page_id=self.id, 
+    res = await page_routes.get_page_access_list(auth=auth,
+                                                is_expand_users=is_expand_users,
+                                                page_id=self.id,
                                                 debug_api=debug_api
                                                 )
-    
+
     if return_raw:
         return res
 
+    if not res.is_success :
+        raise Exception('error getting access list')
+
     import domolibrary.classes.DomoUser as dmu
+    import domolibrary.classes.DomoGroup as dmg
     
-    return res
+    tasks = await asyncio.gather( 
+        dmu.DomoUsers.by_id(user_ids=[user.get('id') for user in res.response.get('users')], only_allow_one=False, auth=auth),
+        * [ dmg.DomoGroup.get_by_id( group_id = group.get('id'), auth = auth) for group in res.response.get('groups')]
+    )
+    
+    res.response.update({'users': tasks[0], 'groups': tasks[1:]})
+
+    return res.response
 
