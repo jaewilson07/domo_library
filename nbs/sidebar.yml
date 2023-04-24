@@ -33,6 +33,7 @@ website:
           - classes/50_DomoDataflow.ipynb
           - classes/50_DomoDataset.ipynb
           - classes/50_DomoGrant.ipynb
+          - classes/50_DomoGroup.ipynb
           - classes/50_DomoInstanceConfig.ipynb
           - classes/50_DomoPDP.ipynb
           - classes/50_DomoPage.ipynb
@@ -97,6 +98,7 @@ website:
           - routes/grant.ipynb
           - routes/group.ipynb
           - routes/instance_config.ipynb
+          - routes/page.ipynb
           - routes/pdp.ipynb
           - routes/publish.ipynb
           - routes/role.ipynb
