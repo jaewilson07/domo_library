@@ -4,7 +4,7 @@
 __all__ = ['DomoUser', 'DomoUsers', 'CreateUser_MissingRole']
 
 # %% ../../nbs/classes/50_DomoUser.ipynb 3
-from fastcore.basics import patch_to
+from ..routes.user import UserProperty, UserProperty_Type
 
 
 # %% ../../nbs/classes/50_DomoUser.ipynb 4
@@ -12,6 +12,7 @@ import datetime as dt
 from dataclasses import dataclass, field
 from typing import Optional
 import httpx
+from fastcore.basics import patch_to
 
 from pprint import pprint
 
@@ -32,6 +33,14 @@ class DomoUser:
     display_name: str = None
     email_address: str = None
     role_id: str = None
+
+    phone_number : str = None
+    web_landing_page : str = None
+    web_mobile_landing_page: str = None
+    employee_id : str = None
+    employee_number : str = None
+    hire_date : str = None
+    reports_to : str = None
 
     publisher_domain: str = None
     subscriber_domain: str = None
@@ -60,6 +69,14 @@ class DomoUser:
             department = user_dd.department,
             email_address=user_dd.emailAddress or user_dd.email,
             role_id=user_dd.roleId,
+            
+            phone_number= user_dd.phoneNumber,
+            web_landing_page=user_dd.webLandingPage,
+            web_mobile_landing_page= user_dd.webMobileLandingPage,
+            employee_id=user_dd.employeeId,
+            employee_number= user_dd.employeeNumber,
+            hire_date=user_dd.hireDate,
+            reports_to=user_dd.reportsTo
         )
 
     @classmethod
@@ -84,6 +101,21 @@ class DomoUser:
         return cls(id=dd.id, display_name=dd.displayName, auth=auth)
 
 # %% ../../nbs/classes/50_DomoUser.ipynb 8
+@patch_to(DomoUser, cls_method= True)
+async def get_by_id(cls: DomoUser, user_id, auth :dmda.DomoAuth, debug_api: bool = False, session : httpx.AsyncClient = None):
+
+
+    res = await user_routes.get_by_id(
+        auth=auth, user_id=user_id, debug_api=debug_api, session = session
+    )
+
+    if not res.is_success:
+        raise Exception(res.response)
+
+    return cls._from_search_json(user_obj = res.response, auth = auth)
+
+
+# %% ../../nbs/classes/50_DomoUser.ipynb 10
 @patch_to(DomoUser)
 async def reset_password(self: DomoUser, new_password: str, debug_api: bool = False):
     """reset your password, will respect password restrictions set up in the Domo UI"""
@@ -94,7 +126,7 @@ async def reset_password(self: DomoUser, new_password: str, debug_api: bool = Fa
 
     return res
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 9
+# %% ../../nbs/classes/50_DomoUser.ipynb 11
 @patch_to(DomoUser, cls_method=True)
 async def request_password_reset(
     cls,
@@ -114,7 +146,7 @@ async def request_password_reset(
         session=session,
     )
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 13
+# %% ../../nbs/classes/50_DomoUser.ipynb 17
 @dataclass
 class DomoUsers:
     """a class for searching for Users"""
@@ -138,7 +170,7 @@ class DomoUsers:
     def _generate_logger(self, logger: Optional[lc.Logger] = None):
         self.logger = logger or self.logger or lc.Logger(app_name = "domo_users")
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 15
+# %% ../../nbs/classes/50_DomoUser.ipynb 19
 @patch_to(DomoUsers, cls_method=True)
 async def all_users(
     cls: DomoUsers,
@@ -172,7 +204,7 @@ async def all_users(
     return cls._users_to_domo_user(user_ls=users_ls, auth=auth)
 
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 18
+# %% ../../nbs/classes/50_DomoUser.ipynb 22
 @patch_to(DomoUsers, cls_method=True)
 async def by_id(
     cls: DomoUsers,
@@ -207,7 +239,7 @@ async def by_id(
 
     return domo_users
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 21
+# %% ../../nbs/classes/50_DomoUser.ipynb 25
 @patch_to(DomoUsers, cls_method=True)
 def util_match_domo_users_to_emails(
     cls: DomoUsers, domo_users: list[DomoUser], user_email_ls: list[str]
@@ -286,7 +318,7 @@ async def by_email(
     return domo_users
 
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 24
+# %% ../../nbs/classes/50_DomoUser.ipynb 28
 @patch_to(DomoUsers, cls_method=True)
 async def virtual_user_by_subscriber_instance(
     cls: DomoUsers,
@@ -313,11 +345,12 @@ async def virtual_user_by_subscriber_instance(
     return domo_users[0]
 
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 28
+# %% ../../nbs/classes/50_DomoUser.ipynb 32
 class CreateUser_MissingRole(de.DomoError):
     def __init__(self, domo_instance, email_address):
         super().__init__(domo_instance= domo_instance, message = f"error creating user {email_address} missing role_id")
 
+# %% ../../nbs/classes/50_DomoUser.ipynb 33
 @patch_to(DomoUsers, cls_method=True)
 async def create_user(
     cls: DomoUsers,
@@ -363,7 +396,7 @@ async def create_user(
     return u
 
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 30
+# %% ../../nbs/classes/50_DomoUser.ipynb 35
 @patch_to(DomoUsers, cls_method=True)
 async def upsert_user(cls: DomoUsers,
                       auth: dmda.DomoAuth,
@@ -393,12 +426,15 @@ async def upsert_user(cls: DomoUsers,
                 user_property_ls.append(user_routes.UserProperty(
                     user_routes.UserProperty_Type.role_id, role_id))
 
-            return await user_routes.update_user(
+            res = await user_routes.update_user(
                 user_id=domo_user.id,
                 user_property_ls=user_property_ls,
                 auth=auth,
                 debug_api=debug_api
             )
+        return await DomoUsers.by_id( auth=auth, user_ids=[domo_user.id])
+        
+        
 
     except user_routes.SearchUser_NoResults as e:
         if debug_prn:

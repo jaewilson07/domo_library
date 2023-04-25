@@ -16,15 +16,16 @@ from fastcore.basics import patch_to
 import httpx
 import pandas as pd
 
+#from ..utils.chunk_execution import chunk_list
+#from ..utils.DictDot import DictDot
 import domolibrary.utils.DictDot as util_dd
+#from . import DomoCertification as dmdc
+#from .DomoAuth import DomoDeveloperAuth, DomoFullAuth
 import domolibrary.client.DomoAuth as dmda
+#from .routes import pdp_routes
 import domolibrary.routes.pdp as pdp_routes
 import domolibrary.client.DomoError as de
 import domolibrary.classes.DomoDataset as dmd
-
-#from ..utils.chunk_execution import chunk_list
-#from ..utils.DictDot import DictDot
-#from . import DomoCertification as dmdc
 
 
 
@@ -103,14 +104,9 @@ class PDP_Policy:
             return res
     
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 8
-@patch_to(PDP_Policy)
-def add_parameter(self: PDP_Policy, parameter_obj):
-    self.parameters.concat(parameter_obj)
-
 # %% ../../nbs/classes/50_DomoPDP.ipynb 9
 @patch_to(PDP_Policy)
-def generate_body(
+def generate_body_from_policy(
         self: PDP_Policy, 
         #params: list[dict] = ''
         ):
@@ -157,7 +153,7 @@ async def get_policies(
             self.policies = domo_policy
             return domo_policy
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 21
+# %% ../../nbs/classes/50_DomoPDP.ipynb 22
 class SearchPDP_NotFound(de.DomoError):
     def __init__(self, 
                  domo_instance,
@@ -225,7 +221,7 @@ async def search_pdp_policies(
     return policy_search    
     
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 25
+# %% ../../nbs/classes/50_DomoPDP.ipynb 26
 @patch_to(PDP_Policy)
 async def delete_policy(
     self: PDP_Policy, 
@@ -242,10 +238,10 @@ async def delete_policy(
     
     return res
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 29
-@patch_to(Dataset_PDP_Policies, cls_method=True)
+# %% ../../nbs/classes/50_DomoPDP.ipynb 30
+@patch_to(Dataset_PDP_Policies)
 async def toggle_dataset_pdp(
-    cls: Dataset_PDP_Policies,
+    self: Dataset_PDP_Policies,
     auth: dmda.DomoAuth,
     dataset_id: str = None,
     is_enable: bool = True, # True will enable pdp, False will disable pdp
@@ -254,97 +250,8 @@ async def toggle_dataset_pdp(
 ):
 
     return await pdp_routes.toggle_pdp(
-        auth=auth,
-        dataset_id=dataset_id,
-        is_enable=is_enable,
-        debug_api=debug_api,
-        session=session
-    )
-
-
-
-# %% ../../nbs/classes/50_DomoPDP.ipynb 35
-class SearchPDP_NotFound(de.DomoError):
-    def __init__(self, 
-                 domo_instance,
-                 dataset_id,
-                 message='not found',
-                 function_name='search_pdp'):
-
-        super().__init__(domo_instance=domo_instance, entity_id=dataset_id, message=message, function_name=function_name)
-         
-@patch_to(Dataset_PDP_Policies, cls_method=True)
-async def search_pdp_policies(
-    cls: Dataset_PDP_Policies,
-    auth: dmda.DomoAuth,
-    search: str,
-    dataset_id: str = None,
-    search_method: str = 'id' or 'name',
-    is_exact_match: bool = True,
-    return_raw: bool = False, 
-    debug_api: bool = False,
-    session: httpx.AsyncClient = None
-):
-    
-    all_pdp_policies = await Dataset_PDP_Policies(cls).get_policies(
-        auth = auth,
-        dataset_id = dataset_id,
-        debug_api=debug_api
-    )
-    
-    if return_raw:
-        return all_pdp_polcies
-
-    if search_method == 'name':
-        if is_exact_match:
-            policy_search = next((policy for policy in all_pdp_policies if policy.name == search), None)
-            #print(policy_search)   
-            
-            if not policy_search:
-                raise SearchPDP_NotFound(
-                    dataset_id=dataset_id,
-                    message=f'There is no policy named "{search}" on dataset_id {dataset_id}',
-                    domo_instance=auth.domo_instance
-                )  
-            
-            return policy_search
-        else:
-            policy_search = [policy for policy in all_pdp_policies if search.lower() in policy.name.lower()]
-            if not policy_search:
-                raise SearchPDP_NotFound(
-                    dataset_id=dataset_id,
-                    message=f'There is no policy name containing "{search}" on dataset_id {dataset_id}',
-                    domo_instance=auth.domo_instance
-                )  
-            
-            return policy_search
-    else:
-        policy_search = next((policy for policy in all_pdp_policies if policy.filter_group_id == search), None)
-         
-    if not policy_search:
-        raise SearchPDP_NotFound(
-            dataset_id=dataset_id,
-            message=f'There is no policy id "{search}" on dataset_id {dataset_id}',
-            domo_instance=auth.domo_instance
-        )  
-          
-    return policy_search    
-    
-
-# %% ../../nbs/classes/50_DomoPDP.ipynb 39
-@patch_to(Dataset_PDP_Policies, cls_method=True)
-async def toggle_dataset_pdp(
-    cls: Dataset_PDP_Policies,
-    auth: dmda.DomoAuth,
-    dataset_id: str = None,
-    is_enable: bool = True, # True will enable pdp, False will disable pdp
-    debug_api: bool = False,
-    session: httpx.AsyncClient = None
-):
-
-    return await pdp_routes.toggle_pdp(
-        auth=auth,
-        dataset_id=dataset_id,
+        auth=auth or self.auth,
+        dataset_id=dataset_id or self.dataset_id,
         is_enable=is_enable,
         debug_api=debug_api,
         session=session
