@@ -146,6 +146,29 @@ async def request_password_reset(
         session=session,
     )
 
+# %% ../../nbs/classes/50_DomoUser.ipynb 13
+@patch_to(DomoUser)
+async def update_properties(
+    self: DomoUser,
+    property_ls: [UserProperty],
+    auth: dmda.DomoAuth = None,
+    debug_api: bool = False,
+    session : httpx.AsyncClient = None
+):
+    auth = auth or self.auth
+
+    res = await user_routes.update_user(
+        auth=auth,
+        user_id=self.id or user_id,
+        user_property_ls = property_ls,
+        debug_api=debug_api,
+        session = session
+    )
+
+    self = await DomoUser.get_by_id(user_id =1681443709, auth = token_auth)
+
+    return self
+
 # %% ../../nbs/classes/50_DomoUser.ipynb 17
 @dataclass
 class DomoUsers:
