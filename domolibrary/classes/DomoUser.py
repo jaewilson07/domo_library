@@ -151,6 +151,7 @@ async def request_password_reset(
 async def update_properties(
     self: DomoUser,
     property_ls: [UserProperty],
+    return_raw: bool = False,
     auth: dmda.DomoAuth = None,
     debug_api: bool = False,
     session : httpx.AsyncClient = None
@@ -159,13 +160,15 @@ async def update_properties(
 
     res = await user_routes.update_user(
         auth=auth,
-        user_id=self.id or user_id,
+        user_id=self.id,
         user_property_ls = property_ls,
         debug_api=debug_api,
         session = session
     )
+    if return_raw:
+        return res
 
-    self = await DomoUser.get_by_id(user_id =1681443709, auth = token_auth)
+    self = await DomoUser.get_by_id(user_id =1681443709, auth = auth)
 
     return self
 
@@ -235,7 +238,7 @@ async def by_id(
     auth: dmda.DomoAuth,
     only_allow_one: bool = True,
     debug_api: bool = False,
-    return_raw: bool = False,
+    return_raw: bool = False
 ) -> list:
 
     body = user_routes.generate_search_users_body_by_id(user_ids)
@@ -398,20 +401,17 @@ async def create_user(
     )
 
     if not res.is_success:
-        return None
+        raise Exception(res.response)
 
-    dd = util_dd.DictDot(res.response)
-    u = DomoUser(
+    u = await DomoUser.get_by_id(
         auth=auth,
-        id=dd.id or dd.userId,
-        display_name=dd.displayName,
-        email_address=dd.emailAddress,
+        user_id=res.response.get('id') or res.response.get('userId'),
     )
 
     if password:
         await u.reset_password(new_password=password)
 
-    if send_password_reset_email:
+    elif send_password_reset_email:
         await u.request_password_reset(
             domo_instance=auth.domo_instance, email=u.email_address
         )
@@ -448,14 +448,15 @@ async def upsert_user(cls: DomoUsers,
             if role_id:
                 user_property_ls.append(user_routes.UserProperty(
                     user_routes.UserProperty_Type.role_id, role_id))
-
-            res = await user_routes.update_user(
-                user_id=domo_user.id,
-                user_property_ls=user_property_ls,
-                auth=auth,
-                debug_api=debug_api
-            )
-        return await DomoUsers.by_id( auth=auth, user_ids=[domo_user.id])
+            
+            if user_property_ls:
+                res = await user_routes.update_user(
+                    user_id=domo_user.id,
+                    user_property_ls=user_property_ls,
+                    auth=auth,
+                    debug_api=debug_api
+                )
+        return await DomoUser.get_by_id( auth=auth, user_id=domo_user.id)
         
         
 
