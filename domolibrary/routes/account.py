@@ -54,7 +54,8 @@ async def get_account_from_id(auth: dmda.DomoAuth, account_id: int,
         url=url,
         method='GET',
         debug_api=debug_api,
-        session=session
+        session=session, 
+        timeout = 20 # occasionally this API has a long response time
     )
 
     if not res.is_success and (res.response == 'Forbidden' or res.response == 'Not Found'):
@@ -67,10 +68,11 @@ async def get_account_from_id(auth: dmda.DomoAuth, account_id: int,
 
 
 # %% ../../nbs/routes/account.ipynb 11
-class AccountConfig_InvalidDataProvider(Exception):
-    def __init__(self, account_id:str, data_provider_type:str, domo_instance: str):
-        message = f"Account - {account_id}, could not be retrieved with data_provider_type, '{data_provider_type}' from {domo_instance}"
-        super().__init__( message)
+class AccountConfig_InvalidDataProvider(de.DomoError):
+    def __init__(self, account_id:str, data_provider_type:str, status, domo_instance: str, function_name = 'route.get_account_config'):
+        message = f"account {account_id} with data_provider_type '{data_provider_type}' does not return a config"
+
+        super().__init__( message = message, status = status, function_name = function_name, domo_instance = domo_instance)
 
 async def get_account_config(auth: dmda.DomoAuth,
                              account_id: int,
@@ -91,8 +93,8 @@ async def get_account_config(auth: dmda.DomoAuth,
         session=session
     )
 
-    if res.response == {}:
-        raise AccountConfig_InvalidDataProvider(account_id= account_id, data_provider_type= data_provider_type, domo_instance=auth.domo_instance)
+    if res.response == {} and res.is_success:
+        raise AccountConfig_InvalidDataProvider(account_id= account_id, data_provider_type= data_provider_type, domo_instance=auth.domo_instance, status = res.status)
     
     return res
 

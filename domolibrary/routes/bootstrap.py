@@ -26,7 +26,7 @@ async def get_bootstrap(
     url = f"https://{auth.domo_instance}.domo.com/api/domoweb/bootstrap?v2Navigation=true"
 
     res = await gd.get_data(
-        url=url, method="GET", auth=auth, debug_api=debug_api, session=session
+        url=url, method="GET", auth=auth, debug_api=debug_api, session=session, is_follow_redirects = True
     )
 
     return res
