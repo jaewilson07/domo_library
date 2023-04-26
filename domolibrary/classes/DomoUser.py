@@ -101,18 +101,22 @@ class DomoUser:
         return cls(id=dd.id, display_name=dd.displayName, auth=auth)
 
 # %% ../../nbs/classes/50_DomoUser.ipynb 8
-@patch_to(DomoUser, cls_method= True)
-async def get_by_id(cls: DomoUser, user_id, auth :dmda.DomoAuth, debug_api: bool = False, session : httpx.AsyncClient = None):
-
+@patch_to(DomoUser, cls_method=True)
+async def get_by_id(cls: DomoUser, user_id, auth: dmda.DomoAuth,
+                    return_raw: bool = False,
+                    debug_api: bool = False, session: httpx.AsyncClient = None):
 
     res = await user_routes.get_by_id(
-        auth=auth, user_id=user_id, debug_api=debug_api, session = session
+        auth=auth, user_id=user_id, debug_api=debug_api, session=session
     )
+
+    if return_raw:
+        return res
 
     if not res.is_success:
         raise Exception(res.response)
-
-    return cls._from_search_json(user_obj = res.response, auth = auth)
+    
+    return cls._from_search_json(user_obj=res.response, auth=auth)
 
 
 # %% ../../nbs/classes/50_DomoUser.ipynb 10

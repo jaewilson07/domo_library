@@ -10,6 +10,7 @@ __all__ = ['get_all_users', 'get_by_id', 'generate_search_users_body_by_id', 'ge
 # %% ../../nbs/routes/user.ipynb 3
 from enum import Enum
 import httpx
+import asyncio
 
 import utils.DictDot as dd
 import domolibrary.client.get_data as gd
@@ -30,9 +31,20 @@ async def get_all_users(
 
 # %% ../../nbs/routes/user.ipynb 9
 async def get_by_id(user_id, auth: dmda.DomoAuth, debug_api: bool = False, session: httpx.AsyncClient = None):
-    url = f'https://{auth.domo_instance}.domo.com/api/content/v2/users/{user_id}'
+    v2_url = f'https://{auth.domo_instance}.domo.com/api/content/v2/users/{user_id}' # does not include role_id
 
-    return await gd.get_data(url=url, method="GET", auth=auth, debug_api=debug_api, session=session)
+    v3_url = f'https://{auth.domo_instance}.domo.com/api/content/v3/users/{user_id}'
+    
+    params = {'includeDetails' :True}
+
+    
+    res_v2, res_v3 = await asyncio.gather(gd.get_data(url=v2_url, method="GET", auth=auth, debug_api=debug_api, session=session, params=params) , 
+    gd.get_data(url=v3_url, method="GET", auth=auth, debug_api=debug_api, session=session, params=params))
+
+    res_v2.response.update({'roleId': res_v3.response.get('roleId')})
+
+    return res_v2
+
 
 
 # %% ../../nbs/routes/user.ipynb 11

@@ -69,10 +69,10 @@ async def get_account_from_id(auth: dmda.DomoAuth, account_id: int,
 
 # %% ../../nbs/routes/account.ipynb 11
 class AccountConfig_InvalidDataProvider(de.DomoError):
-    def __init__(self, account_id:str, data_provider_type:str, domo_instance: str, function_name = 'route.get_account_config'):
-        message = f"account data_provider_type '{data_provider_type}' did not return a config"
+    def __init__(self, account_id:str, data_provider_type:str, status, domo_instance: str, function_name = 'route.get_account_config'):
+        message = f"account {account_id} with data_provider_type '{data_provider_type}' does not return a config"
 
-        super().__init__(entity_id = account_id, message = message, function_name = function_name, domo_instance = domo_instance)
+        super().__init__( message = message, status = status, function_name = function_name, domo_instance = domo_instance)
 
 async def get_account_config(auth: dmda.DomoAuth,
                              account_id: int,
@@ -94,7 +94,7 @@ async def get_account_config(auth: dmda.DomoAuth,
     )
 
     if res.response == {} and res.is_success:
-        raise AccountConfig_InvalidDataProvider(account_id= account_id, data_provider_type= data_provider_type, domo_instance=auth.domo_instance)
+        raise AccountConfig_InvalidDataProvider(account_id= account_id, data_provider_type= data_provider_type, domo_instance=auth.domo_instance, status = res.status)
     
     return res
 
