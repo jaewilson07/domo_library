@@ -2,8 +2,8 @@
 
 # %% auto 0
 __all__ = ['DomoAccount_Config', 'DomoAccount_Config_AbstractCredential', 'DomoAccount_Config_DatasetCopy',
-           'DomoAccount_Config_Governance', 'DomoAccount_Config_HighBandwidthConnector', 'DomoAccount_Config_AmazonS3',
-           'DomoAccount_Config_AwsAthena', 'AccountConfig', 'DomoAccount',
+           'DomoAccount_Config_Governance', 'DomoAccount_Config_AmazonS3', 'DomoAccount_Config_AwsAthena',
+           'DomoAccount_Config_HighBandwidthConnector', 'AccountConfig', 'DomoAccount',
            'DomoAccount_DataProviderType_ConfigNotDefined', 'DomoAccount_UpdateName_Error',
            'DomoAccount_CreateAccount_Error', 'DomoAccount_DeleteAccount_Error', 'ShareAccount_AccessLevel',
            'DomoAccounts']
@@ -47,7 +47,7 @@ class DomoAccount_Config(ABC):
         pass
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 6
+# %% ../../nbs/classes/50_DomoAccount.ipynb 7
 @dataclass
 class DomoAccount_Config_AbstractCredential(DomoAccount_Config):
     data_provider_type = "abstract-credential-store"
@@ -66,7 +66,7 @@ class DomoAccount_Config_AbstractCredential(DomoAccount_Config):
         return {"credentials": self.credentials}
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 7
+# %% ../../nbs/classes/50_DomoAccount.ipynb 8
 @dataclass
 class DomoAccount_Config_DatasetCopy(DomoAccount_Config):
     domo_instance: str
@@ -85,7 +85,7 @@ class DomoAccount_Config_DatasetCopy(DomoAccount_Config):
         return {"accessToken": self.access_token, "instance": self.domo_instance}
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 8
+# %% ../../nbs/classes/50_DomoAccount.ipynb 9
 @dataclass
 class DomoAccount_Config_Governance(DomoAccount_Config):
     domo_instance: str
@@ -104,38 +104,7 @@ class DomoAccount_Config_Governance(DomoAccount_Config):
         return {"apikey": self.access_token, "customer": self.domo_instance}
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 9
-@dataclass
-class DomoAccount_Config_HighBandwidthConnector(DomoAccount_Config):
-    aws_access_key: str
-    aws_secret_key: str = field(repr=False)
-    s3_staging_dir: str
-
-    region: str = "us-west-2"
-    data_provider_type = "amazon-athena-high-bandwidth"
-
-    @classmethod
-    def _from_json(cls, obj):
-
-        dd = util_dd.DictDot(obj)
-
-        return cls(
-            aws_access_key=dd.awsAccessKey,
-            aws_secret_key=dd.awsSecretKey,
-            s3_staging_dir=dd.s3StagingDir,
-            region=dd.region,
-        )
-
-    def to_json(self):
-        return {
-            "awsAccessKey": self.aws_access_key,
-            "awsSecretKey": self.aws_secret_key,
-            "s3StagingDir": self.s3_staging_dir,
-            "region": self.region,
-        }
-
-
-# %% ../../nbs/classes/50_DomoAccount.ipynb 10
+# %% ../../nbs/classes/50_DomoAccount.ipynb 11
 @dataclass
 class DomoAccount_Config_AmazonS3(DomoAccount_Config):
     access_key: str
@@ -151,11 +120,10 @@ class DomoAccount_Config_AmazonS3(DomoAccount_Config):
         dd = util_dd.DictDot(obj)
 
         return cls(
-            aws_access_key=dd.awsAccessKey,
-            aws_secret_key=dd.awsSecretKey,
-            s3_staging_dir=dd.s3StagingDir,
+            access_key=dd.accessKey,
+            secret_key=dd.secretKey,
+            bucket=dd.bucket,
             region=dd.region,
-            workgroup=dd.workgroup,
         )
 
     def to_json(self):
@@ -169,7 +137,7 @@ class DomoAccount_Config_AmazonS3(DomoAccount_Config):
             "region": self.region,
         }
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 13
+# %% ../../nbs/classes/50_DomoAccount.ipynb 12
 @dataclass
 class DomoAccount_Config_AwsAthena(DomoAccount_Config):
     aws_access_key: str
@@ -202,7 +170,40 @@ class DomoAccount_Config_AwsAthena(DomoAccount_Config):
             "workgroup": self.workgroup,
         }
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 14
+# %% ../../nbs/classes/50_DomoAccount.ipynb 13
+@dataclass
+class DomoAccount_Config_HighBandwidthConnector(DomoAccount_Config):
+    """ this connector is not enabled by default contact your CSM / AE"""
+    
+    aws_access_key: str
+    aws_secret_key: str = field(repr=False)
+    s3_staging_dir: str
+
+    region: str = "us-west-2"
+    data_provider_type = "amazon-athena-high-bandwidth"
+
+    @classmethod
+    def _from_json(cls, obj):
+
+        dd = util_dd.DictDot(obj)
+
+        return cls(
+            aws_access_key=dd.awsAccessKey,
+            aws_secret_key=dd.awsSecretKey,
+            s3_staging_dir=dd.s3StagingDir,
+            region=dd.region,
+        )
+
+    def to_json(self):
+        return {
+            "awsAccessKey": self.aws_access_key,
+            "awsSecretKey": self.aws_secret_key,
+            "s3StagingDir": self.s3_staging_dir,
+            "region": self.region,
+        }
+
+
+# %% ../../nbs/classes/50_DomoAccount.ipynb 16
 class AccountConfig(Enum):
     """
     Enum provides appropriate spelling for data_provider_type and config object.
@@ -222,7 +223,7 @@ class AccountConfig(Enum):
     amazon_s3 = DomoAccount_Config_AmazonS3
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 16
+# %% ../../nbs/classes/50_DomoAccount.ipynb 18
 @dataclass
 class DomoAccount:
     name: str
@@ -250,7 +251,7 @@ class DomoAccount:
             auth=auth,
         )
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 17
+# %% ../../nbs/classes/50_DomoAccount.ipynb 19
 class DomoAccount_DataProviderType_ConfigNotDefined(de.DomoError):
     def __init__(
         self, account_id, data_provider_type, domo_instance, function_name="_get_config"
@@ -299,7 +300,7 @@ async def _get_config(
 
     return self.config
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 18
+# %% ../../nbs/classes/50_DomoAccount.ipynb 20
 @patch_to(DomoAccount, cls_method=True)
 async def get_from_id(
     cls,
@@ -337,7 +338,7 @@ async def get_from_id(
     finally:
         return acc
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 22
+# %% ../../nbs/classes/50_DomoAccount.ipynb 24
 @patch_to(DomoAccount)
 async def update_config(
     self: DomoAccount,
@@ -369,7 +370,7 @@ async def update_config(
     return self
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 25
+# %% ../../nbs/classes/50_DomoAccount.ipynb 27
 class DomoAccount_UpdateName_Error(de.DomoError):
     def __init__(
         self,
@@ -426,7 +427,7 @@ async def update_name(
 
     return self
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 29
+# %% ../../nbs/classes/50_DomoAccount.ipynb 31
 class DomoAccount_CreateAccount_Error(de.DomoError):
     def __init__(
         self,
@@ -445,7 +446,7 @@ class DomoAccount_CreateAccount_Error(de.DomoError):
             message=message,
         )
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 30
+# %% ../../nbs/classes/50_DomoAccount.ipynb 32
 @patch_to(DomoAccount, cls_method=True)
 def generate_create_body(cls, account_name, config):
     return {
@@ -482,7 +483,7 @@ async def create_account(
 
     return await cls.get_from_id(auth=auth, account_id=res.response.get("id"))
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 31
+# %% ../../nbs/classes/50_DomoAccount.ipynb 33
 class DomoAccount_DeleteAccount_Error(de.DomoError):
     def __init__(
         self,
@@ -527,7 +528,7 @@ async def delete_account(
 
     return True
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 32
+# %% ../../nbs/classes/50_DomoAccount.ipynb 34
 class ShareAccount_AccessLevel(Enum):
     "enumerates access levels for Domo Users and Domo Accounts"
     CAN_VIEW = "CAN_VIEW"
@@ -571,12 +572,12 @@ async def share_account(
     )
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 34
+# %% ../../nbs/classes/50_DomoAccount.ipynb 36
 @dataclass
 class DomoAccounts:
     auth: dmda.DomoAuth
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 35
+# %% ../../nbs/classes/50_DomoAccount.ipynb 37
 @patch_to(DomoAccounts, cls_method=True)
 async def get_accounts(
     cls: DomoAccounts,
