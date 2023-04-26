@@ -533,17 +533,18 @@ async def delete_account(
     return True
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 35
-@patch_to(DomoAccount)
-async def _is_group_ownership_beta(self, auth : dmda.DomoAuth):
-    import domolibrary.classes.DomoBootstrap as dmbs
+# @patch_to(DomoAccount)
+# async def _is_group_ownership_beta(self, auth : dmda.DomoAuth):
+# """historically different instances of domo would react to v1 vs v2 api request differently.  v1 api may have been deprecated 4/26/2023"""
+#     import domolibrary.classes.DomoBootstrap as dmbs
 
-    domo_bsr = dmbs.DomoBootstrap(auth=auth or self.auth)
-    domo_feature_ls = await domo_bsr.get_features()
+#     domo_bsr = dmbs.DomoBootstrap(auth=auth or self.auth)
+#     domo_feature_ls = await domo_bsr.get_features()
 
-    match_accounts_v2 = next(
-        (domo_feature for domo_feature in domo_feature_ls if domo_feature.name == 'accounts-v2'), None)
+#     match_accounts_v2 = next(
+#         (domo_feature for domo_feature in domo_feature_ls if domo_feature.name == 'accounts-v2'), None)
 
-    return True if match_accounts_v2 else False
+#     return True if match_accounts_v2 else False
 
 
 @patch_to(DomoAccount)
@@ -551,19 +552,21 @@ async def share_account(
     self,
     user_id: int,
     auth: dmda.DomoAuth = None,
-    is_v2 :bool = None,
-    access_level: ShareAccount = None, # will default to Read
+    is_v2: bool = True,  # v1 may have been deprecated.  unclear.
+    access_level: ShareAccount = None,  # will default to Read
     debug_api: bool = False,
-    debug_prn:bool = False,
+    debug_prn: bool = False,
     session: httpx.AsyncClient = None,
 ):
     auth = auth or self.auth
 
-    if isinstance(auth, dmda.DomoFullAuth):
-        is_v2 = await self._is_group_ownership_beta(auth)
-    
+    # deprecated code.  may not be tied to group beta anymore
+    # if isinstance(auth, dmda.DomoFullAuth) and is_v2 is None:
+    #     is_v2 = await self._is_group_ownership_beta(auth)
+
     if debug_prn:
-        print( f"ℹ️ - {auth.domo_instance} - {'is' if is_v2 else 'is not'} v2_group_ownership")
+        print(
+            f"ℹ️ - {auth.domo_instance} - {'is' if is_v2 else 'is not'} v2_group_ownership")
 
     if is_v2 is None:
         raise Exception(
@@ -571,13 +574,15 @@ async def share_account(
 the group management v2 API has a different body.  
 Alternatively pass a full auth object to auto check the bootstrap.
 """)
+    
+    res = None
 
     if is_v2:
         share_payload = account_routes.generate_share_account_payload_v2(
             user_id=user_id, access_level=access_level or ShareAccount_V2_AccessLevel.CAN_VIEW
         )
 
-        return await account_routes.share_account_v2(
+        res = await account_routes.share_account_v2(
             auth=auth,
             account_id=self.id,
             share_payload=share_payload,
@@ -585,20 +590,25 @@ Alternatively pass a full auth object to auto check the bootstrap.
             session=session,
         )
 
-    share_payload = account_routes.generate_share_account_payload_v1(
-        user_id=user_id, access_level=access_level or ShareAccount_V1_AccessLevel.CAN_VIEW
-    )
+    else:
+        share_payload = account_routes.generate_share_account_payload_v1(
+            user_id=user_id, access_level=access_level or ShareAccount_V1_AccessLevel.CAN_VIEW
+        )
 
-    res = await account_routes.share_account_v1(
-        auth=auth,
-        account_id=self.id,
-        share_payload=share_payload,
-        debug_api=debug_api,
-        session=session,
-    )
+        res = await account_routes.share_account_v1(
+            auth=auth,
+            account_id=self.id,
+            share_payload=share_payload,
+            debug_api=debug_api,
+            session=session,
+        )
 
     if res.status == 500 and res.response == 'Internal Server Error':
         res.response = f'ℹ️ - {res.response + "| User may own account."}'
+
+    if res.status == 200:
+        res.response = f"shared {self.id} - {self.name} with {user_id}"
+
     return res
 
 

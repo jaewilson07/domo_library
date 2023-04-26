@@ -183,7 +183,6 @@ async def delete_account(auth:dmda.DomoAuth,
 class ShareAccount():
     pass
 
-
 class ShareAccount_V1_AccessLevel(ShareAccount, Enum):
     CAN_VIEW = 'READ'
 
@@ -196,14 +195,14 @@ class ShareAccount_V2_AccessLevel(ShareAccount, Enum):
 
 def generate_share_account_payload_v1(user_id: int,
                                       access_level: ShareAccount):
-    return {"type": "USER", "id": user_id, "permissions": [access_level.value]}
+    return {"type": "USER", "id": int(user_id), "permissions": [access_level.value]}
 
 
 def generate_share_account_payload_v2(user_id: int,
                                       access_level: ShareAccount
                                       ):
 
-    return {"type": "USER", "id": user_id, "accessLevel": access_level.value}
+    return {"type": "USER", "id": int(user_id), "accessLevel": access_level.value}
 
 
 # %% ../../nbs/routes/account.ipynb 21
@@ -225,7 +224,7 @@ async def share_account_v2(auth: dmda.DomoAuth,
         session=session
     )
 
-
+#v1 may have been deprecated.  used to be tied to group beta
 async def share_account_v1(auth: dmda.DomoAuth,
                            account_id: str,
                            share_payload: dict,
