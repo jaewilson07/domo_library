@@ -11,8 +11,8 @@ async def run_sequence(*functions: Awaitable[Any] # comma separated list of func
  ) -> None: # no explicit return
     """executes a sequence of functions"""
 
-    for function in functions:
-        await function
+    return [ await function for function in functions]
+        
 
 # %% ../../nbs/utils/chunk_execution.ipynb 6
 def chunk_list(obj_ls :list[any],  # list of entities to split into n chunks
