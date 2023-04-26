@@ -5,10 +5,13 @@ __all__ = ['DomoAccount_Config', 'DomoAccount_Config_AbstractCredential', 'DomoA
            'DomoAccount_Config_Governance', 'DomoAccount_Config_AmazonS3', 'DomoAccount_Config_AwsAthena',
            'DomoAccount_Config_HighBandwidthConnector', 'AccountConfig', 'DomoAccount',
            'DomoAccount_DataProviderType_ConfigNotDefined', 'DomoAccount_UpdateName_Error',
-           'DomoAccount_CreateAccount_Error', 'DomoAccount_DeleteAccount_Error', 'ShareAccount_AccessLevel',
-           'DomoAccounts']
+           'DomoAccount_CreateAccount_Error', 'DomoAccount_DeleteAccount_Error', 'DomoAccounts']
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 3
+from ..routes.account import ShareAccount_V1_AccessLevel, ShareAccount_V2_AccessLevel, ShareAccount
+
+
+# %% ../../nbs/classes/50_DomoAccount.ipynb 4
 from enum import Enum
 from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
@@ -29,7 +32,8 @@ import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 import domolibrary.routes.account as account_routes
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 5
+
+# %% ../../nbs/classes/50_DomoAccount.ipynb 6
 class DomoAccount_Config(ABC):
     """DomoAccount Config abstract base class"""
 
@@ -47,7 +51,7 @@ class DomoAccount_Config(ABC):
         pass
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 7
+# %% ../../nbs/classes/50_DomoAccount.ipynb 8
 @dataclass
 class DomoAccount_Config_AbstractCredential(DomoAccount_Config):
     data_provider_type = "abstract-credential-store"
@@ -66,7 +70,7 @@ class DomoAccount_Config_AbstractCredential(DomoAccount_Config):
         return {"credentials": self.credentials}
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 8
+# %% ../../nbs/classes/50_DomoAccount.ipynb 9
 @dataclass
 class DomoAccount_Config_DatasetCopy(DomoAccount_Config):
     domo_instance: str
@@ -85,7 +89,7 @@ class DomoAccount_Config_DatasetCopy(DomoAccount_Config):
         return {"accessToken": self.access_token, "instance": self.domo_instance}
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 9
+# %% ../../nbs/classes/50_DomoAccount.ipynb 10
 @dataclass
 class DomoAccount_Config_Governance(DomoAccount_Config):
     domo_instance: str
@@ -104,7 +108,7 @@ class DomoAccount_Config_Governance(DomoAccount_Config):
         return {"apikey": self.access_token, "customer": self.domo_instance}
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 11
+# %% ../../nbs/classes/50_DomoAccount.ipynb 12
 @dataclass
 class DomoAccount_Config_AmazonS3(DomoAccount_Config):
     access_key: str
@@ -137,7 +141,7 @@ class DomoAccount_Config_AmazonS3(DomoAccount_Config):
             "region": self.region,
         }
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 12
+# %% ../../nbs/classes/50_DomoAccount.ipynb 13
 @dataclass
 class DomoAccount_Config_AwsAthena(DomoAccount_Config):
     aws_access_key: str
@@ -170,7 +174,7 @@ class DomoAccount_Config_AwsAthena(DomoAccount_Config):
             "workgroup": self.workgroup,
         }
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 13
+# %% ../../nbs/classes/50_DomoAccount.ipynb 14
 @dataclass
 class DomoAccount_Config_HighBandwidthConnector(DomoAccount_Config):
     """ this connector is not enabled by default contact your CSM / AE"""
@@ -203,7 +207,7 @@ class DomoAccount_Config_HighBandwidthConnector(DomoAccount_Config):
         }
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 16
+# %% ../../nbs/classes/50_DomoAccount.ipynb 17
 class AccountConfig(Enum):
     """
     Enum provides appropriate spelling for data_provider_type and config object.
@@ -223,7 +227,7 @@ class AccountConfig(Enum):
     amazon_s3 = DomoAccount_Config_AmazonS3
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 18
+# %% ../../nbs/classes/50_DomoAccount.ipynb 19
 @dataclass
 class DomoAccount:
     name: str
@@ -251,7 +255,7 @@ class DomoAccount:
             auth=auth,
         )
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 19
+# %% ../../nbs/classes/50_DomoAccount.ipynb 20
 class DomoAccount_DataProviderType_ConfigNotDefined(de.DomoError):
     def __init__(
         self, account_id, data_provider_type, domo_instance, function_name="_get_config"
@@ -300,7 +304,7 @@ async def _get_config(
 
     return self.config
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 20
+# %% ../../nbs/classes/50_DomoAccount.ipynb 21
 @patch_to(DomoAccount, cls_method=True)
 async def get_from_id(
     cls,
@@ -338,7 +342,7 @@ async def get_from_id(
     finally:
         return acc
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 24
+# %% ../../nbs/classes/50_DomoAccount.ipynb 25
 @patch_to(DomoAccount)
 async def update_config(
     self: DomoAccount,
@@ -370,7 +374,7 @@ async def update_config(
     return self
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 27
+# %% ../../nbs/classes/50_DomoAccount.ipynb 28
 class DomoAccount_UpdateName_Error(de.DomoError):
     def __init__(
         self,
@@ -427,7 +431,7 @@ async def update_name(
 
     return self
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 31
+# %% ../../nbs/classes/50_DomoAccount.ipynb 32
 class DomoAccount_CreateAccount_Error(de.DomoError):
     def __init__(
         self,
@@ -446,7 +450,7 @@ class DomoAccount_CreateAccount_Error(de.DomoError):
             message=message,
         )
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 32
+# %% ../../nbs/classes/50_DomoAccount.ipynb 33
 @patch_to(DomoAccount, cls_method=True)
 def generate_create_body(cls, account_name, config):
     return {
@@ -483,7 +487,7 @@ async def create_account(
 
     return await cls.get_from_id(auth=auth, account_id=res.response.get("id"))
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 33
+# %% ../../nbs/classes/50_DomoAccount.ipynb 34
 class DomoAccount_DeleteAccount_Error(de.DomoError):
     def __init__(
         self,
@@ -528,14 +532,7 @@ async def delete_account(
 
     return True
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 34
-class ShareAccount_AccessLevel(Enum):
-    "enumerates access levels for Domo Users and Domo Accounts"
-    CAN_VIEW = "CAN_VIEW"
-    CAN_EDIT = "CAN_EDIT" # only available with accounts_v2 feature switch (group ownership beta)
-    CAN_SHARE = "CAN_SHARE" # only available with accounts_v2 feature switch (group ownership beta)
-
-
+# %% ../../nbs/classes/50_DomoAccount.ipynb 35
 @patch_to(DomoAccount)
 async def _is_group_ownership_beta(self, auth : dmda.DomoAuth):
     import domolibrary.classes.DomoBootstrap as dmbs
@@ -555,7 +552,7 @@ async def share_account(
     user_id: int,
     auth: dmda.DomoAuth = None,
     is_v2 :bool = None,
-    access_level: ShareAccount_AccessLevel = ShareAccount_AccessLevel.CAN_VIEW,
+    access_level: ShareAccount = None, # will default to Read
     debug_api: bool = False,
     debug_prn:bool = False,
     session: httpx.AsyncClient = None,
@@ -577,7 +574,7 @@ Alternatively pass a full auth object to auto check the bootstrap.
 
     if is_v2:
         share_payload = account_routes.generate_share_account_payload_v2(
-            user_id=user_id, access_level=access_level.value
+            user_id=user_id, access_level=access_level or ShareAccount_V2_AccessLevel.CAN_VIEW
         )
 
         return await account_routes.share_account_v2(
@@ -589,7 +586,7 @@ Alternatively pass a full auth object to auto check the bootstrap.
         )
 
     share_payload = account_routes.generate_share_account_payload_v1(
-        user_id=user_id, access_level=access_level.value
+        user_id=user_id, access_level=access_level or ShareAccount_V1_AccessLevel.CAN_VIEW
     )
 
     res = await account_routes.share_account_v1(
@@ -605,12 +602,12 @@ Alternatively pass a full auth object to auto check the bootstrap.
     return res
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 37
+# %% ../../nbs/classes/50_DomoAccount.ipynb 38
 @dataclass
 class DomoAccounts:
     auth: dmda.DomoAuth
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 38
+# %% ../../nbs/classes/50_DomoAccount.ipynb 39
 @patch_to(DomoAccounts, cls_method=True)
 async def get_accounts(
     cls: DomoAccounts,
