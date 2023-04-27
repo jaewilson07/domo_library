@@ -279,7 +279,7 @@ class DomoDataset:
     tags: DomoDataset_Tags = field(default=None)
 
     # certification: dmdc.DomoCertification = None
-    PDPPolicies: dmpdp.Dataset_PDP_Policies = None
+    # PDPPolicies: dmpdp.Dataset_PDP_Policies = None
 
     def __post_init__(self):
         self.schema = DomoDataset_Schema(dataset=self)
