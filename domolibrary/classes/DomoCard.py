@@ -66,7 +66,7 @@ class DomoCard:
             if user.type =='USER':
                 tasks.append(dmu.DomoUser.get_by_id(user_id=user.id, auth=auth))
             if user.type == 'GROUP':
-                tasks.append(dmg.DomoGroup.get_by_id(group_id=group.get('id'), auth=auth))
+                tasks.append(dmg.DomoGroup.get_by_id(group_id=user.id, auth=auth))
 
         card.owners = await asyncio.gather( *tasks)
 

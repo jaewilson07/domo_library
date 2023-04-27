@@ -107,5 +107,5 @@ async def get_pages_adminsummary(auth: dmda.DomoAuth,
                           body = body,
                           limit = limit, 
                           debug_loop=debug_loop, debug_api= debug_api)
-    return res.response
+    return res
 
