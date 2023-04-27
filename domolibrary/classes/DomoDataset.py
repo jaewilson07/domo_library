@@ -285,7 +285,7 @@ class DomoDataset:
         self.schema = DomoDataset_Schema(dataset=self)
         self.tags = DomoDataset_Tags(dataset=self)
 
-        self.PDPPolicies = dmpdp.Dataset_PDP_Policies(dataset=self)
+        #self.PDPPolicies = dmpdp.Dataset_PDP_Policies(dataset=self)
 
     def display_url(self):
         return f"https://{self.auth.domo_instance }.domo.com/datasources/{self.id}/details/overview"
