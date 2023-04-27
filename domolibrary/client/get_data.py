@@ -238,7 +238,7 @@ async def looper(
     url,
     offset_params,
     arr_fn: callable,
-    loop_until_end: bool = False,
+    loop_until_end: bool = False, # usually you'll set this to true.  it will override maximum
     method="POST",
     body: dict = None,
     fixed_params: dict = None,

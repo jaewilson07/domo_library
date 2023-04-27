@@ -50,6 +50,7 @@ website:
       - section: integrations
         contents:
           - integrations/DomoJupyter.ipynb
+          - integrations/RoleHierarchy.ipynb
       - section: projects
         contents:
           - projects/index.qmd

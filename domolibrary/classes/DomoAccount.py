@@ -533,18 +533,18 @@ async def delete_account(
     return True
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 35
-# @patch_to(DomoAccount)
-# async def _is_group_ownership_beta(self, auth : dmda.DomoAuth):
-# """historically different instances of domo would react to v1 vs v2 api request differently.  v1 api may have been deprecated 4/26/2023"""
-#     import domolibrary.classes.DomoBootstrap as dmbs
+@patch_to(DomoAccount)
+async def _is_group_ownership_beta(self, auth : dmda.DomoAuth):
 
-#     domo_bsr = dmbs.DomoBootstrap(auth=auth or self.auth)
-#     domo_feature_ls = await domo_bsr.get_features()
+    import domolibrary.classes.DomoBootstrap as dmbs
 
-#     match_accounts_v2 = next(
-#         (domo_feature for domo_feature in domo_feature_ls if domo_feature.name == 'accounts-v2'), None)
+    domo_bsr = dmbs.DomoBootstrap(auth=auth or self.auth)
+    domo_feature_ls = await domo_bsr.get_features()
 
-#     return True if match_accounts_v2 else False
+    match_accounts_v2 = next(
+        (domo_feature for domo_feature in domo_feature_ls if domo_feature.name == 'accounts-v2'), None)
+
+    return True if match_accounts_v2 else False
 
 
 @patch_to(DomoAccount)
@@ -552,7 +552,7 @@ async def share_account(
     self,
     user_id: int,
     auth: dmda.DomoAuth = None,
-    is_v2: bool = True,  # v1 may have been deprecated.  unclear.
+    is_v2: bool = None,
     access_level: ShareAccount = None,  # will default to Read
     debug_api: bool = False,
     debug_prn: bool = False,
@@ -560,9 +560,9 @@ async def share_account(
 ):
     auth = auth or self.auth
 
-    # deprecated code.  may not be tied to group beta anymore
-    # if isinstance(auth, dmda.DomoFullAuth) and is_v2 is None:
-    #     is_v2 = await self._is_group_ownership_beta(auth)
+    
+    if isinstance(auth, dmda.DomoFullAuth) and is_v2 is None:
+        is_v2 = await self._is_group_ownership_beta(auth)
 
     if debug_prn:
         print(

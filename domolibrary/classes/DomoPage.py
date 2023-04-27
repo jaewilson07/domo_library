@@ -112,6 +112,32 @@ async def get_by_id(cls: DomoPage,
 
 # %% ../../nbs/classes/50_DomoPage.ipynb 10
 @patch_to(DomoPage)
+async def _from_adminsummary():
+
+    import domolibrary.classes.DomoCard as dmc
+
+    dd = page_obj
+    if isinstance(page_obj, dict):
+        dd = util_dd.DictDot(page_obj)
+
+    pg = cls(
+        id=dd.id,
+        title=dd.title,
+        parent_page_id=dd.page.parentPageId,
+        owners=dd.page.owners,
+        collections=dd.collections,
+        auth=auth
+    )
+
+    if dd.cards and len(dd.cards) > 0:
+        pg.cards = await asyncio.gather(
+            *[dmc.DomoCard.get_from_id(id=card.id, auth=auth) for card in dd.cards])
+
+    return pg
+
+
+# %% ../../nbs/classes/50_DomoPage.ipynb 11
+@patch_to(DomoPage)
 async def get_accesslist(self,
                          auth: dmda.DomoAuth = None,
                          is_expand_users: bool = False,
