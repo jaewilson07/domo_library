@@ -43,7 +43,7 @@ import domolibrary.utils.DictDot as util_dd
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 import domolibrary.routes.dataset as dataset_routes
-import domolibrary.classes.DomoPDP as dmpdp
+#import domolibrary.classes.DomoPDP as dmpdp
 
 # %% ../../nbs/classes/50_DomoDataset.ipynb 7
 async def _have_prereqs(self, auth, dataset_id, function_name):
@@ -279,13 +279,13 @@ class DomoDataset:
     tags: DomoDataset_Tags = field(default=None)
 
     # certification: dmdc.DomoCertification = None
-    PDPPolicies: dmpdp.Dataset_PDP_Policies = None
+    # PDPPolicies: dmpdp.Dataset_PDP_Policies = None
 
     def __post_init__(self):
         self.schema = DomoDataset_Schema(dataset=self)
         self.tags = DomoDataset_Tags(dataset=self)
 
-        self.PDPPolicies = dmpdp.Dataset_PDP_Policies(dataset=self)
+        #self.PDPPolicies = dmpdp.Dataset_PDP_Policies(dataset=self)
 
     def display_url(self):
         return f"https://{self.auth.domo_instance }.domo.com/datasources/{self.id}/details/overview"
