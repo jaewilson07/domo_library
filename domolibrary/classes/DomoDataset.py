@@ -682,3 +682,69 @@ async def create(cls: DomoDataset,
 
     return await cls.get_from_id(dataset_id=dataset_id, auth=auth)
 
+
+# %% ../../nbs/classes/50_DomoDataset.ipynb 43
+@patch_to(DomoDataset)
+async def delete_partition(self: DomoDataset,
+                            dataset_partition_id: str,
+                            dataset_id: str = None,
+                            empty_df: pd.DataFrame = None,
+                            auth: dmda.DomoAuth = None,
+                            is_index: bool = True,
+                            debug_api: bool = False
+                            ):
+
+
+
+    auth = auth or self.auth
+    dataset_id = dataset_id or self.id
+
+    if empty_df is None:
+        empty_df = await self.query_dataset_private(auth=auth,
+                                               dataset_id=dataset_id,
+                                               sql="SELECT * from table limit 1",
+                                               debug_api=debug_api)
+
+    await self.upload_data(upload_df=empty_df.head(0),
+                              upload_method='REPLACE',
+                              is_index=is_index,
+                              partition_key=dataset_partition_id,
+                              debug_api=debug_api)
+    if debug_api:
+        print(f"\n\n🎭 starting Stage 1")
+
+    res = await dataset_routes.delete_partition_stage_1(auth=auth,
+                                                       dataset_id=dataset_id,
+                                                           dataset_partition_id=dataset_partition_id,
+                                                        debug_api=debug_api)
+    if debug_api:
+        print(f"\n\n🎭 Stage 1 response -- {res.status}")
+        print(res)
+    
+    stage_2_res = None
+    if debug_api:
+        print('starting Stage 2')
+    
+    stage_2_res = await dataset_routes.delete_partition_stage_2(auth=auth,
+                                                                   dataset_id=dataset_id,
+                                                                dataset_partition_id=dataset_partition_id,
+                                                                debug_api=debug_api)
+    if debug_api:
+        print(f"\n\n🎭 Stage 2 response -- {stage_2_res.status}")
+
+    stage_3_res = None
+    if debug_api:
+        print('starting Stage 3')
+    
+    stage_3_res = await dataset_routes.index_dataset(auth=auth,
+                                                dataset_id=dataset_id,
+                                                   debug_api=debug_api)
+    if debug_api:
+        print(f"\n\n🎭 Stage 3 response -- {stage_3_res.status}")
+
+
+    if debug_api:
+        print(stage_3_res)
+
+    if stage_3_res.status == 200:
+        return res.response
