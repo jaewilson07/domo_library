@@ -33,16 +33,15 @@ async def loop_upload(
         print(
             f"starting upload of {len(upload_df)} rows to {base_msg} with {max_retry} attempts")
 
-    retry_attempt = 0
+    retry_attempt = 1
     
     res = None
 
-    while retry_attempt <= max_retry:
+    while retry_attempt <= max_retry and not res:
         try:
-            retry_attempt += 1
-
             if debug_fn:
-                print(f"attempt {retry_attempt} for {base_msg}")
+                print(f"attempt {retry_attempt}/{max_retry} for {base_msg}")
+
 
             res = await consol_ds.upload_data(
                 upload_df=upload_df,
@@ -54,11 +53,15 @@ async def loop_upload(
             )
 
         except Exception as e:
-            message = f"⚠️ upload_data : unexpected error: {e} in {partition_key} during retry_attempt {retry_attempt}"
+            retry_attempt += 1
 
+            message = f"⚠️ upload_data : unexpected error: {e} in {partition_key} during retry_attempt {retry_attempt}/{max_retry}"
             logger.log_warning(message)
             if debug_fn :
                 print(message)
+    
+    if not res:
+        raise Exception(f"💣 failed to upload data {len(upload_df)} rows to {base_msg} - {retry_attempt}/{max_retry} retries reached")
     
     return res
 
