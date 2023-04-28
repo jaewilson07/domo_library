@@ -10,5 +10,6 @@ jobs:
       DOJO_PASSWORD: ${{ secrets.DOJO_PASSWORD }}
       DOMO_DOJO_ACCESS_TOKEN: ${{ secrets.DOMO_DOJO_ACCESS_TOKEN }}
       DOJO_DATASET_ID: ${{ secrets.DOJO_DATASET_ID}}
+      DOMO_USERNAME : ${{ secrets.DOMO_USERNAME}}
     steps:
       - uses: fastai/workflows/quarto-ghp@master
