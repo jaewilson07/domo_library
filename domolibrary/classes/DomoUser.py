@@ -194,7 +194,7 @@ async def update_properties(
     if return_raw:
         return res
 
-    self = await DomoUser.get_by_id(user_id =1681443709, auth = auth)
+    self = await DomoUser.get_by_id(user_id = self.id, auth = auth)
 
     return self
 
