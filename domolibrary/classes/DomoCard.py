@@ -72,3 +72,19 @@ class DomoCard:
 
         return card
 
+
+# %% ../../nbs/classes/50_DomoCard.ipynb 4
+@patch_to(DomoCard, cls_method=True)
+async def get_by_id(cls: DomoCard, card_id: str,
+                      auth: dmda.DomoAuth, debug_api: bool = False):
+
+    res = await card_routes.get_card_metadata(auth=auth,
+                                              card_id=card_id, debug_api=debug_api)
+
+    if not res.is_success:
+        raise Exception('unable to retrieve card {card_id}')
+
+    domo_card = await cls._from_json(res.response, auth)
+
+    return domo_card
+
