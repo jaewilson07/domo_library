@@ -470,22 +470,21 @@ async def _from_bootstrap(cls: DomoPage, page_obj, auth: dmda.DomoAuth = None):
     if isinstance(page_obj, dict):
         dd = util_dd.DictDot(page_obj)
 
-    domo_page = cls(id=dd.id, title=dd.title, auth=auth)
+    pg = cls(id=dd.id, title=dd.title, auth=auth)
 
     if isinstance(dd.owners, list) and len(dd.owners) > 0:
-        domo_page.owners = await domo_page._get_domo_owners_from_dd(dd.owners)
+        pg.owners = await pg._get_domo_owners_from_dd(dd.owners)
 
     if isinstance(dd.children, list) and len(dd.children) > 0:
-        domo_page.children = await asyncio.gather(*[
+        pg.children = await asyncio.gather(*[
             cls._from_bootstrap(page_obj=child_dd, auth=auth)
             for child_dd in dd.children
             if child_dd.type == "page"
         ])
 
-        [print(other_dd) for other_dd in dd.children
-            if other_dd.type != "page"]
+        [print(other_dd) for other_dd in dd.children if other_dd.type != "page"]
 
-    return domo_page
+    return pg
 
 
 # %% ../../nbs/classes/50_DomoPage.ipynb 10
@@ -511,7 +510,7 @@ async def _from_content_stacks_v3(cls: DomoPage, page_obj, auth: dmda.DomoAuth =
                     dd=dd.pageLayoutV4)
     
     if dd.page.owners and len(dd.page.owners) > 0:
-        pg.owners = await domo_page._get_domo_owners_from_dd(dd.page.owners)
+        pg.owners = await pg._get_domo_owners_from_dd(dd.page.owners)
 
     # if dd.cards and len(dd.cards) > 0:
     #     pg.cards = await asyncio.gather(
@@ -562,7 +561,7 @@ async def _from_adminsummary(cls, page_obj, auth :dmda.DomoAuth):
     )
 
     if dd.page and dd.page.owners and len(dd.page.owners) > 0:
-        pg.owners = await domo_page._get_domo_owners_from_dd(dd.page.owners)
+        pg.owners = await pg._get_domo_owners_from_dd(dd.page.owners)
 
     if dd.cards and len(dd.cards) > 0:
         pg.cards = await asyncio.gather(
