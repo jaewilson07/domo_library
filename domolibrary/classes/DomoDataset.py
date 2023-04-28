@@ -43,6 +43,7 @@ import domolibrary.utils.DictDot as util_dd
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 import domolibrary.routes.dataset as dataset_routes
+#import domolibrary.classes.DomoPDP as dmpdp
 
 # %% ../../nbs/classes/50_DomoDataset.ipynb 7
 async def _have_prereqs(self, auth, dataset_id, function_name):
@@ -284,7 +285,7 @@ class DomoDataset:
         self.schema = DomoDataset_Schema(dataset=self)
         self.tags = DomoDataset_Tags(dataset=self)
 
-        # self.PDPPolicies = dmpdp.Dataset_PDP_Policies(dataset=self)
+        #self.PDPPolicies = dmpdp.Dataset_PDP_Policies(dataset=self)
 
     def display_url(self):
         return f"https://{self.auth.domo_instance }.domo.com/datasources/{self.id}/details/overview"
@@ -367,21 +368,30 @@ async def query_dataset_private(cls: DomoDataset,
                                 maximum=100,  # equivalent to the LIMIT or TOP clause in SQL, the number of rows to return total
                                 debug_api: bool = False,
                                 debug_loop: bool = False,
-                                timeout = 10 # larger API requests may require a longer response time
+                                timeout = 10, # larger API requests may require a longer response time
+                                maximum_retry : int = 5
                                 ) -> pd.DataFrame:
-
-    res = await dataset_routes.query_dataset_private(auth=auth,
-                                                     dataset_id=dataset_id,
-                                                     sql=sql,
-                                                     maximum=maximum,
-                                                     skip=skip,
-                                                     limit=limit,
-                                                     loop_until_end=loop_until_end,
-                                                     session=session,
-                                                     debug_loop=debug_loop,
-                                                     debug_api=debug_api,
-                                                     timeout = timeout
-                                                     )
+    
+    res = None
+    retry = 1
+    while (not res or not res.is_success) and retry <= maximum_retry:
+        try:
+            res = await dataset_routes.query_dataset_private(auth=auth,
+                                                            dataset_id=dataset_id,
+                                                            sql=sql,
+                                                            maximum=maximum,
+                                                            skip=skip,
+                                                            limit=limit,
+                                                            loop_until_end=loop_until_end,
+                                                            session=session,
+                                                            debug_loop=debug_loop,
+                                                            debug_api=debug_api,
+                                                            timeout = timeout
+                                                            )
+        except Exception as e:
+            if retry <= maximum_retry:
+                print(f"⚠️ Error.  Attempt {retry} / {maximum_retry} - {e} - while query dataset {dataset_id} in {auth.domo_instance} with {sql}" )
+            retry += 1
 
     if not res.is_success:
         raise QueryExecutionError(
@@ -681,3 +691,69 @@ async def create(cls: DomoDataset,
 
     return await cls.get_from_id(dataset_id=dataset_id, auth=auth)
 
+
+# %% ../../nbs/classes/50_DomoDataset.ipynb 43
+@patch_to(DomoDataset)
+async def delete_partition(self: DomoDataset,
+                            dataset_partition_id: str,
+                            dataset_id: str = None,
+                            empty_df: pd.DataFrame = None,
+                            auth: dmda.DomoAuth = None,
+                            is_index: bool = True,
+                            debug_api: bool = False
+                            ):
+
+
+
+    auth = auth or self.auth
+    dataset_id = dataset_id or self.id
+
+    if empty_df is None:
+        empty_df = await self.query_dataset_private(auth=auth,
+                                               dataset_id=dataset_id,
+                                               sql="SELECT * from table limit 1",
+                                               debug_api=debug_api)
+
+    await self.upload_data(upload_df=empty_df.head(0),
+                              upload_method='REPLACE',
+                              is_index=is_index,
+                              partition_key=dataset_partition_id,
+                              debug_api=debug_api)
+    if debug_api:
+        print(f"\n\n🎭 starting Stage 1")
+
+    res = await dataset_routes.delete_partition_stage_1(auth=auth,
+                                                       dataset_id=dataset_id,
+                                                           dataset_partition_id=dataset_partition_id,
+                                                        debug_api=debug_api)
+    if debug_api:
+        print(f"\n\n🎭 Stage 1 response -- {res.status}")
+        print(res)
+    
+    stage_2_res = None
+    if debug_api:
+        print('starting Stage 2')
+    
+    stage_2_res = await dataset_routes.delete_partition_stage_2(auth=auth,
+                                                                   dataset_id=dataset_id,
+                                                                dataset_partition_id=dataset_partition_id,
+                                                                debug_api=debug_api)
+    if debug_api:
+        print(f"\n\n🎭 Stage 2 response -- {stage_2_res.status}")
+
+    stage_3_res = None
+    if debug_api:
+        print('starting Stage 3')
+    
+    stage_3_res = await dataset_routes.index_dataset(auth=auth,
+                                                dataset_id=dataset_id,
+                                                   debug_api=debug_api)
+    if debug_api:
+        print(f"\n\n🎭 Stage 3 response -- {stage_3_res.status}")
+
+
+    if debug_api:
+        print(stage_3_res)
+
+    if stage_3_res.status == 200:
+        return res.response

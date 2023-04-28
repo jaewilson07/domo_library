@@ -8,7 +8,6 @@ __all__ = ['DomoPublication_Subscription', 'DomoPublication_Content', 'DomoPubli
 from dataclasses import dataclass, field
 
 from typing import Optional
-
 import datetime as dt
 import asyncio
 import httpx

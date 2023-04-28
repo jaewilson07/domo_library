@@ -5,8 +5,9 @@ __all__ = ['DomoBootstrap_Feature', 'DomoBootstrap']
 
 # %% ../../nbs/classes/50_DomoBootstrap.ipynb 2
 from dataclasses import dataclass, field
-
+from fastcore.basics import patch_to
 import httpx
+import asyncio
 
 import domolibrary.classes.DomoPage as dmpg
 
@@ -17,11 +18,6 @@ import domolibrary.routes.bootstrap as bootstrap_routes
 
 
 # %% ../../nbs/classes/50_DomoBootstrap.ipynb 3
-from fastcore.basics import patch_to
-
-
-
-# %% ../../nbs/classes/50_DomoBootstrap.ipynb 4
 @dataclass
 class DomoBootstrap_Feature:
     id: int
@@ -45,7 +41,7 @@ class DomoBootstrap_Feature:
         )
         return bsf
 
-# %% ../../nbs/classes/50_DomoBootstrap.ipynb 5
+# %% ../../nbs/classes/50_DomoBootstrap.ipynb 4
 @dataclass
 class DomoBootstrap:
     auth : dmda.DomoAuth = field(repr = False)
@@ -53,7 +49,7 @@ class DomoBootstrap:
     feature_ls : list[DomoBootstrap_Feature] = field(default = None)
     
 
-# %% ../../nbs/classes/50_DomoBootstrap.ipynb 6
+# %% ../../nbs/classes/50_DomoBootstrap.ipynb 5
 @patch_to(DomoBootstrap)
 async def get_all(self: DomoBootstrap,
                   auth: dmda.DomoAuth = None, debug_api: bool = False):
@@ -65,7 +61,7 @@ async def get_all(self: DomoBootstrap,
     return res.response
 
 
-# %% ../../nbs/classes/50_DomoBootstrap.ipynb 9
+# %% ../../nbs/classes/50_DomoBootstrap.ipynb 8
 @patch_to(DomoBootstrap)
 async def get_pages(self: DomoBootstrap,
                     auth: dmda.DomoAuth = None, return_raw : bool = False, debug_api: bool = False) -> list[dmpg.DomoPage]:
@@ -83,12 +79,12 @@ async def get_pages(self: DomoBootstrap,
     
     page_ls = res.response
 
-    self.page_ls =  [dmpg.DomoPage._from_bootstrap(page_obj, auth = auth) for page_obj in page_ls]
+    self.page_ls =  await asyncio.gather(*[dmpg.DomoPage._from_bootstrap(page_obj, auth = auth) for page_obj in page_ls])
 
     return self.page_ls
 
 
-# %% ../../nbs/classes/50_DomoBootstrap.ipynb 12
+# %% ../../nbs/classes/50_DomoBootstrap.ipynb 11
 @patch_to(DomoBootstrap)
 async def get_features(self : DomoBootstrap,
                         auth: dmda.DomoAuth = None,

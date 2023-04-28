@@ -2,7 +2,7 @@
 
 # %% auto 0
 __all__ = ['get_accounts', 'GetAccount_NoMatch', 'get_account_from_id', 'AccountConfig_InvalidDataProvider', 'get_account_config',
-           'update_account_config', 'update_account_name', 'create_account', 'delete_account',
+           'update_account_config', 'update_account_name', 'create_account', 'delete_account', 'ShareAccount',
            'ShareAccount_V1_AccessLevel', 'ShareAccount_V2_AccessLevel', 'generate_share_account_payload_v1',
            'generate_share_account_payload_v2', 'share_account_v2', 'share_account_v1']
 
@@ -180,25 +180,29 @@ async def delete_account(auth:dmda.DomoAuth,
     )
 
 # %% ../../nbs/routes/account.ipynb 19
-class ShareAccount_V1_AccessLevel(Enum):
+class ShareAccount():
+    pass
+
+class ShareAccount_V1_AccessLevel(ShareAccount, Enum):
     CAN_VIEW = 'READ'
 
 
-class ShareAccount_V2_AccessLevel(Enum):
+class ShareAccount_V2_AccessLevel(ShareAccount, Enum):
     CAN_VIEW = 'CAN_VIEW'
     CAN_EDIT = 'CAN_EDIT'
     CAN_SHARE = 'CAN_SHARE'
 
 
-def generate_share_account_payload_v1(user_id: int, access_level: str):
-    return {"type": "USER", "id": user_id, "permissions": [ShareAccount_V1_AccessLevel[access_level].value]}
+def generate_share_account_payload_v1(user_id: int,
+                                      access_level: ShareAccount):
+    return {"type": "USER", "id": int(user_id), "permissions": [access_level.value]}
 
 
 def generate_share_account_payload_v2(user_id: int,
-                                      access_level: str
+                                      access_level: ShareAccount
                                       ):
 
-    return {"type": "USER", "id": user_id, "accessLevel": ShareAccount_V2_AccessLevel[access_level].value}
+    return {"type": "USER", "id": int(user_id), "accessLevel": access_level.value}
 
 
 # %% ../../nbs/routes/account.ipynb 21
@@ -220,7 +224,7 @@ async def share_account_v2(auth: dmda.DomoAuth,
         session=session
     )
 
-
+#v1 may have been deprecated.  used to be tied to group beta
 async def share_account_v1(auth: dmda.DomoAuth,
                            account_id: str,
                            share_payload: dict,

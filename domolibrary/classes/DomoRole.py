@@ -108,6 +108,7 @@ class SetRoleGrants_MissingGrants(de.DomoError):
                          message=f"failed to add grants: {', '.join(missing_grants)}")
 
 
+# %% ../../nbs/classes/50_DomoRole.ipynb 9
 @patch_to(DomoRole)
 async def set_grants(self: DomoRole,
                      grant_ls: list[dmg.DomoGrant],
@@ -159,7 +160,7 @@ async def set_grants(self: DomoRole,
     return domo_grants
 
 
-# %% ../../nbs/classes/50_DomoRole.ipynb 12
+# %% ../../nbs/classes/50_DomoRole.ipynb 13
 @patch_to(DomoRole)
 async def get_membership(self,
                          role_id=None,
@@ -185,13 +186,13 @@ async def get_membership(self,
     return membership_ls
 
 
-# %% ../../nbs/classes/50_DomoRole.ipynb 15
+# %% ../../nbs/classes/50_DomoRole.ipynb 16
 class AddUser_Error(de.DomoError):
     def __init__(self, role_id, domo_instance, user_id, user_name = None):
         user_str = f"{user_id} - {user_name}" if user_name else user_id
         super().__init__(domo_instance = domo_instance, message = f"unable to add {user_str} to role {role_id}")
 
-# %% ../../nbs/classes/50_DomoRole.ipynb 16
+# %% ../../nbs/classes/50_DomoRole.ipynb 17
 @patch_to(DomoRole)
 async def add_user(self,
                    user: dmu.DomoUser,
@@ -222,7 +223,7 @@ async def add_user(self,
     return domo_members
 
 
-# %% ../../nbs/classes/50_DomoRole.ipynb 20
+# %% ../../nbs/classes/50_DomoRole.ipynb 21
 @patch_to(DomoRole)
 async def update_role_metadata(self : DomoRole,
                                auth: dmda.DomoAuth = None,
@@ -258,7 +259,7 @@ async def update_role_metadata(self : DomoRole,
 
 
 
-# %% ../../nbs/classes/50_DomoRole.ipynb 24
+# %% ../../nbs/classes/50_DomoRole.ipynb 25
 class DeleteRole_Error(de.DomoError):
     def __init__(self,
                  role_id,
@@ -267,6 +268,7 @@ class DeleteRole_Error(de.DomoError):
             message=f'role: {role_id} not found', domo_instance=domo_instance)
 
 
+# %% ../../nbs/classes/50_DomoRole.ipynb 26
 @patch_to(DomoRole, cls_method=True)
 async def delete_role(cls: DomoRole,
                       role_id: int,
@@ -291,13 +293,13 @@ async def delete_role(cls: DomoRole,
     )
 
 
-# %% ../../nbs/classes/50_DomoRole.ipynb 28
+# %% ../../nbs/classes/50_DomoRole.ipynb 30
 @dataclass
 class DomoRoles:
     auth: dmda.DomoAuth
 
 
-# %% ../../nbs/classes/50_DomoRole.ipynb 29
+# %% ../../nbs/classes/50_DomoRole.ipynb 31
 @patch_to(DomoRoles, cls_method=True)
 async def get_roles(cls: DomoRoles,
                     auth: dmda.DomoAuth,
@@ -320,7 +322,7 @@ async def get_roles(cls: DomoRoles,
                                 is_default_role=str(default_role_res.response) == str(role.get('id'))) for role in res.response]
 
 
-# %% ../../nbs/classes/50_DomoRole.ipynb 32
+# %% ../../nbs/classes/50_DomoRole.ipynb 34
 class SearchRole_NotFound(de.DomoError):
     def __init__(self, domo_instance,
                  role_id,
@@ -330,6 +332,8 @@ class SearchRole_NotFound(de.DomoError):
         super().__init__(domo_instance=domo_instance, message=message,
                          entity_id=role_id, function_name=function_name)
 
+
+# %% ../../nbs/classes/50_DomoRole.ipynb 35
 @patch_to(DomoRoles, cls_method=True)
 async def search_role(cls: DomoRoles,
                     auth: dmda.DomoAuth,
@@ -355,7 +359,7 @@ async def search_role(cls: DomoRoles,
 
     return domo_role
 
-# %% ../../nbs/classes/50_DomoRole.ipynb 36
+# %% ../../nbs/classes/50_DomoRole.ipynb 39
 class CreateRole_Error(de.DomoError):
     def __init__(self, domo_instance,
                  role_id,
@@ -369,7 +373,7 @@ class CreateRole_Error(de.DomoError):
                          function_name=function_name)
 
 
-# %% ../../nbs/classes/50_DomoRole.ipynb 37
+# %% ../../nbs/classes/50_DomoRole.ipynb 40
 @patch_to(DomoRoles, cls_method=True)
 async def create_role(cls: DomoRoles,
                       auth: dmda.DomoAuth,
@@ -409,7 +413,7 @@ async def create_role(cls: DomoRoles,
     return await DomoRoles.search_role(auth = auth, role_name= name)
     
 
-# %% ../../nbs/classes/50_DomoRole.ipynb 40
+# %% ../../nbs/classes/50_DomoRole.ipynb 43
 @patch_to(DomoRoles, cls_method=True)
 async def upsert_role(cls: DomoRoles,
                       auth: dmda.DomoAuth,
@@ -454,7 +458,7 @@ async def upsert_role(cls: DomoRoles,
         return domo_role
 
 
-# %% ../../nbs/classes/50_DomoRole.ipynb 44
+# %% ../../nbs/classes/50_DomoRole.ipynb 47
 @patch_to(DomoRole)
 async def set_as_default_role(self: DomoRole, debug_api: bool = False, session : httpx.AsyncClient = None):
     return await role_routes.set_default_role(auth=self.auth,

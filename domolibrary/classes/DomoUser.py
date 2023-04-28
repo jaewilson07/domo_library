@@ -150,6 +150,28 @@ async def request_password_reset(
         session=session,
     )
 
+# %% ../../nbs/classes/50_DomoUser.ipynb 12
+@patch_to(DomoUser)
+async def set_user_landing_page(
+    self: DomoUser,
+    page_id: str,
+    user_id: str = None,
+    auth: dmda.DomoAuth = None,
+    debug_api: bool = False,
+):
+
+    res = await user_routes.set_user_landing_page(
+        auth=auth or self.auth,
+        page_id=page_id,
+        user_id=self.id or user_id,
+        debug_api=debug_api,
+    )
+
+    if res.status != 200:
+        return False
+
+    return True
+
 # %% ../../nbs/classes/50_DomoUser.ipynb 13
 @patch_to(DomoUser)
 async def update_properties(
