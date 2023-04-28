@@ -24,15 +24,22 @@ class DomoPage:
     title: str = None
     parent_page_id: str = None
     top_page_id: str = None
-    auth: dmda.DomoAuth = field(default = None , repr = False)
+    auth: dmda.DomoAuth = field(default=None, repr=False)
     owners: list = field(default_factory=list)
     cards: list = field(default_factory=list)
     collections: list = field(default_factory=list)
     children: list = field(default_factory=list)
-    is_locked : bool = None
+    is_locked: bool = None
 
     def display_url(self):
         return f"https://{self.auth.domo_instance}.domo.com/page/{self.id}"
+
+    async def _get_domo_users(self, user_id_ls: [str] ):
+        return await dmu.DomoUsers.by_id(user_ids=[user_id_ls], only_allow_one=False, auth=self.auth)
+
+    async def _get_domo_groups(self, group_id_ls : [str] ):
+        return await asyncio.gather(* [dmg.DomoGroup.get_by_id(group_id=group_id, auth=self.auth) for group_id in group_id_ls])
+
 
 # %% ../../nbs/classes/50_DomoPage.ipynb 4
 @patch_to(DomoPage)
