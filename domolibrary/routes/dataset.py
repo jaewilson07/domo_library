@@ -4,7 +4,8 @@
 __all__ = ['DatasetNotFoundError', 'QueryRequestError', 'query_dataset_public', 'query_dataset_private', 'get_dataset_by_id',
            'get_schema', 'set_dataset_tags', 'UploadDataError', 'upload_dataset_stage_1', 'upload_dataset_stage_2_file',
            'upload_dataset_stage_2_df', 'upload_dataset_stage_3', 'index_dataset', 'index_status',
-           'generate_list_partitions_body', 'list_partitions', 'generate_create_dataset_body', 'create', 'delete']
+           'generate_list_partitions_body', 'list_partitions', 'generate_create_dataset_body', 'create',
+           'delete_partition_stage_1', 'delete_partition_stage_2', 'delete']
 
 # %% ../../nbs/routes/dataset.ipynb 3
 from typing import Optional
@@ -503,6 +504,40 @@ async def create(
         session=session,
         debug_api=debug_api,
     )
+
+# %% ../../nbs/routes/dataset.ipynb 33
+async def delete_partition_stage_1(auth: dmda.DomoAuth,
+                                   dataset_id: str,
+                                    dataset_partition_id: str,
+                                    debug_api: bool = False):
+# Delete partition has 3 stages
+# Stage 1. This marks the data version associated with the partition tag as deleted.  It does not delete the partition tag or remove the association between the partition tag and data version.  There should be no need to upload an empty file – step #3 will remove the data from Adrenaline.
+# update on 9/9/2022 based on the conversation with Greg Swensen
+    url = f'https://{auth.domo_instance}.domo.com/api/query/v1/datasources/{dataset_id}/tag/{dataset_partition_id}/data'
+
+    return await gd.get_data(
+       auth=auth,
+       method="DELETE",
+       url=url,
+      debug_api=debug_api)
+# Stage 2. This will remove the partition association so that it doesn’t show up in the list call.  Technically, this is not required as a partition against a deleted data version will not count against the 400 partition limit, but as the current partitions api doesn’t make that clear, cleaning these up will make it much easier for you to manage.
+
+
+# %% ../../nbs/routes/dataset.ipynb 34
+async def delete_partition_stage_2(auth: dmda.DomoAuth,
+                                   dataset_id: str,
+                                   dataset_partition_id: str,
+                                   debug_api: bool = False):
+    url = f'https://{auth.domo_instance}.domo.com/api/query/v1/datasources/{dataset_id}/partition/{dataset_partition_id}'
+
+    return await gd.get_data(
+        auth=auth,
+        method="DELETE",
+        url=url,
+
+       debug_api=debug_api
+    )
+
 
 # %% ../../nbs/routes/dataset.ipynb 35
 async def delete(

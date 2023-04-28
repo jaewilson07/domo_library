@@ -29,6 +29,7 @@ website:
           - classes/50_DomoAccount.ipynb
           - classes/50_DomoActivityLog.ipynb
           - classes/50_DomoBootstrap.ipynb
+          - classes/50_DomoCard.ipynb
           - classes/50_DomoDatacenter.ipynb
           - classes/50_DomoDataflow.ipynb
           - classes/50_DomoDataset.ipynb
@@ -49,6 +50,7 @@ website:
           - client/DomoError.ipynb
       - section: integrations
         contents:
+          - integrations/Automation.ipynb
           - integrations/DomoJupyter.ipynb
           - integrations/RoleHierarchy.ipynb
       - section: projects

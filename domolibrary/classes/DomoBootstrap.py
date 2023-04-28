@@ -7,6 +7,7 @@ __all__ = ['DomoBootstrap_Feature', 'DomoBootstrap']
 from dataclasses import dataclass, field
 from fastcore.basics import patch_to
 import httpx
+import asyncio
 
 import domolibrary.classes.DomoPage as dmpg
 
@@ -78,7 +79,7 @@ async def get_pages(self: DomoBootstrap,
     
     page_ls = res.response
 
-    self.page_ls =  [dmpg.DomoPage._from_bootstrap(page_obj, auth = auth) for page_obj in page_ls]
+    self.page_ls =  await asyncio.gather(*[dmpg.DomoPage._from_bootstrap(page_obj, auth = auth) for page_obj in page_ls])
 
     return self.page_ls
 
