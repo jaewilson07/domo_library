@@ -11,7 +11,7 @@ from typing import Optional
 import datetime as dt
 import asyncio
 import httpx
-
+import uuid
 from fastcore.basics import patch_to
 
 # import importlib
@@ -233,7 +233,57 @@ async def search_publications(cls: DomoPublications,
     return [DomoPublication._from_json(sub_obj)for sub_obj in res.response]
 
 
-# %% ../../nbs/classes/50_DomoPublish.ipynb 23
+# %% ../../nbs/classes/50_DomoPublish.ipynb 22
+@patch_to(DomoPublication, cls_method=True)
+async def create_publication(cls,
+                                 name: str,
+                                 content_ls: [DomoPublication_Content],
+                                 subscription_ls: [DomoPublication_Subscription],
+                                 unique_id: str = None,
+                                 description: str = None,
+                                 auth: dmda.DomoAuth = None,
+                                 debug_api: bool = False):
+
+    if not isinstance(subscription_ls, list):
+        subscription_ls = [subscription_ls]
+
+    auth = auth or cls.auth
+    domain_ls = []
+    content_json_ls = []
+    for sub in subscription_ls:
+        domain_ls.append(sub.domain)
+    for content_item in content_ls:
+        content_json_ls.append(content_item.to_api_json())
+
+    if not unique_id:
+        unique_id = str(uuid.uuid4())
+    if not description:
+        description = ''
+
+    body = publish_routes.generate_publish_body(url=f'{auth.domo_instance}.domo.com',
+                                                    sub_domain_ls=domain_ls,
+                                                    content_ls=content_json_ls,
+                                                    name=name,
+                                                    unique_id=unique_id,
+                                                    description=description,
+                                                    is_new=True)
+
+    res = await publish_routes.create_publish_job(auth=auth, body=body)
+    if debug_api:
+        print('Create the new Publish job')
+    if res.status != 200:
+        print(res)
+        await asyncio.sleep(2)
+        res = await publish_routes.get_publication_by_id(auth=auth, publication_id=unique_id)
+        if res.status != 200:
+            return None
+        else:
+            return cls._from_json(obj=res.response, auth=auth)
+
+    return cls._from_json(obj=res.response, auth=auth)
+
+
+# %% ../../nbs/classes/50_DomoPublish.ipynb 24
 @patch_to(DomoPublication, cls_method=True)
 async def update_publication(cls,
                                  name: str,
@@ -284,7 +334,7 @@ async def update_publication(cls,
 
 
 
-# %% ../../nbs/classes/50_DomoPublish.ipynb 25
+# %% ../../nbs/classes/50_DomoPublish.ipynb 26
 @patch_to(DomoPublication, cls_method=True)
 async def get_subscription_invites_list(cls, auth: dmda.DomoAuth,
                                             debug_api: bool = False):
