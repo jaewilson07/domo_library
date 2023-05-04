@@ -27,6 +27,7 @@ import domolibrary.client.DomoError as de
 
 
 # %% ../../nbs/classes/50_DomoPDP.ipynb 4
+@dataclass
 class PDP_Parameter:
     column_name: str
     column_values_ls: list
@@ -39,14 +40,14 @@ class PDP_Parameter:
 @patch_to(PDP_Parameter)
 def generate_parameter_simple(obj):
 
-        return pdp_routes.generate_policy_parameter_simple(column_name=obj.name,
+        return pdp_routes.generate_policy_parameter_simple(column_name=obj.column_name,
                                                            type=obj.type,
-                                                           column_values_ls=obj.values,
+                                                           column_values_ls=obj.column_values_ls,
                                                            operator=obj.operator,
-                                                           ignore_case=obj.ignoreCase
+                                                           ignore_case=obj.ignore_case
                                                            )
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 7
+# %% ../../nbs/classes/50_DomoPDP.ipynb 8
 @dataclass
 class PDP_Policy:
     dataset_id: str
@@ -101,7 +102,7 @@ class PDP_Policy:
             return res
     
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 9
+# %% ../../nbs/classes/50_DomoPDP.ipynb 10
 @patch_to(PDP_Policy)
 def generate_body_from_policy(
         self: PDP_Policy, 
@@ -116,7 +117,7 @@ def generate_body_from_policy(
                                                group_ids=self.group_ls,
                                                virtual_user_ids=self.virtual_user_ls)
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 11
+# %% ../../nbs/classes/50_DomoPDP.ipynb 12
 class Dataset_PDP_Policies:
 
     dataset = None  # domo dataset class
@@ -126,7 +127,7 @@ class Dataset_PDP_Policies:
         self.dataset = dataset
         self.policies = []
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 13
+# %% ../../nbs/classes/50_DomoPDP.ipynb 14
 @patch_to(Dataset_PDP_Policies)
 async def get_policies(
         self: Dataset_PDP_Policies, 
@@ -150,7 +151,7 @@ async def get_policies(
             self.policies = domo_policy
             return domo_policy
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 22
+# %% ../../nbs/classes/50_DomoPDP.ipynb 23
 class SearchPDP_NotFound(de.DomoError):
     def __init__(self, 
                  domo_instance,
@@ -218,7 +219,7 @@ async def search_pdp_policies(
     return policy_search    
     
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 26
+# %% ../../nbs/classes/50_DomoPDP.ipynb 27
 @patch_to(PDP_Policy)
 async def delete_policy(
     self: PDP_Policy, 
@@ -235,7 +236,7 @@ async def delete_policy(
     
     return res
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 30
+# %% ../../nbs/classes/50_DomoPDP.ipynb 31
 @patch_to(Dataset_PDP_Policies)
 async def toggle_dataset_pdp(
     self: Dataset_PDP_Policies,
