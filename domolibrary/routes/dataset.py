@@ -18,6 +18,7 @@ import httpx
 import domolibrary.client.get_data as gd
 import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
+import domolibrary.client.DomoError as de
 
 
 # %% ../../nbs/routes/dataset.ipynb 5
@@ -66,9 +67,11 @@ async def query_dataset_private(
     sql: str,
     session: Optional[httpx.AsyncClient] = None,
     loop_until_end: bool = False,  # retrieve all available rows
+    
     limit=100,  # maximum rows to return per request.  refers to PAGINATION
     skip=0,
     maximum=100,  # equivalent to the LIMIT or TOP clause in SQL, the number of rows to return total
+    
     debug_api: bool = False,
     debug_loop: bool = False,
     timeout :int = 10
@@ -193,12 +196,16 @@ async def set_dataset_tags(
     return res
 
 # %% ../../nbs/routes/dataset.ipynb 19
-class UploadDataError(Exception):
+class UploadDataError(de.DomoError):
     """raise if unable to upload data to Domo"""
 
-    def __init__(self, stage_num: int, dataset_id: str, domo_instance: str):
-        message = f"error uploading data to {dataset_id} during Stage { stage_num} in {domo_instance}"
-        super().__init__(message)
+    def __init__(self, stage_num: int, dataset_id: str, status, message, domo_instance: str):
+
+        message = f"error uploading data during Stage { stage_num} - {message}"
+
+        super().__init__(entity_id=dataset_id, message=message,
+                         status=status, domo_instance=domo_instance)
+
 
 # %% ../../nbs/routes/dataset.ipynb 20
 async def upload_dataset_stage_1(
@@ -236,7 +243,10 @@ async def upload_dataset_stage_1(
 
     if not res.is_success:
         raise UploadDataError(
-            stage_num=1, dataset_id=dataset_id, domo_instance=auth.domo_instance
+            stage_num=1, dataset_id=dataset_id, 
+            domo_instance=auth.domo_instance, 
+            status=res.status, 
+            message=res.message
         )
 
     return res
@@ -268,8 +278,9 @@ async def upload_dataset_stage_2_file(
     )
     if not res.is_success:
         raise UploadDataError(
-            stage_num=2, dataset_id=dataset_id, domo_instance=auth.domo_instance
+            stage_num=2, dataset_id=dataset_id, domo_instance=auth.domo_instance, status=res.status, message=status.message
         )
+
 
     res.upload_id = upload_id
     res.dataset_id = dataset_id
@@ -361,8 +372,9 @@ async def upload_dataset_stage_3(
 
     if not res.is_success:
         raise UploadDataError(
-            stage_num=3, dataset_id=dataset_id, domo_instance=auth.domo_instance
+            stage_num=3, dataset_id=dataset_id, domo_instance=auth.domo_instance, status=res.status, message=status.message
         )
+
 
     res.upload_id = upload_id
     res.dataset_id = dataset_id
