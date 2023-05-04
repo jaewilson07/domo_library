@@ -115,10 +115,12 @@ class PDP_Policy:
 # %% ../../nbs/classes/50_DomoPDP.ipynb 10
 @patch_to(PDP_Policy)
 def generate_body_from_policy(
-        self: PDP_Policy, 
+        self: PDP_Policy
         #params: list[dict] = ''
         ):
         self.parameters_ls = [PDP_Parameter.generate_parameter_simple(param) for param in self.parameters_ls]
+
+        
         return pdp_routes.generate_policy_body(policy_name=self.name,
                                                dataset_id=self.dataset_id,
                                                parameters_ls=self.parameters_ls,
@@ -140,7 +142,8 @@ class Dataset_PDP_Policies:
 # %% ../../nbs/classes/50_DomoPDP.ipynb 14
 @patch_to(Dataset_PDP_Policies)
 async def get_policies(
-        self: Dataset_PDP_Policies, 
+        self: Dataset_PDP_Policies,
+        include_all_rows : bool = True, 
         auth: dmda.DomoAuth = None, 
         dataset_id: str = None, 
         return_raw: bool = False,
@@ -150,7 +153,7 @@ async def get_policies(
         dataset_id = dataset_id or self.dataset.id
         auth = auth or self.dataset.auth
 
-        res = await pdp_routes.get_pdp_policies(auth=auth, dataset_id=dataset_id, debug_api=debug_api)
+        res = await pdp_routes.get_pdp_policies(auth=auth, dataset_id=dataset_id, debug_api=debug_api, include_all_rows=include_all_rows)
 
         if return_raw:
               return res
