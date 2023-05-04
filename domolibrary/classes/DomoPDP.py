@@ -40,11 +40,21 @@ class PDP_Parameter:
 @patch_to(PDP_Parameter)
 def generate_parameter_simple(obj):
 
-        return pdp_routes.generate_policy_parameter_simple(column_name=obj.column_name,
+        return pdp_routes.generate_policy_parameter_simple(column_name=obj.name,
                                                            type=obj.type,
-                                                           column_values_ls=obj.column_values_ls,
+                                                           column_values_ls=obj.values,
                                                            operator=obj.operator,
-                                                           ignore_case=obj.ignore_case
+                                                           ignore_case=obj.ignoreCase
+                                                           )
+
+@patch_to(PDP_Parameter)
+def generate_body_from_parameter(self):
+
+        return pdp_routes.generate_policy_parameter_simple(column_name=self.column_name,
+                                                           type=self.type,
+                                                           column_values_ls=self.column_values_ls,
+                                                           operator=self.operator,
+                                                           ignore_case=self.ignore_case
                                                            )
 
 # %% ../../nbs/classes/50_DomoPDP.ipynb 8
