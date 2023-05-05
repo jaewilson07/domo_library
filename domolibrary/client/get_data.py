@@ -268,6 +268,7 @@ async def looper(
 
     if maximum < limit and not loop_until_end:
         limit = maximum
+    
 
     while isLoop:
         params = fixed_params or {}
@@ -321,6 +322,7 @@ async def looper(
 
         if loop_until_end and len(newRecords) != 0:
             maximum = maximum + limit
+        
 
         if debug_loop:
             print({"all_rows": len(allRows), "new_records": len(newRecords)})
@@ -335,9 +337,9 @@ async def looper(
 
         skip += len(newRecords)
 
-        if skip + limit > maximum:
+        if skip + limit > maximum and not loop_until_end:
             limit = maximum - len(allRows)
-
+        
         if debug_loop:
             print(f"skip: {skip}, limit: {limit}")
         

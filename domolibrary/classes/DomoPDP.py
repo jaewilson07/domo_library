@@ -118,6 +118,9 @@ def generate_body_from_policy(
         self: PDP_Policy
         #params: list[dict] = ''
         ):
+        if not self.parameters_ls:
+                raise Exception('generate_body_from_policy: no parameters')
+                
         self.parameters_ls = [PDP_Parameter.generate_parameter_simple(param) for param in self.parameters_ls]
 
         
