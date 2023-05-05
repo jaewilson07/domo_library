@@ -456,6 +456,35 @@ async def delete(self: DomoDataset,
     return res
 
 
+# %% ../../nbs/classes/50_DomoDataset.ipynb 33
+@patch_to(DomoDataset)
+async def share(self: DomoDataset,
+                        member, # DomoUser or DomoGroup
+                        auth: dmda.DomoAuth = None,
+                        share_type: ShareDataset_AccessLevelEnum = ShareDataset_AccessLevelEnum.CAN_SHARE,
+                        is_send_email=False,
+                        debug_api: bool = False,
+                        debug_prn:bool = False,
+                        session: httpx.AsyncClient = None):
+
+    body = dataset_routes.generate_share_dataset_payload(entity_type='GROUP' if type(member).__name__ == 'DomoGroup' else 'USER',
+                                                      entity_id=int(member.id),
+                                                      access_level=share_type,
+                                                      is_send_email=is_send_email)
+    
+    if debug_prn:
+        print(access_list, auth.domo_instance)
+    
+
+    res = await dataset_routes.share_dataset(auth=auth or self.auth,
+                                       dataset_id=self.id,
+                                       body = body,
+                                       session=session,
+                                       debug_api=debug_api)
+    
+    return res
+
+
 # %% ../../nbs/classes/50_DomoDataset.ipynb 37
 class DomoDataset_UploadData_Error(Exception):
 
