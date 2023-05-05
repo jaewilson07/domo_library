@@ -27,6 +27,7 @@ import domolibrary.client.DomoError as de
 
 
 # %% ../../nbs/classes/50_DomoPDP.ipynb 4
+@dataclass
 class PDP_Parameter:
     column_name: str
     column_values_ls: list
@@ -46,7 +47,17 @@ def generate_parameter_simple(obj):
                                                            ignore_case=obj.ignoreCase
                                                            )
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 7
+@patch_to(PDP_Parameter)
+def generate_body_from_parameter(self):
+
+        return pdp_routes.generate_policy_parameter_simple(column_name=self.column_name,
+                                                           type=self.type,
+                                                           column_values_ls=self.column_values_ls,
+                                                           operator=self.operator,
+                                                           ignore_case=self.ignore_case
+                                                           )
+
+# %% ../../nbs/classes/50_DomoPDP.ipynb 8
 @dataclass
 class PDP_Policy:
     dataset_id: str
@@ -101,13 +112,15 @@ class PDP_Policy:
             return res
     
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 9
+# %% ../../nbs/classes/50_DomoPDP.ipynb 10
 @patch_to(PDP_Policy)
 def generate_body_from_policy(
-        self: PDP_Policy, 
+        self: PDP_Policy
         #params: list[dict] = ''
         ):
         self.parameters_ls = [PDP_Parameter.generate_parameter_simple(param) for param in self.parameters_ls]
+
+        
         return pdp_routes.generate_policy_body(policy_name=self.name,
                                                dataset_id=self.dataset_id,
                                                parameters_ls=self.parameters_ls,
@@ -116,7 +129,7 @@ def generate_body_from_policy(
                                                group_ids=self.group_ls,
                                                virtual_user_ids=self.virtual_user_ls)
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 11
+# %% ../../nbs/classes/50_DomoPDP.ipynb 12
 class Dataset_PDP_Policies:
 
     dataset = None  # domo dataset class
@@ -126,10 +139,11 @@ class Dataset_PDP_Policies:
         self.dataset = dataset
         self.policies = []
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 13
+# %% ../../nbs/classes/50_DomoPDP.ipynb 14
 @patch_to(Dataset_PDP_Policies)
 async def get_policies(
-        self: Dataset_PDP_Policies, 
+        self: Dataset_PDP_Policies,
+        include_all_rows : bool = True, 
         auth: dmda.DomoAuth = None, 
         dataset_id: str = None, 
         return_raw: bool = False,
@@ -139,7 +153,7 @@ async def get_policies(
         dataset_id = dataset_id or self.dataset.id
         auth = auth or self.dataset.auth
 
-        res = await pdp_routes.get_pdp_policies(auth=auth, dataset_id=dataset_id, debug_api=debug_api)
+        res = await pdp_routes.get_pdp_policies(auth=auth, dataset_id=dataset_id, debug_api=debug_api, include_all_rows=include_all_rows)
 
         if return_raw:
               return res
@@ -150,7 +164,7 @@ async def get_policies(
             self.policies = domo_policy
             return domo_policy
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 22
+# %% ../../nbs/classes/50_DomoPDP.ipynb 23
 class SearchPDP_NotFound(de.DomoError):
     def __init__(self, 
                  domo_instance,
@@ -218,7 +232,7 @@ async def search_pdp_policies(
     return policy_search    
     
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 26
+# %% ../../nbs/classes/50_DomoPDP.ipynb 27
 @patch_to(PDP_Policy)
 async def delete_policy(
     self: PDP_Policy, 
@@ -235,7 +249,7 @@ async def delete_policy(
     
     return res
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 30
+# %% ../../nbs/classes/50_DomoPDP.ipynb 31
 @patch_to(Dataset_PDP_Policies)
 async def toggle_dataset_pdp(
     self: Dataset_PDP_Policies,

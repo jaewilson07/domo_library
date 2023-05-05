@@ -38,9 +38,13 @@ async def get_pdp_policies(
     auth: dmda.DomoAuth,
     dataset_id: str,
     debug_api: bool = False,
+    include_all_rows: bool = True
 ) -> rgd.ResponseGetData:
     url = f"http://{auth.domo_instance}.domo.com/api/query/v1/data-control/{dataset_id}/filter-groups/"
 
+    if include_all_rows:
+        url+="?options=load_associations,load_filters,include_open_policy"
+        
     if debug_api:
         print(url)
 
