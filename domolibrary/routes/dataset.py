@@ -135,7 +135,7 @@ async def query_dataset_private(
 
     if not res.is_success:
         raise QueryRequestError(dataset_id=dataset_id, domo_instance=auth.domo_instance,
-                                sql=sql, message=res.message, status=res.status)
+                                sql=sql, message=res.response, status=res.status)
 
     return res
 
@@ -257,7 +257,7 @@ async def upload_dataset_stage_1(
             stage_num=1, dataset_id=dataset_id, 
             domo_instance=auth.domo_instance, 
             status=res.status, 
-            message=res.message
+            message=res.response
         )
 
     return res
@@ -289,15 +289,15 @@ async def upload_dataset_stage_2_file(
     )
     if not res.is_success:
         raise UploadDataError(
-            stage_num=2, dataset_id=dataset_id, domo_instance=auth.domo_instance, status=res.status, message=status.message
+            stage_num=2, dataset_id=dataset_id, domo_instance=auth.domo_instance, status=res.status, message=res.response
         )
-
 
     res.upload_id = upload_id
     res.dataset_id = dataset_id
     res.part_id = part_id
 
     return res
+
 
 # %% ../../nbs/routes/dataset.ipynb 22
 async def upload_dataset_stage_2_df(
@@ -383,7 +383,7 @@ async def upload_dataset_stage_3(
 
     if not res.is_success:
         raise UploadDataError(
-            stage_num=3, dataset_id=dataset_id, domo_instance=auth.domo_instance, status=res.status, message=status.message
+            stage_num=3, dataset_id=dataset_id, domo_instance=auth.domo_instance, status=res.status, message=res.response
         )
 
 
