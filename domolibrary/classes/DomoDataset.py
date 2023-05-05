@@ -394,11 +394,11 @@ async def query_dataset_private(cls: DomoDataset,
                                                             )
         except dataset_routes.DatasetNotFoundError as e:
             print(e)
-            return e
+            return res
 
         except dataset_routes.QueryRequestError as e:
             print(e)
-            return e
+            return res
 
         except Exception as e:
             if retry <= maximum_retry:
