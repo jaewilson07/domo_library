@@ -583,7 +583,6 @@ class ShareDataset_AccessLevelEnum(Enum):
 
 
 def generate_share_dataset_payload(entity_type,  # USER or GROUP
-
                                    entity_id,
                                    access_level: ShareDataset_AccessLevelEnum = ShareDataset_AccessLevelEnum.CAN_SHARE,
                                    is_send_email : bool = False
@@ -625,5 +624,8 @@ async def share_dataset(auth: dmda.DomoAuth,
     if not res.is_success:
         raise ShareDataset_Error(dataset_id = dataset_id, status = res.status, response = res.response, domo_instance = auth.domo_instance)
     
+    update_user_ls = [f"{user['type']} - {user['id']}"for user in body['permissions']]
+
+    res.response = f"updated access list { ', '.join(update_user_ls)} added to {dataset_id}"
     return res
 

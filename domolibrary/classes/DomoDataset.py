@@ -45,7 +45,7 @@ import domolibrary.utils.DictDot as util_dd
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 import domolibrary.routes.dataset as dataset_routes
-#import domolibrary.classes.DomoPDP as dmpdp
+import domolibrary.classes.DomoPDP as dmpdp
 
 # %% ../../nbs/classes/50_DomoDataset.ipynb 7
 async def _have_prereqs(self, auth, dataset_id, function_name):
@@ -281,13 +281,13 @@ class DomoDataset:
     tags: DomoDataset_Tags = field(default=None)
 
     # certification: dmdc.DomoCertification = None
-    # PDPPolicies: dmpdp.Dataset_PDP_Policies = None
+    PDP: dmpdp.Dataset_PDP_Policies = None
 
     def __post_init__(self):
         self.schema = DomoDataset_Schema(dataset=self)
         self.tags = DomoDataset_Tags(dataset=self)
 
-        #self.PDPPolicies = dmpdp.Dataset_PDP_Policies(dataset=self)
+        self.PDPPolicies = dmpdp.Dataset_PDP_Policies(dataset=self)
 
     def display_url(self):
         return f"https://{self.auth.domo_instance }.domo.com/datasources/{self.id}/details/overview"
@@ -456,7 +456,7 @@ async def delete(self: DomoDataset,
     return res
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 36
+# %% ../../nbs/classes/50_DomoDataset.ipynb 37
 class DomoDataset_UploadData_Error(Exception):
 
     def __init__(self,
@@ -517,7 +517,7 @@ class DomoDataset_UploadData_CommitDatasetUploadId_Error(DomoDataset_UploadData_
                             partition_key=partition_key)
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 37
+# %% ../../nbs/classes/50_DomoDataset.ipynb 38
 @patch_to(DomoDataset)
 async def index_dataset(self: DomoDataset,
                         auth: dmda.DomoAuth = None,
@@ -532,7 +532,7 @@ async def index_dataset(self: DomoDataset,
                                               session=session)
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 38
+# %% ../../nbs/classes/50_DomoDataset.ipynb 39
 @patch_to(DomoDataset)
 async def upload_data(self : DomoDataset,
                       upload_df: pd.DataFrame = None,
@@ -647,7 +647,7 @@ async def upload_data(self : DomoDataset,
     return stage3_res
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 40
+# %% ../../nbs/classes/50_DomoDataset.ipynb 41
 @patch_to(DomoDataset)
 async def list_partitions(self : DomoDataset,
                             auth: dmda.DomoAuth = None,
@@ -666,7 +666,7 @@ async def list_partitions(self : DomoDataset,
 
     return res.response
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 42
+# %% ../../nbs/classes/50_DomoDataset.ipynb 43
 class DomoDataset_CreateDataset_Error(Exception):
     def __init__(self, domo_instance: str, dataset_name: str, status: int, reason: str):
         message = f"Failure to create dataset {dataset_name} in {domo_instance} :: {status} - {reason}"
@@ -704,7 +704,7 @@ async def create(cls: DomoDataset,
     return await cls.get_from_id(dataset_id=dataset_id, auth=auth)
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 45
+# %% ../../nbs/classes/50_DomoDataset.ipynb 46
 @patch_to(DomoDataset)
 async def delete_partition(self: DomoDataset,
                             dataset_partition_id: str,
