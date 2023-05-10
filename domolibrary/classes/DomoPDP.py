@@ -63,40 +63,46 @@ class PDP_Policy:
     dataset_id: str
     filter_group_id: str
     name: str
-    #resources: list
+    # resources: list
     parameters_ls: list[dict]
     user_ls: list[str]
     group_ls: list[str]
     virtual_user_ls: list[str]
 
     @classmethod
-    def _from_json(cls, obj):
+    async def _from_json(cls, obj, auth: dmda.DomoAuth):
         dd = util_dd.DictDot(obj)
+
+        import domolibrary.classes.DomoUser as dmu
+        import domolibrary.classes.DomoGroup as dmg
 
         return cls(dataset_id=dd.dataSourceId,
                    filter_group_id=dd.filterGroupId,
                    name=dd.name,
-                   #resources=dd.resources,
+                   # resources=dd.resources,
                    parameters_ls=dd.parameters,
-                   user_ls=dd.userIds,
-                   group_ls=dd.groupIds,
+                   user_ls=await asyncio.gather(* [dmu.DomoUser.get_by_id(user_id=id, auth=auth) for id in dd.userIds]) if dd.userIds else None,
+                   group_ls=await asyncio.gather(*[dmg.DomoGroup.get_by_id(group_id=id, auth=auth) for id in dd.groupIds]) if dd.groupIds else None,
+                   
+                                                                                                                      
                    virtual_user_ls=dd.virtualUserIds)
 
-    @classmethod
-    async def upsert_policy(cls, 
+    @ classmethod
+    async def upsert_policy(cls,
                             auth: dmda.DomoAuth,
                             dataset_id: str,
-                            policy_definition: dict, # body sent to the API (uses camelCase instead of snake_case)
-                            debug_api: bool = False,
-                            debug_prn: bool = False
+                            # body sent to the API (uses camelCase instead of snake_case)
+                            policy_definition: dict,
+                            debug_api: bool=False,
+                            debug_prn: bool=False
                             ):
-        
-        #print(policy_definition)
-        policy_id = policy_definition.get('filterGroupId')
+
+        # print(policy_definition)
+        policy_id=policy_definition.get('filterGroupId')
         if policy_id:
             if debug_prn:
-                print(f'Updating policy {policy_id} in {auth.domo_instance}')    
-            res = await pdp_routes.update_policy(auth=auth,
+                print(f'Updating policy {policy_id} in {auth.domo_instance}')
+            res=await pdp_routes.update_policy(auth=auth,
                                                  dataset_id=dataset_id,
                                                  policy_id=policy_id,
                                                  body=policy_definition,
@@ -104,13 +110,14 @@ class PDP_Policy:
             return res
         else:
             if debug_prn:
-                print(f'Policy does not exist. Creating policy in {auth.domo_instance}')
-            res = await pdp_routes.create_policy(auth=auth,
+                print(
+                    f'Policy does not exist. Creating policy in {auth.domo_instance}')
+            res=await pdp_routes.create_policy(auth=auth,
                                                  dataset_id=dataset_id,
                                                  body=policy_definition,
                                                  debug_api=debug_api)
             return res
-    
+
 
 # %% ../../nbs/classes/50_DomoPDP.ipynb 10
 @patch_to(PDP_Policy)
@@ -152,7 +159,7 @@ async def get_policies(
         return_raw: bool = False,
         debug_api: bool = False
     ):
-
+        
         dataset_id = dataset_id or self.dataset.id
         auth = auth or self.dataset.auth
 
@@ -162,8 +169,8 @@ async def get_policies(
               return res
 
         if res.status == 200:
-            domo_policy = [PDP_Policy._from_json(
-                policy_obj) for policy_obj in res.response]
+            domo_policy = await asyncio.gather(*[PDP_Policy._from_json(
+                policy_obj, auth = auth) for policy_obj in res.response])
             self.policies = domo_policy
             return domo_policy
 
