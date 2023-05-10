@@ -349,7 +349,7 @@ class QueryExecutionError(de.DomoError):
                  status, message,
                  function_name=None ):
         
-        self.message = f"error executing {sql}: {message}"
+        message = f"error executing {sql}: {message}"
 
         super().__init__(entity_id=dataset_id,
                          function_name=function_name,
@@ -405,11 +405,12 @@ async def query_dataset_private(cls: DomoDataset,
                 print(f"⚠️ Error.  Attempt {retry} / {maximum_retry} - {e} - while query dataset {dataset_id} in {auth.domo_instance} with {sql}" )
             retry += 1
 
-    if not res.is_success:
+    if res and not res.is_success:
         raise QueryExecutionError(
             status=res.status, message=res.response,
             function_name="query_dataset_private", 
             sql=sql, dataset_id=dataset_id, domo_instance=auth.domo_instance)
+    
 
     return pd.DataFrame(res.response)
 

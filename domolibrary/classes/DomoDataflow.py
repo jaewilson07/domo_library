@@ -4,11 +4,9 @@
 __all__ = ['DomoDataflow']
 
 # %% ../../nbs/classes/50_DomoDataflow.ipynb 2
-from fastcore.basics import patch_to
-
-# %% ../../nbs/classes/50_DomoDataflow.ipynb 3
 import httpx
 import asyncio
+from fastcore.basics import patch_to
 
 import pandas as pd
 import io
@@ -23,7 +21,7 @@ import domolibrary.client.DomoError as de
 import domolibrary.routes.dataflow as dataflow_routes
 
 
-# %% ../../nbs/classes/50_DomoDataflow.ipynb 4
+# %% ../../nbs/classes/50_DomoDataflow.ipynb 3
 class DomoDataflow_Action_Type(Enum):
     LoadFromVault = 'LoadFromVault'
     PublishToVault = 'PublishToVault'
@@ -56,11 +54,11 @@ class DomoDataflow_Action:
         )
 
 
-# %% ../../nbs/classes/50_DomoDataflow.ipynb 7
+# %% ../../nbs/classes/50_DomoDataflow.ipynb 6
 @dataclass
 class DomoDataflow:
     id: str
-    name: str
+    name: str = None
     auth : dmda.DomoAuth = field(default = None)
     owner: str = None
     description: str = None
@@ -69,7 +67,7 @@ class DomoDataflow:
 
     action : list[DomoDataflow_Action] = field(default = None)
 
-# %% ../../nbs/classes/50_DomoDataflow.ipynb 8
+# %% ../../nbs/classes/50_DomoDataflow.ipynb 7
 @patch_to(DomoDataflow, cls_method = True)
 async def get_from_id(cls: DomoDataflow,
                       dataflow_id: int,
@@ -100,4 +98,14 @@ async def get_from_id(cls: DomoDataflow,
         domo_dataflow.actions = [DomoDataflow_Action._from_obj(action) for action in dd.actions]
     
     return domo_dataflow
+
+
+# %% ../../nbs/classes/50_DomoDataflow.ipynb 10
+@patch_to(DomoDataflow)
+async def execute_dataflow(self: DomoDataflow,
+                           auth: dmda.DomoAuth = None,
+                           debug_api: bool = False):
+
+    return await dataflow_routes.execute_dataflow(auth=auth or self.auth,
+                                                  dataflow_id=self.id, debug_api=debug_api)
 
