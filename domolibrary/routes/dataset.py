@@ -77,7 +77,7 @@ async def query_dataset_private(
     skip=0,
     maximum=100,  # equivalent to the LIMIT or TOP clause in SQL, the number of rows to return total
 
-    filter_pdp_policy_id: [int] = None,
+    filter_pdp_policy_id_ls: [int] = None,
     
     debug_api: bool = False,
     debug_loop: bool = False,
@@ -98,10 +98,10 @@ async def query_dataset_private(
     def body_fn(skip, limit):
         body = {"sql": f"{sql} limit {limit} offset {skip}"}
 
-        if filter_pdp_policy_id:
+        if filter_pdp_policy_id_ls:
             body.update({"context": {
                 "dataControlContext": {
-                    "filterGroupIds": filter_pdp_policy_id,
+                    "filterGroupIds": filter_pdp_policy_id_ls,
                     "previewPdp": True
                 }
 

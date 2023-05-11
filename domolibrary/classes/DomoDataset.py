@@ -364,7 +364,7 @@ async def query_dataset_private(cls: DomoDataset,
                                 dataset_id: str,
                                 sql: str,
                                 session: Optional[httpx.AsyncClient] = None,
-                                filter_pdp_policy_id : [int] = None, # filter by pdp policy
+                                filter_pdp_policy_id_ls : [int] = None, # filter by pdp policy
                                 loop_until_end: bool = False,  # retrieve all available rows
                                 
                                 limit=100,  # maximum rows to return per request.  refers to PAGINATION
@@ -379,14 +379,17 @@ async def query_dataset_private(cls: DomoDataset,
     
     res = None
     retry = 1
+
+    if filter_pdp_policy_id_ls and not isinstance(filter_pdp_policy_id_ls, list):
+        filter_pdp_policy_id_ls = [int(filter_pdp_policy_id_ls)]
+
     while (not res or not res.is_success) and retry <= maximum_retry:
         try:
             res = await dataset_routes.query_dataset_private(auth=auth,
                                                             dataset_id=dataset_id,
                                                             sql=sql,
                                                             maximum=maximum,
-                                                             filter_pdp_policy_id=filter_pdp_policy_id if isinstance(
-                                                                 filter_pdp_policy_id, list) else [int(filter_pdp_policy_id)],
+                                                             filter_pdp_policy_id_ls=filter_pdp_policy_id_ls,
                                                             skip=skip,
                                                             limit=limit,
                                                             loop_until_end=loop_until_end,
