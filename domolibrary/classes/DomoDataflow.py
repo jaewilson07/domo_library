@@ -102,9 +102,9 @@ async def get_from_id(cls: DomoDataflow,
 
 # %% ../../nbs/classes/50_DomoDataflow.ipynb 10
 @patch_to(DomoDataflow)
-async def execute_dataflow(self: DomoDataflow,
-                           auth: dmda.DomoAuth = None,
-                           debug_api: bool = False):
+async def execute(self: DomoDataflow,
+                  auth: dmda.DomoAuth = None,
+                  debug_api: bool = False):
 
     return await dataflow_routes.execute_dataflow(auth=auth or self.auth,
                                                   dataflow_id=self.id, debug_api=debug_api)
