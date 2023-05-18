@@ -77,7 +77,7 @@ class GroupMembership:
 
             return list_to_update
 
-        if isinstance(member, DomoGroup) and not next((user_obj for user_obj in self._add_member_ls if user_obj.id == member.id), None):
+        if isinstance(member, DomoGroup):
             list_to_update.append({'id': str(member.id), 'type': 'GROUP'})
 
             return list_to_update
