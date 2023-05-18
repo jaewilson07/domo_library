@@ -2,8 +2,8 @@
 
 # %% auto 0
 __all__ = ['DomoAccount_Config', 'DomoAccount_Config_AbstractCredential', 'DomoAccount_Config_DatasetCopy',
-           'DomoAccount_Config_Governance', 'DomoAccount_Config_AmazonS3', 'DomoAccount_Config_AwsAthena',
-           'DomoAccount_Config_HighBandwidthConnector', 'AccountConfig', 'DomoAccount',
+           'DomoAccount_Config_Governance', 'DomoAccount_Config_AmazonS3', 'DomoAccount_Config_AmazonS3Advanced',
+           'DomoAccount_Config_AwsAthena', 'DomoAccount_Config_HighBandwidthConnector', 'AccountConfig', 'DomoAccount',
            'DomoAccount_DataProviderType_ConfigNotDefined', 'DomoAccount_UpdateName_Error',
            'DomoAccount_CreateAccount_Error', 'DomoAccount_DeleteAccount_Error', 'DomoAccounts']
 
@@ -143,6 +143,40 @@ class DomoAccount_Config_AmazonS3(DomoAccount_Config):
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 13
 @dataclass
+class DomoAccount_Config_AmazonS3Advanced(DomoAccount_Config):
+    access_key: str
+    secret_key: str = field(repr=False)
+    bucket: str
+    region: str = "us-west-2"
+    data_provider_type = "amazons3-advanced"
+
+    @classmethod
+    def _from_json(cls, obj):
+
+        dd = util_dd.DictDot(obj)
+
+        return cls(
+            access_key=dd.accessKey,
+            secret_key=dd.secretKey,
+            bucket=dd.bucket,
+            region=dd.region,
+        )
+
+    def to_json(self):
+        if self.bucket.lower().startswith("s3://"):
+            bucket = self.bucket[5:]
+            print(
+                f"🤦‍♀️- Domo bucket expects string without s3:// prefix. Trimming to '{bucket}' for the output")
+        return {
+            "accessKey": self.access_key,
+            "secretKey": self.secret_key,
+            "bucket": bucket,
+            "region": self.region,
+        }
+
+
+# %% ../../nbs/classes/50_DomoAccount.ipynb 14
+@dataclass
 class DomoAccount_Config_AwsAthena(DomoAccount_Config):
     aws_access_key: str
     aws_secret_key: str = field(repr=False)
@@ -174,7 +208,7 @@ class DomoAccount_Config_AwsAthena(DomoAccount_Config):
             "workgroup": self.workgroup,
         }
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 14
+# %% ../../nbs/classes/50_DomoAccount.ipynb 15
 @dataclass
 class DomoAccount_Config_HighBandwidthConnector(DomoAccount_Config):
     """ this connector is not enabled by default contact your CSM / AE"""
@@ -207,15 +241,12 @@ class DomoAccount_Config_HighBandwidthConnector(DomoAccount_Config):
         }
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 17
+# %% ../../nbs/classes/50_DomoAccount.ipynb 18
 class AccountConfig(Enum):
     """
     Enum provides appropriate spelling for data_provider_type and config object.
     The name of the enum should correspond with the data_provider_type with hyphens replaced with underscores.
     """
-
-    amazon_athena_high_bandwidth = DomoAccount_Config_HighBandwidthConnector
-
     abstract_credential_store = DomoAccount_Config_AbstractCredential
 
     dataset_copy = DomoAccount_Config_DatasetCopy
@@ -223,11 +254,13 @@ class AccountConfig(Enum):
     domo_governance_d14c2fef_49a8_4898_8ddd_f64998005600 = DomoAccount_Config_Governance
 
     aws_athena = DomoAccount_Config_AwsAthena
+    amazon_athena_high_bandwidth = DomoAccount_Config_HighBandwidthConnector
 
     amazon_s3 = DomoAccount_Config_AmazonS3
+    amazons3_advanced = DomoAccount_Config_AmazonS3Advanced
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 19
+# %% ../../nbs/classes/50_DomoAccount.ipynb 20
 @dataclass
 class DomoAccount:
     name: str
@@ -255,7 +288,7 @@ class DomoAccount:
             auth=auth,
         )
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 20
+# %% ../../nbs/classes/50_DomoAccount.ipynb 21
 class DomoAccount_DataProviderType_ConfigNotDefined(de.DomoError):
     def __init__(
         self, account_id, data_provider_type, domo_instance, function_name="_get_config"
@@ -304,7 +337,7 @@ async def _get_config(
 
     return self.config
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 21
+# %% ../../nbs/classes/50_DomoAccount.ipynb 22
 @patch_to(DomoAccount, cls_method=True)
 async def get_from_id(
     cls,
@@ -342,7 +375,7 @@ async def get_from_id(
     finally:
         return acc
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 25
+# %% ../../nbs/classes/50_DomoAccount.ipynb 26
 @patch_to(DomoAccount)
 async def update_config(
     self: DomoAccount,
@@ -374,7 +407,7 @@ async def update_config(
     return self
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 28
+# %% ../../nbs/classes/50_DomoAccount.ipynb 29
 class DomoAccount_UpdateName_Error(de.DomoError):
     def __init__(
         self,
@@ -431,7 +464,7 @@ async def update_name(
 
     return self
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 32
+# %% ../../nbs/classes/50_DomoAccount.ipynb 33
 class DomoAccount_CreateAccount_Error(de.DomoError):
     def __init__(
         self,
@@ -450,7 +483,7 @@ class DomoAccount_CreateAccount_Error(de.DomoError):
             message=message,
         )
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 33
+# %% ../../nbs/classes/50_DomoAccount.ipynb 34
 @patch_to(DomoAccount, cls_method=True)
 def generate_create_body(cls, account_name, config):
     return {
@@ -487,7 +520,7 @@ async def create_account(
 
     return await cls.get_from_id(auth=auth, account_id=res.response.get("id"))
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 34
+# %% ../../nbs/classes/50_DomoAccount.ipynb 35
 class DomoAccount_DeleteAccount_Error(de.DomoError):
     def __init__(
         self,
@@ -532,7 +565,7 @@ async def delete_account(
 
     return True
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 35
+# %% ../../nbs/classes/50_DomoAccount.ipynb 36
 @patch_to(DomoAccount)
 async def _is_group_ownership_beta(self, auth : dmda.DomoAuth):
 
@@ -612,12 +645,12 @@ Alternatively pass a full auth object to auto check the bootstrap.
     return res
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 38
+# %% ../../nbs/classes/50_DomoAccount.ipynb 39
 @dataclass
 class DomoAccounts:
     auth: dmda.DomoAuth
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 39
+# %% ../../nbs/classes/50_DomoAccount.ipynb 40
 @patch_to(DomoAccounts, cls_method=True)
 async def get_accounts(
     cls: DomoAccounts,

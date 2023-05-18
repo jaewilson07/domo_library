@@ -309,6 +309,7 @@ async def looper(
         if not res.is_success:
             if is_close_session:
                 await session.aclose()
+                
             return res
 
         try:

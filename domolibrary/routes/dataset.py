@@ -5,10 +5,12 @@ __all__ = ['DatasetNotFoundError', 'QueryRequestError', 'query_dataset_public', 
            'get_schema', 'set_dataset_tags', 'UploadDataError', 'upload_dataset_stage_1', 'upload_dataset_stage_2_file',
            'upload_dataset_stage_2_df', 'upload_dataset_stage_3', 'index_dataset', 'index_status',
            'generate_list_partitions_body', 'list_partitions', 'generate_create_dataset_body', 'create',
-           'delete_partition_stage_1', 'delete_partition_stage_2', 'delete']
+           'delete_partition_stage_1', 'delete_partition_stage_2', 'delete', 'ShareDataset_AccessLevelEnum',
+           'generate_share_dataset_payload', 'ShareDataset_Error', 'share_dataset']
 
 # %% ../../nbs/routes/dataset.ipynb 3
 from typing import Optional
+from enum import Enum
 
 import io
 import pandas as pd
@@ -22,18 +24,21 @@ import domolibrary.client.DomoError as de
 
 
 # %% ../../nbs/routes/dataset.ipynb 5
-class DatasetNotFoundError(Exception):
-    def __init__(self, dataset_id, domo_instance):
-        message = f"dataset - {dataset_id} not found in {domo_instance}"
+class DatasetNotFoundError(de.DomoError):
+    def __init__(self, dataset_id, domo_instance, status = None):
+        message = f"dataset - {dataset_id} not found"
 
-        super().__init__(message)
+        super().__init__(message, status = status, domo_instance = domo_instance)
+        
 
 # %% ../../nbs/routes/dataset.ipynb 6
-class QueryRequestError(Exception):
-    def __init__(self, dataset_id, domo_instance, sql):
-        message = f"dataset - {dataset_id} in {domo_instance} received a bad request.  Check your SQL \n {sql}"
+class QueryRequestError(de.DomoError):
+    def __init__(self, dataset_id, domo_instance, sql, status=None, message=''):
+        message = f"dataset - {dataset_id} received a bad request {message}.  Check your SQL \n {sql}"
 
-        super().__init__(message)
+        super().__init__(message,
+                         status=status,
+                         domo_instance=domo_instance)
 
 
 # typically do not use
@@ -67,14 +72,16 @@ async def query_dataset_private(
     sql: str,
     session: Optional[httpx.AsyncClient] = None,
     loop_until_end: bool = False,  # retrieve all available rows
-    
+
     limit=100,  # maximum rows to return per request.  refers to PAGINATION
     skip=0,
     maximum=100,  # equivalent to the LIMIT or TOP clause in SQL, the number of rows to return total
+
+    filter_pdp_policy_id_ls: [int] = None,
     
     debug_api: bool = False,
     debug_loop: bool = False,
-    timeout :int = 10
+    timeout: int = 10
 ):
     """execute SQL queries against private APIs, requires DomoFullAuth or DomoTokenAuth"""
 
@@ -85,8 +92,22 @@ async def query_dataset_private(
         "limit": "limit",
     }
 
+    # def body_fn(skip, limit):
+    #     return {"sql": f"{sql} limit {limit} offset {skip}"}
+
     def body_fn(skip, limit):
-        return {"sql": f"{sql} limit {limit} offset {skip}"}
+        body = {"sql": f"{sql} limit {limit} offset {skip}"}
+
+        if filter_pdp_policy_id_ls:
+            body.update({"context": {
+                "dataControlContext": {
+                    "filterGroupIds": filter_pdp_policy_id_ls,
+                    "previewPdp": True
+                }
+
+            }})
+
+        return body
 
     def arr_fn(res) -> pd.DataFrame:
         rows_ls = res.response.get("rows")
@@ -114,20 +135,26 @@ async def query_dataset_private(
         debug_api=debug_api,
         debug_loop=debug_loop,
         loop_until_end=loop_until_end,
-        timeout = timeout
+        timeout=timeout
     )
 
     if res.status == 404 and res.response == "Not Found":
         raise DatasetNotFoundError(
-            dataset_id=dataset_id, domo_instance=auth.domo_instance
+            dataset_id=dataset_id, domo_instance=auth.domo_instance, status = res.status
         )
 
     if res.status == 400 and res.response == "Bad Request":
         raise QueryRequestError(
-            dataset_id=dataset_id, domo_instance=auth.domo_instance, sql=sql
+            dataset_id=dataset_id, domo_instance=auth.domo_instance,
+            sql=sql, status=res.status,
         )
 
+    if not res.is_success:
+        raise QueryRequestError(dataset_id=dataset_id, domo_instance=auth.domo_instance,
+                                sql=sql, message=res.response, status=res.status)
+
     return res
+
 
 # %% ../../nbs/routes/dataset.ipynb 9
 async def get_dataset_by_id(
@@ -146,7 +173,7 @@ async def get_dataset_by_id(
 
     if res.status == 404 and res.response == "Not Found":
         raise DatasetNotFoundError(
-            dataset_id=dataset_id, domo_instance=auth.domo_instance
+            dataset_id=dataset_id, domo_instance=auth.domo_instance, status = res.status
         )
 
     return res
@@ -246,7 +273,7 @@ async def upload_dataset_stage_1(
             stage_num=1, dataset_id=dataset_id, 
             domo_instance=auth.domo_instance, 
             status=res.status, 
-            message=res.message
+            message=res.response
         )
 
     return res
@@ -278,15 +305,15 @@ async def upload_dataset_stage_2_file(
     )
     if not res.is_success:
         raise UploadDataError(
-            stage_num=2, dataset_id=dataset_id, domo_instance=auth.domo_instance, status=res.status, message=status.message
+            stage_num=2, dataset_id=dataset_id, domo_instance=auth.domo_instance, status=res.status, message=res.response
         )
-
 
     res.upload_id = upload_id
     res.dataset_id = dataset_id
     res.part_id = part_id
 
     return res
+
 
 # %% ../../nbs/routes/dataset.ipynb 22
 async def upload_dataset_stage_2_df(
@@ -372,7 +399,7 @@ async def upload_dataset_stage_3(
 
     if not res.is_success:
         raise UploadDataError(
-            stage_num=3, dataset_id=dataset_id, domo_instance=auth.domo_instance, status=res.status, message=status.message
+            stage_num=3, dataset_id=dataset_id, domo_instance=auth.domo_instance, status=res.status, message=res.response
         )
 
 
@@ -471,7 +498,7 @@ async def list_partitions(
 
     if res.status == 404 and res.response == "Not Found":
         raise DatasetNotFoundError(
-            dataset_id=dataset_id, domo_instance=auth.domo_instance
+            dataset_id=dataset_id, domo_instance=auth.domo_instance, status = res.status
         )
     return res
 
@@ -563,3 +590,58 @@ async def delete(
     return await gd.get_data(
         auth=auth, method="DELETE", url=url, session=session, debug_api=debug_api
     )
+
+# %% ../../nbs/routes/dataset.ipynb 36
+class ShareDataset_AccessLevelEnum(Enum):
+    CO_OWNER = 'CO_OWNER'
+    CAN_EDIT = 'CAN_EDIT'
+    CAN_SHARE = 'CAN_SHARE'
+
+
+def generate_share_dataset_payload(entity_type,  # USER or GROUP
+                                   entity_id,
+                                   access_level: ShareDataset_AccessLevelEnum = ShareDataset_AccessLevelEnum.CAN_SHARE,
+                                   is_send_email : bool = False
+
+                                   ):
+
+    return {
+        "permissions": [
+            {
+                "type": entity_type,
+                "id": entity_id,
+                "accessLevel": access_level.value
+            }
+        ],
+        "sendEmail": is_send_email
+    }
+
+
+# %% ../../nbs/routes/dataset.ipynb 37
+class ShareDataset_Error(de.DomoError):
+    def __init__(self, dataset_id, status, response, domo_instance):
+
+        message = f"error sharing dataset {dataset_id} - {response}"
+        
+        super().__init__(status = status, domo_instance = domo_instance, message = message)
+
+async def share_dataset(auth: dmda.DomoAuth,
+                        dataset_id: str, 
+                        body: dict,
+                        session: httpx.AsyncClient = None,
+                        debug_api=False):
+
+    url = f'https://{auth.domo_instance}.domo.com/api/data/v3/datasources/{dataset_id}/share'
+
+    res = await gd.get_data(
+        auth=auth, method="POST", url=url, body = body, session=session, debug_api=debug_api
+    )
+
+    if not res.is_success:
+        raise ShareDataset_Error(dataset_id = dataset_id, status = res.status, response = res.response, domo_instance = auth.domo_instance)
+    
+    update_user_ls = [f"{user['type']} - {user['id']}"for user in body['permissions']]
+
+    res.response = f"updated access list { ', '.join(update_user_ls)} added to {dataset_id}"
+    return res
+

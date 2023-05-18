@@ -127,21 +127,21 @@ class GetInstanceConfig:
 
         self.logger.log_info(message, debug_log=debug_log)
 
-        df = await ds.query_dataset_private(
+        config_df = await ds.query_dataset_private(
             auth=config_auth, dataset_id=dataset_id, sql=sql, debug_api=debug_api
         )
-        if len(df.index) == 0:
+        if len(config_df.index) == 0:
             raise NoConfigCompanyError(sql, domo_instance=config_auth.domo_instance)
 
-        self.config = df
+        self.config = config_df
 
-        message = f"\n⚙️ SUCCESS 🎉 Retrieved company list \nThere are {len(df.index)} companies to update"
+        message = f"\n⚙️ SUCCESS 🎉 Retrieved company list \nThere are {len(config_df.index)} companies to update"
 
         if debug_prn:
             print(message)
         self.logger.log_info(message, debug_log=debug_log)
 
-        return df
+        return config_df
 
 # %% ../../nbs/integrations/DomoJupyter.ipynb 8
 class InvalidAccountTypeError(Exception):
@@ -214,11 +214,12 @@ class GetDomains_Query_AuthMatch_Error(Exception):
 @patch_to(GetInstanceConfig, cls_method=True)
 async def get_domains_with_instance_auth(
     cls: GetInstanceConfig,
-    config_dataset_id: str,  # dataset_id to run config_sql query against
-    config_auth: dmda.DomoAuth,  # which instance to retrieve configuration data from
     default_auth: dmda.DomoAuth,  # default auth to use with each row
     auth_enum: Enum,  # Enum where enum_name should match to `auth_match_col` from config_sql query and enum_value is the appropriate DomoAuth or DomoJupyterAccount object
+    config_auth: dmda.DomoAuth = None,  # which instance to retrieve configuration data from
+    config_dataset_id: str = None,  # dataset_id to run config_sql query against
     config_sql: str = "select domain as domo_instance,concat(config_useprod, '-', project) as auth_match_col from table",
+    config_df: pd.DataFrame = None,
     debug_api: bool = False,
     debug_log: bool = False,
     debug_prn: bool = False,
@@ -231,7 +232,7 @@ async def get_domains_with_instance_auth(
 
     gic = cls(logger=logger)
 
-    df = await gic._retrieve_company_ds(
+    config_df = config_df if isinstance(config_df, pd.DataFrame) else await gic._retrieve_company_ds(
         config_auth=config_auth,
         dataset_id=config_dataset_id,
         sql=config_sql,
@@ -240,11 +241,11 @@ async def get_domains_with_instance_auth(
         debug_api=debug_api,
     )
 
-    if "auth_match_col" not in df.columns:
+    if "auth_match_col" not in config_df.columns:
         message = f"Query failed to return a column 'auth_match_col' sql = {config_sql} in {config_auth.domo_instance}"
         raise GetDomains_Query_AuthMatch_Error(message)
 
-    for index, instance in df.iterrows():
+    for index, instance in config_df.iterrows():
 
         match_auth = next(
             (
@@ -265,18 +266,18 @@ async def get_domains_with_instance_auth(
 
         try:
             await creds.get_auth_token(debug_api=debug_api)
-            df.at[index, "is_valid"] = 1
+            config_df.at[index, "is_valid"] = 1
 
         except dmda.InvalidCredentialsError as e:
             if debug_prn:
                 print(e)
 
             logger.log_error(str(e))
-            df.at[index, "is_valid"] = 0
+            config_df.at[index, "is_valid"] = 0
 
-        df.at[index, "instance_auth"] = creds
+        config_df.at[index, "instance_auth"] = creds
 
-    return df
+    return config_df
 
 # %% ../../nbs/integrations/DomoJupyter.ipynb 13
 class InvalidAccountNameError(Exception):

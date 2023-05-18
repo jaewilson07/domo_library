@@ -10,6 +10,8 @@ __all__ = ['DatasetSchema_Types', 'DomoDataset_Schema_Column', 'DomoDataset_Sche
 # %% ../../nbs/classes/50_DomoDataset.ipynb 4
 from fastcore.basics import patch_to
 import pandas as pd
+from ..routes.dataset import ShareDataset_AccessLevelEnum
+
 
 # %% ../../nbs/classes/50_DomoDataset.ipynb 5
 from dataclasses import dataclass, field
@@ -43,7 +45,7 @@ import domolibrary.utils.DictDot as util_dd
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 import domolibrary.routes.dataset as dataset_routes
-#import domolibrary.classes.DomoPDP as dmpdp
+import domolibrary.classes.DomoPDP as dmpdp
 
 # %% ../../nbs/classes/50_DomoDataset.ipynb 7
 async def _have_prereqs(self, auth, dataset_id, function_name):
@@ -279,13 +281,13 @@ class DomoDataset:
     tags: DomoDataset_Tags = field(default=None)
 
     # certification: dmdc.DomoCertification = None
-    # PDPPolicies: dmpdp.Dataset_PDP_Policies = None
+    PDP: dmpdp.Dataset_PDP_Policies = None
 
     def __post_init__(self):
         self.schema = DomoDataset_Schema(dataset=self)
         self.tags = DomoDataset_Tags(dataset=self)
 
-        #self.PDPPolicies = dmpdp.Dataset_PDP_Policies(dataset=self)
+        self.PDP = dmpdp.Dataset_PDP_Policies(dataset=self)
 
     def display_url(self):
         return f"https://{self.auth.domo_instance }.domo.com/datasources/{self.id}/details/overview"
@@ -347,7 +349,7 @@ class QueryExecutionError(de.DomoError):
                  status, message,
                  function_name=None ):
         
-        self.message = f"error executing {sql}: {message}"
+        message = f"error executing {sql}: {message}"
 
         super().__init__(entity_id=dataset_id,
                          function_name=function_name,
@@ -362,6 +364,7 @@ async def query_dataset_private(cls: DomoDataset,
                                 dataset_id: str,
                                 sql: str,
                                 session: Optional[httpx.AsyncClient] = None,
+                                filter_pdp_policy_id_ls : [int] = None, # filter by pdp policy
                                 loop_until_end: bool = False,  # retrieve all available rows
                                 
                                 limit=100,  # maximum rows to return per request.  refers to PAGINATION
@@ -376,12 +379,17 @@ async def query_dataset_private(cls: DomoDataset,
     
     res = None
     retry = 1
+
+    if filter_pdp_policy_id_ls and not isinstance(filter_pdp_policy_id_ls, list):
+        filter_pdp_policy_id_ls = [int(filter_pdp_policy_id_ls)]
+
     while (not res or not res.is_success) and retry <= maximum_retry:
         try:
             res = await dataset_routes.query_dataset_private(auth=auth,
                                                             dataset_id=dataset_id,
                                                             sql=sql,
                                                             maximum=maximum,
+                                                             filter_pdp_policy_id_ls=filter_pdp_policy_id_ls,
                                                             skip=skip,
                                                             limit=limit,
                                                             loop_until_end=loop_until_end,
@@ -390,16 +398,25 @@ async def query_dataset_private(cls: DomoDataset,
                                                             debug_api=debug_api,
                                                             timeout = timeout
                                                             )
+        except dataset_routes.DatasetNotFoundError as e:
+            print(e)
+            return res
+
+        except dataset_routes.QueryRequestError as e:
+            print(e)
+            return res
+
         except Exception as e:
             if retry <= maximum_retry:
                 print(f"⚠️ Error.  Attempt {retry} / {maximum_retry} - {e} - while query dataset {dataset_id} in {auth.domo_instance} with {sql}" )
             retry += 1
 
-    if not res.is_success:
+    if res and not res.is_success:
         raise QueryExecutionError(
             status=res.status, message=res.response,
             function_name="query_dataset_private", 
             sql=sql, dataset_id=dataset_id, domo_instance=auth.domo_instance)
+    
 
     return pd.DataFrame(res.response)
 
@@ -446,7 +463,36 @@ async def delete(self: DomoDataset,
     return res
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 35
+# %% ../../nbs/classes/50_DomoDataset.ipynb 33
+@patch_to(DomoDataset)
+async def share(self: DomoDataset,
+                        member, # DomoUser or DomoGroup
+                        auth: dmda.DomoAuth = None,
+                        share_type: ShareDataset_AccessLevelEnum = ShareDataset_AccessLevelEnum.CAN_SHARE,
+                        is_send_email=False,
+                        debug_api: bool = False,
+                        debug_prn:bool = False,
+                        session: httpx.AsyncClient = None):
+
+    body = dataset_routes.generate_share_dataset_payload(entity_type='GROUP' if type(member).__name__ == 'DomoGroup' else 'USER',
+                                                      entity_id=int(member.id),
+                                                      access_level=share_type,
+                                                      is_send_email=is_send_email)
+    
+    if debug_prn:
+        print(access_list, auth.domo_instance)
+    
+
+    res = await dataset_routes.share_dataset(auth=auth or self.auth,
+                                       dataset_id=self.id,
+                                       body = body,
+                                       session=session,
+                                       debug_api=debug_api)
+    
+    return res
+
+
+# %% ../../nbs/classes/50_DomoDataset.ipynb 37
 class DomoDataset_UploadData_Error(Exception):
 
     def __init__(self,
@@ -507,7 +553,7 @@ class DomoDataset_UploadData_CommitDatasetUploadId_Error(DomoDataset_UploadData_
                             partition_key=partition_key)
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 36
+# %% ../../nbs/classes/50_DomoDataset.ipynb 38
 @patch_to(DomoDataset)
 async def index_dataset(self: DomoDataset,
                         auth: dmda.DomoAuth = None,
@@ -522,7 +568,7 @@ async def index_dataset(self: DomoDataset,
                                               session=session)
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 37
+# %% ../../nbs/classes/50_DomoDataset.ipynb 39
 @patch_to(DomoDataset)
 async def upload_data(self : DomoDataset,
                       upload_df: pd.DataFrame = None,
@@ -637,7 +683,7 @@ async def upload_data(self : DomoDataset,
     return stage3_res
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 39
+# %% ../../nbs/classes/50_DomoDataset.ipynb 41
 @patch_to(DomoDataset)
 async def list_partitions(self : DomoDataset,
                             auth: dmda.DomoAuth = None,
@@ -656,7 +702,7 @@ async def list_partitions(self : DomoDataset,
 
     return res.response
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 41
+# %% ../../nbs/classes/50_DomoDataset.ipynb 43
 class DomoDataset_CreateDataset_Error(Exception):
     def __init__(self, domo_instance: str, dataset_name: str, status: int, reason: str):
         message = f"Failure to create dataset {dataset_name} in {domo_instance} :: {status} - {reason}"
@@ -694,7 +740,7 @@ async def create(cls: DomoDataset,
     return await cls.get_from_id(dataset_id=dataset_id, auth=auth)
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 44
+# %% ../../nbs/classes/50_DomoDataset.ipynb 46
 @patch_to(DomoDataset)
 async def delete_partition(self: DomoDataset,
                             dataset_partition_id: str,
