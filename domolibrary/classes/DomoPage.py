@@ -632,12 +632,12 @@ async def share_page(self: DomoPage,
     return res
 
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 19
+# %% ../../nbs/classes/50_DomoPage.ipynb 20
 @dataclass
 class DomoPages:
     pass
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 20
+# %% ../../nbs/classes/50_DomoPage.ipynb 21
 @patch_to(DomoPages, cls_method=True)
 async def get_pages(
     cls: DomoPages,
@@ -673,7 +673,7 @@ async def get_pages(
         if is_close_session:
             await session.aclose()
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 23
+# %% ../../nbs/classes/50_DomoPage.ipynb 24
 from datetime import datetime
 from utils import convert
 
