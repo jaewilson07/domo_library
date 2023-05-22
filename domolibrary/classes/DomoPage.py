@@ -606,7 +606,7 @@ async def get_accesslist(
 
 # %% ../../nbs/classes/50_DomoPage.ipynb 17
 @patch_to(DomoPage)
-async def share_page(self: DomoPage,
+async def share(self: DomoPage,
                      auth: dmda.DomoAuth,
                      domo_users: list = None,  # DomoUsers to share page with,
                      domo_groups: list = None,  # DomoGroups to share page with

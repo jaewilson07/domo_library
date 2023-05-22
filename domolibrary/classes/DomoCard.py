@@ -93,7 +93,7 @@ async def get_by_id(cls: DomoCard, card_id: str,
 
 # %% ../../nbs/classes/50_DomoCard.ipynb 6
 @patch_to(DomoCard)
-async def share_card(self: DomoCard,
+async def share(self: DomoCard,
                      auth: dmda.DomoAuth,
                      domo_users: list = None,  # DomoUsers to share card with,
                      domo_groups: list = None,  # DomoGroups to share card with
