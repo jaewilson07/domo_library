@@ -607,7 +607,7 @@ async def get_accesslist(
 # %% ../../nbs/classes/50_DomoPage.ipynb 17
 @patch_to(DomoPage)
 async def share(self: DomoPage,
-                     auth: dmda.DomoAuth,
+                     auth: dmda.DomoAuth = None,
                      domo_users: list = None,  # DomoUsers to share page with,
                      domo_groups: list = None,  # DomoGroups to share page with
                      message: str = None,  # message for automated email
@@ -620,7 +620,7 @@ async def share(self: DomoPage,
 
 
     res = await datacenter_routes.share_resource(
-        auth=auth,
+        auth=auth or self.auth,
         resource_ids=[self.id],
         resource_type=datacenter_routes.ShareResource_Enum.PAGE,
         group_ids=[group.id for group in domo_groups] if domo_groups else None,

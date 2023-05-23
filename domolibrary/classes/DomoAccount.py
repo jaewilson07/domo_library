@@ -567,11 +567,12 @@ async def delete_account(
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 36
 @patch_to(DomoAccount)
-async def _is_group_ownership_beta(self, auth : dmda.DomoAuth):
+async def _is_group_ownership_beta(self, auth: dmda.DomoAuth):
 
     import domolibrary.classes.DomoBootstrap as dmbs
 
     domo_bsr = dmbs.DomoBootstrap(auth=auth or self.auth)
+    
     domo_feature_ls = await domo_bsr.get_features()
 
     match_accounts_v2 = next(
@@ -593,7 +594,6 @@ async def share_account(
 ):
     auth = auth or self.auth
 
-    
     if isinstance(auth, dmda.DomoFullAuth) and is_v2 is None:
         is_v2 = await self._is_group_ownership_beta(auth)
 
@@ -607,7 +607,7 @@ async def share_account(
 the group management v2 API has a different body.  
 Alternatively pass a full auth object to auto check the bootstrap.
 """)
-    
+
     res = None
 
     if is_v2:
@@ -645,12 +645,84 @@ Alternatively pass a full auth object to auto check the bootstrap.
     return res
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 39
+
+
+# %% ../../nbs/classes/50_DomoAccount.ipynb 38
+@patch_to(DomoAccount)
+async def share(
+    self: DomoAccount,
+    domo_user = None,
+    domo_group = None,
+    auth: dmda.DomoAuth = None,
+    is_v2: bool = None,
+    access_level: ShareAccount = None,  # will default to Read
+    debug_api: bool = False,
+    debug_prn: bool = False,
+    session: httpx.AsyncClient = None,
+):
+    auth = auth or self.auth
+
+    if isinstance(auth, dmda.DomoFullAuth) and is_v2 is None:
+        is_v2 = await self._is_group_ownership_beta(auth)
+
+    if debug_prn:
+        print(
+            f"ℹ️ - {auth.domo_instance} - {'is' if is_v2 else 'is not'} v2_group_ownership")
+
+    if is_v2 is None:
+        raise Exception(
+            """🛑 ERROR must pass `is_v2` bool to share_accounts function IF NOT passing `dmda.DomoFullAuth`.
+the group management v2 API has a different body.  
+Alternatively pass a full auth object to auto check the bootstrap.
+""")
+
+    res = None
+
+    if is_v2:
+        share_payload = account_routes.generate_share_account_payload_v2(
+            user_id=domo_user.id if domo_user else None, 
+            group_id =  domo_group.id if domo_group else None,
+            access_level=access_level or ShareAccount_V2_AccessLevel.CAN_VIEW
+        )
+
+        res = await account_routes.share_account_v2(
+            auth=auth,
+            account_id=self.id,
+            share_payload=share_payload,
+            debug_api=debug_api,
+            session=session,
+        )
+
+    else:
+        share_payload = account_routes.generate_share_account_payload_v1(
+            user_id=domo_user.id if domo_user else None,
+            group_id=domo_group.id if domo_group else None,
+            
+            access_level=access_level or ShareAccount_V1_AccessLevel.CAN_VIEW
+        )
+
+        res = await account_routes.share_account_v1(
+            auth=auth,
+            account_id=self.id,
+            share_payload=share_payload,
+            debug_api=debug_api,
+            session=session,
+        )
+
+    if res.status == 500 and res.response == 'Internal Server Error':
+        res.response = f'ℹ️ - {res.response + "| User may own account."}'
+
+    if res.status == 200:
+        res.response = f"shared {self.id} - {self.name} with {user_id}"
+
+    return res
+
+# %% ../../nbs/classes/50_DomoAccount.ipynb 41
 @dataclass
 class DomoAccounts:
     auth: dmda.DomoAuth
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 40
+# %% ../../nbs/classes/50_DomoAccount.ipynb 42
 @patch_to(DomoAccounts, cls_method=True)
 async def get_accounts(
     cls: DomoAccounts,

@@ -94,7 +94,7 @@ async def get_by_id(cls: DomoCard, card_id: str,
 # %% ../../nbs/classes/50_DomoCard.ipynb 6
 @patch_to(DomoCard)
 async def share(self: DomoCard,
-                     auth: dmda.DomoAuth,
+                     auth: dmda.DomoAuth = None,
                      domo_users: list = None,  # DomoUsers to share card with,
                      domo_groups: list = None,  # DomoGroups to share card with
                      message: str = None,  # message for automated email
@@ -107,7 +107,7 @@ async def share(self: DomoCard,
 
 
     res = await datacenter_routes.share_resource(
-        auth=auth,
+        auth=auth or self.auth,
         resource_ids=[self.id],
         resource_type=datacenter_routes.ShareResource_Enum.CARD,
         group_ids=[group.id for group in domo_groups] if domo_groups else None,
