@@ -713,7 +713,8 @@ Alternatively pass a full auth object to auto check the bootstrap.
         res.response = f'ℹ️ - {res.response + "| User may own account."}'
 
     if res.status == 200:
-        res.response = f"shared {self.id} - {self.name} with {user_id}"
+        domo_entity = domo_user or domo_group
+        res.response = f"shared {self.id} - {self.name} with {domo_entity.id}"
 
     return res
 
