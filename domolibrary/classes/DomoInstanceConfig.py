@@ -200,17 +200,17 @@ async def get_authorized_domains(
 async def set_authorized_domains(
     cls: DomoInstanceConfig,
     auth: dmda.DomoAuth,
-    authorized_domain_list: list[str],
+    authorized_domains: list[str],
     debug_prn: bool = False,
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
 ):
     if debug_prn:
-        print(f'🌡️ setting authorized domain with {",".join(authorized_domain_list)}')
+        print(f'🌡️ setting authorized domain with {",".join(authorized_domains)}')
 
-    res = await instance_config_routes.update_authorized_domains(
+    res = await instance_config_routes.set_authorized_domains(
         auth=auth,
-        authorized_domain_list=authorized_domain_list,
+        authorized_domain_ls=authorized_domains,
         debug_api=debug_api,
         session=session,
     )
@@ -228,23 +228,23 @@ async def set_authorized_domains(
 async def upsert_authorized_domains(
     cls: DomoInstanceConfig,
     auth: dmda.DomoAuth,
-    authorized_domain_list: list[str],
+    authorized_domains: list[str],
     debug_prn: bool = False,
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
 ):
-    existing_domain_list = await cls.get_authorized_domains(
+    existing_domains = await cls.get_authorized_domains(
         auth=auth, debug_api=debug_api
     )
 
-    authorized_domain_list += existing_domain_list
+    authorized_domains += existing_domains
 
     if debug_prn:
-        print(f'🌡️ upsertting authorized domain to {",".join(authorized_domain_list)}')
+        print(f'🌡️ upsertting authorized domain to {",".join(authorized_domains)}')
 
     return await cls.set_authorized_domains(
         auth=auth,
-        authorized_domain_list=authorized_domain_list,
+        authorized_domains=authorized_domains,
         debug_api=debug_api,
         session=session,
     )
