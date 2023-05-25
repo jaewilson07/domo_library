@@ -113,7 +113,6 @@ async def set_authorized_domains(
         url=url,
         method="PUT",
         body=body,
-        log_results=log_results,
         debug_api=debug_api,
         session=session,
     )
