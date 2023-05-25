@@ -30,7 +30,7 @@ class CardSearch_NotFoundError(de.DomoError):
 
 
 # %% ../../nbs/routes/card.ipynb 4
-async def get_kpi_definition(auth: dmda.DomoAuth, card_id: str, debug_api: bool = False) -> rgd.ResponseGetData:
+async def get_kpi_definition(auth: dmda.DomoAuth, card_id: str, debug_api: bool = False, session: httpx.AsyncClient = None) -> rgd.ResponseGetData:
 
     url = f"https://{auth.domo_instance}.domo.com/api/content/v3/cards/kpi/definition"
 
@@ -41,7 +41,8 @@ async def get_kpi_definition(auth: dmda.DomoAuth, card_id: str, debug_api: bool 
         url=url,
         method='PUT',
         body=body,
-        debug_api=False
+        debug_api=False,
+        session = session
     )
 
     if not res.is_success and res.response == 'Not Found':
@@ -54,18 +55,22 @@ async def get_kpi_definition(auth: dmda.DomoAuth, card_id: str, debug_api: bool 
 
 
 # %% ../../nbs/routes/card.ipynb 7
-async def get_card_metadata(auth: dmda.DomoAuth, card_id: str, debug_api: bool = False) -> rgd.ResponseGetData:
+async def get_card_metadata(auth: dmda.DomoAuth, card_id: str,
+                            debug_api: bool = False, 
+                            session: httpx.AsyncClient = None) -> rgd.ResponseGetData:
     optional_params = "metadata,certification,datasources,owners,problems"
+    
     url = f"https://{auth.domo_instance}.domo.com/api/content/v1/cards?urns={card_id}&parts={optional_params}"
 
     res = await gd.get_data(
         auth=auth,
         url=url,
         method='GET',
-        debug_api=debug_api
+        debug_api=debug_api,
+        session=session
     )
 
-    if res.is_success and len( res.response) == 0:
+    if res.is_success and len(res.response) == 0:
         raise CardSearch_NotFoundError(card_id=card_id,
                                        status=res.status,
                                        domo_instance=auth.domo_instance,
@@ -74,6 +79,7 @@ async def get_card_metadata(auth: dmda.DomoAuth, card_id: str, debug_api: bool =
     res.response = res.response[0]
 
     return res
+
 
 # %% ../../nbs/routes/card.ipynb 10
 def generate_body_search_cards_admin_summary(page_ids: [str] = None,

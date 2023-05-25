@@ -183,6 +183,7 @@ async def delete_account(auth:dmda.DomoAuth,
 class ShareAccount():
     pass
 
+
 class ShareAccount_V1_AccessLevel(ShareAccount, Enum):
     CAN_VIEW = 'READ'
 
@@ -193,16 +194,28 @@ class ShareAccount_V2_AccessLevel(ShareAccount, Enum):
     CAN_SHARE = 'CAN_SHARE'
 
 
-def generate_share_account_payload_v1(user_id: int,
-                                      access_level: ShareAccount):
-    return {"type": "USER", "id": int(user_id), "permissions": [access_level.value]}
+def generate_share_account_payload_v1(
+    access_level: ShareAccount,
+    user_id: int = None,
+    group_id: int = None
+):
+    if user_id:
+        return {"type": "USER", "id": int(user_id), "permissions": [access_level.value]}
+    if group_id:
+        return {"type": "GROUP", "id": int(group_id), "permissions": [access_level.value]}
 
 
-def generate_share_account_payload_v2(user_id: int,
-                                      access_level: ShareAccount
-                                      ):
+def generate_share_account_payload_v2(
+    access_level: ShareAccount,
+    user_id: int = None,
+    group_id: int = None
+):
 
-    return {"type": "USER", "id": int(user_id), "accessLevel": access_level.value}
+    if user_id:
+        return {"type": "USER", "id": int(user_id), "accessLevel": access_level.value}
+
+    if group_id:
+        return {"type": "GROUP", "id": int(group_id), "accessLevel": access_level.value}
 
 
 # %% ../../nbs/routes/account.ipynb 21

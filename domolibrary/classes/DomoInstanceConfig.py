@@ -14,15 +14,11 @@ from dataclasses import dataclass, field
 from typing import List
 
 import domolibrary.client.DomoAuth as dmda
-import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoError as de
+
+
 import domolibrary.routes.instance_config as instance_config_routes
-import domolibrary.routes.grant as grant_routes
-import domolibrary.classes.DomoGrant as dmdg
-import domolibrary.classes.DomoRole as dmr
-import domolibrary.routes.role as role_routes
 import domolibrary.routes.publish as publish_routes
-import domolibrary.classes.DomoPublish as dmpb
 
 # import Library.utils.convert as cd
 # from .DomoApplication import DomoApplication
@@ -31,50 +27,65 @@ import domolibrary.classes.DomoPublish as dmpb
 # import domolibrary.utils.DictDot as util_dd
 # import domolibrary.client.DomoError as de
 
-
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 4
 @dataclass
 class DomoInstanceConfig:
     """utility class that absorbs many of the domo instance configuration methods"""
-    
+
     auth: dmda.DomoAuth
-    allowlist : list[str] = field(default_factory = list)
+    allowlist: list[str] = field(default_factory=list)
 
     @classmethod
-    async def get_publications(cls,
-                            auth: dmda.DomoFullAuth,
-                            debug_api: bool = False, session: httpx.AsyncClient = None, return_raw: bool = False):
-        
-        res = await publish_routes.search_publications(auth=auth,
-                                                       debug_api=debug_api,
-                                                       session=session)
+    async def get_publications(
+        cls,
+        auth: dmda.DomoFullAuth,
+        debug_api: bool = False,
+        session: httpx.AsyncClient = None,
+        return_raw: bool = False,
+    ):
+        import domolibrary.classes.DomoPublish as dmpb
+
+
+        res = await publish_routes.search_publications(
+            auth=auth, debug_api=debug_api, session=session
+        )
         if debug_api:
-            print('Getting Publish jobs')
+            print("Getting Publish jobs")
 
         if res.status == 200 and not return_raw:
-            return await asyncio.gather(*[dmpb.DomoPublication.get_from_id(publication_id=job.get('id'),
-                                                                           auth=auth) for job in res.response])
+            return await asyncio.gather(
+                *[
+                    dmpb.DomoPublication.get_from_id(
+                        publication_id=job.get("id"), auth=auth
+                    )
+                    for job in res.response
+                ]
+            )
 
         if res.status == 200 and return_raw:
             return res.response
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 7
 @patch_to(DomoInstanceConfig)
-async def get_allowlist(self: DomoInstanceConfig, 
-                        auth: dmda.DomoFullAuth = None, # get_allowlist requires full authentication
-                        session: httpx.AsyncClient = None, 
-                        return_raw : bool = False,
-                        debug_api: bool = False) -> list[str]:
+async def get_allowlist(
+    self: DomoInstanceConfig,
+    auth: dmda.DomoFullAuth = None,  # get_allowlist requires full authentication
+    session: httpx.AsyncClient = None,
+    return_raw: bool = False,
+    debug_api: bool = False,
+) -> list[str]:
     """retrieves the allowlist for an instance"""
 
     auth = auth or self.auth
-    
+
     res = None
     loop = 0
 
     while not res and loop <= 5:
         try:
-            res =  await instance_config_routes.get_allowlist(auth=auth,  debug_api=debug_api, session = session)
+            res = await instance_config_routes.get_allowlist(
+                auth=auth, debug_api=debug_api, session=session
+            )
         except Exception as e:
             print(e)
         finally:
@@ -86,115 +97,180 @@ async def get_allowlist(self: DomoInstanceConfig,
     if not res.is_success:
         return None
 
-    allowlist = res.response.get('addresses')
+    allowlist = res.response.get("addresses")
 
     self.allowlist = allowlist
 
     return allowlist
 
-
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 11
 @patch_to(DomoInstanceConfig)
-async def set_allowlist(self : DomoInstanceConfig,
-                        ip_address_ls: list[str],
-                        debug_api: bool = False,
-                        auth: dmda.DomoFullAuth = None,
-                        session: httpx.AsyncClient = None
-                        ):
-                        
+async def set_allowlist(
+    self: DomoInstanceConfig,
+    ip_address_ls: list[str],
+    debug_api: bool = False,
+    auth: dmda.DomoFullAuth = None,
+    session: httpx.AsyncClient = None,
+):
     auth = auth or self.auth
 
-    await instance_config_routes.set_allowlist(auth=auth,
-                                               ip_address_ls=ip_address_ls,
-                                               debug_api=debug_api, session=session)
+    await instance_config_routes.set_allowlist(
+        auth=auth, ip_address_ls=ip_address_ls, debug_api=debug_api, session=session
+    )
 
     return await self.get_allowlist(auth=auth, debug_api=debug_api, session=session)
 
 
-@patch_to(DomoInstanceConfig, )
-async def upsert_allowlist(self : DomoInstanceConfig,
-                           ip_address_ls: list[str],
-                           debug_api: bool = False,
-                           session: httpx.AsyncClient = None,
-                           auth: dmda.DomoAuth = None,
-                           ):
-
-    exist_ip_address_ls = await self.get_allowlist(auth=auth, debug_api=debug_api, session=session)
+@patch_to(
+    DomoInstanceConfig,
+)
+async def upsert_allowlist(
+    self: DomoInstanceConfig,
+    ip_address_ls: list[str],
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+    auth: dmda.DomoAuth = None,
+):
+    exist_ip_address_ls = await self.get_allowlist(
+        auth=auth, debug_api=debug_api, session=session
+    )
     ip_address_ls += exist_ip_address_ls
 
-    return await self.set_allowlist(auth=auth,
-                                   ip_address_ls=list(set(ip_address_ls)),
-                                   debug_api=debug_api, session=session)
-
+    return await self.set_allowlist(
+        auth=auth,
+        ip_address_ls=list(set(ip_address_ls)),
+        debug_api=debug_api,
+        session=session,
+    )
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 16
 @patch_to(DomoInstanceConfig)
-async def get_grants(self: DomoInstanceConfig,
-                     auth: dmda.DomoAuth = None,
-                     debug_prn:bool = False,
-                     debug_api: bool = False,
-                     session: httpx.AsyncClient = None,
-                     return_raw: bool = False):
+async def get_grants(
+    self: DomoInstanceConfig,
+    auth: dmda.DomoAuth = None,
+    debug_prn: bool = False,
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+    return_raw: bool = False,
+):
+    import domolibrary.classes.DomoGrant as dmg
 
     auth = auth or self.auth
 
-    res = await grant_routes.get_grants(auth=auth,
-                                        debug_api=debug_api,
-                                        session=session)
-
-    if debug_prn:
-        print(
-            f"ℹ️ - get_instance_grants: {len(res.response)} grants returned from {auth.domo_instance}")
+    return await dmg.DomoGrants.get_grants(auth = auth, return_raw = return_raw, session = session, debug_api = debug_api)
     
-
-
-    if return_raw:
-        return res
-
-    if res.status == 200:
-        json_list = res.response
-        return [dmdg.DomoGrant._from_json(obj) for obj in json_list]
-
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 19
 @patch_to(DomoInstanceConfig)
-async def get_roles(self, auth: dmda.DomoAuth = None,
-                    debug_api: bool = False,
-                    return_raw: bool = False,
-                    session: httpx.AsyncClient = None):
+async def get_roles(
+    self,
+    auth: dmda.DomoAuth = None,
+    debug_api: bool = False,
+    return_raw: bool = False,
+    session: httpx.AsyncClient = None,
+):
+    import domolibrary.classes.DomoRole as dmr
 
     auth = auth or self.auth
 
-    res = await role_routes.get_roles(auth=auth,
-                                      debug_api=debug_api, session = session)
-    
-    if return_raw:
-        return res
-
-    if res.status == 200:
-        json_list = res.response
-        return [dmr.DomoRole._from_json(obj = obj, auth = auth
-                                   ) for obj in json_list]
-
+    return await dmr.DomoRoles.get_roles(auth=auth, debug_api=debug_api, return_raw = return_raw, session=session)
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 23
 @patch_to(DomoInstanceConfig)
-async def get_authorized_domains(self: DomoInstanceConfig,
-                                 auth: dmda.DomoAuth = None, 
-                                 debug_api: bool = False,
-                                 session: httpx.AsyncClient = None,
-                                 return_raw :bool = False
-                                 ):
+async def get_authorized_domains(
+    self: DomoInstanceConfig,
+    auth: dmda.DomoAuth = None,
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+    return_raw: bool = False,
+):
     auth = auth or self.auth
-                                 
-    res = await instance_config_routes.get_authorized_domains(auth=auth,
-                                                              debug_api=debug_api,
-                                                              session=session,
-                                                              return_raw = return_raw
-                                                              )
+
+    res = await instance_config_routes.get_authorized_domains(
+        auth=auth, debug_api=debug_api, session=session, return_raw=return_raw
+    )
 
     if return_raw:
         return res
 
     return res.response
+
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 26
+@patch_to(DomoInstanceConfig, cls_method=True)
+async def set_authorized_domains(
+    cls: DomoInstanceConfig,
+    auth: dmda.DomoAuth,
+    authorized_domains: list[str],
+    debug_prn: bool = False,
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+):
+    if debug_prn:
+        print(f'🌡️ setting authorized domain with {",".join(authorized_domains)}')
+
+    res = await instance_config_routes.set_authorized_domains(
+        auth=auth,
+        authorized_domain_ls=authorized_domains,
+        debug_api=debug_api,
+        session=session,
+    )
+
+    if res.status == 200 or res.status == 204:
+        res.response = {
+            "authorized_domains": await cls.get_authorized_domains(auth=auth),
+            "status": 200,
+        }
+
+    return res
+
+
+@patch_to(DomoInstanceConfig, cls_method=True)
+async def upsert_authorized_domains(
+    cls: DomoInstanceConfig,
+    auth: dmda.DomoAuth,
+    authorized_domains: list[str],
+    debug_prn: bool = False,
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+):
+    existing_domains = await cls.get_authorized_domains(
+        auth=auth, debug_api=debug_api
+    )
+
+    authorized_domains += existing_domains
+
+    if debug_prn:
+        print(f'🌡️ upsertting authorized domain to {",".join(authorized_domains)}')
+
+    return await cls.set_authorized_domains(
+        auth=auth,
+        authorized_domains=authorized_domains,
+        debug_api=debug_api,
+        session=session,
+    )
+
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 27
+@patch_to(DomoInstanceConfig, cls_method=True)
+async def get_applications(
+    cls,
+    auth: dmda.DomoAuth,
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+    return_raw: bool = False):
+    
+    res = await application_routes.get_applications(
+        auth=auth,
+        debug=debug_api,
+        session=session
+    )
+
+    if return_raw:
+        return res
+
+    if res.status != 200:
+        return res
+    
+    return [DomoApplication._from_json(job) for job in res.response]
+
+
 

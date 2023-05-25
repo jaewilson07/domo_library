@@ -1,0 +1,116 @@
+website:
+  sidebar:
+    contents:
+      - index.ipynb
+      - section: blog
+        contents:
+          - blog/index.qmd
+          - section: posts
+            contents:
+              - section: 2023-01-24-Domo_Everywhere_MultiInstance
+                contents:
+                  - blog/posts/2023-01-24-Domo_Everywhere_MultiInstance/index.qmd
+      - section: blog
+        contents:
+          - section: posts
+            contents:
+              - section: 2023-01-24_DomoVariables
+                contents:
+                  - blog/posts/2023-01-24_DomoVariables/index.qmd
+      - section: blog
+        contents:
+          - section: posts
+            contents:
+              - section: 2023-01-24_Domo_Onboarding
+                contents:
+                  - blog/posts/2023-01-24_Domo_Onboarding/index.qmd
+      - section: classes
+        contents:
+          - classes/50_DomoAccount.ipynb
+          - classes/50_DomoActivityLog.ipynb
+          - classes/50_DomoBootstrap.ipynb
+          - classes/50_DomoCard.ipynb
+          - classes/50_DomoDatacenter.ipynb
+          - classes/50_DomoDataflow.ipynb
+          - classes/50_DomoDataset.ipynb
+          - classes/50_DomoGrant.ipynb
+          - classes/50_DomoGroup.ipynb
+          - classes/50_DomoInstanceConfig.ipynb
+          - classes/50_DomoPDP.ipynb
+          - classes/50_DomoPage.ipynb
+          - classes/50_DomoPublish.ipynb
+          - classes/50_DomoRole.ipynb
+          - classes/50_DomoUser.ipynb
+      - section: client
+        contents:
+          - client/10_get_data.ipynb
+          - client/95_DomoAuth.ipynb
+          - client/95_Logger.ipynb
+          - client/99_ResponseGetData.ipynb
+          - client/DomoError.ipynb
+      - section: integrations
+        contents:
+          - integrations/Automation.ipynb
+          - integrations/DomoJupyter.ipynb
+          - integrations/RoleHierarchy.ipynb
+      - section: projects
+        contents:
+          - projects/index.qmd
+          - section: posts
+            contents:
+              - section: 2023-02-02_DojoFeatures
+                contents:
+                  - projects/posts/2023-02-02_DojoFeatures/index.ipynb
+      - section: projects
+        contents:
+          - section: posts
+            contents:
+              - section: 2023-02-02_DojoSQL
+                contents:
+                  - projects/posts/2023-02-02_DojoSQL/index.ipynb
+      - section: projects
+        contents:
+          - section: posts
+            contents:
+              - section: 2023-03-13-Custom_Roles
+                contents:
+                  - projects/posts/2023-03-13-Custom_Roles/index.ipynb
+      - section: projects
+        contents:
+          - section: posts
+            contents:
+              - section: 2023-04-03_AutomatedTagging
+                contents:
+                  - projects/posts/2023-04-03_AutomatedTagging/index.ipynb
+      - section: projects
+        contents:
+          - section: posts
+            contents:
+              - section: 2023-04-14_BackupCards
+                contents:
+                  - projects/posts/2023-04-14_BackupCards/index.ipynb
+      - section: routes
+        contents:
+          - routes/account.ipynb
+          - routes/activity_log.ipynb
+          - routes/bootstrap.ipynb
+          - routes/card.ipynb
+          - routes/datacenter.ipynb
+          - routes/dataflow.ipynb
+          - routes/dataset.ipynb
+          - routes/grant.ipynb
+          - routes/group.ipynb
+          - routes/instance_config.ipynb
+          - routes/page.ipynb
+          - routes/pdp.ipynb
+          - routes/publish.ipynb
+          - routes/role.ipynb
+          - routes/stream.ipynb
+          - routes/user.ipynb
+      - section: utils
+        contents:
+          - utils/DictDot.ipynb
+          - utils/chunk_execution.ipynb
+          - utils/convert.ipynb
+          - utils/read_creds_from_dotenv.ipynb
+          - utils/upload_data.ipynb

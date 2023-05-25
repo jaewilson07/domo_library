@@ -128,7 +128,8 @@ class GetInstanceConfig:
         self.logger.log_info(message, debug_log=debug_log)
 
         config_df = await ds.query_dataset_private(
-            auth=config_auth, dataset_id=dataset_id, sql=sql, debug_api=debug_api
+            auth=config_auth, dataset_id=dataset_id, sql=sql, debug_api=debug_api,
+            loop_until_end = True
         )
         if len(config_df.index) == 0:
             raise NoConfigCompanyError(sql, domo_instance=config_auth.domo_instance)
