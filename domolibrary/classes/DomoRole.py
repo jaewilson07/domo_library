@@ -151,7 +151,7 @@ async def set_grants(self: DomoRole,
                                         debug_api=debug_api)
 
     missing_grants = [
-        grant.id for domo_grant in domo_grants if domo_grant not in all_grants]
+        grant.id for grant in domo_grants if grant not in all_grants]
 
     if missing_grants:
         raise SetRoleGrants_MissingGrants(
