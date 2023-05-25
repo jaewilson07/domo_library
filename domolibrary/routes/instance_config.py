@@ -103,8 +103,11 @@ async def set_authorized_domains(
 ):
     url = f"https://{auth.domo_instance}.domo.com/api/content/v1/customer-states/authorized-domains"
 
-    body = {"name": "authorized-domains", "value": authorized_domain_ls}
-
+    body = {
+        "name": "authorized-domains",
+        "value": ",".join(authorized_domain_ls)
+    }
+    
     res = await gd.get_data(
         auth=auth,
         url=url,
