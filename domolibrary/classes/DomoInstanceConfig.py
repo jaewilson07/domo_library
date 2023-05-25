@@ -216,8 +216,9 @@ async def set_authorized_domains(
     )
 
     if res.status == 200 or res.status == 204:
+        dmdic = DomoInstanceConfig(auth=auth)
         res.response = {
-            "authorized_domains": await cls.get_authorized_domains(auth=auth),
+            "authorized_domains": await dmdic.get_authorized_domains(debug_api=debug_api),
             "status": 200,
         }
 
