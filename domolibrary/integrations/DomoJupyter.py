@@ -247,23 +247,31 @@ async def get_domains_with_instance_auth(
         raise GetDomains_Query_AuthMatch_Error(message)
 
     for index, instance in config_df.iterrows():
-
-        match_auth = next(
-            (
-                member.value
-                for member in auth_enum
-                if member.name == instance["auth_match_col"]
-            )
-        )
-
-        creds = match_auth or default_auth
-
-        domo_instance = instance["domo_instance"]
-
-        creds.domo_instance = domo_instance
-
+        
+        domo_instance = instance["domo_instance"]  
+         
+        auth_match = instance["auth_match_col"]
+        creds = auth_enum[auth_match].value if auth_match in auth_enum._member_names_ else default_auth
+        
+        
         if isinstance(creds, DomoJupyterAccount_InstanceAuth):
             creds = creds._generate_auth(domo_instance=domo_instance)
+            creds.domo_instance = domo_instance
+        
+        config_df.at[index, "instance_auth"] = creds
+
+        if 'config_1' in auth_enum._member_names_  :
+            if instance['config_exception_pw'] == 0:
+                auth  = auth_enum['config_1'].value
+            
+            elif instance['config_exception_pw'] == 1:
+                auth  = auth_enum['config_0'].value
+            
+            if isinstance(auth, DomoJupyterAccount_InstanceAuth):
+                auth = auth._generate_auth(domo_instance=domo_instance)
+                auth.domo_instance = domo_instance
+            
+            config_df.at[index, 'config_auth'] = auth
 
         try:
             await creds.get_auth_token(debug_api=debug_api)
@@ -276,7 +284,6 @@ async def get_domains_with_instance_auth(
             logger.log_error(str(e))
             config_df.at[index, "is_valid"] = 0
 
-        config_df.at[index, "instance_auth"] = creds
 
     return config_df
 
