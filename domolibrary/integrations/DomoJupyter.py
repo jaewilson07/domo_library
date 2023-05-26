@@ -4,7 +4,7 @@
 __all__ = ['GetJupyter_ErrorRetrievingAccount', 'GetJupyter_ErrorRetrievingAccountProperty', 'get_jupyter_account',
            'NoConfigCompanyError', 'GetInstanceConfig', 'InvalidAccountTypeError', 'DomoJupyterAccount_InstanceAuth',
            'GetDomains_Query_AuthMatch_Error', 'InvalidAccountNameError', 'GenerateAuth_InvalidDomoInstanceList',
-           'GenerateAuth_CredentialsNotProvided', 'GetDomains_Query_Exception_PW_Col_Error']
+           'GenerateAuth_CredentialsNotProvided']
 
 # %% ../../nbs/integrations/DomoJupyter.ipynb 2
 from dataclasses import dataclass, field
@@ -261,6 +261,8 @@ async def get_domains_with_instance_auth(
         config_df.at[index, "instance_auth"] = creds
 
         if 'config_1' in auth_enum._member_names_  :
+            print("adding config_auth objects")
+
             if instance['config_exception_pw'] == 0:
                 auth  = auth_enum['config_1'].value
             
@@ -397,72 +399,3 @@ def generate_auth_ls(
         self.auth_ls.append(auth)
 
     return self.auth_ls
-
-# %% ../../nbs/integrations/DomoJupyter.ipynb 20
-class GetDomains_Query_Exception_PW_Col_Error(Exception):
-    """raise if SQL query fails to return column named 'config_exception_pw'"""
-
-    def __init__(self, sql: str = None, domo_instance: str = None, message: str = None):
-        message = (
-            message
-            or f"Query failed to return a column 'config_exception_pw' sql = {sql} in {domo_instance}"
-        )
-        super().__init__(self, message)
-
-
-@patch_to(GetInstanceConfig, cls_method=True)
-async def get_domains_with_global_config_auth(
-    cls: GetInstanceConfig,
-    config_dataset_id: str,
-    config_auth: dmda.DomoAuth,  # which instance to retrieve configuration data from
-    global_auth: dmda.DomoAuth,  # global authentication credentials
-    global_exception_auth: dmda.DomoAuth,  # exception credentials (ex 24 char password)
-    # must return a column named domo_instance, if there is an exception_auth, must return a column 'config_exception_pw'
-    config_sql: str = "select domain as domo_instance, config_exception_pw from table",
-    debug_api: bool = False,
-    debug_log: bool = False,
-    debug_prn: bool = False,
-    logger: lc.Logger = None,
-) -> pd.DataFrame:
-    if not logger:
-        logger = lc.Logger(app_name="get_domains_with_global_config_auth")
-
-    gic = cls(logger=logger)
-
-    df = await gic._retrieve_company_ds(
-        config_auth=config_auth,
-        dataset_id=config_dataset_id,
-        sql=config_sql,
-        debug_prn=debug_prn,
-        debug_log=debug_log,
-        debug_api=debug_api,
-    )
-
-    if "config_exception_pw" not in df.columns:
-        message = f"Query failed to return a column 'config_exception_pw' sql = {config_sql} in {config_auth.domo_instance}"
-        gic.logger.log_error(message)
-        raise GetDomains_Query_Exception_PW_Col_Error(message=message)
-
-    for index, instance in df.iterrows():
-        creds = global_auth
-
-        if instance["config_exception_pw"] == 1:
-            creds = global_exception_auth
-
-        creds.domo_instance = instance["domo_instance"]
-
-        try:
-            await creds.get_auth_token()
-            df.at[index, "is_valid"] = 1
-
-        except dmda.InvalidCredentialsError as e:
-            if debug_prn:
-                print(e)
-
-            logger.log_error(str(e))
-            df.at[index, "is_valid"] = 0
-
-        finally:
-            df.at[index, "instance_auth"] = creds
-
-    return df
