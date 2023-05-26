@@ -261,7 +261,8 @@ async def get_domains_with_instance_auth(
         config_df.at[index, "instance_auth"] = creds
 
         if 'config_1' in auth_enum._member_names_  :
-            print("adding config_auth objects")
+            if debug_prn:
+                print("adding config_auth objects")
 
             if instance['config_exception_pw'] == 0:
                 auth  = auth_enum['config_1'].value
