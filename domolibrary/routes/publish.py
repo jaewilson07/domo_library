@@ -37,13 +37,16 @@ async def search_publications(auth: dmda.DomoAuth,
 # %% ../../nbs/routes/publish.ipynb 6
 async def get_publication_by_id(auth: dmda.DomoAuth,
                                 publication_id: str,
-                                session: httpx.AsyncClient = None, debug_api: bool = False) -> rgd.ResponseGetData:
+                                session: httpx.AsyncClient = None, debug_api: bool = False,
+                                timeout = 10
+                                ) -> rgd.ResponseGetData:
     url = f"https://{auth.domo_instance}.domo.com/api/publish/v2/publication/{publication_id}"
 
     res = await gd.get_data(auth=auth,
                             method='GET',
                             url=url,
                             session=session,
+                            timeout = 10,
                             debug_api=debug_api)
 
     return res

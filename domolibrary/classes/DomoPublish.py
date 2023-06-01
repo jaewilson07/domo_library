@@ -168,7 +168,7 @@ class DomoPublication:
 
 # %% ../../nbs/classes/50_DomoPublish.ipynb 11
 @patch_to(DomoPublication, cls_method=True)
-async def get_from_id(cls, publication_id=None, auth: dmda.DomoAuth = None):
+async def get_from_id(cls, publication_id=None, auth: dmda.DomoAuth = None, timeout = 10):
 
     auth = auth or cls.auth
 
@@ -176,6 +176,7 @@ async def get_from_id(cls, publication_id=None, auth: dmda.DomoAuth = None):
 
     res = await publish_routes.get_publication_by_id(
         auth=auth, publication_id=publication_id
+        , timeout = 10
     )
 
     if not res.is_success:

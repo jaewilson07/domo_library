@@ -120,7 +120,7 @@ async def get_data(
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
     is_follow_redirects: bool = False,
-    timeout = 5
+    timeout = 10
 ) -> rgd.ResponseGetData:
     """async wrapper for asyncio requests"""
 
