@@ -22,7 +22,7 @@ import io
 import httpx
 import asyncio
 
-import domolibrary.utils.DictDot as DictDot
+import domolibrary.utils.DictDot as util_dd
 import domolibrary.client.DomoAuth as dmda
 
 from enum import Enum
@@ -122,7 +122,7 @@ class DomoJob:
 
     @classmethod
     def _from_json(cls, obj):
-        dd = DictDot(obj)
+        dd = util_dd.DictDot(obj)
         triggers_ls = obj.get('triggers', None)
 
         triggers_dj = [DomoTrigger(
