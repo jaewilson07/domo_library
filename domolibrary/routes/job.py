@@ -19,52 +19,32 @@ import domolibrary.client.DomoError as de
 # get RemoteDomostats job names
 async def get_jobs(auth: dmda.DomoFullAuth,
                    application_id: str,
-                   debug_api: bool = False, log_results: bool = False,
+                   debug_api: bool = False,
                    session: Union[httpx.AsyncClient, httpx.AsyncClient, None] = None)-> rgd.ResponseGetData:
-    try:
-        is_close_session = False
-
-        if not session:
-            session = httpx.AsyncClient()
-            is_close_session = True
-
-        offset_params = {
+    
+    offset_params = {
             'offset': 'offset',
             'limit': 'limit'}
 
-        url = f'https://{auth.domo_instance}.domo.com/api/executor/v2/applications/{application_id}/jobs'
+    url = f'https://{auth.domo_instance}.domo.com/api/executor/v2/applications/{application_id}/jobs'
 
-        if debug_api:
-            print(url)
+    if debug_api:
+        print(url)
 
-        def arr_fn(res) -> list[dict]:
-            return res.response.get('jobs')
+    def arr_fn(res) -> list[dict]:
+        return res.response.get('jobs')
 
-        def alter_maximum_fn(res):
-            return res.response.get('totalResults')
+    def alter_maximum_fn(res):
+        return res.response.get('totalResults')
 
-        res = await gd.looper(auth=auth,
+    return await gd.looper(auth=auth,
                            method='GET',
                            url=url,
                            arr_fn=arr_fn,
                            loop_until_end=True,
                            offset_params=offset_params,
-
                            session=session,
                            debug_api=debug_api)
-
-        return rgd.ResponseGetData(
-            status=200,
-            response=res,
-            is_success=True)
-    except:
-        return rgd.ResponseGetData(
-            status=400,
-            is_success=False)
-
-    finally:
-        if is_close_session:
-            await session.aclose()
 
 
 # create the new RemoteDomostats job
@@ -72,8 +52,7 @@ async def add_job(auth: dmda.DomoFullAuth,
                   body: dict,
                   application_id: str,
                   session: Union[httpx.AsyncClient, httpx.AsyncClient, None] = None,
-                  debug_api: bool = False,
-                  log_results: bool = False
+                  debug_api: bool = False
                   )-> rgd.ResponseGetData:
 
     url = f'https://{auth.domo_instance}.domo.com/api/executor/v1/applications/{application_id}/jobs'
@@ -169,8 +148,7 @@ async def update_job(auth: dmda.DomoFullAuth,
                   job_id :str,
                   application_id: str,
                   session: Union[httpx.AsyncClient, httpx.AsyncClient, None] = None,
-                  debug_api: bool = False,
-                  log_results: bool = False
+                  debug_api: bool = False
                   )-> rgd.ResponseGetData:
 
     url = f'https://{auth.domo_instance}.domo.com/api/executor/v1/applications/{application_id}/jobs/{job_id}'
@@ -195,8 +173,7 @@ async def update_job_trigger(auth: dmda.DomoFullAuth,
                   trigger_id : str,  
                   application_id: str,
                   session: Union[httpx.AsyncClient, httpx.AsyncClient, None] = None,
-                  debug_api: bool = False,
-                  log_results: bool = False
+                  debug_api: bool = False
                   )-> rgd.ResponseGetData:
 
     url = f'https://{auth.domo_instance}.domo.com/api/executor/v1/applications/{application_id}/jobs/{job_id}/triggers/{trigger_id}'
