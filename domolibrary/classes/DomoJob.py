@@ -214,7 +214,7 @@ class DomoJob:
                                        body=body,
                                        debug_api=debug_api,
                                        session=session)
-        if debug:
+        if debug_api:
             print(res)
 
         if res.status != 200:
@@ -236,9 +236,8 @@ class DomoJob:
                                        body=body,
                                        debug_api=debug_api,
                                        session=session)
-
-#         if debug:
-#             print(res)
+        if debug_api:
+            print(res)
 
         if res.status != 200:
             return False
