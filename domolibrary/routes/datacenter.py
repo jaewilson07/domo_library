@@ -132,8 +132,8 @@ def generate_search_datacenter_account_body(
     search_str: str, is_exact_match: bool = True
 ):
     return {
-        "count": 100,
-        "offset": 0,
+        # "count": 100,
+        # "offset": 0,
         "combineResults": False,
         "query": search_str if is_exact_match else f"*{search_str}*",
         "filters": [],

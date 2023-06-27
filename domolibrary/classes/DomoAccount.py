@@ -12,6 +12,8 @@ from ..routes.account import ShareAccount_V1_AccessLevel, ShareAccount_V2_Access
 
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 4
+import asyncio
+
 from enum import Enum
 from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
@@ -725,46 +727,106 @@ class DomoAccounts:
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 42
 @patch_to(DomoAccounts, cls_method=True)
-async def get_accounts(
+async def _get_accounts_accountsapi(
     cls: DomoAccounts,
     auth: dmda.DomoAuth,
-    account_name: str = None, # account string to search for, must be an exact match in spelling.  case insensitive
-    account_type: AccountConfig = None, #to retrieve a specific account type
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
-):
+):    
 
     res = await account_routes.get_accounts(
         auth=auth, debug_api=debug_api, session=session
     )
 
-    if return_raw:
+    if return_raw or len( res.response ) == 0 :
         return res
 
-    if not res.is_success:
-        return None
+    return await asyncio.gather(
+        *[DomoAccount.get_from_id(
+                account_id=json_obj.get("id"),
+                debug_api=debug_api,
+                session=session,
+                auth = auth
+            ) for json_obj in res.response])
 
-    domo_account_ls = [
-        DomoAccount._from_json(account_obj, auth=auth) for account_obj in res.response
-    ]
+
+@patch_to(DomoAccounts, cls_method=True)
+async def _get_accounts_queryapi(
+    cls: DomoAccounts,
+    auth: dmda.DomoAuth,
+    debug_api: bool = False,
+    additional_filters_ls=None,
+    session: httpx.AsyncClient = None,
+    return_raw: bool = False,
+):
+    import domolibrary.routes.datacenter as datacenter_routes
+
+    res = await datacenter_routes.search_datacenter(
+        auth=auth,
+        entity_type=datacenter_routes.Datacenter_Enum.ACCOUNT.value,
+        additional_filters_ls=additional_filters_ls,
+        session=session,
+        debug_api=debug_api,
+    )
+
+    if return_raw or len(res.response) == 0:
+        return res
+
+    return [DomoAccount._from_json(account_obj, auth=auth) for account_obj in res.response]
+
+
+
+@patch_to(DomoAccounts, cls_method=True)
+async def get_accounts(
+    cls: DomoAccounts,
+    auth: dmda.DomoAuth,
+    additional_filters_ls = None, # datacenter_routes.generate_search_datacenter_filter
+    # account string to search for, must be an exact match in spelling.  case insensitive
+    is_v2:bool = None, #v2 will use the queryAPI as it returns more complete results than the accountsAPI
+    account_name: str = None,
+    account_type: AccountConfig = None,  # to retrieve a specific account type
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+    return_raw: bool = False,
+):
+    if isinstance(auth, dmda.DomoFullAuth) and is_v2 is None:
+        is_v2 = await self._is_group_ownership_beta(auth)
+    
+    
+    if is_v2:
+        domo_accounts = await cls._get_accounts_queryapi(
+        auth=auth, 
+        debug_api=debug_api,
+        additional_filters_ls=additional_filters_ls,
+        session=session,
+        return_raw = return_raw
+    )
+    else:
+        domo_accounts = await cls._get_accounts_accountsapi(
+        auth=auth, debug_api=debug_api, 
+        return_raw = return_raw,
+        session=session)
+        
+    if return_raw:
+        return domo_accounts
 
     if not account_name and not account_type:
-        return domo_account_ls
+        return domo_accounts
 
-    filtered_account_ls = domo_account_ls
     if account_name:
-        filtered_account_ls = [
+        domo_accounts = [
             domo_account
-            for domo_account in filtered_account_ls
+            for domo_account in domo_accounts
             if domo_account.name.lower() == account_name.lower()
         ]
 
     if account_type:
-        filtered_account_ls = [
+        domo_accounts = [
             domo_account
-            for domo_account in filtered_account_ls
+            for domo_account in domo_accounts
             if domo_account.data_provider_type == account_type.value.data_provider_type
         ]
 
-    return filtered_account_ls
+    return domo_accounts
+
