@@ -791,7 +791,7 @@ async def get_accounts(
     return_raw: bool = False,
 ):
     if isinstance(auth, dmda.DomoFullAuth) and is_v2 is None:
-        is_v2 = await self._is_group_ownership_beta(auth)
+        is_v2 = await cls._is_group_ownership_beta(auth)
     
     
     if is_v2:
