@@ -95,7 +95,7 @@ async def get_features(self : DomoBootstrap,
     
     auth = auth or self.auth
 
-    res = await bootstrap_routes.get_bootstrap_features(auth=auth, session=session, debug_api=debug_api)
+    res = await bootstrap_routes.get_bootstrap_features(auth=auth, session=session, debug_api=debug_api, return_raw=return_raw)
 
     if return_raw:
         return res
@@ -104,3 +104,17 @@ async def get_features(self : DomoBootstrap,
         json_obj) for json_obj in res.response]
 
     return feature_list
+
+# %% ../../nbs/classes/50_DomoBootstrap.ipynb 13
+@patch_to(DomoBootstrap)
+async def is_group_ownership_beta(self, return_raw : bool = False):
+    
+    domo_feature_ls = await self.get_features(return_raw= return_raw)
+
+    if return_raw:
+        return domo_feature_ls
+
+    match_accounts_v2 = next(
+        (domo_feature for domo_feature in domo_feature_ls if domo_feature.name == 'accounts-v2'), None)
+
+    return True if match_accounts_v2 else False

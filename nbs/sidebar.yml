@@ -28,6 +28,7 @@ website:
         contents:
           - classes/50_DomoAccount.ipynb
           - classes/50_DomoActivityLog.ipynb
+          - classes/50_DomoApplication.ipynb
           - classes/50_DomoBootstrap.ipynb
           - classes/50_DomoCard.ipynb
           - classes/50_DomoDatacenter.ipynb
@@ -36,10 +37,12 @@ website:
           - classes/50_DomoGrant.ipynb
           - classes/50_DomoGroup.ipynb
           - classes/50_DomoInstanceConfig.ipynb
+          - classes/50_DomoJob.ipynb
           - classes/50_DomoPDP.ipynb
           - classes/50_DomoPage.ipynb
           - classes/50_DomoPublish.ipynb
           - classes/50_DomoRole.ipynb
+          - classes/50_DomoStream.ipynb
           - classes/50_DomoUser.ipynb
       - section: client
         contents:
@@ -93,6 +96,7 @@ website:
         contents:
           - routes/account.ipynb
           - routes/activity_log.ipynb
+          - routes/application.ipynb
           - routes/bootstrap.ipynb
           - routes/card.ipynb
           - routes/datacenter.ipynb
@@ -101,6 +105,7 @@ website:
           - routes/grant.ipynb
           - routes/group.ipynb
           - routes/instance_config.ipynb
+          - routes/job.ipynb
           - routes/page.ipynb
           - routes/pdp.ipynb
           - routes/publish.ipynb

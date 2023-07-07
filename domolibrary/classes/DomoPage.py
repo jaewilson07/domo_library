@@ -633,47 +633,48 @@ async def share(self: DomoPage,
 
 
 # %% ../../nbs/classes/50_DomoPage.ipynb 20
-@dataclass
-class DomoPages:
-    pass
+@patch_to(DomoPage, cls_method=True)
+async def get_cards(cls,
+                    auth: dmda.DomoAuth,
+                    page_id, debug_api: bool = False,
+                    session: httpx.AsyncClient = None):
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 21
-@patch_to(DomoPages, cls_method=True)
-async def get_pages(
-    cls: DomoPages,
-    auth=dmda.DomoAuth,
-    return_raw: bool = False,
-    debug_loop: bool = False,
-    debug_api: bool = False,
-    session: httpx.AsyncClient = None,
-):
-    is_close_session = False if session else True
+    import domolibrary.classes.DomoCard as dc
 
-    session = session or httpx.AsyncClient()
+    res = await page_routes.get_page_definition(auth=auth, page_id=page_id, debug_api=debug_api, session=session)
 
-    try:
-        res = await page_routes.get_pages_adminsummary(
-            auth=auth, debug_loop=False, debug_api=False, session=session
-        )
+    if res.status != 200:
+        raise Exception(
+            f"unable to retrieve page definition for {page_id} in {auth.domo_instance}")
 
-        if return_raw:
-            return res
+    if len(res.response.get('cards')) == 0:
+        return []
 
-        if not res.is_success:
-            raise Exception("unable to retrieve pages")
+    return await asyncio.gather(*[dc.DomoCard.get_by_id(card_id=card['id'],
+                                                  auth=auth) for card in res.response.get('cards')])
 
-        return await asyncio.gather(
-            *[
-                DomoPage._from_adminsummary(page_obj, auth=auth)
-                for page_obj in res.response
-            ]
-        )
 
-    finally:
-        if is_close_session:
-            await session.aclose()
+@patch_to(DomoPage, cls_method=True)
+async def get_datasets(cls,
+                       auth: dmda.DomoAuth,
+                       page_id,
+                       debug_api: bool = False,
+                       session: httpx.AsyncClient = None):
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 24
+    import domolibrary.classes.DomoDataset as dmds
+
+    res = await page_routes.get_page_definition(auth=auth, page_id=page_id,
+                                                debug_api=debug_api, session=session)
+
+    if res.status != 200:
+        raise Exception( f"unable to retrieve datasets for page {page_id} in {auth.domo_instance}")
+
+    if len(res.response.get('cards')) == 0:
+        return []
+
+    return await asyncio.gather(*[ dmds.DomoDataset.get_from_id(dataset_id = ds.get('dataSourceId'), auth = auth) for card in res.response.get('cards') for ds in card.get('datasources')])
+
+# %% ../../nbs/classes/50_DomoPage.ipynb 23
 from datetime import datetime
 from utils import convert
 
@@ -709,3 +710,42 @@ async def update_layout(
         return False
 
     return True
+
+# %% ../../nbs/classes/50_DomoPage.ipynb 28
+@dataclass
+class DomoPages:
+    
+    @classmethod
+    async def get_pages(
+        cls,
+        auth=dmda.DomoAuth,
+        return_raw: bool = False,
+        debug_loop: bool = False,
+        debug_api: bool = False,
+        session: httpx.AsyncClient = None,
+    ):
+        is_close_session = False if session else True
+
+        session = session or httpx.AsyncClient()
+
+        try:
+            res = await page_routes.get_pages_adminsummary(
+                auth=auth, debug_loop=False, debug_api=False, session=session
+            )
+
+            if return_raw:
+                return res
+
+            if not res.is_success:
+                raise Exception("unable to retrieve pages")
+
+            return await asyncio.gather(
+                *[
+                    DomoPage._from_adminsummary(page_obj, auth=auth)
+                    for page_obj in res.response
+                ]
+            )
+
+        finally:
+            if is_close_session:
+                await session.aclose()

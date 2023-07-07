@@ -167,7 +167,10 @@ async def search_datacenter(
     arr_fn: callable = None,
     session: httpx.AsyncClient = None,
     debug_api: bool = False,
+    debug_loop: bool = False
+
 ) -> rgd.ResponseGetData:
+    
     limit = 100  # api enforced limit
 
     if not body:
@@ -190,15 +193,16 @@ async def search_datacenter(
         auth=auth,
         session=session,
         url=url,
+        loop_until_end=True if not maximum else False,
         body=body,
         offset_params_in_body=True,
         offset_params={"offset": "offset", "limit": "count"},
         arr_fn=arr_fn,
         method="POST",
-        loop_until_end=True if not maximum else False,
         maximum=maximum,
         limit=limit,
         debug_api=debug_api,
+        debug_loop = debug_loop
     )
 
     if res.is_success and len(res.response) == 0:

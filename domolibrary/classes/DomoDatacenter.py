@@ -129,15 +129,10 @@ async def get_accounts(
     if return_raw or len(json_list) == 0:
         return json_list
 
-    domo_account_ls = await asyncio.gather(
-        *[
-            dma.DomoAccount.get_from_id(
-                account_id=json_obj.get("databaseId"),
-                auth=auth,
-                debug_api=debug_api,
-                session=session,
-            )
-            for json_obj in json_list
+    domo_account_ls = [
+            dma.DomoAccount._from_json(
+                json_obj,
+                auth=auth ) for json_obj in json_list
         ]
-    )
+    
     return domo_account_ls

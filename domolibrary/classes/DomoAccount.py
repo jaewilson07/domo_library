@@ -282,11 +282,11 @@ class DomoAccount:
         dd = util_dd.DictDot(obj)
 
         return cls(
-            id=dd.id,
+            id=dd.id or dd.databaseId,
             name=dd.displayName,
             data_provider_type=dd.dataProviderType,
-            created_dt=cd.convert_epoch_millisecond_to_datetime(dd.createdAt),
-            modified_dt=cd.convert_epoch_millisecond_to_datetime(dd.modifiedAt),
+            created_dt=cd.convert_epoch_millisecond_to_datetime(dd.createdAt or dd.createDate),
+            modified_dt=cd.convert_epoch_millisecond_to_datetime(dd.modifiedAt or dd.lastModified),
             auth=auth,
         )
 
@@ -605,10 +605,11 @@ async def share_account(
 
     if is_v2 is None:
         raise Exception(
-            """🛑 ERROR must pass `is_v2` bool to share_accounts function IF NOT pass `dmda.DomoFullAuth`.
-the group management v2 API has a different body.  
-Alternatively pass a full auth object to auto check the bootstrap.
-""")
+            """🛑 ERROR must explicitly pass a value for the `is_v2` boolean to share_accounts function.ABC
+alternatively, use `dmda.DomoFullAuth` to automatically retrieve the correct setting.ABC
+account sharing differs between v1 and v2 of the API.""")
+        
+        return None
 
     res = None
 
@@ -639,17 +640,14 @@ Alternatively pass a full auth object to auto check the bootstrap.
         )
 
     if res.status == 500 and res.response == 'Internal Server Error':
-        res.response = f'ℹ️ - {res.response + "| User may own account."}'
+        res.response = f'ℹ️ - {res.response + " | User may own account."}'
 
     if res.status == 200:
         res.response = f"shared {self.id} - {self.name} with {user_id}"
 
     return res
 
-
-
-
-# %% ../../nbs/classes/50_DomoAccount.ipynb 38
+# %% ../../nbs/classes/50_DomoAccount.ipynb 39
 @patch_to(DomoAccount)
 async def share(
     self: DomoAccount,
@@ -720,12 +718,12 @@ Alternatively pass a full auth object to auto check the bootstrap.
 
     return res
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 41
+# %% ../../nbs/classes/50_DomoAccount.ipynb 42
 @dataclass
 class DomoAccounts:
     auth: dmda.DomoAuth
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 42
+# %% ../../nbs/classes/50_DomoAccount.ipynb 43
 @patch_to(DomoAccounts, cls_method=True)
 async def _get_accounts_accountsapi(
     cls: DomoAccounts,
@@ -760,6 +758,9 @@ async def _get_accounts_queryapi(
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
 ):
+
+    """v2 api for works with group_account_v2 beta"""
+    
     import domolibrary.routes.datacenter as datacenter_routes
 
     res = await datacenter_routes.search_datacenter(
@@ -789,26 +790,38 @@ async def get_accounts(
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
+    debug_prn: bool = False
 ):
+    import domolibrary.classes.DomoBootstrap as bsr
+    import domolibrary.routes.datacenter as datacenter_routes
+
     if isinstance(auth, dmda.DomoFullAuth) and is_v2 is None:
-        is_v2 = await cls._is_group_ownership_beta(auth)
+        instance_bsr = bsr.DomoBootstrap(auth = auth)
+    
+        is_v2 = await instance_bsr.is_group_ownership_beta(auth)
+        
+        if debug_prn:
+            print(f"{auth.domo_instance} {'is' if is_v2 else 'is not'} using the v2 beta")
     
     
     if is_v2:
-        domo_accounts = await cls._get_accounts_queryapi(
-        auth=auth, 
-        debug_api=debug_api,
-        additional_filters_ls=additional_filters_ls,
-        session=session,
-        return_raw = return_raw
-    )
+        try:
+            domo_accounts = await cls._get_accounts_queryapi(
+            auth=auth, 
+            debug_api=debug_api,
+            additional_filters_ls=additional_filters_ls,
+            session=session,
+            return_raw = return_raw
+        )
+        except datacenter_routes.SearchDatacenter_NoResultsFound as e:
+            domo_accounts = []
     else:
         domo_accounts = await cls._get_accounts_accountsapi(
         auth=auth, debug_api=debug_api, 
         return_raw = return_raw,
         session=session)
         
-    if return_raw:
+    if return_raw or len(domo_accounts) == 0 :
         return domo_accounts
 
     if not account_name and not account_type:

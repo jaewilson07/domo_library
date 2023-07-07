@@ -246,6 +246,7 @@ class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required):
     async def get_auth_token(
         self,
         session: Optional[httpx.AsyncClient] = None,
+        return_raw: bool = False,
         debug_api : bool = False
     ) -> str:
         """returns `token` if valid credentials provided else raises Exception and returns None"""
@@ -258,6 +259,10 @@ class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required):
             debug_api = debug_api
         )
 
+        if return_raw:
+            return res
+
+
         if res.is_success and res.response.get("reason") == "INVALID_CREDENTIALS":
             self.is_valid_token = False
             raise InvalidCredentialsError(
@@ -266,8 +271,9 @@ class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required):
                 message=str(res.response.get("reason")),
                 domo_instance=self.domo_instance,
             )
+            return None
 
-        if res.status == 403:
+        if res.status == 403: # invalid instance
             self.is_valid_token = False
             raise InvalidInstanceError(
                 function_name = "get_auth_token",
@@ -275,14 +281,18 @@ class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required):
                 message="INVALID INSTANCE",
                 domo_instance=self.domo_instance,
             )
+            return None
         
-        if res.is_success and res.response == {}:
+        if res.is_success and ( res.response == {} or res.response == '') : # no access token
             self.is_valid_token = False
             raise NoAccessTokenReturned(
                 function_name="get_auth_token",
                 status=res.status, 
                 domo_instance=self.domo_instance)
-        
+
+            return None
+
+
         self.is_valid_token = True
 
         token = str(res.response.get("sessionToken"))
@@ -296,14 +306,14 @@ class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required):
 
         return self.token
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 36
+# %% ../../nbs/client/95_DomoAuth.ipynb 35
 @dataclass
 class _DomoTokenAuth_Required(_DomoAuth_Required):
     """mix requied parameters for DomoFullAuth"""
 
     domo_access_token: str = field(repr=False)
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 37
+# %% ../../nbs/client/95_DomoAuth.ipynb 36
 @dataclass
 class DomoTokenAuth(_DomoAuth_Optional, _DomoTokenAuth_Required):
     
@@ -355,7 +365,7 @@ class DomoTokenAuth(_DomoAuth_Optional, _DomoTokenAuth_Required):
 
         return self.token
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 41
+# %% ../../nbs/client/95_DomoAuth.ipynb 40
 @dataclass
 class _DomoDeveloperAuth_Required(_DomoAuth_Required):
     """mix requied parameters for DomoFullAuth"""
@@ -363,7 +373,7 @@ class _DomoDeveloperAuth_Required(_DomoAuth_Required):
     domo_client_id: str
     domo_client_secret: str = field(repr=False)
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 42
+# %% ../../nbs/client/95_DomoAuth.ipynb 41
 @dataclass(init=False)
 class DomoDeveloperAuth(_DomoAuth_Optional, _DomoDeveloperAuth_Required):
     """use for full authentication token"""
