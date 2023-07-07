@@ -7,6 +7,7 @@ __all__ = ['DomoCard']
 from dataclasses import dataclass, field
 
 import asyncio
+import httpx
 from fastcore.basics import patch_to
 
 import domolibrary.routes.card as card_routes
@@ -76,10 +77,11 @@ class DomoCard:
 # %% ../../nbs/classes/50_DomoCard.ipynb 4
 @patch_to(DomoCard, cls_method=True)
 async def get_by_id(cls: DomoCard, card_id: str,
-                      auth: dmda.DomoAuth, debug_api: bool = False):
+                      auth: dmda.DomoAuth, debug_api: bool = False, 
+                      session: httpx.AsyncClient = None):
 
     res = await card_routes.get_card_metadata(auth=auth,
-                                              card_id=card_id, debug_api=debug_api)
+                                              card_id=card_id, debug_api=debug_api, session = session)
 
     if not res.is_success:
         raise Exception('unable to retrieve card {card_id}')
@@ -87,4 +89,32 @@ async def get_by_id(cls: DomoCard, card_id: str,
     domo_card = await cls._from_json(res.response, auth)
 
     return domo_card
+
+
+# %% ../../nbs/classes/50_DomoCard.ipynb 6
+@patch_to(DomoCard)
+async def share(self: DomoCard,
+                     auth: dmda.DomoAuth = None,
+                     domo_users: list = None,  # DomoUsers to share card with,
+                     domo_groups: list = None,  # DomoGroups to share card with
+                     message: str = None,  # message for automated email
+                     debug_api: bool = False, session: httpx.AsyncClient = None):
+
+    import domolibrary.routes.datacenter as datacenter_routes
+
+    if domo_groups : domo_groups = domo_groups if isinstance(domo_groups, list) else [domo_groups]
+    if domo_users : domo_users = domo_users if isinstance(domo_users, list) else [domo_users]
+
+
+    res = await datacenter_routes.share_resource(
+        auth=auth or self.auth,
+        resource_ids=[self.id],
+        resource_type=datacenter_routes.ShareResource_Enum.CARD,
+        group_ids=[group.id for group in domo_groups] if domo_groups else None,
+        user_ids=[user.id for user in domo_users] if domo_users else None,
+        message=message,
+        debug_api=debug_api, session=session,
+    )
+
+    return res
 

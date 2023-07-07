@@ -143,7 +143,8 @@ def generate_body_from_policy(
 class Dataset_PDP_Policies:
 
     dataset = None  # domo dataset class
-    policies: list[PDP_Policy] = None  
+    policies: list[PDP_Policy] = None 
+    auth = None 
 
     def __init__(self, dataset):
         self.dataset = dataset
@@ -263,16 +264,18 @@ async def delete_policy(
 @patch_to(Dataset_PDP_Policies)
 async def toggle_dataset_pdp(
     self: Dataset_PDP_Policies,
-    auth: dmda.DomoAuth,
+    auth: dmda.DomoAuth = None,
     dataset_id: str = None,
     is_enable: bool = True, # True will enable pdp, False will disable pdp
     debug_api: bool = False,
     session: httpx.AsyncClient = None
 ):
+    auth = auth or self.dataset.auth
+
 
     return await pdp_routes.toggle_pdp(
-        auth=auth or self.auth,
-        dataset_id=dataset_id or self.dataset_id,
+        auth=auth,
+        dataset_id=dataset_id or self.dataset.id,
         is_enable=is_enable,
         debug_api=debug_api,
         session=session

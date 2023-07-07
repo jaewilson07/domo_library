@@ -12,6 +12,8 @@ from ..routes.account import ShareAccount_V1_AccessLevel, ShareAccount_V2_Access
 
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 4
+import asyncio
+
 from enum import Enum
 from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
@@ -280,11 +282,11 @@ class DomoAccount:
         dd = util_dd.DictDot(obj)
 
         return cls(
-            id=dd.id,
+            id=dd.id or dd.databaseId,
             name=dd.displayName,
             data_provider_type=dd.dataProviderType,
-            created_dt=cd.convert_epoch_millisecond_to_datetime(dd.createdAt),
-            modified_dt=cd.convert_epoch_millisecond_to_datetime(dd.modifiedAt),
+            created_dt=cd.convert_epoch_millisecond_to_datetime(dd.createdAt or dd.createDate),
+            modified_dt=cd.convert_epoch_millisecond_to_datetime(dd.modifiedAt or dd.lastModified),
             auth=auth,
         )
 
@@ -567,11 +569,12 @@ async def delete_account(
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 36
 @patch_to(DomoAccount)
-async def _is_group_ownership_beta(self, auth : dmda.DomoAuth):
+async def _is_group_ownership_beta(self, auth: dmda.DomoAuth):
 
     import domolibrary.classes.DomoBootstrap as dmbs
 
     domo_bsr = dmbs.DomoBootstrap(auth=auth or self.auth)
+    
     domo_feature_ls = await domo_bsr.get_features()
 
     match_accounts_v2 = next(
@@ -593,7 +596,6 @@ async def share_account(
 ):
     auth = auth or self.auth
 
-    
     if isinstance(auth, dmda.DomoFullAuth) and is_v2 is None:
         is_v2 = await self._is_group_ownership_beta(auth)
 
@@ -603,11 +605,12 @@ async def share_account(
 
     if is_v2 is None:
         raise Exception(
-            """🛑 ERROR must pass `is_v2` bool to share_accounts function IF NOT pass `dmda.DomoFullAuth`.
-the group management v2 API has a different body.  
-Alternatively pass a full auth object to auto check the bootstrap.
-""")
-    
+            """🛑 ERROR must explicitly pass a value for the `is_v2` boolean to share_accounts function.ABC
+alternatively, use `dmda.DomoFullAuth` to automatically retrieve the correct setting.ABC
+account sharing differs between v1 and v2 of the API.""")
+        
+        return None
+
     res = None
 
     if is_v2:
@@ -637,61 +640,206 @@ Alternatively pass a full auth object to auto check the bootstrap.
         )
 
     if res.status == 500 and res.response == 'Internal Server Error':
-        res.response = f'ℹ️ - {res.response + "| User may own account."}'
+        res.response = f'ℹ️ - {res.response + " | User may own account."}'
 
     if res.status == 200:
         res.response = f"shared {self.id} - {self.name} with {user_id}"
 
     return res
 
-
 # %% ../../nbs/classes/50_DomoAccount.ipynb 39
+@patch_to(DomoAccount)
+async def share(
+    self: DomoAccount,
+    domo_user = None,
+    domo_group = None,
+    auth: dmda.DomoAuth = None,
+    is_v2: bool = None,
+    access_level: ShareAccount = None,  # will default to Read
+    debug_api: bool = False,
+    debug_prn: bool = False,
+    session: httpx.AsyncClient = None,
+):
+    auth = auth or self.auth
+
+    if isinstance(auth, dmda.DomoFullAuth) and is_v2 is None:
+        is_v2 = await self._is_group_ownership_beta(auth)
+
+    if debug_prn:
+        print(
+            f"ℹ️ - {auth.domo_instance} - {'is' if is_v2 else 'is not'} v2_group_ownership")
+
+    if is_v2 is None:
+        raise Exception(
+            """🛑 ERROR must pass `is_v2` bool to share_accounts function IF NOT passing `dmda.DomoFullAuth`.
+the group management v2 API has a different body.  
+Alternatively pass a full auth object to auto check the bootstrap.
+""")
+
+    res = None
+
+    if is_v2:
+        share_payload = account_routes.generate_share_account_payload_v2(
+            user_id=domo_user.id if domo_user else None, 
+            group_id =  domo_group.id if domo_group else None,
+            access_level=access_level or ShareAccount_V2_AccessLevel.CAN_VIEW
+        )
+
+        res = await account_routes.share_account_v2(
+            auth=auth,
+            account_id=self.id,
+            share_payload=share_payload,
+            debug_api=debug_api,
+            session=session,
+        )
+
+    else:
+        share_payload = account_routes.generate_share_account_payload_v1(
+            user_id=domo_user.id if domo_user else None,
+            group_id=domo_group.id if domo_group else None,
+            
+            access_level=access_level or ShareAccount_V1_AccessLevel.CAN_VIEW
+        )
+
+        res = await account_routes.share_account_v1(
+            auth=auth,
+            account_id=self.id,
+            share_payload=share_payload,
+            debug_api=debug_api,
+            session=session,
+        )
+
+    if res.status == 500 and res.response == 'Internal Server Error':
+        res.response = f'ℹ️ - {res.response + "| User may own account."}'
+
+    if res.status == 200:
+        domo_entity = domo_user or domo_group
+        res.response = f"shared {self.id} - {self.name} with {domo_entity.id}"
+
+    return res
+
+# %% ../../nbs/classes/50_DomoAccount.ipynb 42
 @dataclass
 class DomoAccounts:
     auth: dmda.DomoAuth
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 40
+# %% ../../nbs/classes/50_DomoAccount.ipynb 43
 @patch_to(DomoAccounts, cls_method=True)
-async def get_accounts(
+async def _get_accounts_accountsapi(
     cls: DomoAccounts,
     auth: dmda.DomoAuth,
-    account_name: str = None, # account string to search for, must be an exact match in spelling.  case insensitive
-    account_type: AccountConfig = None, #to retrieve a specific account type
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
-):
+):    
 
     res = await account_routes.get_accounts(
         auth=auth, debug_api=debug_api, session=session
     )
 
-    if return_raw:
+    if return_raw or len( res.response ) == 0 :
         return res
 
-    if not res.is_success:
-        return None
+    return await asyncio.gather(
+        *[DomoAccount.get_from_id(
+                account_id=json_obj.get("id"),
+                debug_api=debug_api,
+                session=session,
+                auth = auth
+            ) for json_obj in res.response])
 
-    domo_account_ls = [
-        DomoAccount._from_json(account_obj, auth=auth) for account_obj in res.response
-    ]
+
+@patch_to(DomoAccounts, cls_method=True)
+async def _get_accounts_queryapi(
+    cls: DomoAccounts,
+    auth: dmda.DomoAuth,
+    debug_api: bool = False,
+    additional_filters_ls=None,
+    session: httpx.AsyncClient = None,
+    return_raw: bool = False,
+):
+
+    """v2 api for works with group_account_v2 beta"""
+    
+    import domolibrary.routes.datacenter as datacenter_routes
+
+    res = await datacenter_routes.search_datacenter(
+        auth=auth,
+        entity_type=datacenter_routes.Datacenter_Enum.ACCOUNT.value,
+        additional_filters_ls=additional_filters_ls,
+        session=session,
+        debug_api=debug_api,
+    )
+
+    if return_raw or len(res.response) == 0:
+        return res
+
+    return [DomoAccount._from_json(account_obj, auth=auth) for account_obj in res.response]
+
+
+
+@patch_to(DomoAccounts, cls_method=True)
+async def get_accounts(
+    cls: DomoAccounts,
+    auth: dmda.DomoAuth,
+    additional_filters_ls = None, # datacenter_routes.generate_search_datacenter_filter
+    # account string to search for, must be an exact match in spelling.  case insensitive
+    is_v2:bool = None, #v2 will use the queryAPI as it returns more complete results than the accountsAPI
+    account_name: str = None,
+    account_type: AccountConfig = None,  # to retrieve a specific account type
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+    return_raw: bool = False,
+    debug_prn: bool = False
+):
+    import domolibrary.classes.DomoBootstrap as bsr
+    import domolibrary.routes.datacenter as datacenter_routes
+
+    if isinstance(auth, dmda.DomoFullAuth) and is_v2 is None:
+        instance_bsr = bsr.DomoBootstrap(auth = auth)
+    
+        is_v2 = await instance_bsr.is_group_ownership_beta(auth)
+        
+        if debug_prn:
+            print(f"{auth.domo_instance} {'is' if is_v2 else 'is not'} using the v2 beta")
+    
+    
+    if is_v2:
+        try:
+            domo_accounts = await cls._get_accounts_queryapi(
+            auth=auth, 
+            debug_api=debug_api,
+            additional_filters_ls=additional_filters_ls,
+            session=session,
+            return_raw = return_raw
+        )
+        except datacenter_routes.SearchDatacenter_NoResultsFound as e:
+            domo_accounts = []
+    else:
+        domo_accounts = await cls._get_accounts_accountsapi(
+        auth=auth, debug_api=debug_api, 
+        return_raw = return_raw,
+        session=session)
+        
+    if return_raw or len(domo_accounts) == 0 :
+        return domo_accounts
 
     if not account_name and not account_type:
-        return domo_account_ls
+        return domo_accounts
 
-    filtered_account_ls = domo_account_ls
     if account_name:
-        filtered_account_ls = [
+        domo_accounts = [
             domo_account
-            for domo_account in filtered_account_ls
+            for domo_account in domo_accounts
             if domo_account.name.lower() == account_name.lower()
         ]
 
     if account_type:
-        filtered_account_ls = [
+        domo_accounts = [
             domo_account
-            for domo_account in filtered_account_ls
+            for domo_account in domo_accounts
             if domo_account.data_provider_type == account_type.value.data_provider_type
         ]
 
-    return filtered_account_ls
+    return domo_accounts
+

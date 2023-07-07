@@ -13,7 +13,9 @@ import domolibrary.client.DomoAuth as dmda
 # %% ../../nbs/routes/bootstrap.ipynb 4
 async def get_bootstrap(
     auth: dmda.DomoFullAuth, ## only works with DomoFullAuth authentication, do not use TokenAuth
-    debug_api: bool = False, session: httpx.AsyncClient = None
+    debug_api: bool = False, 
+    session: httpx.AsyncClient = None,
+    return_raw: bool = False
 ) -> rgd.ResponseGetData:
     """get bootstrap data"""
 
@@ -29,15 +31,23 @@ async def get_bootstrap(
         url=url, method="GET", auth=auth, debug_api=debug_api, session=session, is_follow_redirects = True
     )
 
+    if res.response == '' and not return_raw:
+        raise Exception('BSR_Features:  no features returned - is there a VPN?')
+
     return res
 
 
 # %% ../../nbs/routes/bootstrap.ipynb 8
-async def get_bootstrap_features(   
-    auth: dmda.DomoAuth, session: httpx.AsyncClient = None, debug_api: bool = False
+async def get_bootstrap_features(
+    auth: dmda.DomoAuth, session: httpx.AsyncClient = None,
+    debug_api: bool = False,
+    return_raw: bool = False
 ) -> rgd.ResponseGetData:
 
-    res = await get_bootstrap(auth=auth, session=session, debug_api=debug_api)
+    res = await get_bootstrap(auth=auth, session=session, debug_api=debug_api, return_raw=return_raw)
+
+    if return_raw:
+        return res
 
     if not res.is_success:
         return None
@@ -45,12 +55,16 @@ async def get_bootstrap_features(
     res.response = res.response.get("data").get("features")
     return res
 
+
 # %% ../../nbs/routes/bootstrap.ipynb 11
 async def get_bootstrap_pages(
-    auth: dmda.DomoAuth, session: httpx.AsyncClient = None, debug_api: bool = False
+    auth: dmda.DomoAuth, session: httpx.AsyncClient = None, debug_api: bool = False, return_raw: bool = False
 ) -> rgd.ResponseGetData:
     res = await get_bootstrap(auth=auth, session=session, debug_api=debug_api)
 
+    if return_raw:
+        return res
+        
     if not res.is_success:
         return None
 

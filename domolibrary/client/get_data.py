@@ -7,7 +7,6 @@ __all__ = ['get_data_aiohttp', 'GetData_Error', 'get_data', 'LooperError', 'loop
 from typing import Optional, Union
 
 from pprint import pprint
-
 import httpx
 import aiohttp
 import asyncio
@@ -120,7 +119,7 @@ async def get_data(
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
     is_follow_redirects: bool = False,
-    timeout = 5
+    timeout = 10
 ) -> rgd.ResponseGetData:
     """async wrapper for asyncio requests"""
 
@@ -246,14 +245,12 @@ async def looper(
     body_fn=None,
     limit=1000,
     skip=0,
-    maximum=2000,
+    maximum=0,
     debug_api: bool = False,
     debug_loop: bool = False,
     timeout : bool = 10,
     wait_sleep : int = 0
 ) -> rgd.ResponseGetData:
-
-    maximum = maximum or 0
 
     is_close_session = False
 
@@ -266,7 +263,7 @@ async def looper(
 
     res = None
 
-    if maximum < limit and not loop_until_end:
+    if maximum and maximum <= limit and not loop_until_end:
         limit = maximum
     
 
@@ -321,30 +318,27 @@ async def looper(
 
         allRows += newRecords
 
-        if loop_until_end and len(newRecords) != 0:
-            maximum = maximum + limit
+        if len(newRecords) == 0:
+            isLoop = False
         
+        if maximum and len(allRows) >= maximum and not loop_until_end:
+            isLoop = False
 
+        
         if debug_loop:
             print({"all_rows": len(allRows), "new_records": len(newRecords)})
-
-        if len(allRows) >= maximum or len(newRecords) == 0:
-            if debug_loop:
-                print(
-                    f"\n🎉 Success - {len(allRows)} records retrieved from {url} in query looper\n"
-                )
-
-            break
-
-        skip += len(newRecords)
-
-        if skip + limit > maximum and not loop_until_end:
-            limit = maximum - len(allRows)
-        
-        if debug_loop:
             print(f"skip: {skip}, limit: {limit}")
         
+        if maximum and skip + limit > maximum and not loop_until_end:
+            limit = maximum - len(allRows)
+
+        skip += len(newRecords)
         time.sleep(wait_sleep)
+
+    if debug_loop:
+        print(
+            f"\n🎉 Success - {len(allRows)} records retrieved from {url} in query looper\n"
+        )
 
     if is_close_session:
         await session.aclose()
