@@ -827,7 +827,7 @@ async def get_accounts(
     if not account_name and not account_type:
         return domo_accounts
 
-    if account_name:
+    if account_name and isinstance(account_name, str):
         domo_accounts = [
             domo_account
             for domo_account in domo_accounts

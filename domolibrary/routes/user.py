@@ -3,9 +3,9 @@
 # %% auto 0
 __all__ = ['get_all_users', 'get_by_id', 'generate_search_users_body_by_id', 'generate_search_users_body_by_email',
            'process_v1_search_users', 'SearchUser_NoResults', 'search_users',
-           'search_virtual_user_by_subscriber_instance', 'create_user', 'set_user_landing_page', 'reset_password',
-           'request_password_reset', 'UserProperty_Type', 'UserProperty', 'generate_patch_user_property_body',
-           'update_user']
+           'search_virtual_user_by_subscriber_instance', 'create_user', 'set_user_landing_page',
+           'ResetPassword_PasswordUsed', 'reset_password', 'request_password_reset', 'UserProperty_Type',
+           'UserProperty', 'generate_patch_user_property_body', 'update_user']
 
 # %% ../../nbs/routes/user.ipynb 3
 from enum import Enum
@@ -223,18 +223,33 @@ async def set_user_landing_page(
 
 
 # %% ../../nbs/routes/user.ipynb 26
+class ResetPassword_PasswordUsed(de.DomoError):
+    def __init__(
+        self, status, domo_instance, 
+        function_name="reset_password", 
+        entity_id = None,
+        message="Password used previously"
+    ):
+
+        super().__init__(
+            message=message, status=status, function_name=function_name,
+            entity_id = entity_id,
+            domo_instance=domo_instance
+        )
+
+
 async def reset_password(
     auth: dmda.DomoAuth,
     user_id: str,
     new_password: str,
-    debug_api: bool = False,
+    debug_api: bool = False
 ) -> rgd.ResponseGetData:
 
     url = f"https://{auth.domo_instance}.domo.com/api/identity/v1/password"
 
     body = {"domoUserId": user_id, "password": new_password}
 
-    return await gd.get_data(
+    res = await gd.get_data(
         url=url,
         method="PUT",
         auth=auth,
@@ -242,8 +257,16 @@ async def reset_password(
         debug_api=debug_api,
     )
 
+    if res.status == 200 and res.response['description'] == 'Password has been used previously.':
+        raise ResetPassword_PasswordUsed(status=res.status,
+                                         entity_id=user_id,
+                                         domo_instance=auth.domo_instance,
+                                         message=res.response['description'].replace('.', ''))
 
-# %% ../../nbs/routes/user.ipynb 27
+    return res
+
+
+# %% ../../nbs/routes/user.ipynb 29
 async def request_password_reset(
     domo_instance: str, 
     email: str, locale="en-us", debug_api: bool = False,
@@ -258,7 +281,7 @@ async def request_password_reset(
     )
 
 
-# %% ../../nbs/routes/user.ipynb 29
+# %% ../../nbs/routes/user.ipynb 31
 class UserProperty_Type(Enum):
     display_name = "displayName"
     email_address = "emailAddress"
@@ -292,13 +315,13 @@ class UserProperty:
             "values": self._valid_value(self.values),
         }
 
-# %% ../../nbs/routes/user.ipynb 30
+# %% ../../nbs/routes/user.ipynb 32
 def generate_patch_user_property_body(user_property_ls: [UserProperty]):
     return {
         "attributes": [user_property.to_json() for user_property in user_property_ls]
     }
 
-# %% ../../nbs/routes/user.ipynb 33
+# %% ../../nbs/routes/user.ipynb 35
 async def update_user(
     user_id: str,
     user_property_ls: [UserProperty],
