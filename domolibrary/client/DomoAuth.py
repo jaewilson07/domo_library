@@ -263,7 +263,9 @@ class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required):
             return res
 
 
-        if res.is_success and res.response.get("reason") == "INVALID_CREDENTIALS":
+        if res.is_success and (
+            res.response.get("reason") == "INVALID_CREDENTIALS" 
+            or res.response.get("reason") == "ACCOUNT_LOCKED" ) :
             self.is_valid_token = False
             raise InvalidCredentialsError(
                 function_name = "get_auth_token",
