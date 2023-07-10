@@ -731,22 +731,22 @@ async def _get_accounts_accountsapi(
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
-):    
+):
 
     res = await account_routes.get_accounts(
         auth=auth, debug_api=debug_api, session=session
     )
 
-    if return_raw or len( res.response ) == 0 :
+    if return_raw or len(res.response) == 0:
         return res
 
     return await asyncio.gather(
         *[DomoAccount.get_from_id(
-                account_id=json_obj.get("id"),
-                debug_api=debug_api,
-                session=session,
-                auth = auth
-            ) for json_obj in res.response])
+            account_id=json_obj.get("id"),
+            debug_api=debug_api,
+            session=session,
+            auth=auth
+        ) for json_obj in res.response])
 
 
 @patch_to(DomoAccounts, cls_method=True)
@@ -760,7 +760,7 @@ async def _get_accounts_queryapi(
 ):
 
     """v2 api for works with group_account_v2 beta"""
-    
+
     import domolibrary.routes.datacenter as datacenter_routes
 
     res = await datacenter_routes.search_datacenter(
@@ -777,14 +777,14 @@ async def _get_accounts_queryapi(
     return [DomoAccount._from_json(account_obj, auth=auth) for account_obj in res.response]
 
 
-
 @patch_to(DomoAccounts, cls_method=True)
 async def get_accounts(
     cls: DomoAccounts,
     auth: dmda.DomoAuth,
-    additional_filters_ls = None, # datacenter_routes.generate_search_datacenter_filter
+    additional_filters_ls=None,  # datacenter_routes.generate_search_datacenter_filter
     # account string to search for, must be an exact match in spelling.  case insensitive
-    is_v2:bool = None, #v2 will use the queryAPI as it returns more complete results than the accountsAPI
+    # v2 will use the queryAPI as it returns more complete results than the accountsAPI
+    is_v2: bool = None,
     account_name: str = None,
     account_type: AccountConfig = None,  # to retrieve a specific account type
     debug_api: bool = False,
@@ -796,32 +796,30 @@ async def get_accounts(
     import domolibrary.routes.datacenter as datacenter_routes
 
     if isinstance(auth, dmda.DomoFullAuth) and is_v2 is None:
-        instance_bsr = bsr.DomoBootstrap(auth = auth)
-    
+        instance_bsr = bsr.DomoBootstrap(auth=auth)
+
         is_v2 = await instance_bsr.is_group_ownership_beta(auth)
-        
+
         if debug_prn:
-            print(f"{auth.domo_instance} {'is' if is_v2 else 'is not'} using the v2 beta")
-    
-    
+            print(
+                f"{auth.domo_instance} {'is' if is_v2 else 'is not'} using the v2 beta")
+
     if is_v2:
         try:
             domo_accounts = await cls._get_accounts_queryapi(
-            auth=auth, 
-            debug_api=debug_api,
-            additional_filters_ls=additional_filters_ls,
-            session=session,
-            return_raw = return_raw
-        )
+                auth=auth,
+                debug_api=debug_api,
+                additional_filters_ls=additional_filters_ls,
+                session=session,
+            )
         except datacenter_routes.SearchDatacenter_NoResultsFound as e:
             domo_accounts = []
     else:
         domo_accounts = await cls._get_accounts_accountsapi(
-        auth=auth, debug_api=debug_api, 
-        return_raw = return_raw,
-        session=session)
-        
-    if return_raw or len(domo_accounts) == 0 :
+            auth=auth, debug_api=debug_api,
+            session=session)
+
+    if return_raw or len(domo_accounts) == 0:
         return domo_accounts
 
     if not account_name and not account_type:
@@ -830,9 +828,7 @@ async def get_accounts(
     if account_name and isinstance(account_name, str):
         domo_accounts = [
             domo_account
-            for domo_account in domo_accounts
-            if domo_account.name.lower() == account_name.lower()
-        ]
+            for domo_account in domo_accounts if domo_account.name.lower() == account_name.lower()]
 
     if account_type:
         domo_accounts = [
