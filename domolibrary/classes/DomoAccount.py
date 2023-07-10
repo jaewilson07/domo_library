@@ -284,7 +284,7 @@ class DomoAccount:
         return cls(
             id=dd.id or dd.databaseId,
             name=dd.displayName,
-            data_provider_type=dd.dataProviderType,
+            data_provider_type=dd.dataProviderId or dd.dataProviderType,
             created_dt=cd.convert_epoch_millisecond_to_datetime(dd.createdAt or dd.createDate),
             modified_dt=cd.convert_epoch_millisecond_to_datetime(dd.modifiedAt or dd.lastModified),
             auth=auth,
