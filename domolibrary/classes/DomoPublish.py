@@ -234,7 +234,7 @@ async def search_publications(cls: DomoPublications,
 
 
 # %% ../../nbs/classes/50_DomoPublish.ipynb 20
-@patch_to(DomoPublications, cls_method=False)
+@patch_to(DomoPublication, cls_method=False)
 def convert_content_to_dataframe(self, return_raw: bool = False):
 
     output_ls = [{'plubication_id': self.id,
@@ -250,7 +250,7 @@ def convert_content_to_dataframe(self, return_raw: bool = False):
 
     return pd.DataFrame(output_ls)
 
-@patch_to(DomoPublications, cls_method=False)
+@patch_to(DomoPublication, cls_method=False)
 def convert_lineage_to_dataframe(self, return_raw: bool = False):
     import pandas as pd
     import re
