@@ -280,7 +280,7 @@ class DomoDataset:
     schema: DomoDataset_Schema = field(default=None)
     tags: DomoDataset_Tags = field(default=None)
 
-    # certification: dmdc.DomoCertification = None
+    certification: dmdc.DomoCertification = None
     PDP: dmpdp.Dataset_PDP_Policies = None
 
     def __post_init__(self):
@@ -333,10 +333,10 @@ async def get_from_id(
     if dd.tags:
         ds.tags.tag_ls = json.loads(dd.tags)
 
-    # if dd.certification:
-    #     # print('class def certification', dd.certification)
-    #     ds.certification = dmdc.DomoCertification._from_json(
-    #         dd.certification)
+    if dd.certification:
+        # print('class def certification', dd.certification)
+        ds.certification = dmdc.DomoCertification._from_json(
+            dd.certification)
 
     return ds
 
