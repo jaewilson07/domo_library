@@ -36,7 +36,7 @@ import asyncio
 
 # from ..utils.Base import Base
 # from ..utils.chunk_execution import chunk_list
-# from . import DomoCertification as dmdc
+
 # from . import DomoPDP as dmpdp
 # from . import DomoTag as dmtg
 
@@ -46,6 +46,8 @@ import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 import domolibrary.routes.dataset as dataset_routes
 import domolibrary.classes.DomoPDP as dmpdp
+import domolibrary.classes.DomoCertification as dmdc
+
 
 # %% ../../nbs/classes/50_DomoDataset.ipynb 7
 async def _have_prereqs(self, auth, dataset_id, function_name):
