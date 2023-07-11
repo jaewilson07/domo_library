@@ -2,7 +2,7 @@
 
 # %% auto 0
 __all__ = ['DomoPublication_Subscription', 'DomoPublication_Content', 'DomoPublication_UnexpectedContentType', 'DomoPublication',
-           'DomoPublications']
+           'DomoPublications', 'convert_content_to_dataframe', 'convert_lineage_to_dataframe']
 
 # %% ../../nbs/classes/50_DomoPublish.ipynb 2
 from dataclasses import dataclass, field
@@ -231,6 +231,42 @@ async def search_publications(cls: DomoPublications,
         return None
 
     return [DomoPublication._from_json(sub_obj)for sub_obj in res.response]
+
+
+# %% ../../nbs/classes/50_DomoPublish.ipynb 20
+def convert_content_to_dataframe(self, return_raw: bool = False):
+
+    output_ls = [{'plubication_id': self.id,
+                      'publication_name': self.name,
+                      'is_v2': self.is_v2,
+                      'publish_created_dt': self.created_dt,
+                      'entity_type': row.type,
+                      'entity_id': row.id
+                      } for row in self.content_entity_ls]
+
+    if return_raw:
+        return output_ls
+
+    return pd.DataFrame(output_ls)
+
+def convert_lineage_to_dataframe(self, return_raw: bool = False):
+    import pandas as pd
+    import re
+
+    flat_lineage_ls = self.lineage._flatten_lineage()
+
+    output_ls = [{'plubication_id': self.id,
+                      'publication_name': self.name,
+                      'is_v2': self.is_v2,
+                      'publish_created_dt': self.created_dt,
+                      'entity_type': row.get('entity_type'),
+                      'entity_id': row.get('entity_id')
+                      } for row in flat_lineage_ls]
+
+    if return_raw:
+        return output_ls
+
+    return pd.DataFrame(output_ls)
 
 
 # %% ../../nbs/classes/50_DomoPublish.ipynb 21
