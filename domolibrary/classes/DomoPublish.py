@@ -2,7 +2,7 @@
 
 # %% auto 0
 __all__ = ['DomoPublication_Subscription', 'DomoPublication_Content', 'DomoPublication_UnexpectedContentType', 'DomoPublication',
-           'DomoPublications', 'convert_content_to_dataframe', 'convert_lineage_to_dataframe']
+           'DomoPublications']
 
 # %% ../../nbs/classes/50_DomoPublish.ipynb 2
 from dataclasses import dataclass, field
@@ -234,6 +234,7 @@ async def search_publications(cls: DomoPublications,
 
 
 # %% ../../nbs/classes/50_DomoPublish.ipynb 20
+@patch_to(DomoPublications, cls_method=False)
 def convert_content_to_dataframe(self, return_raw: bool = False):
 
     output_ls = [{'plubication_id': self.id,
@@ -249,6 +250,7 @@ def convert_content_to_dataframe(self, return_raw: bool = False):
 
     return pd.DataFrame(output_ls)
 
+@patch_to(DomoPublications, cls_method=False)
 def convert_lineage_to_dataframe(self, return_raw: bool = False):
     import pandas as pd
     import re
