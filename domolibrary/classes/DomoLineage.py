@@ -220,3 +220,21 @@ async def get(self: DomoLineage,
 #                                           debug_prn=debug_prn, debug=debug, session=session)
 
 #     return self
+
+# %% ../../nbs/classes/50_DomoLineage.ipynb 10
+@patch_to(DomoLineage)
+def _flatten_lineage(self):
+    attribute_ls = _get_content_list_ls(self, ['.*_id_ls$'])
+
+    output_ls = []
+
+    for attribute in attribute_ls:
+        ls_name = attribute.get('list_name')
+        entity_name = attribute.get('entity_name')
+        entity_type = dmdc.DomoEntity[entity_name.upper()].value
+
+        row_ls = [{'entity_type': entity_type,
+                   'entity_id': row} for row in getattr(self, ls_name)]
+        output_ls += row_ls
+
+    return output_ls
