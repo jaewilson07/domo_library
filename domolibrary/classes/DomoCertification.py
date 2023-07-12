@@ -13,6 +13,7 @@ import domolibrary.utils.DictDot as util_dd
 
 class DomoCertificationState(Enum):
     CERTIFIED = 'certified'
+    PENDING = 'PENDING'
 
 
 @dataclass
