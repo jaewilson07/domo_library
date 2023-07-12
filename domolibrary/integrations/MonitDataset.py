@@ -33,6 +33,7 @@ class MonitDataset_Record:
     tags: list = field(default=None)
     is_certified: int = 0
     certification_name: str = None
+    certification_status: str = None
     connector_version: decimal.Decimal(2) = None
     update_method: str = None
     connector_id: str = None
