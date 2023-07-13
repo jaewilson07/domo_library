@@ -468,65 +468,74 @@ async def delete(self: DomoDataset,
 # %% ../../nbs/classes/50_DomoDataset.ipynb 33
 @patch_to(DomoDataset)
 async def share(self: DomoDataset,
-                        member, # DomoUser or DomoGroup
-                        auth: dmda.DomoAuth = None,
-                        share_type: ShareDataset_AccessLevelEnum = ShareDataset_AccessLevelEnum.CAN_SHARE,
-                        is_send_email=False,
-                        debug_api: bool = False,
-                        debug_prn:bool = False,
-                        session: httpx.AsyncClient = None):
+                member,  # DomoUser or DomoGroup
+                auth: dmda.DomoAuth = None,
+                share_type: ShareDataset_AccessLevelEnum = ShareDataset_AccessLevelEnum.CAN_SHARE,
+                is_send_email=False,
+                debug_api: bool = False,
+                debug_prn: bool = False,
+                session: httpx.AsyncClient = None):
 
     body = dataset_routes.generate_share_dataset_payload(entity_type='GROUP' if type(member).__name__ == 'DomoGroup' else 'USER',
-                                                      entity_id=int(member.id),
-                                                      access_level=share_type,
-                                                      is_send_email=is_send_email)
-    
+                                                         entity_id=int(
+                                                             member.id),
+                                                         access_level=share_type,
+                                                         is_send_email=is_send_email)
+
     if debug_prn:
         print(access_list, auth.domo_instance)
-    
 
     res = await dataset_routes.share_dataset(auth=auth or self.auth,
-                                       dataset_id=self.id,
-                                       body = body,
-                                       session=session,
-                                       debug_api=debug_api)
-    
+                                             dataset_id=self.id,
+                                             body=body,
+                                             session=session,
+                                             debug_api=debug_api)
+
     return res
 
 
 # %% ../../nbs/classes/50_DomoDataset.ipynb 37
-class DomoDataset_UploadData_Error(Exception):
+class DomoDataset_UploadData_Error(de.DomoError):
 
     def __init__(self,
                  message_error: str,
                  domo_instance: str,
                  dataset_id: str,
                  stage: int,
-                 status="", reason="",
-                 partition_key: str = None):
+                 status="",
+                 reason="",
+                 partition_key: str = None
+                 ):
 
-        message_start = f"Stage {stage}:: {message_error} :: API {status} - {reason} :: "
-        message_end = f"in {dataset_id} in {domo_instance}"
+        message_start = f"{reason} :: Stage {stage} - {message_error}"
 
-        message_partition = ""
-        if partition_key:
-            message_partition = f"for partition - '{partition_key}' "
+        message_partition = f" for partition - '{partition_key}' " if partition_key else ""
 
-        message = f"{message_start}{message_partition}{message_end}"
+        message = f"{message_start}{message_partition}"
 
-        super().__init__(message)
+        super().__init__(message=message,
+                         domo_instance=domo_instance,
+                         status=status, 
+                         entity_id=dataset_id)
 
 
 class DomoDataset_UploadData_DatasetUploadId_Error(DomoDataset_UploadData_Error):
-    def __init__(self, domo_instance: str, dataset_id: str,
-                 stage: int = 1, status="", reason="",
+    def __init__(self,
+                 domo_instance: str,
+                 dataset_id: str,
+                 stage: int = 1,
+                 status="",
+                 reason="",
                  partition_key: str = None):
 
         message_error = "unable to retrieve dataset_upload_id"
 
         super().__init__(message_error=message_error,
-                         domo_instance=domo_instance, dataset_id=dataset_id,
-                         stage=stage, status=status, reason=reason,
+                         domo_instance=domo_instance,
+                         dataset_id=dataset_id,
+                         stage=stage,
+                         status=status,
+                         reason=reason,
                          partition_key=partition_key)
 
 
@@ -542,20 +551,21 @@ class DomoDataset_UploadData_UploadData_Error(DomoDataset_UploadData_Error):
                          stage=stage, status=status, reason=reason,
                          partition_key=partition_key)
 
+
 class DomoDataset_UploadData_CommitDatasetUploadId_Error(DomoDataset_UploadData_Error):
     def __init__(self, domo_instance: str, dataset_id: str,
-                    stage: int = 3, status="", reason="",
-                    partition_key: str = None):
+                 stage: int = 3, status="", reason="",
+                 partition_key: str = None):
 
         message_error = "while commiting dataset_upload_id"
 
         super().__init__(message_error=message_error,
-                            domo_instance=domo_instance, dataset_id=dataset_id,
-                            stage=stage, status=status, reason=reason,
-                            partition_key=partition_key)
+                         domo_instance=domo_instance, dataset_id=dataset_id,
+                         stage=stage, status=status, reason=reason,
+                         partition_key=partition_key)
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 38
+# %% ../../nbs/classes/50_DomoDataset.ipynb 39
 @patch_to(DomoDataset)
 async def index_dataset(self: DomoDataset,
                         auth: dmda.DomoAuth = None,
@@ -570,7 +580,7 @@ async def index_dataset(self: DomoDataset,
                                               session=session)
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 39
+# %% ../../nbs/classes/50_DomoDataset.ipynb 40
 @patch_to(DomoDataset)
 async def upload_data(self : DomoDataset,
                       upload_df: pd.DataFrame = None,
@@ -599,7 +609,7 @@ async def upload_data(self : DomoDataset,
     status_message = f"{dataset_id} {partition_key} | {auth.domo_instance}"
 
     # stage 1 get uploadId
-    if not dataset_upload_id:
+    if dataset_upload_id is None:
         if debug_prn:
             print(f"\n\n🎭 starting Stage 1 - {status_message}")
 
@@ -614,14 +624,18 @@ async def upload_data(self : DomoDataset,
 
         dataset_upload_id = stage_1_res.response.get('uploadId')
 
-    if not dataset_upload_id:
+    if dataset_upload_id is None:
         raise DomoDataset_UploadData_DatasetUploadId_Error(
-            domo_instance=auth.domo_instance,  dataset_id=dataset_id, stage=1, partition_key=partition_key,
-            status=stage_1_res.status, reason=stage_1_res.response)
+            domo_instance=auth.domo_instance,  
+            dataset_id=dataset_id, 
+            stage=1,
+            status=stage_1_res.status,
+            reason=stage_1_res.response,
+            partition_key=partition_key
+            )
+
 
     # stage 2 upload_dataset
-    stage_2_res = None
-
     if upload_file:
         if debug_prn:
             print(f"\n\n🎭 starting Stage 2 - upload file for {status_message}")
@@ -647,8 +661,13 @@ async def upload_data(self : DomoDataset,
     for res in stage_2_res:
         if not res.is_success:
             raise DomoDataset_UploadData_UploadData_Error(
-                domo_instance=auth.domo_instance, dataset_id=dataset_id, stage=2, partition_key=partition_key,
-                status=res.status, reason=res.response)
+                domo_instance=auth.domo_instance,
+                dataset_id=dataset_id,
+                stage=2,
+                status=res.status,
+                reason=res.response,
+                partition_key=partition_key)
+
 
     if debug_prn:
         print(f"🎭 Stage 2 - upload data: complete for {status_message}")
@@ -658,6 +677,7 @@ async def upload_data(self : DomoDataset,
         print(f"\n\n🎭 starting Stage 3 - commit dataset_upload_id for {status_message}")
 
     await asyncio.sleep(10)  # wait for uploads to finish
+
     stage3_res = await dataset_routes.upload_dataset_stage_3(auth=auth,
                                                              dataset_id=dataset_id,
                                                              upload_id=dataset_upload_id,
@@ -669,8 +689,12 @@ async def upload_data(self : DomoDataset,
 
     if not stage3_res.is_success:
         raise DomoDataset_UploadData_CommitDatasetUploadId_Error(
-            domo_instance=auth.domo_instance, dataset_id=dataset_id, partition_key=partition_key, stage=3,
-            status=stage3_res.status, reason=stage3_res.response)
+            domo_instance=auth.domo_instance, 
+            dataset_id=dataset_id,
+            partition_key=partition_key,
+            stage=3,
+            status=stage3_res.status,
+            reason=stage3_res.response)
 
     if debug_prn:
         print(f"\n🎭 stage 3 - commit dataset: complete for {status_message} ")
@@ -685,7 +709,7 @@ async def upload_data(self : DomoDataset,
     return stage3_res
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 41
+# %% ../../nbs/classes/50_DomoDataset.ipynb 42
 @patch_to(DomoDataset)
 async def list_partitions(self : DomoDataset,
                             auth: dmda.DomoAuth = None,
@@ -704,7 +728,7 @@ async def list_partitions(self : DomoDataset,
 
     return res.response
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 43
+# %% ../../nbs/classes/50_DomoDataset.ipynb 44
 class DomoDataset_CreateDataset_Error(Exception):
     def __init__(self, domo_instance: str, dataset_name: str, status: int, reason: str):
         message = f"Failure to create dataset {dataset_name} in {domo_instance} :: {status} - {reason}"
@@ -742,7 +766,7 @@ async def create(cls: DomoDataset,
     return await cls.get_from_id(dataset_id=dataset_id, auth=auth)
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 46
+# %% ../../nbs/classes/50_DomoDataset.ipynb 47
 @patch_to(DomoDataset)
 async def delete_partition(self: DomoDataset,
                             dataset_partition_id: str,
