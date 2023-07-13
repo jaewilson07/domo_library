@@ -717,3 +717,58 @@ async def delete_partition(self: DomoDataset,
 
     return res.response
 
+
+# %% ../../nbs/classes/50_DomoDataset.ipynb 50
+@patch_to(DomoDataset)
+async def reset_dataset(self: DomoDataset,
+                        auth: dmda.DomoAuth = None,
+                        is_index: bool = True,
+                        debug_api: bool = False
+                        ):
+
+    execute_reset = input(
+        "This function will delete all rows.  Type BLOW_ME_AWAY to execute:")
+
+    if execute_reset != 'BLOW_ME_AWAY':
+        print("You didn't type BLOW_ME_AWAY, moving on.")
+        return None
+
+    auth = auth or self.auth
+
+    if not auth:
+        raise Exception("auth required")
+
+    # create empty dataset to retain schema
+    empty_df = await self.query_dataset_private(auth=auth,
+                                                dataset_id=dataset_id,
+                                                sql="SELECT * from table limit 1",
+                                                debug_api =debug_api)
+    empty_df = empty_df.head(0)
+
+    # get partition list
+#         partition_list = await dataset_routes.list_partitions(auth=auth,
+#                                                               dataset_id=self.id,
+#                                                               debug=debug,
+#                                                               session=session)
+
+#         if len(partition_list) > 0:
+#             partition_list = chunk_list(partition_list, 100)
+
+#             for index, pl in enumerate(partition_list):
+#                 print(f'🥫 starting chunk {index + 1} of {len(partition_list)}')
+
+#                 await asyncio.gather(*[self.delete_partition(auth=auth,
+#                                                              dataset_partition_id=partition.get('partitionId'),
+#                                                              session=session,
+#                                                              empty_df=empty_df,
+#                                                              debug=False) for partition in pl])
+#                 if is_index:
+#                     await self.index_dataset(session=session)
+
+    res = await self.upload_data(upload_df=empty_df,
+                                upload_method='REPLACE',
+                                is_index=is_index,
+                                debug_api=debug_api)
+
+    return res
+
