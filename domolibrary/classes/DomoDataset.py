@@ -3,8 +3,6 @@
 # %% auto 0
 __all__ = ['DatasetSchema_Types', 'DomoDataset_Schema_Column', 'DomoDataset_Schema', 'DatasetTags_SetTagsError',
            'DomoDataset_Tags', 'DomoDataset', 'QueryExecutionError', 'DomoDataset_DeleteDataset_Error',
-           'DomoDataset_UploadData_Error', 'DomoDataset_UploadData_DatasetUploadId_Error',
-           'DomoDataset_UploadData_UploadData_Error', 'DomoDataset_UploadData_CommitDatasetUploadId_Error',
            'DomoDataset_CreateDataset_Error']
 
 # %% ../../nbs/classes/50_DomoDataset.ipynb 4
@@ -24,18 +22,6 @@ import io
 import httpx
 import asyncio
 
-
-# import datetime as dt
-
-# import importlib
-# import json
-# from pprint import pprint
-
-# import pandas as pd
-
-
-# from ..utils.Base import Base
-# from ..utils.chunk_execution import chunk_list
 
 # from . import DomoPDP as dmpdp
 # from . import DomoTag as dmtg
@@ -111,7 +97,7 @@ class DomoDataset_Schema:
         auth: Optional[dmda.DomoAuth] = None,
         dataset_id: str = None,
         debug_api: bool = False,
-        return_raw_res: bool = False,  # return the raw response
+        return_raw: bool = False,  # return the raw response
     ) -> List[DomoDataset_Schema_Column]:
 
         """method that retrieves schema for a dataset"""
@@ -122,7 +108,7 @@ class DomoDataset_Schema:
             auth=auth, dataset_id=dataset_id, debug_api=debug_api
         )
 
-        if return_raw_res:
+        if return_raw:
             return res.response
 
         if res.status == 200:
@@ -301,7 +287,7 @@ async def get_from_id(
     dataset_id: str,
     auth: dmda.DomoAuth,
     debug_api: bool = False,
-    return_raw_res: bool = False,
+    return_raw: bool = False,
     session : httpx.AsyncClient = None,
 ):
 
@@ -311,7 +297,7 @@ async def get_from_id(
         auth=auth, dataset_id=dataset_id, debug_api=debug_api, session = session
     )
 
-    if return_raw_res:
+    if return_raw:
         return res.response
 
     dd = util_dd.DictDot(res.response)
@@ -343,7 +329,7 @@ async def get_from_id(
     return ds
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 30
+# %% ../../nbs/classes/50_DomoDataset.ipynb 31
 class QueryExecutionError(de.DomoError):
     def __init__(self,
                  sql, dataset_id,
@@ -423,7 +409,7 @@ async def query_dataset_private(cls: DomoDataset,
     return pd.DataFrame(res.response)
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 32
+# %% ../../nbs/classes/50_DomoDataset.ipynb 33
 class DomoDataset_DeleteDataset_Error(de.DomoError):
     def __init__(self,
                  dataset_id,
@@ -465,7 +451,7 @@ async def delete(self: DomoDataset,
     return res
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 33
+# %% ../../nbs/classes/50_DomoDataset.ipynb 34
 @patch_to(DomoDataset)
 async def share(self: DomoDataset,
                 member,  # DomoUser or DomoGroup
@@ -494,78 +480,7 @@ async def share(self: DomoDataset,
     return res
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 37
-class DomoDataset_UploadData_Error(de.DomoError):
-
-    def __init__(self,
-                 message_error: str,
-                 domo_instance: str,
-                 dataset_id: str,
-                 stage: int,
-                 status="",
-                 reason="",
-                 partition_key: str = None
-                 ):
-
-        message_start = f"{reason} :: Stage {stage} - {message_error}"
-
-        message_partition = f" for partition - '{partition_key}' " if partition_key else ""
-
-        message = f"{message_start}{message_partition}"
-
-        super().__init__(message=message,
-                         domo_instance=domo_instance,
-                         status=status, 
-                         entity_id=dataset_id)
-
-
-class DomoDataset_UploadData_DatasetUploadId_Error(DomoDataset_UploadData_Error):
-    def __init__(self,
-                 domo_instance: str,
-                 dataset_id: str,
-                 stage: int = 1,
-                 status="",
-                 reason="",
-                 partition_key: str = None):
-
-        message_error = "unable to retrieve dataset_upload_id"
-
-        super().__init__(message_error=message_error,
-                         domo_instance=domo_instance,
-                         dataset_id=dataset_id,
-                         stage=stage,
-                         status=status,
-                         reason=reason,
-                         partition_key=partition_key)
-
-
-class DomoDataset_UploadData_UploadData_Error(DomoDataset_UploadData_Error):
-    def __init__(self, domo_instance: str, dataset_id: str,
-                 stage: int = 2, status="", reason="",
-                 partition_key: str = None):
-
-        message_error = "while uploading data"
-
-        super().__init__(message_error=message_error,
-                         domo_instance=domo_instance, dataset_id=dataset_id,
-                         stage=stage, status=status, reason=reason,
-                         partition_key=partition_key)
-
-
-class DomoDataset_UploadData_CommitDatasetUploadId_Error(DomoDataset_UploadData_Error):
-    def __init__(self, domo_instance: str, dataset_id: str,
-                 stage: int = 3, status="", reason="",
-                 partition_key: str = None):
-
-        message_error = "while commiting dataset_upload_id"
-
-        super().__init__(message_error=message_error,
-                         domo_instance=domo_instance, dataset_id=dataset_id,
-                         stage=stage, status=status, reason=reason,
-                         partition_key=partition_key)
-
-
-# %% ../../nbs/classes/50_DomoDataset.ipynb 39
+# %% ../../nbs/classes/50_DomoDataset.ipynb 38
 @patch_to(DomoDataset)
 async def index_dataset(self: DomoDataset,
                         auth: dmda.DomoAuth = None,
@@ -580,9 +495,9 @@ async def index_dataset(self: DomoDataset,
                                               session=session)
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 40
+# %% ../../nbs/classes/50_DomoDataset.ipynb 39
 @patch_to(DomoDataset)
-async def upload_data(self : DomoDataset,
+async def upload_data(self: DomoDataset,
                       upload_df: pd.DataFrame = None,
                       upload_df_ls: list[pd.DataFrame] = None,
                       upload_file: io.TextIOWrapper = None,
@@ -602,7 +517,7 @@ async def upload_data(self : DomoDataset,
                       debug_prn: bool = False
                       ):
 
-    auth, dataset_id = await _have_prereqs(self = self, auth = auth, dataset_id=dataset_id, function_name= "upload_data")
+    auth, dataset_id = await _have_prereqs(self=self, auth=auth, dataset_id=dataset_id, function_name="upload_data")
 
     upload_df_ls = upload_df_ls or [upload_df]
 
@@ -613,88 +528,60 @@ async def upload_data(self : DomoDataset,
         if debug_prn:
             print(f"\n\n🎭 starting Stage 1 - {status_message}")
 
-        stage_1_res = await dataset_routes.upload_dataset_stage_1(auth=auth,
-                                                                  dataset_id=dataset_id,
-                                                                  session=session,
-                                                                  partition_tag=partition_key,
-                                                                  debug_api=debug_api
-                                                                  )
+        res = await dataset_routes.upload_dataset_stage_1(auth=auth,
+                                                          dataset_id=dataset_id,
+                                                          session=session,
+                                                          partition_tag=partition_key,
+                                                          debug_api=debug_api
+                                                          )
         if debug_prn:
-            print(f"\n\n🎭 Stage 1 response -- {stage_1_res.status} for {status_message}")
+            print(
+                f"\n\n🎭 Stage 1 response -- {res.status} for {status_message}")
 
-        dataset_upload_id = stage_1_res.response.get('uploadId')
-
-    if dataset_upload_id is None:
-        raise DomoDataset_UploadData_DatasetUploadId_Error(
-            domo_instance=auth.domo_instance,  
-            dataset_id=dataset_id, 
-            stage=1,
-            status=stage_1_res.status,
-            reason=stage_1_res.response,
-            partition_key=partition_key
-            )
-
+        dataset_upload_id = res.response
 
     # stage 2 upload_dataset
     if upload_file:
         if debug_prn:
             print(f"\n\n🎭 starting Stage 2 - upload file for {status_message}")
 
-        stage_2_res = await asyncio.gather(*[dataset_routes.upload_dataset_stage_2_file(auth=auth,
-                                                                                        dataset_id=dataset_id,
-                                                                                        upload_id=dataset_upload_id,
-                                                                                        part_id=1,
-                                                                                        data_file=upload_file,
-                                                                                        session=session, debug_api=debug_api)])
+        res = await asyncio.gather(*[dataset_routes.upload_dataset_stage_2_file(auth=auth,
+                                                                                dataset_id=dataset_id,
+                                                                                upload_id=dataset_upload_id,
+                                                                                part_id=1,
+                                                                                data_file=upload_file,
+                                                                                session=session, debug_api=debug_api)])
 
     else:
         if debug_prn:
             print(
                 f"\n\n🎭 starting Stage 2 - {len(upload_df_ls)} - number of parts for {status_message}")
-        stage_2_res = await asyncio.gather(*[dataset_routes.upload_dataset_stage_2_df(auth=auth,
-                                                                                      dataset_id=dataset_id,
-                                                                                      upload_id=dataset_upload_id,
-                                                                                      part_id=index + 1,
-                                                                                      upload_df=df,
-                                                                                      session=session, debug_api=debug_api) for index, df in enumerate(upload_df_ls)])
 
-    for res in stage_2_res:
-        if not res.is_success:
-            raise DomoDataset_UploadData_UploadData_Error(
-                domo_instance=auth.domo_instance,
-                dataset_id=dataset_id,
-                stage=2,
-                status=res.status,
-                reason=res.response,
-                partition_key=partition_key)
-
+        res = await asyncio.gather(*[dataset_routes.upload_dataset_stage_2_df(auth=auth,
+                                                                              dataset_id=dataset_id,
+                                                                              upload_id=dataset_upload_id,
+                                                                              part_id=index + 1,
+                                                                              upload_df=df,
+                                                                              session=session, debug_api=debug_api) for index, df in enumerate(upload_df_ls)])
 
     if debug_prn:
         print(f"🎭 Stage 2 - upload data: complete for {status_message}")
 
     # stage 3 commit_data
     if debug_prn:
-        print(f"\n\n🎭 starting Stage 3 - commit dataset_upload_id for {status_message}")
+        print(
+            f"\n\n🎭 starting Stage 3 - commit dataset_upload_id for {status_message}")
 
     await asyncio.sleep(10)  # wait for uploads to finish
 
-    stage3_res = await dataset_routes.upload_dataset_stage_3(auth=auth,
-                                                             dataset_id=dataset_id,
-                                                             upload_id=dataset_upload_id,
-                                                             update_method=upload_method,
-                                                             partition_tag=partition_key,
-                                                             is_index=False,
-                                                             session=session,
-                                                             debug_api=debug_api)
-
-    if not stage3_res.is_success:
-        raise DomoDataset_UploadData_CommitDatasetUploadId_Error(
-            domo_instance=auth.domo_instance, 
-            dataset_id=dataset_id,
-            partition_key=partition_key,
-            stage=3,
-            status=stage3_res.status,
-            reason=stage3_res.response)
+    res = await dataset_routes.upload_dataset_stage_3(auth=auth,
+                                                      dataset_id=dataset_id,
+                                                      upload_id=dataset_upload_id,
+                                                      update_method=upload_method,
+                                                      partition_tag=partition_key,
+                                                      is_index=False,
+                                                      session=session,
+                                                      debug_api=debug_api)
 
     if debug_prn:
         print(f"\n🎭 stage 3 - commit dataset: complete for {status_message} ")
@@ -706,10 +593,10 @@ async def upload_data(self : DomoDataset,
                                         debug_api=debug_api,
                                         session=session)
 
-    return stage3_res
+    return res
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 42
+# %% ../../nbs/classes/50_DomoDataset.ipynb 41
 @patch_to(DomoDataset)
 async def list_partitions(self : DomoDataset,
                             auth: dmda.DomoAuth = None,
@@ -769,65 +656,64 @@ async def create(cls: DomoDataset,
 # %% ../../nbs/classes/50_DomoDataset.ipynb 47
 @patch_to(DomoDataset)
 async def delete_partition(self: DomoDataset,
-                            dataset_partition_id: str,
-                            dataset_id: str = None,
-                            empty_df: pd.DataFrame = None,
-                            auth: dmda.DomoAuth = None,
-                            is_index: bool = True,
-                            debug_api: bool = False
-                            ):
-
-
+                           dataset_partition_id: str,
+                           dataset_id: str = None,
+                           empty_df: pd.DataFrame = None,
+                           auth: dmda.DomoAuth = None,
+                           is_index: bool = True,
+                           debug_api: bool = False,
+                           debug_prn:bool = False,
+                           return_raw: bool = False
+                           ):
 
     auth = auth or self.auth
     dataset_id = dataset_id or self.id
 
     if empty_df is None:
         empty_df = await self.query_dataset_private(auth=auth,
-                                               dataset_id=dataset_id,
-                                               sql="SELECT * from table limit 1",
-                                               debug_api=debug_api)
+                                                    dataset_id=dataset_id,
+                                                    sql="SELECT * from table limit 1",
+                                                    debug_api=debug_api)
 
     await self.upload_data(upload_df=empty_df.head(0),
-                              upload_method='REPLACE',
-                              is_index=is_index,
-                              partition_key=dataset_partition_id,
-                              debug_api=debug_api)
-    if debug_api:
+                           upload_method='REPLACE',
+                           is_index=is_index,
+                           partition_key=dataset_partition_id,
+                           debug_api=debug_api)
+    if debug_prn:
         print(f"\n\n🎭 starting Stage 1")
 
     res = await dataset_routes.delete_partition_stage_1(auth=auth,
-                                                       dataset_id=dataset_id,
-                                                           dataset_partition_id=dataset_partition_id,
+                                                        dataset_id=dataset_id,
+                                                        dataset_partition_id=dataset_partition_id,
                                                         debug_api=debug_api)
-    if debug_api:
+    if debug_prn:
         print(f"\n\n🎭 Stage 1 response -- {res.status}")
         print(res)
-    
-    stage_2_res = None
-    if debug_api:
+
+    if debug_prn:
         print('starting Stage 2')
-    
-    stage_2_res = await dataset_routes.delete_partition_stage_2(auth=auth,
-                                                                   dataset_id=dataset_id,
-                                                                dataset_partition_id=dataset_partition_id,
-                                                                debug_api=debug_api)
-    if debug_api:
-        print(f"\n\n🎭 Stage 2 response -- {stage_2_res.status}")
 
-    stage_3_res = None
-    if debug_api:
+    res = await dataset_routes.delete_partition_stage_2(auth=auth,
+                                                         dataset_id=dataset_id,
+                                                         dataset_partition_id=dataset_partition_id,
+                                                         debug_api=debug_api)
+    
+    if debug_prn:
+        print(f"\n\n🎭 Stage 2 response -- {res.status}")
+
+    
+    if debug_prn:
         print('starting Stage 3')
-    
-    stage_3_res = await dataset_routes.index_dataset(auth=auth,
-                                                dataset_id=dataset_id,
-                                                   debug_api=debug_api)
-    if debug_api:
-        print(f"\n\n🎭 Stage 3 response -- {stage_3_res.status}")
 
+    res = await dataset_routes.index_dataset(auth=auth,
+                                                     dataset_id=dataset_id,
+                                                     debug_api=debug_api)
+    if debug_prn:
+        print(f"\n\n🎭 Stage 3 response -- {res.status}")
 
-    if debug_api:
-        print(stage_3_res)
+    if return_raw:
+        return res
 
-    if stage_3_res.status == 200:
-        return res.response
+    return res.response
+
