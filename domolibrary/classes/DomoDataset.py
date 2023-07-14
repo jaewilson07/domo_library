@@ -78,11 +78,24 @@ class DomoDataset_Schema_Column:
     name: str
     id: str
     type: DatasetSchema_Types
+    visible: bool = True
+    upsert_key: bool = False
 
     @classmethod
     def _from_json(cls, json_obj):
         dd = util_dd.DictDot(json_obj)
-        return cls(name=dd.name, id=dd.id, type=dd.type)
+        return cls(name=dd.name,
+                   id=dd.id,
+                   type=dd.type,
+                   visible = dd.visible or dd.isVisible or True,
+                   upsert_key = dd.upsertKey or False
+                   )
+    
+    def to_dict(self):
+        s = self.__dict__
+        s['upertKey'] = s.pop('upsert_key')
+        return s
+
 
 
 @dataclass
@@ -102,7 +115,7 @@ class DomoDataset_Schema:
 
         """method that retrieves schema for a dataset"""
 
-        auth, dataset_id = await _have_prereqs(self = self, auth = auth, dataset_id = dataset_id, function_name = "DomoDataset_Schema.get")
+        auth, dataset_id = await _have_prereqs(self=self, auth=auth, dataset_id=dataset_id, function_name="DomoDataset_Schema.get")
 
         res = await dataset_routes.get_schema(
             auth=auth, dataset_id=dataset_id, debug_api=debug_api
@@ -122,7 +135,14 @@ class DomoDataset_Schema:
             return self.columns
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 13
+# %% ../../nbs/classes/50_DomoDataset.ipynb 12
+@patch_to(DomoDataset_Schema)
+def to_dict(self: DomoDataset_Schema):
+    return [
+        col.to_dict() for col in self.columns]
+
+
+# %% ../../nbs/classes/50_DomoDataset.ipynb 15
 class DatasetTags_SetTagsError(Exception):
     """return if DatasetTags request is not successfull"""
 
@@ -195,7 +215,7 @@ class DomoDataset_Tags:
 
         return self.tag_ls
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 16
+# %% ../../nbs/classes/50_DomoDataset.ipynb 18
 @patch_to(DomoDataset_Tags)
 async def add(
     self: DomoDataset_Tags,
@@ -221,7 +241,7 @@ async def add(
         session=session,
     )
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 18
+# %% ../../nbs/classes/50_DomoDataset.ipynb 20
 @patch_to(DomoDataset_Tags)
 async def remove(self: DomoDataset_Tags,
                  remove_tag_ls: [str],
@@ -245,7 +265,7 @@ async def remove(self: DomoDataset_Tags,
                           debug_api=debug_api, session=session)
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 22
+# %% ../../nbs/classes/50_DomoDataset.ipynb 24
 @dataclass
 class DomoDataset:
     "interacts with domo datasets"
@@ -280,7 +300,7 @@ class DomoDataset:
     def display_url(self):
         return f"https://{self.auth.domo_instance }.domo.com/datasources/{self.id}/details/overview"
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 26
+# %% ../../nbs/classes/50_DomoDataset.ipynb 28
 @patch_to(DomoDataset, cls_method=True)
 async def get_from_id(
     cls: DomoDataset,
@@ -329,7 +349,7 @@ async def get_from_id(
     return ds
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 31
+# %% ../../nbs/classes/50_DomoDataset.ipynb 33
 class QueryExecutionError(de.DomoError):
     def __init__(self,
                  sql, dataset_id,
@@ -409,7 +429,7 @@ async def query_dataset_private(cls: DomoDataset,
     return pd.DataFrame(res.response)
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 33
+# %% ../../nbs/classes/50_DomoDataset.ipynb 35
 class DomoDataset_DeleteDataset_Error(de.DomoError):
     def __init__(self,
                  dataset_id,
@@ -451,7 +471,7 @@ async def delete(self: DomoDataset,
     return res
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 34
+# %% ../../nbs/classes/50_DomoDataset.ipynb 36
 @patch_to(DomoDataset)
 async def share(self: DomoDataset,
                 member,  # DomoUser or DomoGroup
@@ -480,7 +500,7 @@ async def share(self: DomoDataset,
     return res
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 38
+# %% ../../nbs/classes/50_DomoDataset.ipynb 40
 @patch_to(DomoDataset)
 async def index_dataset(self: DomoDataset,
                         auth: dmda.DomoAuth = None,
@@ -495,7 +515,7 @@ async def index_dataset(self: DomoDataset,
                                               session=session)
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 39
+# %% ../../nbs/classes/50_DomoDataset.ipynb 41
 @patch_to(DomoDataset)
 async def upload_data(self: DomoDataset,
                       upload_df: pd.DataFrame = None,
@@ -596,7 +616,7 @@ async def upload_data(self: DomoDataset,
     return res
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 41
+# %% ../../nbs/classes/50_DomoDataset.ipynb 43
 @patch_to(DomoDataset)
 async def list_partitions(self : DomoDataset,
                             auth: dmda.DomoAuth = None,
@@ -615,7 +635,7 @@ async def list_partitions(self : DomoDataset,
 
     return res.response
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 44
+# %% ../../nbs/classes/50_DomoDataset.ipynb 46
 class DomoDataset_CreateDataset_Error(Exception):
     def __init__(self, domo_instance: str, dataset_name: str, status: int, reason: str):
         message = f"Failure to create dataset {dataset_name} in {domo_instance} :: {status} - {reason}"
@@ -653,7 +673,7 @@ async def create(cls: DomoDataset,
     return await cls.get_from_id(dataset_id=dataset_id, auth=auth)
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 47
+# %% ../../nbs/classes/50_DomoDataset.ipynb 49
 @patch_to(DomoDataset)
 async def delete_partition(self: DomoDataset,
                            dataset_partition_id: str,
@@ -718,7 +738,7 @@ async def delete_partition(self: DomoDataset,
     return res.response
 
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 50
+# %% ../../nbs/classes/50_DomoDataset.ipynb 52
 @patch_to(DomoDataset)
 async def reset_dataset(self: DomoDataset,
                         auth: dmda.DomoAuth = None,

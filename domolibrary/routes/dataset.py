@@ -2,9 +2,9 @@
 
 # %% auto 0
 __all__ = ['DatasetNotFoundError', 'QueryRequestError', 'query_dataset_public', 'query_dataset_private', 'get_dataset_by_id',
-           'get_schema', 'set_dataset_tags', 'UploadDataError', 'upload_dataset_stage_1', 'upload_dataset_stage_2_file',
-           'upload_dataset_stage_2_df', 'upload_dataset_stage_3', 'index_dataset', 'index_status',
-           'generate_list_partitions_body', 'list_partitions', 'generate_create_dataset_body', 'create',
+           'get_schema', 'alter_schema', 'set_dataset_tags', 'UploadDataError', 'upload_dataset_stage_1',
+           'upload_dataset_stage_2_file', 'upload_dataset_stage_2_df', 'upload_dataset_stage_3', 'index_dataset',
+           'index_status', 'generate_list_partitions_body', 'list_partitions', 'generate_create_dataset_body', 'create',
            'delete_partition_stage_1', 'delete_partition_stage_2', 'delete', 'ShareDataset_AccessLevelEnum',
            'generate_share_dataset_payload', 'ShareDataset_Error', 'share_dataset']
 
@@ -191,6 +191,18 @@ async def get_schema(
 
 
 # %% ../../nbs/routes/dataset.ipynb 16
+async def alter_schema(
+    auth: dmda.DomoAuth, 
+    schema_obj: dict, dataset_id: str, debug_api: bool = False,
+) -> rgd.ResponseGetData:
+    """retrieve the schema for a dataset"""
+
+    url = f"https://{auth.domo_instance}.domo.com/api/data/v2/datasources/{dataset_id}/schemas"
+
+    return await gd.get_data(auth=auth, url=url, method="POST", body = schema_obj, debug_api=debug_api)
+
+
+# %% ../../nbs/routes/dataset.ipynb 18
 async def set_dataset_tags(
     auth: dmda.DomoFullAuth,
     tag_ls: [str],  # complete list of tags for dataset
@@ -223,7 +235,7 @@ async def set_dataset_tags(
 
     return res
 
-# %% ../../nbs/routes/dataset.ipynb 19
+# %% ../../nbs/routes/dataset.ipynb 21
 class UploadDataError(de.DomoError):
     """raise if unable to upload data to Domo"""
 
@@ -239,7 +251,7 @@ class UploadDataError(de.DomoError):
             domo_instance=domo_instance,
         )
 
-# %% ../../nbs/routes/dataset.ipynb 20
+# %% ../../nbs/routes/dataset.ipynb 22
 async def upload_dataset_stage_1(
     auth: dmda.DomoAuth,
     dataset_id: str,
@@ -300,7 +312,7 @@ async def upload_dataset_stage_1(
 
     return res
 
-# %% ../../nbs/routes/dataset.ipynb 22
+# %% ../../nbs/routes/dataset.ipynb 24
 async def upload_dataset_stage_2_file(
     auth: dmda.DomoAuth,
     dataset_id: str,
@@ -340,7 +352,7 @@ async def upload_dataset_stage_2_file(
 
     return res
 
-# %% ../../nbs/routes/dataset.ipynb 23
+# %% ../../nbs/routes/dataset.ipynb 25
 async def upload_dataset_stage_2_df(
     auth: dmda.DomoAuth,
     dataset_id: str,
@@ -382,7 +394,7 @@ async def upload_dataset_stage_2_df(
 
     return res
 
-# %% ../../nbs/routes/dataset.ipynb 24
+# %% ../../nbs/routes/dataset.ipynb 26
 async def upload_dataset_stage_3(
     auth: dmda.DomoAuth,
     dataset_id: str,
@@ -437,7 +449,7 @@ async def upload_dataset_stage_3(
 
     return res
 
-# %% ../../nbs/routes/dataset.ipynb 26
+# %% ../../nbs/routes/dataset.ipynb 28
 async def index_dataset(
     auth: dmda.DomoAuth,
     dataset_id: str,
@@ -460,7 +472,7 @@ async def index_dataset(
     )
 
 
-# %% ../../nbs/routes/dataset.ipynb 27
+# %% ../../nbs/routes/dataset.ipynb 29
 async def index_status(
     auth: dmda.DomoAuth,
     dataset_id: str,
@@ -477,7 +489,7 @@ async def index_status(
     )
 
 
-# %% ../../nbs/routes/dataset.ipynb 29
+# %% ../../nbs/routes/dataset.ipynb 31
 def generate_list_partitions_body(limit=100, offset=0):
     return {
         "paginationFields": [
@@ -532,7 +544,7 @@ async def list_partitions(
         )
     return res
 
-# %% ../../nbs/routes/dataset.ipynb 31
+# %% ../../nbs/routes/dataset.ipynb 33
 def generate_create_dataset_body(
     dataset_name: str, dataset_type: str = "API", schema: dict = None
 ):
@@ -573,7 +585,7 @@ async def create(
         debug_api=debug_api,
     )
 
-# %% ../../nbs/routes/dataset.ipynb 34
+# %% ../../nbs/routes/dataset.ipynb 36
 async def delete_partition_stage_1(
     auth: dmda.DomoAuth,
     dataset_id: str,
@@ -590,7 +602,7 @@ async def delete_partition_stage_1(
 
 # Stage 2. This will remove the partition association so that it doesn’t show up in the list call.  Technically, this is not required as a partition against a deleted data version will not count against the 400 partition limit, but as the current partitions api doesn’t make that clear, cleaning these up will make it much easier for you to manage.
 
-# %% ../../nbs/routes/dataset.ipynb 35
+# %% ../../nbs/routes/dataset.ipynb 37
 async def delete_partition_stage_2(
     auth: dmda.DomoAuth,
     dataset_id: str,
@@ -601,7 +613,7 @@ async def delete_partition_stage_2(
 
     return await gd.get_data(auth=auth, method="DELETE", url=url, debug_api=debug_api)
 
-# %% ../../nbs/routes/dataset.ipynb 36
+# %% ../../nbs/routes/dataset.ipynb 38
 async def delete(
     auth: dmda.DomoAuth,
     dataset_id: str,
@@ -615,7 +627,7 @@ async def delete(
     )
 
 
-# %% ../../nbs/routes/dataset.ipynb 37
+# %% ../../nbs/routes/dataset.ipynb 39
 class ShareDataset_AccessLevelEnum(Enum):
     CO_OWNER = "CO_OWNER"
     CAN_EDIT = "CAN_EDIT"
@@ -635,7 +647,7 @@ def generate_share_dataset_payload(
         "sendEmail": is_send_email,
     }
 
-# %% ../../nbs/routes/dataset.ipynb 38
+# %% ../../nbs/routes/dataset.ipynb 40
 class ShareDataset_Error(de.DomoError):
     def __init__(self, dataset_id, status, response, domo_instance):
         message = f"error sharing dataset {dataset_id} - {response}"
