@@ -740,7 +740,7 @@ async def reset_dataset(self: DomoDataset,
 
     # create empty dataset to retain schema
     empty_df = await self.query_dataset_private(auth=auth,
-                                                dataset_id=dataset_id,
+                                                dataset_id=self.id,
                                                 sql="SELECT * from table limit 1",
                                                 debug_api =debug_api)
     empty_df = empty_df.head(0)
