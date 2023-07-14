@@ -534,9 +534,7 @@ async def share(self: DomoDataset,
                                                          access_level=share_type,
                                                          is_send_email=is_send_email)
 
-    if debug_prn:
-        print(access_list, auth.domo_instance)
-
+    
     res = await dataset_routes.share_dataset(auth=auth or self.auth,
                                              dataset_id=self.id,
                                              body=body,
