@@ -65,8 +65,6 @@ class DomoDataflow:
     tags: list[str] = None
     actions: list[DomoDataflow_Action] = None
 
-    action : list[DomoDataflow_Action] = field(default = None)
-
 # %% ../../nbs/classes/50_DomoDataflow.ipynb 7
 @patch_to(DomoDataflow, cls_method = True)
 async def get_from_id(cls: DomoDataflow,
