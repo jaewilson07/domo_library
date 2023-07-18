@@ -13,7 +13,6 @@ import domolibrary.classes.DomoPage as dmpg
 
 import domolibrary.utils.DictDot as util_dd
 import domolibrary.client.DomoAuth as dmda
-import domolibrary.client.Logger as lc
 import domolibrary.routes.bootstrap as bootstrap_routes
 
 

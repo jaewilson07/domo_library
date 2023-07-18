@@ -18,8 +18,6 @@ from enum import Enum
 from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
 
-from typing import Union
-
 import datetime as dt
 import re
 
@@ -367,15 +365,15 @@ async def get_from_id(
 
     try:
         await acc._get_config(session=session, debug_api=debug_api, debug_prn = debug_prn)
+        return acc
 
     except DomoAccount_DataProviderType_ConfigNotDefined as e:
         print(e)
     
-    except Exception as e:
-        print(e)
+    # except Exception as e:
+    #     print(e)
 
-    finally:
-        return acc
+    # finally:
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 26
 @patch_to(DomoAccount)
@@ -813,6 +811,7 @@ async def get_accounts(
                 session=session,
             )
         except datacenter_routes.SearchDatacenter_NoResultsFound as e:
+            print(e)
             domo_accounts = []
     else:
         domo_accounts = await cls._get_accounts_accountsapi(
