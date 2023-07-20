@@ -2,8 +2,9 @@
 
 # %% auto 0
 __all__ = ['DomoAccount_Config', 'DomoAccount_Config_AbstractCredential', 'DomoAccount_Config_DatasetCopy',
-           'DomoAccount_Config_Governance', 'DomoAccount_Config_AmazonS3', 'DomoAccount_Config_AmazonS3Advanced',
-           'DomoAccount_Config_AwsAthena', 'DomoAccount_Config_HighBandwidthConnector', 'AccountConfig', 'DomoAccount',
+           'DomoAccount_Config_DomoAccessToken', 'DomoAccount_Config_Governance', 'DomoAccount_Config_AmazonS3',
+           'DomoAccount_Config_AmazonS3Advanced', 'DomoAccount_Config_AwsAthena',
+           'DomoAccount_Config_HighBandwidthConnector', 'AccountConfig', 'DomoAccount',
            'DomoAccount_DataProviderType_ConfigNotDefined', 'DomoAccount_UpdateName_Error',
            'DomoAccount_CreateAccount_Error', 'DomoAccount_DeleteAccount_Error', 'DomoAccounts']
 
@@ -87,6 +88,29 @@ class DomoAccount_Config_DatasetCopy(DomoAccount_Config):
 
     def to_json(self):
         return {"accessToken": self.access_token, "instance": self.domo_instance}
+
+
+@dataclass
+class DomoAccount_Config_DomoAccessToken(DomoAccount_Config):
+    data_provider_type = "domo-access-token"
+
+    domo_access_token: str = field(repr=False, default=None)
+    username: str = None
+    password: str = field(repr=False, default=None)
+
+    @classmethod
+    def _from_json(cls, obj):
+
+        dd = util_dd.DictDot(obj)
+
+        return cls(domo_access_token=dd.domoAccessToken,
+                   username=dd.username,
+                   password=dd.password)
+
+    def to_json(self):
+        return {"domoAccessToken": self.domo_access_token,
+                "username": self.username,
+                "password": self.password}
 
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 10
@@ -251,6 +275,7 @@ class AccountConfig(Enum):
 
     dataset_copy = DomoAccount_Config_DatasetCopy
 
+    domo_access_token = DomoAccount_Config_DomoAccessToken
     domo_governance_d14c2fef_49a8_4898_8ddd_f64998005600 = DomoAccount_Config_Governance
 
     aws_athena = DomoAccount_Config_AwsAthena
@@ -258,6 +283,7 @@ class AccountConfig(Enum):
 
     amazon_s3 = DomoAccount_Config_AmazonS3
     amazons3_advanced = DomoAccount_Config_AmazonS3Advanced
+
 
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 20
