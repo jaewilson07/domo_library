@@ -365,7 +365,6 @@ async def get_from_id(
 
     try:
         await acc._get_config(session=session, debug_api=debug_api, debug_prn = debug_prn)
-        return acc
 
     except DomoAccount_DataProviderType_ConfigNotDefined as e:
         print(e)
@@ -373,7 +372,8 @@ async def get_from_id(
     # except Exception as e:
     #     print(e)
 
-    # finally:
+    finally:
+        return acc
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 26
 @patch_to(DomoAccount)

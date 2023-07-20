@@ -24,10 +24,12 @@ class DomoCertification:
     certification_name: str
 
     @classmethod
-    def _from_json(cls, dd):
+    def _from_json(cls, obj):
+        dd = util_dd.DictDot(obj) if isinstance(obj, dict) else obj
         return cls(certification_state=DomoCertificationState[dd.state].value or dd.state,
                    last_updated=cd.convert_epoch_millisecond_to_datetime(
                        dd.lastUpdated),
                    certification_type=dd.processType,
                    certification_name=dd.processName
                    )
+

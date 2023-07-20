@@ -628,21 +628,34 @@ async def upload_data(self: DomoDataset,
     status_message = f"{dataset_id} {partition_key} | {auth.domo_instance}"
 
     # stage 1 get uploadId
-    if dataset_upload_id is None:
-        if debug_prn:
-            print(f"\n\n🎭 starting Stage 1 - {status_message}")
+    retry = 1
+    while dataset_upload_id is None and retry <5:
+        try:
+            if debug_prn:
+                print(f"\n\n🎭 starting Stage 1 - {status_message}")
 
-        res = await dataset_routes.upload_dataset_stage_1(auth=auth,
-                                                          dataset_id=dataset_id,
-                                                          session=session,
-                                                          partition_tag=partition_key,
-                                                          debug_api=debug_api
-                                                          )
-        if debug_prn:
-            print(
-                f"\n\n🎭 Stage 1 response -- {res.status} for {status_message}")
+            res = await dataset_routes.upload_dataset_stage_1(auth=auth,
+                                                            dataset_id=dataset_id,
+                                                            session=session,
+                                                            partition_tag=partition_key,
+                                                            debug_api=debug_api
+                                                            )
+            if debug_prn:
+                print(
+                    f"\n\n🎭 Stage 1 response -- {res.status} for {status_message}")
 
-        dataset_upload_id = res.response
+            dataset_upload_id = res.response
+        
+        except dataset_routes.UploadDataError as e:
+            print(f"{e} - attempt{retry}")
+            retry += 1
+            
+            if retry == 5:
+                print(f"failed to upload data for {dataset_id} in {auth.domo_instance}")
+                raise e
+                return
+            
+            await asyncio.sleep(5)
 
     # stage 2 upload_dataset
     if upload_file:
@@ -676,7 +689,7 @@ async def upload_data(self: DomoDataset,
         print(
             f"\n\n🎭 starting Stage 3 - commit dataset_upload_id for {status_message}")
 
-    await asyncio.sleep(10)  # wait for uploads to finish
+    await asyncio.sleep(5)  # wait for uploads to finish
 
     res = await dataset_routes.upload_dataset_stage_3(auth=auth,
                                                       dataset_id=dataset_id,

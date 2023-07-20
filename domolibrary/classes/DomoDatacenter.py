@@ -5,10 +5,9 @@ __all__ = ['DomoDatacenter']
 
 # %% ../../nbs/classes/50_DomoDatacenter.ipynb 3
 import asyncio
-import importlib
-from dataclasses import dataclass, field
-from enum import Enum
+from dataclasses import dataclass
 from typing import Union
+from enum import Enum
 
 import httpx
 
@@ -18,7 +17,6 @@ import domolibrary.client.DomoAuth as dmda
 import domolibrary.classes.DomoDataset as dmds
 import domolibrary.classes.DomoAccount as dma
 
-import domolibrary.routes.account as account_routes
 import domolibrary.routes.datacenter as datacenter_routes
 
 
@@ -71,7 +69,6 @@ async def search_datasets(
     additional_filters_ls=None,
     return_raw: bool = False,
     debug_api: bool = False,
-    debug_prn: bool = False,
     session: httpx.AsyncClient = None,
 ) -> list[dmds.DomoDataset]:
 
@@ -107,15 +104,15 @@ async def get_accounts(
     cls,
     auth=dmda.DomoAuth,
     maximum: int = None,  # maximum number of results to return
-    search_text=None,
     # can accept one value or a list of values
     additional_filters_ls=None,
     return_raw: bool = False,
     debug_api: bool = False,
-    debug_prn: bool = False,
     session: httpx.AsyncClient = None,
 ) -> list[dma.DomoAccount]:
-
+    """search Domo Datacenter account api.
+Note: at the time of this writing 7/18/2023, the datacenter api does not support searching accounts by name"""
+    
     json_list = await cls.search_datacenter(
         auth=auth,
         maximum=maximum,
@@ -136,3 +133,62 @@ async def get_accounts(
         ]
     
     return domo_account_ls
+
+# %% ../../nbs/classes/50_DomoDatacenter.ipynb 15
+class LineageTypes_Enum(Enum):
+    DomoDataset = 'DATA_SOURCE'
+    DomoDataflow = 'DATAFLOW'
+
+
+@patch_to(DomoDatacenter, cls_method=True)
+async def get_lineage_upstream(
+    cls,
+    auth: dmda.DomoAuth,
+    domo_entity, # DomoDataset or DomoDataflow
+    return_raw: bool = False,
+    session: httpx.AsyncClient = None,
+    debug_api: bool = False,
+    debug_prn: bool = False):
+
+    import domolibrary.classes.DomoDataset as dmds
+    import domolibrary.classes.DomoDataflow as dmdf
+
+    if not session:
+        session = httpx.AsyncClient()
+        is_close_session = True
+
+
+    res = await datacenter_routes.get_lineage_upstream(
+        auth=auth,
+        entity_type= LineageTypes_Enum[domo_entity.__class__.__name__].value,
+        entity_id=domo_entity.id,
+        session=session,
+        debug_api=debug_api,
+    )
+
+    if return_raw or res.status != 200:
+        await session.aclose()
+        return res
+
+    obj = res.response
+
+    domo_obj = []
+    for key, item in obj.items():
+        if item.get("type") == "DATA_SOURCE":
+            domo_obj.append(
+                await dmds.DomoDataset.get_from_id(auth=auth, dataset_id=item.get("id"), session= session)
+            )
+
+        if item.get("type") == "DATAFLOW":
+            # print(item.get('id'))
+            domo_obj.append(
+                await dmdf.DomoDataflow.get_from_id(
+                    auth=auth, dataflow_id=item.get("id"), session = session
+                    
+                )
+            )
+            pass
+
+    await session.aclose()
+    return domo_obj
+    
