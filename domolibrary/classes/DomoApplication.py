@@ -4,30 +4,16 @@
 __all__ = []
 
 # %% ../../nbs/classes/50_DomoApplication.ipynb 2
+import pandas as pd
+from dataclasses import dataclass, field
+from typing import  Optional
+import httpx
+
 import domolibrary.routes.job as job_routes
 import domolibrary.routes.application as application_routes
 import domolibrary.classes.DomoJob as dmdj
-import pandas as pd
-from dataclasses import dataclass
-
-from pprint import pprint
-
-import datetime as dt
-from dataclasses import dataclass, field
-from typing import List, Optional
-from enum import Enum
-
-import json
-import io
-
-import httpx
-import asyncio
-
-import domolibrary.utils.DictDot as DictDot
+import domolibrary.utils.DictDot as util_dd
 import domolibrary.client.DomoAuth as dmda
-
-from enum import Enum
-
 
 
 # %% ../../nbs/classes/50_DomoApplication.ipynb 3
@@ -46,7 +32,7 @@ class DomoApplication:
 
     @classmethod
     def _from_json(cls, obj, auth: dmda.DomoFullAuth = None):
-        dd = DictDot(obj)
+        dd = util_dd.DictDot(obj)
 
         return cls(
             id=dd.applicationId,
@@ -60,7 +46,7 @@ class DomoApplication:
 
     @classmethod
     async def get_from_id(cls, auth: dmda.DomoFullAuth, application_id=None):
-        res = await application_routes.get_application_by_id(application_id=application_id, auth=auth or self.auth)
+        res = await application_routes.get_application_by_id(application_id=application_id, auth=auth)
 
         if res.status == 200:
             return cls._from_json(obj=res.response, auth=auth)
@@ -102,7 +88,7 @@ class DomoApplication:
             ['hour', 'minute'], ascending=True).reset_index(drop=True)
         return self.jobs_schedule
 
-    async def find_next_job_schedule(self) -> dmdj.DomoTrigger_Schedule:
+    async def find_next_job_schedule(self, auth:dmda.DomoAuth = None) -> dmdj.DomoTrigger_Schedule:
         if not isinstance(self.jobs_schedule, pd.DataFrame) and (self.auth or auth):
             await self.get_all_schedules()
 

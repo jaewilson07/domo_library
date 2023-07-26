@@ -2,8 +2,9 @@
 
 # %% auto 0
 __all__ = ['DomoAccount_Config', 'DomoAccount_Config_AbstractCredential', 'DomoAccount_Config_DatasetCopy',
-           'DomoAccount_Config_Governance', 'DomoAccount_Config_AmazonS3', 'DomoAccount_Config_AmazonS3Advanced',
-           'DomoAccount_Config_AwsAthena', 'DomoAccount_Config_HighBandwidthConnector', 'AccountConfig', 'DomoAccount',
+           'DomoAccount_Config_DomoAccessToken', 'DomoAccount_Config_Governance', 'DomoAccount_Config_AmazonS3',
+           'DomoAccount_Config_AmazonS3Advanced', 'DomoAccount_Config_AwsAthena',
+           'DomoAccount_Config_HighBandwidthConnector', 'AccountConfig', 'DomoAccount',
            'DomoAccount_DataProviderType_ConfigNotDefined', 'DomoAccount_UpdateName_Error',
            'DomoAccount_CreateAccount_Error', 'DomoAccount_DeleteAccount_Error', 'DomoAccounts']
 
@@ -17,8 +18,6 @@ import asyncio
 from enum import Enum
 from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
-
-from typing import Union
 
 import datetime as dt
 import re
@@ -89,6 +88,29 @@ class DomoAccount_Config_DatasetCopy(DomoAccount_Config):
 
     def to_json(self):
         return {"accessToken": self.access_token, "instance": self.domo_instance}
+
+
+@dataclass
+class DomoAccount_Config_DomoAccessToken(DomoAccount_Config):
+    data_provider_type = "domo-access-token"
+
+    domo_access_token: str = field(repr=False, default=None)
+    username: str = None
+    password: str = field(repr=False, default=None)
+
+    @classmethod
+    def _from_json(cls, obj):
+
+        dd = util_dd.DictDot(obj)
+
+        return cls(domo_access_token=dd.domoAccessToken,
+                   username=dd.username,
+                   password=dd.password)
+
+    def to_json(self):
+        return {"domoAccessToken": self.domo_access_token,
+                "username": self.username,
+                "password": self.password}
 
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 10
@@ -253,6 +275,7 @@ class AccountConfig(Enum):
 
     dataset_copy = DomoAccount_Config_DatasetCopy
 
+    domo_access_token = DomoAccount_Config_DomoAccessToken
     domo_governance_d14c2fef_49a8_4898_8ddd_f64998005600 = DomoAccount_Config_Governance
 
     aws_athena = DomoAccount_Config_AwsAthena
@@ -260,6 +283,7 @@ class AccountConfig(Enum):
 
     amazon_s3 = DomoAccount_Config_AmazonS3
     amazons3_advanced = DomoAccount_Config_AmazonS3Advanced
+
 
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 20
@@ -284,7 +308,7 @@ class DomoAccount:
         return cls(
             id=dd.id or dd.databaseId,
             name=dd.displayName,
-            data_provider_type=dd.dataProviderType,
+            data_provider_type=dd.dataProviderId or dd.dataProviderType,
             created_dt=cd.convert_epoch_millisecond_to_datetime(dd.createdAt or dd.createDate),
             modified_dt=cd.convert_epoch_millisecond_to_datetime(dd.modifiedAt or dd.lastModified),
             auth=auth,
@@ -371,8 +395,8 @@ async def get_from_id(
     except DomoAccount_DataProviderType_ConfigNotDefined as e:
         print(e)
     
-    except Exception as e:
-        print(e)
+    # except Exception as e:
+    #     print(e)
 
     finally:
         return acc
@@ -731,22 +755,22 @@ async def _get_accounts_accountsapi(
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
-):    
+):
 
     res = await account_routes.get_accounts(
         auth=auth, debug_api=debug_api, session=session
     )
 
-    if return_raw or len( res.response ) == 0 :
+    if return_raw or len(res.response) == 0:
         return res
 
     return await asyncio.gather(
         *[DomoAccount.get_from_id(
-                account_id=json_obj.get("id"),
-                debug_api=debug_api,
-                session=session,
-                auth = auth
-            ) for json_obj in res.response])
+            account_id=json_obj.get("id"),
+            debug_api=debug_api,
+            session=session,
+            auth=auth
+        ) for json_obj in res.response])
 
 
 @patch_to(DomoAccounts, cls_method=True)
@@ -760,7 +784,7 @@ async def _get_accounts_queryapi(
 ):
 
     """v2 api for works with group_account_v2 beta"""
-    
+
     import domolibrary.routes.datacenter as datacenter_routes
 
     res = await datacenter_routes.search_datacenter(
@@ -777,14 +801,14 @@ async def _get_accounts_queryapi(
     return [DomoAccount._from_json(account_obj, auth=auth) for account_obj in res.response]
 
 
-
 @patch_to(DomoAccounts, cls_method=True)
 async def get_accounts(
     cls: DomoAccounts,
     auth: dmda.DomoAuth,
-    additional_filters_ls = None, # datacenter_routes.generate_search_datacenter_filter
+    additional_filters_ls=None,  # datacenter_routes.generate_search_datacenter_filter
     # account string to search for, must be an exact match in spelling.  case insensitive
-    is_v2:bool = None, #v2 will use the queryAPI as it returns more complete results than the accountsAPI
+    # v2 will use the queryAPI as it returns more complete results than the accountsAPI
+    is_v2: bool = None,
     account_name: str = None,
     account_type: AccountConfig = None,  # to retrieve a specific account type
     debug_api: bool = False,
@@ -796,43 +820,40 @@ async def get_accounts(
     import domolibrary.routes.datacenter as datacenter_routes
 
     if isinstance(auth, dmda.DomoFullAuth) and is_v2 is None:
-        instance_bsr = bsr.DomoBootstrap(auth = auth)
-    
+        instance_bsr = bsr.DomoBootstrap(auth=auth)
+
         is_v2 = await instance_bsr.is_group_ownership_beta(auth)
-        
+
         if debug_prn:
-            print(f"{auth.domo_instance} {'is' if is_v2 else 'is not'} using the v2 beta")
-    
-    
+            print(
+                f"{auth.domo_instance} {'is' if is_v2 else 'is not'} using the v2 beta")
+
     if is_v2:
         try:
             domo_accounts = await cls._get_accounts_queryapi(
-            auth=auth, 
-            debug_api=debug_api,
-            additional_filters_ls=additional_filters_ls,
-            session=session,
-            return_raw = return_raw
-        )
+                auth=auth,
+                debug_api=debug_api,
+                additional_filters_ls=additional_filters_ls,
+                session=session,
+            )
         except datacenter_routes.SearchDatacenter_NoResultsFound as e:
+            print(e)
             domo_accounts = []
     else:
         domo_accounts = await cls._get_accounts_accountsapi(
-        auth=auth, debug_api=debug_api, 
-        return_raw = return_raw,
-        session=session)
-        
-    if return_raw or len(domo_accounts) == 0 :
+            auth=auth, debug_api=debug_api,
+            session=session)
+
+    if return_raw or len(domo_accounts) == 0:
         return domo_accounts
 
     if not account_name and not account_type:
         return domo_accounts
 
-    if account_name:
+    if account_name and isinstance(account_name, str):
         domo_accounts = [
             domo_account
-            for domo_account in domo_accounts
-            if domo_account.name.lower() == account_name.lower()
-        ]
+            for domo_account in domo_accounts if domo_account.name.lower() == account_name.lower()]
 
     if account_type:
         domo_accounts = [

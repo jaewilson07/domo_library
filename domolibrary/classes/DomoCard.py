@@ -13,7 +13,6 @@ from fastcore.basics import patch_to
 import domolibrary.routes.card as card_routes
 
 import domolibrary.client.DomoAuth as dmda
-import domolibrary.client.DomoError as de
 import domolibrary.utils.DictDot as util_dd
 
 # %% ../../nbs/classes/50_DomoCard.ipynb 3
@@ -36,7 +35,7 @@ class DomoCard:
         pass
 
     def display_url(self) -> str:
-        return f'https://{self.domo_instance}.domo.com/kpis/details/{self.id}'
+        return f'https://{self.auth.domo_instance}.domo.com/kpis/details/{self.id}'
 
     @classmethod
     async def _from_json(cls,
@@ -58,7 +57,7 @@ class DomoCard:
             type=dd.type,
             urn=dd.urn,
             certification=dd.certification,
-            chart_type=dd.metadata.chartType,
+            chart_type= dd.metadata and dd.metadata.chartType,
             dataset_id = dd.datasources[0].dataSourceId if dd.datasources else None
         )
 
