@@ -83,24 +83,27 @@ async def get_card_metadata(auth: dmda.DomoAuth, card_id: str,
 
 # %% ../../nbs/routes/card.ipynb 10
 def generate_body_search_cards_admin_summary(page_ids: [str] = None,
-                                             searchPages: bool = True,
-                                             cardSearchText: str = '',
-                                             pageSearchText: str = '') -> dict:
+                                             #  searchPages: bool = True,
+                                             card_search_text: str = None,
+                                             page_search_text: str = None) -> dict:
     body = {
         "ascending": True,
         "orderBy": "cardTitle"
     }
 
-    if cardSearchText:
-        body.update({'cardTitleSearchText': cardSearchText, "includeCardTitleClause": True })
+    if card_search_text:
+        body.update({'cardTitleSearchText': card_search_text,
+                    "includeCardTitleClause": True})
 
-    if pageSearchText:
-        body.update({'pageTitleSearchText': pageSearchText, "includePageTitleClause": True, "notOnPage": False})
+    if page_search_text:
+        body.update({'pageTitleSearchText': page_search_text,
+                    "includePageTitleClause": True, "notOnPage": False})
 
     if page_ids:
         body.update({'pageIds': page_ids})
 
     return body
+
 
 # %% ../../nbs/routes/card.ipynb 11
 async def search_cards_admin_summary(auth: dmda.DomoAuth,

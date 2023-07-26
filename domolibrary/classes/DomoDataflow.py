@@ -8,6 +8,7 @@ from fastcore.basics import patch_to
 
 from enum import Enum
 from dataclasses import dataclass, field
+import httpx
 
 import domolibrary.utils.DictDot as util_dd
 import domolibrary.client.DomoAuth as dmda
@@ -65,9 +66,11 @@ async def get_from_id(
     auth: dmda.DomoAuth = None,
     debug_api: bool = False,
     return_raw: bool = False,
+    session: httpx.AsyncClient = None
 ):
     res = await dataflow_routes.get_dataflow_by_id(
-        auth=auth, dataflow_id=dataflow_id, debug_api=debug_api
+        auth=auth, dataflow_id=dataflow_id, debug_api=debug_api,
+        session=session
     )
 
     if return_raw:
@@ -92,6 +95,7 @@ async def get_from_id(
         ]
 
     return domo_dataflow
+
 
 # %% ../../nbs/classes/50_DomoDataflow.ipynb 10
 @patch_to(DomoDataflow)

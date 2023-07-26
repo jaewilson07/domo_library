@@ -57,7 +57,7 @@ class DomoCard:
             type=dd.type,
             urn=dd.urn,
             certification=dd.certification,
-            chart_type=dd.metadata.chartType,
+            chart_type= dd.metadata and dd.metadata.chartType,
             dataset_id = dd.datasources[0].dataSourceId if dd.datasources else None
         )
 
