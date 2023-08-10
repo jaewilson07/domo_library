@@ -12,7 +12,6 @@ import asyncio
 import httpx
 
 import domolibrary.client.DomoAuth as dmda
-import domolibrary.classes.DomoUser as dmdu
 import domolibrary.utils.DictDot as util_dd
 
 import domolibrary.routes.page as page_routes
