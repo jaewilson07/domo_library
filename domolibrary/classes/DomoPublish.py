@@ -229,8 +229,8 @@ async def search_publications(cls: DomoPublications,
 
     if not res.is_success or (res.is_success and len(res.response) == 0):
         return None
-
-    return [DomoPublication._from_json(sub_obj)for sub_obj in res.response]
+        
+    return await asyncio.gather(*[ DomoPublication.get_from_id(publication_id= sub_obj['id'], auth = auth) for sub_obj in res.response])
 
 
 # %% ../../nbs/classes/50_DomoPublish.ipynb 20

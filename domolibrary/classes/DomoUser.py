@@ -4,7 +4,7 @@
 __all__ = ['DomoUser', 'DomoUsers', 'CreateUser_MissingRole']
 
 # %% ../../nbs/classes/50_DomoUser.ipynb 3
-from ..routes.user import UserProperty, UserProperty_Type
+from ..routes.user import UserProperty, UserProperty_Type, SearchUser_NoResults
 
 
 # %% ../../nbs/classes/50_DomoUser.ipynb 4
@@ -277,7 +277,7 @@ async def by_id(
             auth=auth,
         )
 
-    except user_routes.SearchUser_NoResults as e:
+    except SearchUser_NoResults as e:
         print(e)
         return None
 
@@ -486,7 +486,7 @@ async def upsert_user(cls: DomoUsers,
         
         
 
-    except user_routes.SearchUser_NoResults as e:
+    except SearchUser_NoResults as e:
         if debug_prn:
             print(
                 f'No user match -- creating new user in {auth.domo_instance}')

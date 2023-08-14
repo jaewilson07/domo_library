@@ -9,7 +9,7 @@ __all__ = ['DomoAccount_Config', 'DomoAccount_Config_AbstractCredential', 'DomoA
            'DomoAccount_CreateAccount_Error', 'DomoAccount_DeleteAccount_Error', 'DomoAccounts']
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 3
-from ..routes.account import ShareAccount_V1_AccessLevel, ShareAccount_V2_AccessLevel, ShareAccount
+from ..routes.account import ShareAccount_V1_AccessLevel, ShareAccount_V2_AccessLevel, ShareAccount, GetAccount_NoMatch,AccountConfig_InvalidDataProvider
 
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 4

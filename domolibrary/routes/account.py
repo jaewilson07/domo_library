@@ -151,14 +151,26 @@ async def create_account(auth:dmda.DomoAuth, config_body:dict,
     if debug_api:
         print(url)
 
-    return await gd.get_data(
-        auth=auth,
-        url=url,
-        method='POST',
-        body = config_body,
-        debug_api=debug_api,
-        session=session
-    )
+    attempt = 1
+    res = None
+
+    while attempt <= 3:
+        res = await gd.get_data(
+            auth=auth,
+            url=url,
+            method='POST',
+            body = config_body,
+            debug_api=debug_api,
+            session=session
+        )
+
+        if res.is_success:
+            return res
+        
+        attempt += 1
+        await asyncio.sleep(3)
+    
+    return res
 
 # %% ../../nbs/routes/account.ipynb 17
 async def delete_account(auth:dmda.DomoAuth,

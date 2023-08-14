@@ -12,7 +12,6 @@ import asyncio
 import httpx
 
 import domolibrary.client.DomoAuth as dmda
-import domolibrary.classes.DomoUser as dmdu
 import domolibrary.utils.DictDot as util_dd
 
 import domolibrary.routes.page as page_routes
@@ -37,9 +36,16 @@ class DomoPage:
     async def _get_domo_users(self, user_id_ls: [str]):
         import domolibrary.classes.DomoUser as dmu
 
-        return await dmu.DomoUsers.by_id(
-            user_ids=user_id_ls, only_allow_one=False, auth=self.auth
-        )
+        try:
+            return await dmu.DomoUsers.by_id(
+                user_ids=user_id_ls, only_allow_one=False, auth=self.auth
+            )
+            
+        except dmu.SearchUser_NoResults as e:
+            print(f"No users returned in _get_domo_users {user_id_ls} - {e} - {auth.domo_instance}")
+            
+            return None
+
 
     async def _get_domo_groups(self, group_id_ls: [str]):
         import domolibrary.classes.DomoGroup as dmg
@@ -55,17 +61,15 @@ class DomoPage:
         tasks = list()
         owner_group_ls = [owner.id for owner in owners if owner.type == "GROUP"]
 
-        if owner_group_ls:
+        if owner_group_ls and len(owner_group_ls) > 0 :
             tasks.append(self._get_domo_groups(owner_group_ls))
 
         owner_user_ls = [owner.id for owner in owners if owner.type == "USER"]
 
-        if owner_user_ls:
+        if owner_user_ls and len(owner_user_ls) > 0 :
             tasks.append(self._get_domo_users(owner_user_ls))
 
         res = await asyncio.gather(*tasks)
-
-        print(res)
 
         return res
 
@@ -426,9 +430,15 @@ class DomoPage:
     async def _get_domo_users(self, user_id_ls: [str]):
         import domolibrary.classes.DomoUser as dmu
 
-        return await dmu.DomoUsers.by_id(
-            user_ids=user_id_ls, only_allow_one=False, auth=self.auth
-        )
+        try:
+            return await dmu.DomoUsers.by_id(
+                user_ids=user_id_ls, only_allow_one=False, auth=self.auth
+            )
+            
+        except dmu.SearchUser_NoResults as e:
+            print(f"No users returned in _get_domo_users {user_id_ls} - {e} - {auth.domo_instance}")
+            
+            return None
 
     async def _get_domo_groups(self, group_id_ls: [str]):
         import domolibrary.classes.DomoGroup as dmg
@@ -441,18 +451,22 @@ class DomoPage:
         )
 
     async def _get_domo_owners_from_dd(self, owners: util_dd.DictDot):
-        tasks = list()
+        tasks = []
         owner_group_ls = [owner.id for owner in owners if owner.type == "GROUP"]
 
-        if owner_group_ls:
+        if owner_group_ls and len(owner_group_ls) > 0 :
             tasks.append(self._get_domo_groups(owner_group_ls))
 
         owner_user_ls = [owner.id for owner in owners if owner.type == "USER"]
 
-        if owner_user_ls:
+        if owner_user_ls and len(owner_user_ls) > 0 :
             tasks.append(self._get_domo_users(owner_user_ls))
 
         res = await asyncio.gather(*tasks)
+        
+        if not res or len(res) == 0 : return []
+        
+        res = [ member_ls for member_ls in res if member_ls is not None]
 
         return [member for member_ls in res for member in member_ls]
 
