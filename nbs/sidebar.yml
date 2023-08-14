@@ -31,6 +31,7 @@ website:
           - classes/50_DomoApplication.ipynb
           - classes/50_DomoBootstrap.ipynb
           - classes/50_DomoCard.ipynb
+          - classes/50_DomoCertification.ipynb
           - classes/50_DomoDatacenter.ipynb
           - classes/50_DomoDataflow.ipynb
           - classes/50_DomoDataset.ipynb
@@ -38,10 +39,12 @@ website:
           - classes/50_DomoGroup.ipynb
           - classes/50_DomoInstanceConfig.ipynb
           - classes/50_DomoJob.ipynb
+          - classes/50_DomoLineage.ipynb
           - classes/50_DomoPDP.ipynb
           - classes/50_DomoPage.ipynb
           - classes/50_DomoPublish.ipynb
           - classes/50_DomoRole.ipynb
+          - classes/50_DomoSandbox.ipynb
           - classes/50_DomoStream.ipynb
           - classes/50_DomoUser.ipynb
       - section: client
@@ -55,6 +58,7 @@ website:
         contents:
           - integrations/Automation.ipynb
           - integrations/DomoJupyter.ipynb
+          - integrations/MonitDataset.ipynb
           - integrations/RoleHierarchy.ipynb
       - section: projects
         contents:
@@ -110,6 +114,7 @@ website:
           - routes/pdp.ipynb
           - routes/publish.ipynb
           - routes/role.ipynb
+          - routes/sandbox.ipynb
           - routes/stream.ipynb
           - routes/user.ipynb
       - section: utils

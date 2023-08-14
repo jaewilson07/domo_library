@@ -35,37 +35,32 @@ class DomoInstanceConfig:
     auth: dmda.DomoAuth
     allowlist: list[str] = field(default_factory=list)
 
-    @classmethod
-    async def get_publications(
-        cls,
-        auth: dmda.DomoFullAuth,
-        debug_api: bool = False,
-        session: httpx.AsyncClient = None,
-        return_raw: bool = False,
-    ):
-        import domolibrary.classes.DomoPublish as dmpb
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 6
+@patch_to(DomoInstanceConfig)
+async def toggle_social_users(
+    self : DomoInstanceConfig,
+    auth: dmda.DomoFullAuth,
+    is_enabled: bool,
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+    return_raw: bool = False,
+):
+    res = await instance_config_routes.toggle_social_users(
+    auth = auth or self.auth,
+    is_enabled = is_enabled, 
+    session = session,
+    debug_api = debug_api,
+)
 
+    if return_raw:
+        return res.response
+    
+    if res.status != 200 :
+        return False
+    
+    return True
 
-        res = await publish_routes.search_publications(
-            auth=auth, debug_api=debug_api, session=session
-        )
-        if debug_api:
-            print("Getting Publish jobs")
-
-        if res.status == 200 and not return_raw:
-            return await asyncio.gather(
-                *[
-                    dmpb.DomoPublication.get_from_id(
-                        publication_id=job.get("id"), auth=auth
-                    )
-                    for job in res.response
-                ]
-            )
-
-        if res.status == 200 and return_raw:
-            return res.response
-
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 7
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 13
 @patch_to(DomoInstanceConfig)
 async def get_allowlist(
     self: DomoInstanceConfig,
@@ -103,7 +98,7 @@ async def get_allowlist(
 
     return allowlist
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 11
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 17
 @patch_to(DomoInstanceConfig)
 async def set_allowlist(
     self: DomoInstanceConfig,
@@ -143,7 +138,7 @@ async def upsert_allowlist(
         session=session,
     )
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 16
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 22
 @patch_to(DomoInstanceConfig)
 async def get_grants(
     self: DomoInstanceConfig,
@@ -160,7 +155,7 @@ async def get_grants(
     return await dmg.DomoGrants.get_grants(auth = auth, return_raw = return_raw, session = session, debug_api = debug_api)
     
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 19
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 25
 @patch_to(DomoInstanceConfig)
 async def get_roles(
     self,
@@ -175,7 +170,7 @@ async def get_roles(
 
     return await dmr.DomoRoles.get_roles(auth=auth, debug_api=debug_api, return_raw = return_raw, session=session)
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 23
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 29
 @patch_to(DomoInstanceConfig)
 async def get_authorized_domains(
     self: DomoInstanceConfig,
@@ -195,7 +190,7 @@ async def get_authorized_domains(
 
     return res.response
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 26
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 32
 @patch_to(DomoInstanceConfig, cls_method=True)
 async def set_authorized_domains(
     cls: DomoInstanceConfig,
@@ -250,7 +245,7 @@ async def upsert_authorized_domains(
         session=session,
     )
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 27
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 33
 @patch_to(DomoInstanceConfig, cls_method=True)
 async def get_applications(
     cls,
