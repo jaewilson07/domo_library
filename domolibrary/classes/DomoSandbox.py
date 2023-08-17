@@ -9,6 +9,7 @@ from dataclasses import dataclass
 import datetime as dt
 import pandas as pd
 
+import dateutil.parser as dtut
 
 import domolibrary.utils.DictDot as util_dd
 import domolibrary.client.DomoAuth as dmda
@@ -40,8 +41,6 @@ class DomoRepository:
 
     @classmethod
     def _from_json(cls, obj, auth=None):
-
-        import dateutil.parser as dtut
 
         dd = util_dd.DictDot(obj)
 
