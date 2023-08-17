@@ -4,19 +4,10 @@
 __all__ = ['remove_partition_by_x_days']
 
 # %% ../../nbs/integrations/Automation.ipynb 2
-import csv
-import datetime as DT
-import os
-from dataclasses import dataclass
+import datetime as dt
 
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.classes.DomoDataset as dmds
-import domolibrary.classes.DomoInstanceConfig as dmic
-
-import utils.Exceptions as ex
-
-import pandas as pd
-
 
 # %% ../../nbs/integrations/Automation.ipynb 3
 async def remove_partition_by_x_days(auth: dmda.DomoFullAuth,
@@ -29,8 +20,8 @@ async def remove_partition_by_x_days(auth: dmda.DomoFullAuth,
 
     list_partition = await domo_ds.list_partitions(auth=auth, dataset_id=dataset_id)
 
-    today = DT.date.today()
-    days_ago = today - DT.timedelta(days=x_last_days)
+    today = dt.date.today()
+    days_ago = today - dt.timedelta(days=x_last_days)
     for i in list_partition:
         compare_date = ''
         if separator is not None and separator != '':
@@ -39,7 +30,7 @@ async def remove_partition_by_x_days(auth: dmda.DomoFullAuth,
             compare_date = i['partitionId']
 
         try:
-            d = DT.datetime.strptime(compare_date, date_format).date()
+            d = dt.datetime.strptime(compare_date, date_format).date()
         except ValueError:
             d = None
         if d is not None and d < days_ago:

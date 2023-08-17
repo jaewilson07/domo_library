@@ -4,36 +4,19 @@
 __all__ = ['InvalidRepositoryError', 'DomoRepository', 'DomoSandbox']
 
 # %% ../../nbs/classes/50_DomoSandbox.ipynb 2
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
-from typing import Optional
 import datetime as dt
-import asyncio
-import httpx
-import uuid
-from fastcore.basics import patch_to
+import pandas as pd
 
-# import importlib
-# import json
-# import uuid
-# import time
 
 import domolibrary.utils.DictDot as util_dd
 import domolibrary.client.DomoAuth as dmda
-import domolibrary.client.DomoError as de
 import domolibrary.routes.sandbox as sandbox_routes
 
 import domolibrary.classes.DomoLineage as dmdl
 
 # %% ../../nbs/classes/50_DomoSandbox.ipynb 3
-from dataclasses import dataclass, field
-import aiohttp
-import asyncio
-import datetime as dt
-
-from pprint import pprint
-
-
 class InvalidRepositoryError(Exception):
     pass
 
@@ -85,9 +68,7 @@ class DomoRepository:
         return cls._from_json(res.response, auth=auth)
 
     def convert_lineage_to_dataframe(self, return_raw: bool = False):
-        import pandas as pd
-        import re
-
+        
         flat_lineage_ls = self.lineage._flatten_lineage()
 
         output_ls = [{'sandbox_id': self.id,

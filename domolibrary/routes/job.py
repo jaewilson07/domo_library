@@ -6,14 +6,13 @@ __all__ = ['get_jobs', 'add_job', 'generate_body_remote_domostats', 'generate_bo
 
 # %% ../../nbs/routes/job.ipynb 2
 from typing import Union
-from enum import Enum
 import httpx
 from pprint import pprint
 
 import domolibrary.client.get_data as gd
 import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
-import domolibrary.client.DomoError as de
+
 
 # %% ../../nbs/routes/job.ipynb 3
 # get RemoteDomostats job names
@@ -34,8 +33,10 @@ async def get_jobs(auth: dmda.DomoFullAuth,
     def arr_fn(res) -> list[dict]:
         return res.response.get('jobs')
 
-    def alter_maximum_fn(res):
-        return res.response.get('totalResults')
+
+    # deprecated from looper 
+    # def alter_maximum_fn(res):
+    #     return res.response.get('totalResults')
 
     return await gd.looper(auth=auth,
                            method='GET',
