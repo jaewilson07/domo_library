@@ -18,6 +18,7 @@ import domolibrary.client.DomoError as de
 
 
 import domolibrary.routes.instance_config as instance_config_routes
+import domolibrary.routes.bootstrap as bootstrap_routes
 import domolibrary.routes.publish as publish_routes
 
 # import Library.utils.convert as cd
@@ -60,7 +61,28 @@ async def toggle_social_users(
     
     return True
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 13
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 10
+@patch_to(DomoInstanceConfig)
+async def get_is_invite_social_users(
+    self : DomoInstanceConfig,
+    auth: dmda.DomoFullAuth,
+    user_group: str,
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None
+):
+    res = await instance_config_routes.get_is_invite_social_users(
+    auth = auth or self.auth,
+    user_group = user_group, 
+    session = session,
+    debug_api = debug_api,
+)
+    
+    if res.status != 200 :
+        return False
+    
+    return res.response
+
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 16
 @patch_to(DomoInstanceConfig)
 async def get_allowlist(
     self: DomoInstanceConfig,
@@ -98,7 +120,7 @@ async def get_allowlist(
 
     return allowlist
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 17
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 20
 @patch_to(DomoInstanceConfig)
 async def set_allowlist(
     self: DomoInstanceConfig,
@@ -138,7 +160,7 @@ async def upsert_allowlist(
         session=session,
     )
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 22
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 25
 @patch_to(DomoInstanceConfig)
 async def get_grants(
     self: DomoInstanceConfig,
@@ -155,7 +177,7 @@ async def get_grants(
     return await dmg.DomoGrants.get_grants(auth = auth, return_raw = return_raw, session = session, debug_api = debug_api)
     
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 25
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 28
 @patch_to(DomoInstanceConfig)
 async def get_roles(
     self,
@@ -170,7 +192,7 @@ async def get_roles(
 
     return await dmr.DomoRoles.get_roles(auth=auth, debug_api=debug_api, return_raw = return_raw, session=session)
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 29
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 32
 @patch_to(DomoInstanceConfig)
 async def get_authorized_domains(
     self: DomoInstanceConfig,
@@ -190,7 +212,7 @@ async def get_authorized_domains(
 
     return res.response
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 32
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 35
 @patch_to(DomoInstanceConfig, cls_method=True)
 async def set_authorized_domains(
     cls: DomoInstanceConfig,
@@ -245,7 +267,7 @@ async def upsert_authorized_domains(
         session=session,
     )
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 33
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 36
 @patch_to(DomoInstanceConfig, cls_method=True)
 async def get_applications(
     cls,
