@@ -1,0 +1,53 @@
+project:
+  type: website
+  preview:
+    port: 5243
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+website:
+  twitter-card: true
+  open-graph: true
+  repo-actions: [issue]
+
+  sidebar:
+    style: floating
+    contents:
+      - auto: "/*.ipynb"
+
+      - section: "Client"
+        contents: "client/*"
+
+      - section: "Classes"
+        contents: "classes/*"
+
+      - section: "Routes"
+        contents: "routes/*"
+
+      - section: "Integrations"
+        contents: "integrations/*"
+
+      - section: "Utils"
+        contents: "utils/*"
+
+  navbar:
+    background: primary
+    search: true
+
+    left:
+      - text: "Blog"
+        href: blog/index.qmd
+      - text: "Code Samples"
+        href: projects/index.qmd
+    right:
+      - icon: github
+        href: "https://github.com/jaewilson07/domo_library"
+      - icon: twitter
+        href: https://twitter.com/onyxreporting
+        aria-label: OnyxReporting Twitter
+
+metadata-files: [nbdev.yml]
