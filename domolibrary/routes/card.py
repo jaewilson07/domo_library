@@ -5,11 +5,6 @@ __all__ = ['CardSearch_NotFoundError', 'get_kpi_definition', 'get_card_metadata'
            'search_cards_admin_summary']
 
 # %% ../../nbs/routes/card.ipynb 2
-from typing import Optional
-
-import io
-import pandas as pd
-
 import httpx
 
 import domolibrary.client.get_data as gd
@@ -41,7 +36,7 @@ async def get_kpi_definition(auth: dmda.DomoAuth, card_id: str, debug_api: bool 
         url=url,
         method='PUT',
         body=body,
-        debug_api=False,
+        debug_api=debug_api,
         session = session
     )
 

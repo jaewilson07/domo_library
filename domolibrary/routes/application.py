@@ -5,13 +5,12 @@ __all__ = ['get_applications', 'get_application_by_id']
 
 # %% ../../nbs/routes/application.ipynb 2
 from typing import Union
-from enum import Enum
 import httpx
 
 import domolibrary.client.get_data as gd
 import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
-import domolibrary.client.DomoError as de
+
 
 # %% ../../nbs/routes/application.ipynb 3
 async def get_applications(auth: dmda.DomoFullAuth,
@@ -32,7 +31,7 @@ async def get_applications(auth: dmda.DomoFullAuth,
         session=session
     )
 
-
+# %% ../../nbs/routes/application.ipynb 6
 async def get_application_by_id(auth: dmda.DomoFullAuth,
                                 application_id: str,
                                 session: Union[httpx.AsyncClient, httpx.AsyncClient, None] = None,

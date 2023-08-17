@@ -9,11 +9,9 @@ from dataclasses import dataclass, field
 import httpx
 import asyncio
 
-
 from fastcore.basics import patch_to
 
 import domolibrary.client.DomoAuth as dmda
-import domolibrary.classes.DomoInstanceConfig as dic
 import domolibrary.client.DomoError as de
 
 import domolibrary.utils.DictDot as util_dd

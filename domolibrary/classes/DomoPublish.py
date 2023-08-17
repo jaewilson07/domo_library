@@ -6,25 +6,21 @@ __all__ = ['DomoPublication_Subscription', 'DomoPublication_Content', 'DomoPubli
 
 # %% ../../nbs/classes/50_DomoPublish.ipynb 2
 from dataclasses import dataclass, field
-
 from typing import Optional
+
 import datetime as dt
+import pandas as pd
 import asyncio
 import httpx
-import uuid
-from fastcore.basics import patch_to
 
-# import importlib
-# import json
-# import uuid
-# import time
+import uuid
+
+from fastcore.basics import patch_to
 
 import domolibrary.utils.DictDot as util_dd
 import domolibrary.client.DomoAuth as dmda
-import domolibrary.client.DomoError as de
 import domolibrary.routes.publish as publish_routes
 
-# import Library.DomoClasses.DomoDataset as dmda
 import domolibrary.classes.DomoLineage as dmdl
 
 # %% ../../nbs/classes/50_DomoPublish.ipynb 4
@@ -175,7 +171,7 @@ async def get_from_id(cls, publication_id=None, auth: dmda.DomoAuth = None, time
 
     res = await publish_routes.get_publication_by_id(
         auth=auth, publication_id=publication_id
-        , timeout = 10
+        , timeout = timeout
     )
 
     if not res.is_success:
@@ -215,23 +211,33 @@ class DomoPublications:
 
 # %% ../../nbs/classes/50_DomoPublish.ipynb 18
 @patch_to(DomoPublications, cls_method=True)
-async def search_publications(cls: DomoPublications,
-                              auth = dmda.DomoAuth,
-                              search_term: str = None,
-                              session: httpx.AsyncClient = None,
-                              debug_api: bool = False,
-                              return_raw: bool = False):
-
-    res = await publish_routes.search_publications(auth=auth)
+async def search_publications(
+    cls: DomoPublications,
+    auth=dmda.DomoAuth,
+    search_term: str = None,
+    session: httpx.AsyncClient = None,
+    debug_api: bool = False,
+    return_raw: bool = False,
+):
+    res = await publish_routes.search_publications(
+        auth=auth,
+        search_term=search_term,
+        session=session,
+        debug_api=debug_api,
+    )
 
     if return_raw:
         return res
 
     if not res.is_success or (res.is_success and len(res.response) == 0):
         return None
-        
-    return await asyncio.gather(*[ DomoPublication.get_from_id(publication_id= sub_obj['id'], auth = auth) for sub_obj in res.response])
 
+    return await asyncio.gather(
+        *[
+            DomoPublication.get_from_id(publication_id=sub_obj["id"], auth=auth)
+            for sub_obj in res.response
+        ]
+    )
 
 # %% ../../nbs/classes/50_DomoPublish.ipynb 20
 @patch_to(DomoPublication, cls_method=False)
@@ -252,8 +258,6 @@ def convert_content_to_dataframe(self, return_raw: bool = False):
 
 @patch_to(DomoPublication, cls_method=False)
 def convert_lineage_to_dataframe(self, return_raw: bool = False):
-    import pandas as pd
-    import re
 
     flat_lineage_ls = self.lineage._flatten_lineage()
 

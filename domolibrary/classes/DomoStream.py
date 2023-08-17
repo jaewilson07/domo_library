@@ -106,7 +106,7 @@ class DomoStream:
                 sd.configuration_query = sc.value_clean
 
                 try:
-                    for table in dtut.Parser(sc.value).tables:
+                    for table in dtut.parse(sc.value).tables:
                         sd.configuration_tables.append(table)
                     sd.configuration_tables = sorted(
                         list(set(sd.configuration_tables)))
@@ -158,15 +158,15 @@ class DomoStream:
                                                                  session=session,
                                                                  debug_api=debug_api)
 
-        existing_ds = next((ds for ds in search_res if ds.get(
+        existing_ds_obj = next((ds for ds in search_res if ds.get(
             'name').lower() == match_name.lower()), None)
 
-        if debug_api:
-            print(
-                f"existing_ds - {existing_ds.id if existing_ds else ' not found '}")
+        # if debug_api:
+        #     print(
+        #         f"existing_ds - {existing_ds.id if existing_ds else ' not found '}")
 
-        if existing_ds:
-            existing_ds = await dmds.getDomoProps(id=existing_ds.get('databaseId'),
+        if existing_ds_obj:
+            existing_ds = await dmds.DomoDataset.get_from_id(dataset_id=existing_ds.get('databaseId'),
                                                          auth=auth)
             return await cls.update_stream(cnfg_body,
                                            stream_id=existing_ds.stream_id,
