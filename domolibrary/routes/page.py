@@ -6,7 +6,6 @@ __all__ = ['get_page_by_id', 'get_page_definition', 'get_page_access_list', 'get
 
 # %% ../../nbs/routes/page.ipynb 2
 import httpx
-import pandas as pd
 
 import domolibrary.client.get_data as gd
 import domolibrary.client.ResponseGetData as rgd
@@ -32,8 +31,6 @@ async def get_page_by_id(
         debug_api=debug_api,
         session=session,
     )
-
-    res.response
 
     return res
 

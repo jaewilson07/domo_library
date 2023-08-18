@@ -4,10 +4,6 @@
 __all__ = ['extract_role_hierarchy', 'get_roles_w_hierarchy', 'calc_role']
 
 # %% ../../nbs/integrations/RoleHierarchy.ipynb 2
-import pandas as pd
-from fastcore.basics import patch_to
-
-import domolibrary.client.DomoAuth as dmda
 import domolibrary.classes.DomoRole as dmr
 
 # %% ../../nbs/integrations/RoleHierarchy.ipynb 3

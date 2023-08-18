@@ -5,16 +5,17 @@ __all__ = ['get_data_aiohttp', 'GetData_Error', 'get_data', 'LooperError', 'loop
 
 # %% ../../nbs/client/10_get_data.ipynb 2
 from typing import Optional, Union
+import time
 
-from pprint import pprint
 import httpx
 import aiohttp
 import asyncio
 
+from pprint import pprint
+
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoError as de
-import time
 
 
 # %% ../../nbs/client/10_get_data.ipynb 3

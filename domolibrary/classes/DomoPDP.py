@@ -205,7 +205,7 @@ async def search_pdp_policies(
     )
     
     if return_raw:
-        return all_pdp_polcies
+        return all_pdp_policies
 
     if search_method == 'name':
         if is_exact_match:

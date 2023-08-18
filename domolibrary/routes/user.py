@@ -277,7 +277,7 @@ async def request_password_reset(
     params = {"email": email, "local": locale}
 
     return await gd.get_data(
-        url=url, method="GET", params=params, auth=None, debug_api=debug_api
+        url=url, method="GET", params=params, auth=None, debug_api=debug_api, session = session
     )
 
 

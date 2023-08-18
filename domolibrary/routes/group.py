@@ -222,9 +222,6 @@ async def get_group_owners(
     # url = f"https://{auth.domo_instance}.domo.com/api/content/v2/groups/users?group={group_id}"
     url = f'https://{auth.domo_instance}.domo.com/api/content/v2/groups/permissions?checkOwnership=true&includeUsers=false'
 
-    if debug_api:
-        print(url, body)
-
     res = await gd.get_data(
         auth=auth,
         url=url,
@@ -254,9 +251,6 @@ async def get_group_membership(
     # url = f"https://{auth.domo_instance}.domo.com/api/content/v2/groups/access"
     url = f"https://{auth.domo_instance}.domo.com/api/content/v2/groups/users?group={group_id}"
 
-    if debug_api:
-        print(url, body)
-
     res = await gd.get_data(
         auth=auth,
         url=url,
@@ -272,13 +266,13 @@ async def get_group_membership(
     return res
 
 # %% ../../nbs/routes/group.ipynb 30
-def generate_body_update_group_membership_entity(id: Union[str, int],
-                                                 type: str  # USER or GROUP
+def generate_body_update_group_membership_entity(user_id: Union[str, int],
+                                                 user_type: str  # USER or GROUP
                                                  ):
-    if type == 'USER':
-        return {"type": "USER", "id": str(id)}
-    elif type == 'GROUP':
-        return {"type": "GROUP", "id": int(id)}
+    if user_type == 'USER':
+        return {"type": "USER", "id": str(user_id)}
+    elif user_type == 'GROUP':
+        return {"type": "GROUP", "id": int(user_id)}
 
 
 # %% ../../nbs/routes/group.ipynb 31
@@ -296,18 +290,18 @@ def generate_body_update_group_membership(group_id: str,
 
     if add_owner_arr and len(add_owner_arr) > 0 :
         body.update({"addOwners": [generate_body_update_group_membership_entity(
-            id=obj.get('id'), type=obj.get('type')) for obj in add_owner_arr]})
+            user_id=obj.get('id'), user_type=obj.get('type')) for obj in add_owner_arr]})
 
     if remove_owner_arr and len(remove_owner_arr) > 0:
         body.update({"removeOwners": [generate_body_update_group_membership_entity(
-            id=obj.get('id'), type=obj.get('type')) for obj in remove_owner_arr]})
+            user_id=obj.get('id'), user_type=obj.get('type')) for obj in remove_owner_arr]})
 
     if remove_member_arr and len(remove_member_arr) > 0:
         body.update({"removeMembers": [
-                    generate_body_update_group_membership_entity(id=obj.get('id'), type=obj.get('type')) for obj in remove_member_arr]})
+                    generate_body_update_group_membership_entity(user_id=obj.get('id'), user_type=obj.get('type')) for obj in remove_member_arr]})
     if add_member_arr and len(add_member_arr) > 0:
         body.update(
-            {"addMembers": [generate_body_update_group_membership_entity(id=obj.get('id'), type=obj.get('type')) for obj in add_member_arr]})
+            {"addMembers": [generate_body_update_group_membership_entity(user_id=obj.get('id'), user_type=obj.get('type')) for obj in add_member_arr]})
 
     return [body]
 

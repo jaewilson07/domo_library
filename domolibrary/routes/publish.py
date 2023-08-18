@@ -46,7 +46,7 @@ async def get_publication_by_id(auth: dmda.DomoAuth,
                             method='GET',
                             url=url,
                             session=session,
-                            timeout = 10,
+                            timeout = timeout,
                             debug_api=debug_api)
 
     return res
