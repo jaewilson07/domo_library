@@ -4,7 +4,7 @@
 __all__ = ['get_accounts', 'GetAccount_NoMatch', 'get_account_from_id', 'AccountConfig_InvalidDataProvider', 'get_account_config',
            'update_account_config', 'update_account_name', 'create_account', 'delete_account', 'ShareAccount',
            'ShareAccount_V1_AccessLevel', 'ShareAccount_V2_AccessLevel', 'generate_share_account_payload_v1',
-           'generate_share_account_payload_v2', 'share_account_v2', 'share_account_v1']
+           'generate_share_account_payload_v2', 'share_account_v2', 'share_account_v1', 'get_share_account_v2']
 
 # %% ../../nbs/routes/account.ipynb 3
 from typing import Union
@@ -265,6 +265,26 @@ async def share_account_v1(auth: dmda.DomoAuth,
         url=url,
         method='PUT',
         body=share_payload,
+        debug_api=debug_api,
+        session=session
+    )
+
+
+
+
+# %% ../../nbs/routes/account.ipynb 22
+async def get_share_account_v2(auth: dmda.DomoAuth,
+                           account_id: str,
+                           debug_api: bool = False,
+                           session: httpx.AsyncClient = None
+                           ):
+
+    url = f"https://{auth.domo_instance}.domo.com/api/data/v2/accounts/share/{account_id}"
+
+    return await gd.get_data(
+        auth=auth,
+        url=url,
+        method='GET',
         debug_api=debug_api,
         session=session
     )
