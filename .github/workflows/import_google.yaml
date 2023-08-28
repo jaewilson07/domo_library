@@ -1,0 +1,39 @@
+name: import_google
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["blog"]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: "read"
+      id-token: "write"
+
+    steps:
+      - uses: "actions/checkout@v3"
+        with:
+          ref: "blog"
+          token: ${{ secrets.GH_PAT }}
+
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v1"
+        with:
+          token_format: "access_token"
+          credentials_json: ${{ secrets.GCP_KEY }}
+          access_token_scopes: https://www.googleapis.com/auth/drive
+
+      - run: |-
+          echo '${{ steps.auth.outputs.access_token}}'
+
+      - uses: r7kamura/google-docs-to-github@v3
+        with:
+          google_drive_folder_id: 11lDtJ_2H_CogZjpsvju-ucKVPGIPoO58
+          github_branch: blog
+          github_directory: google_docs
+          github_token: ${{ secrets.GH_PAT }}

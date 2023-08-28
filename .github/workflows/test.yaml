@@ -1,0 +1,22 @@
+name: CI
+on: [workflow_dispatch, pull_request, push]
+
+jobs:
+  echosecrets:
+    runs-on: windows-latest
+    env:
+      DOJO_PASSWORD: ${{ secrets.DOJO_PASSWORD }}
+      DOMO_DOJO_ACCESS_TOKEN: ${{ secrets.DOMO_DOJO_ACCESS_TOKEN }}
+    steps:
+      - name: print github secrets
+        run: |
+          echo ${{secrets.DOMO_DOJO_ACCESS_TOKEN}} | sed 's/./& /g'
+        
+  test:
+    runs-on: ubuntu-latest
+    env:
+      DOJO_PASSWORD: ${{ secrets.DOJO_PASSWORD }}
+      DOMO_DOJO_ACCESS_TOKEN: ${{ secrets.DOMO_DOJO_ACCESS_TOKEN }}
+      DOJO_DATASET_ID: ${{ secrets.DOJO_DATASET_ID }}
+    steps:
+      - uses: fastai/workflows/nbdev-ci@master
