@@ -5,9 +5,11 @@ __all__ = ['get_all_users', 'get_by_id', 'generate_search_users_body_by_id', 'ge
            'process_v1_search_users', 'SearchUser_NoResults', 'search_users',
            'search_virtual_user_by_subscriber_instance', 'create_user', 'set_user_landing_page',
            'ResetPassword_PasswordUsed', 'reset_password', 'request_password_reset', 'UserProperty_Type',
-           'UserProperty', 'generate_patch_user_property_body', 'update_user']
+           'UserProperty', 'generate_patch_user_property_body', 'update_user', 'DownloadAvatar_Error',
+           'download_avatar']
 
 # %% ../../nbs/routes/user.ipynb 3
+import os
 from enum import Enum
 import httpx
 import asyncio
@@ -30,22 +32,40 @@ async def get_all_users(
 
 
 # %% ../../nbs/routes/user.ipynb 9
-async def get_by_id(user_id, auth: dmda.DomoAuth, debug_api: bool = False, session: httpx.AsyncClient = None):
-    v2_url = f'https://{auth.domo_instance}.domo.com/api/content/v2/users/{user_id}' # does not include role_id
+async def get_by_id(
+    user_id,
+    auth: dmda.DomoAuth,
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+):
+    v2_url = f"https://{auth.domo_instance}.domo.com/api/content/v2/users/{user_id}"  # does not include role_id
 
-    v3_url = f'https://{auth.domo_instance}.domo.com/api/content/v3/users/{user_id}'
-    
-    params = {'includeDetails' :True}
+    v3_url = f"https://{auth.domo_instance}.domo.com/api/content/v3/users/{user_id}"
 
-    
-    res_v2, res_v3 = await asyncio.gather(gd.get_data(url=v2_url, method="GET", auth=auth, debug_api=debug_api, session=session, params=params) , 
-    gd.get_data(url=v3_url, method="GET", auth=auth, debug_api=debug_api, session=session, params=params))
+    params = {"includeDetails": True}
 
-    res_v2.response.update({'roleId': res_v3.response.get('roleId')})
+    res_v2, res_v3 = await asyncio.gather(
+        gd.get_data(
+            url=v2_url,
+            method="GET",
+            auth=auth,
+            debug_api=debug_api,
+            session=session,
+            params=params,
+        ),
+        gd.get_data(
+            url=v3_url,
+            method="GET",
+            auth=auth,
+            debug_api=debug_api,
+            session=session,
+            params=params,
+        ),
+    )
+
+    res_v2.response.update({"roleId": res_v3.response.get("roleId")})
 
     return res_v2
-
-
 
 # %% ../../nbs/routes/user.ipynb 11
 def generate_search_users_body_by_id(
@@ -345,3 +365,62 @@ async def update_user(
         debug_api=debug_api,
         session=session,
     )
+
+# %% ../../nbs/routes/user.ipynb 37
+class DownloadAvatar_Error(de.DomoError):
+    def __init__(self, status, response, user_id, domo_instance):
+        super().__init__(
+            status=status,
+            message=f"unable to download {user_id} - {response}",
+            domo_instance=domo_instance,
+        )
+
+
+async def download_avatar(
+    user_id,
+    auth: dmda.DomoAuth,
+    pixels: int = 300,
+    folder_path="./images",
+    img_name=None,
+    is_download_image: bool = True,
+    debug_api: bool = False, return_raw: bool = False
+):
+    url = f"https://{auth.domo_instance}.domo.com/api/content/v1/avatar/USER/{user_id}?size={pixels}"
+
+    res = await gd.get_data_stream(
+        url=url,
+        method="GET",
+        auth=auth,
+        debug_api=debug_api,
+        headers = {'accept': 'image/png;charset=utf-8'},
+    )
+
+    if return_raw:
+        return res
+
+    if res.status != 200:
+        
+        raise DownloadAvatar_Error(
+            status=res.status,
+            response=res.response,
+            user_id=user_id,
+            domo_instance=auth.domo_instance,
+        )
+    
+    if is_download_image:
+        if not os.path.exists(folder_path):
+            os.mkdir(folder_path)
+
+        if img_name: 
+            img_name = img_name.replace('.png', '')
+
+        img_name = f"{img_name or user_id}.png"
+
+        file_path = os.path.join(folder_path, img_name)
+
+        with open(file_path, "wb") as out_file:
+            out_file.write(res.response)
+
+    res.is_success = True
+
+    return res

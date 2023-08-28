@@ -8,6 +8,7 @@ conda/
 _site/
 _docs/
 test_settings.ini
+nbs/test
 
 *.bak
 .gitattributes
