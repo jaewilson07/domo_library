@@ -610,7 +610,10 @@ async def _is_group_ownership_beta(self, auth: dmda.DomoAuth):
 @patch_to(DomoAccount)
 async def share_account(
     self,
-    user_id: int,
+    user_id: int = None,
+    group_id : int = None,
+    domo_user = None, # DomoUser,
+    domo_group = None, # DomoGroup
     auth: dmda.DomoAuth = None,
     is_v2: bool = None,
     access_level: ShareAccount = None,  # will default to Read
@@ -619,6 +622,9 @@ async def share_account(
     session: httpx.AsyncClient = None,
 ):
     auth = auth or self.auth
+
+    user_id = user_id or domo_user.id
+    group_id = group_id or domo_group.id
 
     if isinstance(auth, dmda.DomoFullAuth) and is_v2 is None:
         is_v2 = await self._is_group_ownership_beta(auth)
@@ -639,7 +645,9 @@ account sharing differs between v1 and v2 of the API.""")
 
     if is_v2:
         share_payload = account_routes.generate_share_account_payload_v2(
-            user_id=user_id, access_level=access_level or ShareAccount_V2_AccessLevel.CAN_VIEW
+            user_id=user_id,
+            group_id = group_id,
+            access_level=access_level or ShareAccount_V2_AccessLevel.CAN_VIEW
         )
 
         res = await account_routes.share_account_v2(
@@ -652,7 +660,9 @@ account sharing differs between v1 and v2 of the API.""")
 
     else:
         share_payload = account_routes.generate_share_account_payload_v1(
-            user_id=user_id, access_level=access_level or ShareAccount_V1_AccessLevel.CAN_VIEW
+            user_id=user_id, 
+            group_id = group_id,
+            access_level=access_level or ShareAccount_V1_AccessLevel.CAN_VIEW
         )
 
         res = await account_routes.share_account_v1(
@@ -667,7 +677,7 @@ account sharing differs between v1 and v2 of the API.""")
         res.response = f'ℹ️ - {res.response + " | User may own account."}'
 
     if res.status == 200:
-        res.response = f"shared {self.id} - {self.name} with {user_id}"
+        res.response = f"shared {self.id} - {self.name} with {user_id or group_id}"
 
     return res
 

@@ -27,7 +27,11 @@ import domolibrary.routes.group as group_routes
 import domolibrary.classes.DomoUser as dmu
 
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 4
+# %% ../../nbs/classes/50_DomoGroup.ipynb 3
+from ..routes.group import GroupType_Enum, SearchGroups_Error
+
+
+# %% ../../nbs/classes/50_DomoGroup.ipynb 5
 class UpdateGroupMembership(de.DomoError):
     def __init__(self, member_name, group_name, domo_instance):
         super().__init__(domo_instance=domo_instance,
@@ -136,7 +140,7 @@ class GroupMembership:
         # set
 
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 6
+# %% ../../nbs/classes/50_DomoGroup.ipynb 7
 @patch_to(GroupMembership)
 async def get_owners(
     self: GroupMembership,
@@ -172,7 +176,7 @@ async def get_owners(
     # return domo_users
 
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 7
+# %% ../../nbs/classes/50_DomoGroup.ipynb 8
 @patch_to(GroupMembership)
 async def get_members(
     self: GroupMembership,
@@ -202,7 +206,7 @@ async def get_members(
     return self.group.members_ls
 
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 9
+# %% ../../nbs/classes/50_DomoGroup.ipynb 10
 @patch_to(GroupMembership)
 async def add_members(
     self: GroupMembership,
@@ -269,7 +273,7 @@ async def set_members(
     return await self.get_members()
 
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 10
+# %% ../../nbs/classes/50_DomoGroup.ipynb 11
 @patch_to(GroupMembership)
 async def add_owners(
     self: GroupMembership,
@@ -336,7 +340,7 @@ async def set_owners(
     return await self.get_owners()
 
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 12
+# %% ../../nbs/classes/50_DomoGroup.ipynb 13
 @dataclass
 class DomoGroup:
     auth: dmda.DomoAuth = field(repr=False, default=None)
@@ -401,7 +405,7 @@ class DomoGroup:
 
         return domo_groups
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 14
+# %% ../../nbs/classes/50_DomoGroup.ipynb 15
 @patch_to(DomoGroup, cls_method=True)
 async def get_by_id(
     cls,
@@ -428,7 +432,7 @@ async def get_by_id(
     return dg
 
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 17
+# %% ../../nbs/classes/50_DomoGroup.ipynb 18
 @patch_to(DomoGroup, cls_method=True)
 async def search_by_name(
     cls,
@@ -457,7 +461,65 @@ async def search_by_name(
 
     return cls._from_group_json(auth=auth, json_obj=res.response)
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 39
+# %% ../../nbs/classes/50_DomoGroup.ipynb 40
+class DomoGroups:
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def _groups_to_domo_group(json_list, auth: dmda.DomoAuth):
+
+        return [
+            DomoGroup._from_group_json(auth=auth, json_obj=json_obj)
+            for json_obj in json_list
+        ]
+
+# %% ../../nbs/classes/50_DomoGroup.ipynb 42
+@patch_to(DomoGroups, cls_method=True)
+async def get_all_groups(
+    cls: DomoGroups,
+    auth: dmda.DomoAuth,
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+):
+
+    res = await group_routes.get_all_groups(
+        auth=auth, debug_api=debug_api, session=session
+    )
+
+    if len(res.response) > 0:
+        json_list = res.response
+
+        return cls._groups_to_domo_group(json_list=json_list, auth=auth)
+
+    else:
+        return []
+
+
+# %% ../../nbs/classes/50_DomoGroup.ipynb 46
+@patch_to(DomoGroups, cls_method=True)
+async def toggle_system_group_visibility(cls: DomoGroups,auth: dmda.DomoAuth,
+                                         is_hide_system_groups: bool,
+                                         debug_api: bool = False):
+
+    return await group_routes.toggle_system_group_visibility(auth=auth,
+                                                is_hide_system_groups=is_hide_system_groups,
+                                                debug_api=debug_api)
+
+
+# %% ../../nbs/classes/50_DomoGroup.ipynb 50
+@patch_to(GroupMembership)
+async def add_owner_manage_groups_role(self : GroupMembership):
+    
+    await DomoGroups.toggle_system_group_visibility(auth = self.group.auth, is_hide_system_groups=False)
+    
+    grant_group = await DomoGroup.search_by_name(auth =self.group.auth , group_name = 'Grant: Manage all groups')
+       
+    await self.add_owners(add_owner_ls = [grant_group])
+
+    await DomoGroups.toggle_system_group_visibility(auth = self.group.auth, is_hide_system_groups=True)
+
+# %% ../../nbs/classes/50_DomoGroup.ipynb 52
 @patch_to(DomoGroup, cls_method=True)
 async def create_from_name(
     cls: DomoGroup,
@@ -465,6 +527,7 @@ async def create_from_name(
     group_name: str = None,
     group_type: str = "open",  # use GroupType_Enum
     description: str = None,
+    is_include_manage_groups_role: bool = True,
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
 ):
@@ -477,11 +540,15 @@ async def create_from_name(
         debug_api=debug_api,
     )
 
+    
     domo_group = cls._from_group_json(auth=auth, json_obj=res.response)
+
+    await domo_group.Membership.add_owner_manage_groups_role()
+
     return domo_group
 
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 42
+# %% ../../nbs/classes/50_DomoGroup.ipynb 56
 @patch_to(DomoGroup)
 async def update_metadata(
     self: DomoGroup,
@@ -517,7 +584,7 @@ async def update_metadata(
 
     return self
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 45
+# %% ../../nbs/classes/50_DomoGroup.ipynb 61
 @patch_to(DomoGroup, cls_method=True)
 async def upsert(
     cls: DomoGroup,
@@ -556,38 +623,3 @@ async def upsert(
                 debug_api=debug_api, session=session)
 
         return e
-
-# %% ../../nbs/classes/50_DomoGroup.ipynb 49
-class DomoGroups:
-    def __init__(self):
-        pass
-
-    @staticmethod
-    def _groups_to_domo_group(json_list, auth: dmda.DomoAuth):
-
-        return [
-            DomoGroup._from_group_json(auth=auth, json_obj=json_obj)
-            for json_obj in json_list
-        ]
-
-# %% ../../nbs/classes/50_DomoGroup.ipynb 50
-@patch_to(DomoGroups, cls_method=True)
-async def get_all_groups(
-    cls: DomoGroups,
-    auth: dmda.DomoAuth,
-    debug_api: bool = False,
-    session: httpx.AsyncClient = None,
-):
-
-    res = await group_routes.get_all_groups(
-        auth=auth, debug_api=debug_api, session=session
-    )
-
-    if len(res.response) > 0:
-        json_list = res.response
-
-        return cls._groups_to_domo_group(json_list=json_list, auth=auth)
-
-    else:
-        return []
-
