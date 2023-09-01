@@ -68,7 +68,8 @@ async def get_is_invite_social_users(
     auth: dmda.DomoFullAuth,
     user_group: str,
     debug_api: bool = False,
-    session: httpx.AsyncClient = None
+    session: httpx.AsyncClient = None,
+    return_raw : bool = False
 ):
     res = await instance_config_routes.get_is_invite_social_users(
     auth = auth or self.auth,
@@ -77,10 +78,10 @@ async def get_is_invite_social_users(
     debug_api = debug_api,
 )
     
-    if res.status != 200 :
-        return False
+    if return_raw:
+        return res
     
-    return res.response
+    return res.response["enabled"]
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 16
 @patch_to(DomoInstanceConfig)
