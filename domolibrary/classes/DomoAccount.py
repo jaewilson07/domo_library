@@ -623,8 +623,8 @@ async def share_account(
 ):
     auth = auth or self.auth
 
-    user_id = user_id or domo_user.id
-    group_id = group_id or domo_group.id
+    user_id = user_id or (domo_user and domo_user.id)
+    group_id = group_id or (domo_group and domo_group.id)
 
     if isinstance(auth, dmda.DomoFullAuth) and is_v2 is None:
         is_v2 = await self._is_group_ownership_beta(auth)
