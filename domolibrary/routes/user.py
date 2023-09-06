@@ -277,7 +277,7 @@ async def reset_password(
         debug_api=debug_api,
     )
 
-    if res.status == 200 and res.response['description'] == 'Password has been used previously.':
+    if res.status == 200 and res.response.get('description', None) == 'Password has been used previously.':
         raise ResetPassword_PasswordUsed(status=res.status,
                                          entity_id=user_id,
                                          domo_instance=auth.domo_instance,
