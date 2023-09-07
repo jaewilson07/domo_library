@@ -6,7 +6,8 @@ __all__ = ['DomoAccount_Config', 'DomoAccount_Config_AbstractCredential', 'DomoA
            'DomoAccount_Config_AmazonS3Advanced', 'DomoAccount_Config_AwsAthena',
            'DomoAccount_Config_HighBandwidthConnector', 'AccountConfig', 'DomoAccount',
            'DomoAccount_DataProviderType_ConfigNotDefined', 'DomoAccount_CreateAccount_Error',
-           'DomoAccount_UpdateName_Error', 'DomoAccount_DeleteAccount_Error', 'DomoAccounts', 'GetAccounts_NotFound']
+           'DomoAccount_UpdateError', 'DomoAccount_DeleteAccount_Error', 'ShareAccount_Error', 'DomoAccounts',
+           'GetAccounts_NotFound']
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 3
 from domolibrary.routes.account import (
@@ -456,6 +457,23 @@ async def create_account(
     return await cls.get_by_id(auth=auth, account_id=res.response.get("id"))
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 30
+class DomoAccount_UpdateError(de.DomoError):
+    def __init__(
+        self,
+        domo_instance,
+        status,
+        message,
+        entity_id,
+        function_name="update_name",
+    ):
+        super().__init__(
+            function_name=function_name,
+            entity_id=entity_id,
+            domo_instance=domo_instance,
+            status=status,
+            message=message,
+        )
+
 @patch_to(DomoAccount)
 async def update_config(
     self: DomoAccount,
@@ -480,30 +498,21 @@ async def update_config(
 
     if return_raw:
         return res
+    
+    if not res.is_success:
+        raise DomoAccount_UpdateError(
+            entity_id=self.id,
+            domo_instance=auth.domo_instance,
+            status=res.status,
+            message=res.response,
+            function_name = 'DomoAccount.update_config'
+        )
 
     await self._get_config(session=session, debug_api=debug_api)
 
     return self
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 33
-class DomoAccount_UpdateName_Error(de.DomoError):
-    def __init__(
-        self,
-        domo_instance,
-        status,
-        message,
-        entity_id,
-        function_name="update_name",
-    ):
-        super().__init__(
-            function_name=function_name,
-            entity_id=entity_id,
-            domo_instance=domo_instance,
-            status=status,
-            message=message,
-        )
-
-
 @patch_to(DomoAccount)
 async def update_name(
     self: DomoAccount,
@@ -529,11 +538,12 @@ async def update_name(
         return res
 
     if not res.is_success:
-        raise DomoAccount_UpdateName_Error(
+        raise DomoAccount_UpdateError(
             entity_id=self.id,
             domo_instance=auth.domo_instance,
             status=res.status,
             message=res.response,
+            function_name = 'DomoAccount.update_name'
         )
 
     self = await self.get_by_id(auth=auth, account_id=self.id)
@@ -601,6 +611,11 @@ async def _is_group_ownership_beta(self, auth: dmda.DomoAuth):
     )
 
     return True if match_accounts_v2 else False
+
+
+class ShareAccount_Error(de.DomoError):
+    def __init__(self, domo_instance, status, response):
+        super().__init__(status=status, message=response, domo_instance=domo_instance)
 
 
 @patch_to(DomoAccount)
@@ -672,12 +687,20 @@ account sharing differs between v1 and v2 of the API."""
         )
 
     if res.status == 500 and res.response == "Internal Server Error":
-        res.response = f'ℹ️ - {res.response + " | User may own account."}'
+        ShareAccount_Error(domo_instance=domo_instance,
+                           status=res.status,
+                           response=f'ℹ️ - {res.response} | User may own account.'
+                           )
+
+    if not res.is_success:
+        ShareAccount_Error(domo_instance=domo_instance,
+                           status=res.status, response=res.response)
 
     if res.status == 200:
         res.response = f"shared {self.id} - {self.name} with {user_id or group_id}"
 
     return res
+
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 42
 @patch_to(DomoAccount)
