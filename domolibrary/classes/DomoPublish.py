@@ -201,11 +201,6 @@ class DomoPublications:
 
         return [ DomoPublication_Subscription._from_json(sub) for sub in sub_ls]
 
-        # return [ sub for sub in sub_ls]
-        
-        
-
-
 # %% ../../nbs/classes/50_DomoPublish.ipynb 18
 @patch_to(DomoPublications, cls_method=True)
 async def search_publications(

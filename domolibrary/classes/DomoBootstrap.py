@@ -59,7 +59,9 @@ class Bootstrap_RetrievalError(de.DomoError):
 
 @patch_to(DomoBootstrap)
 async def get_all(
-    self: DomoBootstrap, auth: dmda.DomoAuth = None, debug_api: bool = False
+    self: DomoBootstrap, 
+    auth: dmda.DomoFullAuth = None, 
+    debug_api: bool = False
 ):
     auth = auth or self.auth
 
