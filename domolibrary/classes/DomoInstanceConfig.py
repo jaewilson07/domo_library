@@ -38,50 +38,65 @@ class DomoInstanceConfig:
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 6
 @patch_to(DomoInstanceConfig)
+async def is_invite_social_users_enabled(
+    self: DomoInstanceConfig,
+    auth: dmda.DomoFullAuth,
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+    return_raw: bool = False):
+    
+    import domolibrary.classes.DomoBootstrap as dmbp
+
+    bs = dmbp.DomoBootstrap( auth = auth)
+    customer_id = await bs.get_customer_id()
+    
+    res = await instance_config_routes.get_is_invite_social_users(
+        auth=auth or self.auth,
+        customer_id=customer_id,
+        session=session,
+        debug_api=debug_api,
+    )
+
+    if return_raw:
+        return res
+
+    return res.response["enabled"]
+
+
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 9
+@patch_to(DomoInstanceConfig)
 async def toggle_social_users(
-    self : DomoInstanceConfig,
+    self: DomoInstanceConfig,
     auth: dmda.DomoFullAuth,
     is_enabled: bool,
     debug_api: bool = False,
+    debug_prn: bool = True,
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
 ):
+    is_invite_social_users_enabled = await self.is_invite_social_users_enabled(
+        auth=auth)
+
+    if is_enabled == is_invite_social_users_enabled:
+        if debug_prn:
+            print(f"invite social users is already {'enabled' if is_enabled else 'disabled'} in {auth.domo_instance}")
+        return True
+    
+    if debug_prn:
+        print(f"{'enabling' if is_enabled else 'disabling'} invite social users {auth.domo_instance}")
+
     res = await instance_config_routes.toggle_social_users(
-    auth = auth or self.auth,
-    is_enabled = is_enabled, 
-    session = session,
-    debug_api = debug_api,
-)
+        auth=auth or self.auth,
+        is_enabled=is_enabled,
+        session=session,
+        debug_api=debug_api
+    )
 
-    if return_raw:
-        return res.response
-    
-    if res.status != 200 :
-        return False
-    
-    return True
-
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 10
-@patch_to(DomoInstanceConfig)
-async def get_is_invite_social_users(
-    self : DomoInstanceConfig,
-    auth: dmda.DomoFullAuth,
-    user_group: str,
-    debug_api: bool = False,
-    session: httpx.AsyncClient = None,
-    return_raw : bool = False
-):
-    res = await instance_config_routes.get_is_invite_social_users(
-    auth = auth or self.auth,
-    user_group = user_group, 
-    session = session,
-    debug_api = debug_api,
-)
-    
     if return_raw:
         return res
-    
-    return res.response["enabled"]
+
+    return True
+
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 16
 @patch_to(DomoInstanceConfig)

@@ -687,13 +687,13 @@ account sharing differs between v1 and v2 of the API."""
         )
 
     if res.status == 500 and res.response == "Internal Server Error":
-        ShareAccount_Error(domo_instance=domo_instance,
+        ShareAccount_Error(domo_instance=auth.domo_instance,
                            status=res.status,
                            response=f'ℹ️ - {res.response} | User may own account.'
                            )
 
     if not res.is_success:
-        ShareAccount_Error(domo_instance=domo_instance,
+        ShareAccount_Error(domo_instance=auth.domo_instance,
                            status=res.status, response=res.response)
 
     if res.status == 200:
@@ -784,7 +784,7 @@ class DomoAccounts:
 class GetAccounts_NotFound(de.DomoError):
     def __init__(self, account_id, account_name, domo_instance):
         message = f"account {account_id or account_name} not found"
-        super().__init(message, domo_instance)
+        super().__init__(message, domo_instance)
 
 
 @patch_to(DomoAccounts, cls_method=True)
@@ -855,6 +855,7 @@ async def get_accounts(
     account_name: str = None,
     account_id: str = None,
     account_type: AccountConfig = None,  # to retrieve a specific account type
+    account_type_str = None,
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
@@ -905,12 +906,17 @@ async def get_accounts(
         domo_accounts = [ domo_account for domo_account in domo_accounts if domo_account.name.lower() == account_name.lower()]
 
     if account_type:
-        domo_accounts=[
+        return [
             domo_account
             for domo_account in domo_accounts
-            if domo_account.data_provider_type == account_type.value.data_provider_type
-        ]
-
+            if domo_account.data_provider_type == account_type.value.data_provider_type ]
+    
+    if account_type_str:
+        return [
+            domo_account
+            for domo_account in domo_accounts
+            if domo_account.data_provider_type == account_type_str ]
+   
     return domo_accounts
 
 
@@ -949,28 +955,33 @@ async def upsert_account(
     if account_name and acc is None:
         acc = await DomoAccounts.get_accounts(
             account_name=account_name, auth=auth,
-            account_type= (account_config and account_config.data_provider_type) or None
+            account_type_str= (account_config and account_config.data_provider_type) or None
         )
 
         if (
             isinstance(acc, list)
             and len(acc) > 0
-            and isinstance(acc[0], dmacc.DomoAccount)
+            and isinstance(acc[0], DomoAccount)
         ):
             acc = acc[0]
 
         else:
             acc = None
 
+    if debug_prn: 
+        print(f"match to {acc} for upsert in {auth.domo_instance}")
+
     if acc and account_config:  # upsert account
         acc.config = account_config
 
         if debug_prn:
-            print(acc.config)
+            print(f"upsertting config {acc.config}")
 
-        await acc.update_config()
+        await acc.update_config( debug_api = debug_api)
 
     if not acc:
+        if debug_prn:
+            print(f"creating account {account_name} in {auth.domo_instance}")
         acc = await DomoAccount.create_account(
             account_name=account_name,
             config=account_config,

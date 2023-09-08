@@ -36,7 +36,7 @@ async def get_accounts(auth: dmda.DomoAuth,
 
 # %% ../../nbs/routes/account.ipynb 7
 class GetAccount_NoMatch(de.DomoError):
-    def __init__(self, account_id, domo_instance, status, function_name = 'get_account_from_id'):
+    def __init__(self, account_id, domo_instance, status= None, function_name = 'get_account_from_id'):
 
         message = f"account_id {account_id} not found"
         

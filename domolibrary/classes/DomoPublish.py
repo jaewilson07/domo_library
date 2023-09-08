@@ -39,16 +39,11 @@ class DomoPublication_Subscription:
             dd = util_dd.DictDot(json)
 
         return cls(
-            subscription_id=dd.id,
+            subscription_id=dd.id or dd.subscriptionId,
             publication_id=dd.publicationId,
-            domain=dd.domain,
-            created_dt=dt.datetime.fromtimestamp(dd.created / 1000)
-            if dd.created
-            else None,
+            domain=dd.domain or dd.publisherDomain,
+            created_dt=dt.datetime.fromtimestamp(dd.created / 1000) if dd.created else None,
         )
-
-
-
 
 # %% ../../nbs/classes/50_DomoPublish.ipynb 6
 @dataclass
@@ -204,7 +199,9 @@ class DomoPublications:
 
         sub_ls = res.response
 
-        return [ sub for sub in sub_ls]
+        return [ DomoPublication_Subscription._from_json(sub) for sub in sub_ls]
+
+        # return [ sub for sub in sub_ls]
         
         
 
