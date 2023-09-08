@@ -36,7 +36,62 @@ class DomoInstanceConfig:
     auth: dmda.DomoAuth
     allowlist: list[str] = field(default_factory=list)
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 6
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 7
+@patch_to(DomoInstanceConfig)
+async def is_user_invite_enabled(
+    self: DomoInstanceConfig,
+    auth: dmda.DomoFullAuth,
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+    return_raw: bool = False):
+    
+    res = await instance_config_routes.get_user_invite_enabled(
+        auth=auth or self.auth,
+        session=session,
+        debug_api=debug_api,
+    )
+
+    if return_raw:
+        return res
+
+    return res.response["value"]
+
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 10
+@patch_to(DomoInstanceConfig)
+async def toggle_user_invite_enabled(
+    self: DomoInstanceConfig,
+    auth: dmda.DomoFullAuth,
+    is_enabled: bool,
+    debug_api: bool = False,
+    debug_prn: bool = True,
+    session: httpx.AsyncClient = None,
+    return_raw: bool = False,
+):
+    is_user_invite_enabled = await self.is_user_invite_enabled(
+        auth=auth)
+
+    if is_enabled == is_user_invite_enabled:
+        if debug_prn:
+            print(f"User invite notification is already {'enabled' if is_enabled else 'disabled'} in {auth.domo_instance}")
+        return True
+    
+    if debug_prn:
+        print(f"{'enabling' if is_enabled else 'disabling'} User invite notification {auth.domo_instance}")
+
+    res = await instance_config_routes.toggle_user_invite_enabled(
+        auth=auth or self.auth,
+        is_enabled=is_enabled,
+        session=session,
+        debug_api=debug_api
+    )
+
+    if return_raw:
+        return res
+
+    return True
+
+
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 14
 @patch_to(DomoInstanceConfig)
 async def is_invite_social_users_enabled(
     self: DomoInstanceConfig,
@@ -63,7 +118,7 @@ async def is_invite_social_users_enabled(
     return res.response["enabled"]
 
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 9
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 17
 @patch_to(DomoInstanceConfig)
 async def toggle_social_users(
     self: DomoInstanceConfig,
@@ -98,7 +153,7 @@ async def toggle_social_users(
     return True
 
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 16
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 24
 @patch_to(DomoInstanceConfig)
 async def get_allowlist(
     self: DomoInstanceConfig,
@@ -136,7 +191,7 @@ async def get_allowlist(
 
     return allowlist
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 20
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 28
 @patch_to(DomoInstanceConfig)
 async def set_allowlist(
     self: DomoInstanceConfig,
@@ -176,7 +231,7 @@ async def upsert_allowlist(
         session=session,
     )
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 25
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 33
 @patch_to(DomoInstanceConfig)
 async def get_grants(
     self: DomoInstanceConfig,
@@ -193,7 +248,7 @@ async def get_grants(
     return await dmg.DomoGrants.get_grants(auth = auth, return_raw = return_raw, session = session, debug_api = debug_api)
     
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 28
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 36
 @patch_to(DomoInstanceConfig)
 async def get_roles(
     self,
@@ -208,7 +263,7 @@ async def get_roles(
 
     return await dmr.DomoRoles.get_roles(auth=auth, debug_api=debug_api, return_raw = return_raw, session=session)
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 32
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 40
 @patch_to(DomoInstanceConfig)
 async def get_authorized_domains(
     self: DomoInstanceConfig,
@@ -228,7 +283,7 @@ async def get_authorized_domains(
 
     return res.response
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 35
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 43
 @patch_to(DomoInstanceConfig, cls_method=True)
 async def set_authorized_domains(
     cls: DomoInstanceConfig,
@@ -283,7 +338,7 @@ async def upsert_authorized_domains(
         session=session,
     )
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 36
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 44
 @patch_to(DomoInstanceConfig, cls_method=True)
 async def get_applications(
     cls,
