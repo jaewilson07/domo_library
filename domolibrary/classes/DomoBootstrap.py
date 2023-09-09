@@ -15,6 +15,7 @@ import domolibrary.utils.DictDot as util_dd
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 import domolibrary.routes.bootstrap as bootstrap_routes
+import domolibrary.utils.chunk_execution as ce
 
 
 # %% ../../nbs/classes/50_DomoBootstrap.ipynb 3
@@ -107,7 +108,7 @@ async def get_pages(
 
     page_ls = res.response
 
-    self.page_ls = await asyncio.gather(
+    self.page_ls = await ce.gather_with_concurrency(n = 60,
         *[dmpg.DomoPage._from_bootstrap(page_obj, auth=auth) for page_obj in page_ls]
     )
 

@@ -12,9 +12,11 @@ import asyncio
 import httpx
 
 import domolibrary.client.DomoAuth as dmda
-import domolibrary.utils.DictDot as util_dd
 
 import domolibrary.routes.page as page_routes
+
+import domolibrary.utils.DictDot as util_dd
+import domolibrary.utils.chunk_execution as ce
 
 # %% ../../nbs/classes/50_DomoPage.ipynb 4
 @dataclass
@@ -50,7 +52,7 @@ class DomoPage:
     async def _get_domo_groups(self, group_id_ls: [str]):
         import domolibrary.classes.DomoGroup as dmg
 
-        return await asyncio.gather(
+        return await ce.gather_with_concurrency(n = 60,
             *[
                 dmg.DomoGroup.get_by_id(group_id=group_id, auth=self.auth)
                 for group_id in group_id_ls
@@ -69,7 +71,7 @@ class DomoPage:
         if owner_user_ls and len(owner_user_ls) > 0 :
             tasks.append(self._get_domo_users(owner_user_ls))
 
-        res = await asyncio.gather(*tasks)
+        res = await ce.gather_with_concurrency(n=60,*tasks)
 
         return res
 
@@ -443,7 +445,7 @@ class DomoPage:
     async def _get_domo_groups(self, group_id_ls: [str]):
         import domolibrary.classes.DomoGroup as dmg
 
-        return await asyncio.gather(
+        return await ce.gather_with_concurrency( n = 60,
             *[
                 dmg.DomoGroup.get_by_id(group_id=group_id, auth=self.auth)
                 for group_id in group_id_ls
@@ -462,7 +464,7 @@ class DomoPage:
         if owner_user_ls and len(owner_user_ls) > 0 :
             tasks.append(self._get_domo_users(owner_user_ls))
 
-        res = await asyncio.gather(*tasks)
+        res = await ce.gather_with_concurrency(n= 60,*tasks)
         
         if not res or len(res) == 0 : return []
         
@@ -483,7 +485,7 @@ async def _from_bootstrap(cls: DomoPage, page_obj, auth: dmda.DomoAuth = None):
         pg.owners = await pg._get_domo_owners_from_dd(dd.owners)
 
     if isinstance(dd.children, list) and len(dd.children) > 0:
-        pg.children = await asyncio.gather(
+        pg.children = await ce.gather_with_concurrency(n = 60,
             *[
                 cls._from_bootstrap(page_obj=child_dd, auth=auth)
                 for child_dd in dd.children
@@ -572,7 +574,7 @@ async def _from_adminsummary(cls, page_obj, auth: dmda.DomoAuth):
         pg.owners = await pg._get_domo_owners_from_dd(dd.page.owners)
 
     if dd.cards and len(dd.cards) > 0:
-        pg.cards = await asyncio.gather(
+        pg.cards = await ce.gather_with_concurrency( n = 60,
             *[dmc.DomoCard.get_from_id(id=card.id, auth=auth) for card in dd.cards]
         )
 
@@ -602,20 +604,15 @@ async def get_accesslist(
     import domolibrary.classes.DomoUser as dmu
     import domolibrary.classes.DomoGroup as dmg
 
-    tasks = await asyncio.gather(
-        dmu.DomoUsers.by_id(
+    tasks = await ce.gather_with_concurrency(n=60,
+        *[
+            dmu.DomoUsers.by_id(
             user_ids=[user.get("id") for user in res.response.get("users")],
             only_allow_one=False,
-            auth=auth,
-        ),
+            auth=auth),
         *[
             dmg.DomoGroup.get_by_id(group_id=group.get("id"), auth=auth)
-            for group in res.response.get("groups")
-        ]
-    )
-
-    res.response.update({"users": tasks[0], "groups": tasks[1:]})
-
+            for group in res.response.get("groups")]])
     return res.response
 
 # %% ../../nbs/classes/50_DomoPage.ipynb 17
@@ -664,7 +661,7 @@ async def get_cards(cls,
     if len(res.response.get('cards')) == 0:
         return []
 
-    return await asyncio.gather(*[dc.DomoCard.get_by_id(card_id=card['id'],
+    return await ce.gather_with_concurrency( n = 60, *[dc.DomoCard.get_by_id(card_id=card['id'],
                                                   auth=auth) for card in res.response.get('cards')])
 
 
@@ -686,7 +683,7 @@ async def get_datasets(cls,
     if len(res.response.get('cards')) == 0:
         return []
 
-    return await asyncio.gather(*[ dmds.DomoDataset.get_from_id(dataset_id = ds.get('dataSourceId'), auth = auth) for card in res.response.get('cards') for ds in card.get('datasources')])
+    return await ce.gather_with_concurrency(n= 60, *[ dmds.DomoDataset.get_from_id(dataset_id = ds.get('dataSourceId'), auth = auth) for card in res.response.get('cards') for ds in card.get('datasources')])
 
 # %% ../../nbs/classes/50_DomoPage.ipynb 23
 from datetime import datetime
@@ -753,7 +750,7 @@ class DomoPages:
             if not res.is_success:
                 raise Exception("unable to retrieve pages")
 
-            return await asyncio.gather(
+            return await ce.gather_with_concurrency(n = 60,
                 *[
                     DomoPage._from_adminsummary(page_obj, auth=auth)
                     for page_obj in res.response

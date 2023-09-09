@@ -13,12 +13,15 @@ from fastcore.basics import patch_to
 from dataclasses import dataclass, field
 from typing import List
 
+import domolibrary.utils.chunk_execution as ce
+
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 
 import domolibrary.routes.instance_config as instance_config_routes
 import domolibrary.routes.bootstrap as bootstrap_routes
 import domolibrary.routes.publish as publish_routes
+
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 4
 @dataclass

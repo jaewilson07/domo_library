@@ -23,6 +23,8 @@ import domolibrary.routes.publish as publish_routes
 
 import domolibrary.classes.DomoLineage as dmdl
 
+import domolibrary.utils.chunk_execution as ce
+
 # %% ../../nbs/classes/50_DomoPublish.ipynb 4
 @dataclass
 class DomoPublication_Subscription:
@@ -224,7 +226,7 @@ async def search_publications(
     if not res.is_success or (res.is_success and len(res.response) == 0):
         return None
 
-    return await asyncio.gather(
+    return await ce.gather_with_concurrency( n = 60,
         *[
             DomoPublication.get_from_id(publication_id=sub_obj["id"], auth=auth)
             for sub_obj in res.response

@@ -20,6 +20,8 @@ import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 
+import domolibrary.utils.chunk_execution as ce
+
 # %% ../../nbs/routes/user.ipynb 5
 async def get_all_users(
     auth: dmda.DomoAuth, debug_api: bool = False
@@ -60,8 +62,8 @@ async def get_by_id(
             debug_api=debug_api,
             session=session,
             params=params,
-        ),
-    )
+        ))
+    
 
     res_v2.response.update({"roleId": res_v3.response.get("roleId")})
 

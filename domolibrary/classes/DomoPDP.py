@@ -8,17 +8,21 @@ import asyncio
 import datetime as dt
 import io
 import json
-from dataclasses import dataclass, field
-from enum import Enum, auto
-
-from fastcore.basics import patch_to
 
 import httpx
 import pandas as pd
 
+from fastcore.basics import patch_to
+
+from dataclasses import dataclass, field
+from enum import Enum, auto
+
 import domolibrary.utils.DictDot as util_dd
-import domolibrary.client.DomoAuth as dmda
+import domolibrary.utils.chunk_execution as ce
+
 import domolibrary.routes.pdp as pdp_routes
+
+import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 
 #from ..utils.chunk_execution import chunk_list
@@ -81,8 +85,8 @@ class PDP_Policy:
                    name=dd.name,
                    # resources=dd.resources,
                    parameters_ls=dd.parameters,
-                   user_ls=await asyncio.gather(* [dmu.DomoUser.get_by_id(user_id=id, auth=auth) for id in dd.userIds]) if dd.userIds else None,
-                   group_ls=await asyncio.gather(*[dmg.DomoGroup.get_by_id(group_id=id, auth=auth) for id in dd.groupIds]) if dd.groupIds else None,
+                   user_ls=await ce.gather_with_concurrency(n = 60, * [dmu.DomoUser.get_by_id(user_id=id, auth=auth) for id in dd.userIds]) if dd.userIds else None,
+                   group_ls=await ce.gather_with_concurrency(n = 60, *[dmg.DomoGroup.get_by_id(group_id=id, auth=auth) for id in dd.groupIds]) if dd.groupIds else None,
                    
                                                                                                                       
                    virtual_user_ls=dd.virtualUserIds)
@@ -170,7 +174,7 @@ async def get_policies(
               return res
 
         if res.status == 200:
-            domo_policy = await asyncio.gather(*[PDP_Policy._from_json(
+            domo_policy = await ce.gather_with_concurrency(n =60, *[PDP_Policy._from_json(
                 policy_obj, auth = auth) for policy_obj in res.response])
             self.policies = domo_policy
             return domo_policy

@@ -21,20 +21,22 @@ import aiohttp
 
 from fastcore.utils import patch_to
 import domolibrary.client.DomoError as de
+import domolibrary.client.Logger as dl
 
 # %% ../../nbs/client/99_ResponseGetData.ipynb 5
 class BlockedByVPN(de.DomoError):
     def __init__(
         self,
         domo_instance: Optional[str] = None,
-        ip_address : str = None,
-        function_name: str = "get_data"
+        ip_address: str = None,
+        function_name: str = "get_data",
     ):
         ip_address_str = f"from {ip_address}" if ip_address else ""
         message = f"request blocked {ip_address_str} - check VPN settings"
 
-        super().__init__(message=message, domo_instance=domo_instance, function_name=function_name)
-
+        super().__init__(
+            message=message, domo_instance=domo_instance, function_name=function_name
+        )
 
 # %% ../../nbs/client/99_ResponseGetData.ipynb 6
 API_Response = any
@@ -47,7 +49,9 @@ class ResponseGetData:
     status: int
     response: API_Response
     is_success: bool
-    auth: dict = field(repr = False, default=None)
+    auth: dict = field(repr=False, default=None)
+    parent_class: str = None
+    traceback_details: any = field(default=None)
 
     def set_response(self, response):
         self.response = response
@@ -70,133 +74,173 @@ def _from_requests_response(
     # errors
     return cls(status=res.status_code, response=res.reason, is_success=False)
 
+
 # %% ../../nbs/client/99_ResponseGetData.ipynb 16
-def find_ip(html,   html_tag: str = 'p'):
-    ip_address_regex = r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
-    soup = BeautifulSoup(html, 'html.parser')
+def find_ip(html, html_tag: str = "p"):
+    ip_address_regex = r"(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})"
+    soup = BeautifulSoup(html, "html.parser")
 
     return re.findall(ip_address_regex, str(soup.find(html_tag)))[0]
-                                 
 
 # %% ../../nbs/client/99_ResponseGetData.ipynb 17
 @patch_to(ResponseGetData, cls_method=True)
 def _from_httpx_response(
-    cls, 
+    cls,
     res: requests.Response,  # requests response object
-    auth : Optional[any] = None,
+    auth: Optional[any] = None,
+    traceback_details: dl.TracebackDetails = None,
 ) -> ResponseGetData:
     """returns ResponseGetData"""
-
 
     # JSON responses
     ok = True if res.status_code <= 399 and res.status_code >= 200 else False
 
-    if ok and '<title>Domo - Blocked</title>' in res.text:
+    if ok and "<title>Domo - Blocked</title>" in res.text:
         ip_address = find_ip(res.text)
-        
+
         raise BlockedByVPN(auth.domo_instance, ip_address)
-    
+
     if ok and "application/json" in res.headers.get("Content-Type", {}):
         try:
-            return cls(status=res.status_code, response=res.json(), is_success=True, auth = auth)
+            return cls(
+                status=res.status_code,
+                response=res.json(),
+                is_success=True,
+                auth=auth,
+                traceback_details=traceback_details,
+            )
 
         except Exception as e:
-            return cls(status=res.status_code, response=res.text, is_success=True, auth=auth)
+            return cls(
+                status=res.status_code,
+                response=res.text,
+                is_success=True,
+                auth=auth,
+                traceback_details=traceback_details,
+            )
 
     # default text responses
     elif ok:
-        return cls(status=res.status_code, response=res.text, is_success=True, auth = auth)
+        return cls(
+            status=res.status_code,
+            response=res.text,
+            is_success=True,
+            auth=auth,
+            traceback_details=traceback_details,
+        )
 
     # errors
-    return cls(status=res.status_code, response=res.reason_phrase, is_success=False, auth=auth)
-
+    return cls(
+        status=res.status_code,
+        response=res.reason_phrase,
+        is_success=False,
+        auth=auth,
+        traceback_details=traceback_details,
+    )
 
 # %% ../../nbs/client/99_ResponseGetData.ipynb 19
-STREAM_FILE_PATH = '__large-file.json'
+STREAM_FILE_PATH = "__large-file.json"
 
-async def _write_stream(res: httpx.Response,
-                        file_name: str = STREAM_FILE_PATH,
-                        stream_chunks=10):
-    
+
+async def _write_stream(
+    res: httpx.Response, file_name: str = STREAM_FILE_PATH, stream_chunks=10
+):
     print(type(res), type(res.content), stream_chunks)
 
     index = 0
-    with open(file_name, 'wb') as fd:
+    with open(file_name, "wb") as fd:
         async for chunk in res.content.iter_chunked(1024):
-            index +=1
+            index += 1
             print(f"writing chunk - {index}")
             fd.write(chunk)
 
             print(res.content.at_eof())
-        
-    print('done writing stream')
-    
+
+    print("done writing stream")
+
     return None
 
 
-async def _read_stream(file_name : str):
+async def _read_stream(file_name: str):
     with open(file_name, "rb") as f:
         return f.read()
-
 
 # %% ../../nbs/client/99_ResponseGetData.ipynb 20
 @patch_to(ResponseGetData, cls_method=True)
 async def _from_aiohttp_response(
-    cls: ResponseGetData, 
+    cls: ResponseGetData,
     res: aiohttp.ClientResponse,  # requests response object
-    auth : Optional[any] = None,
+    auth: Optional[any] = None,
     process_stream: bool = False,
-    stream_chunks : int = 10,
-    debug_api : bool = False,
-    response_file_name: str = None
+    stream_chunks: int = 10,
+    debug_api: bool = False,
+    response_file_name: str = None,
+    traceback_details: dl.TracebackDetails = None,
 ) -> ResponseGetData:
-
     """async method returns ResponseGetData"""
     if debug_api:
-        print( f"ResponseGetData: res.ok = {res.ok} , res.status = {res.status}" )
-    
+        print(f"ResponseGetData: res.ok = {res.ok} , res.status = {res.status}")
 
     try:
         data = None
 
         if process_stream:
-            await _write_stream(res = res, stream_chunks = stream_chunks)
+            await _write_stream(res=res, stream_chunks=stream_chunks)
             data = await _read_stream(response_file_name)
-        
-        else:        
+
+        else:
             data = await res.text()
-    
+
         if debug_api:
-            print('converting to text complete')
-    
+            print("converting to text complete")
+
     except asyncio.TimeoutError as e:
         print(f"ResponseGetDataError: {str(e)} , trying content.read")
 
         data = await res.content.read()
-    
 
     if res.ok and "application/json" in res.headers.get("Content-Type", {}):
         try:
-            return cls(status=res.status, response= orjson.loads(data), is_success=True, auth = auth)
+            return cls(
+                status=res.status,
+                response=orjson.loads(data),
+                is_success=True,
+                auth=auth,
+                traceback_details=traceback_details,
+            )
         except Exception as e:
-            return cls(status=res.status, response=data, is_success=True, auth=auth)
+            return cls(
+                status=res.status,
+                response=data,
+                is_success=True,
+                auth=auth,
+                traceback_details=traceback_details,
+            )
 
     elif res.ok:
-        return cls(status=res.status, response= data, is_success=True, auth = auth)
+        return cls(
+            status=res.status,
+            response=data,
+            is_success=True,
+            auth=auth,
+            traceback_details=traceback_details,
+        )
 
     # response is error
     else:
-        return cls(status=res.status, response=res.reason, is_success=False, auth = auth)
+        return cls(
+            status=res.status,
+            response=res.reason,
+            is_success=False,
+            auth=auth,
+            traceback_details=traceback_details,
+        )
 
-
-
-# %% ../../nbs/client/99_ResponseGetData.ipynb 24
+# %% ../../nbs/client/99_ResponseGetData.ipynb 25
 @patch_to(ResponseGetData, cls_method=True)
-async def _from_looper(cls: ResponseGetData,
-                       res: ResponseGetData,  # requests response object
-                       array: list
-                       ) -> ResponseGetData:
-
+async def _from_looper(
+    cls: ResponseGetData, res: ResponseGetData, array: list  # requests response object
+) -> ResponseGetData:
     """async method returns ResponseGetData"""
 
     if res.is_success:
@@ -206,4 +250,3 @@ async def _from_looper(cls: ResponseGetData,
     # response is error
     else:
         return res
-

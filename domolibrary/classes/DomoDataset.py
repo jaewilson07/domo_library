@@ -19,11 +19,14 @@ from enum import Enum
 
 from fastcore.basics import patch_to
 
-import domolibrary.client.DomoError as de
 import domolibrary.utils.DictDot as util_dd
+import domolibrary.utils.chunk_execution as ce
+
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
+
 import domolibrary.routes.dataset as dataset_routes
+
 import domolibrary.classes.DomoPDP as dmpdp
 import domolibrary.classes.DomoCertification as dmdc
 
@@ -658,7 +661,7 @@ async def upload_data(self: DomoDataset,
         if debug_prn:
             print(f"\n\n🎭 starting Stage 2 - upload file for {status_message}")
 
-        res = await asyncio.gather(*[dataset_routes.upload_dataset_stage_2_file(auth=auth,
+        res = await ce.gather_with_concurrency(n = 60, *[dataset_routes.upload_dataset_stage_2_file(auth=auth,
                                                                                 dataset_id=dataset_id,
                                                                                 upload_id=dataset_upload_id,
                                                                                 part_id=1,
@@ -670,7 +673,7 @@ async def upload_data(self: DomoDataset,
             print(
                 f"\n\n🎭 starting Stage 2 - {len(upload_df_ls)} - number of parts for {status_message}")
 
-        res = await asyncio.gather(*[dataset_routes.upload_dataset_stage_2_df(auth=auth,
+        res = await ce.gather_with_concurrency(n = 60, *[dataset_routes.upload_dataset_stage_2_df(auth=auth,
                                                                               dataset_id=dataset_id,
                                                                               upload_id=dataset_upload_id,
                                                                               part_id=index + 1,

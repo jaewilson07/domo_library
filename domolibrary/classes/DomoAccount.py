@@ -39,6 +39,8 @@ import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 import domolibrary.routes.account as account_routes
 
+import domolibrary.utils.chunk_execution as ce
+
 # %% ../../nbs/classes/50_DomoAccount.ipynb 6
 class DomoAccount_Config(ABC):
     """DomoAccount Config abstract base class"""
@@ -802,7 +804,8 @@ async def _get_accounts_accountsapi(
     if return_raw or len(res.response) == 0:
         return res
 
-    return await asyncio.gather(
+    return await ce.gather_with_concurrency(
+        n = 60,
         *[
             DomoAccount.get_by_id(
                 account_id=json_obj.get("id"),
@@ -919,6 +922,24 @@ async def get_accounts(
    
     return domo_accounts
 
+
+# %% ../../nbs/classes/50_DomoAccount.ipynb 50
+@patch_to(DomoAccount)
+async def get_accesslist(
+    self: DomoAccount,
+    auth: dmda.DomoAuth = None,
+    debug_api: bool = False,
+    return_raw: bool = False,
+    session: httpx.AsyncClient = None,
+):
+    res = await account_routes.get_share_account_v2(
+        auth=auth or self.auth, account_id=self.id, debug_api=debug_api, session=session
+    )
+
+    if return_raw:
+        return res
+
+    return res.response["list"]
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 54
 class UpsertAccount_MatchCriteria(de.DomoError):
