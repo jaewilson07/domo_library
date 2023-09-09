@@ -5,11 +5,9 @@ __all__ = ['gather_with_concurrency', 'run_sequence', 'chunk_list']
 
 # %% ../../nbs/utils/chunk_execution.ipynb 2
 from typing import Any, Awaitable
-
-# %% ../../nbs/utils/chunk_execution.ipynb 3
 import asyncio
 
-# %% ../../nbs/utils/chunk_execution.ipynb 4
+# %% ../../nbs/utils/chunk_execution.ipynb 3
 async def gather_with_concurrency(
     *coros, # list of coroutines to await
     n=60,  # number of open coroutines
@@ -25,7 +23,7 @@ async def gather_with_concurrency(
     return await asyncio.gather(*(sem_coro(c) for c in coros))
 
 
-# %% ../../nbs/utils/chunk_execution.ipynb 7
+# %% ../../nbs/utils/chunk_execution.ipynb 6
 async def run_sequence(*functions: Awaitable[Any] # comma separated list of functions
  ) -> None: # no explicit return
     """executes a sequence of functions"""
@@ -33,7 +31,7 @@ async def run_sequence(*functions: Awaitable[Any] # comma separated list of func
     return [ await function for function in functions]
         
 
-# %% ../../nbs/utils/chunk_execution.ipynb 10
+# %% ../../nbs/utils/chunk_execution.ipynb 9
 def chunk_list(obj_ls :list[any],  # list of entities to split into n chunks
                chunk_size:int  # entities per sub list
                ) -> list[list[dict]]:  # returns a list of chunk_size lists of objects

@@ -1012,3 +1012,82 @@ async def upsert_account(
 
     return acc
 
+
+# %% ../../nbs/classes/50_DomoAccount.ipynb 57
+@patch_to(DomoAccount)
+async def upsert_share_account_user(
+    self: DomoAccount,
+    domo_user,
+    auth: dmda.DomoAuth = None,
+    is_v2: bool = None,
+    access_level: ShareAccount = None,  # will default to Read
+    debug_api: bool = False,
+    debug_prn: bool = False,
+    session: httpx.AsyncClient = None,
+):
+    auth = auth or self.auth
+
+    ls_share = await account_routes.get_share_account_v2(auth=auth, account_id=self.id)
+    res = None
+    if domo_user:
+        user_id = domo_user.id
+        found_user = next(
+            (
+                obj
+                for obj in ls_share.response["list"]
+                if obj["id"] == user_id and obj["type"] == "USER"
+            ),
+            None,
+        )
+        if not found_user:
+            res = await self.share(
+                domo_user=domo_user,
+                auth=auth,
+                is_v2=is_v2,
+                access_level=access_level,
+                debug_api=debug_api,
+                debug_prn=debug_prn,
+                session=session,
+            )
+
+    return res
+
+
+@patch_to(DomoAccount)
+async def upsert_share_account_group(
+    self: DomoAccount,
+    domo_group,
+    auth: dmda.DomoAuth = None,
+    is_v2: bool = None,
+    access_level: ShareAccount = None,  # will default to Read
+    debug_api: bool = False,
+    debug_prn: bool = False,
+    session: httpx.AsyncClient = None,
+):
+    auth = auth or self.auth
+
+    ls_share = await account_routes.get_share_account_v2(auth=auth, account_id=self.id)
+    res = None
+
+    if domo_group:
+        group_id = domo_group.id
+        found_group = next(
+            (
+                obj
+                for obj in ls_share.response["list"]
+                if obj["id"] == group_id and obj["type"] == "GROUP"
+            ),
+            None,
+        )
+        if not found_group:
+            res = await self.share(
+                domo_group=domo_group,
+                auth=auth,
+                is_v2=is_v2,
+                access_level=access_level,
+                debug_api=debug_api,
+                debug_prn=debug_prn,
+                session=session,
+            )
+
+    return res
