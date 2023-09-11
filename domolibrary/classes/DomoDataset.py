@@ -872,7 +872,7 @@ async def reset_dataset(self: DomoDataset,
         await asyncio.gather(*[self.delete_partition(auth=auth,
                                                     dataset_partition_id=partition.get('partitionId'),
                                                     empty_df=empty_df,
-                                                    debug=False) for partition in pl])
+                                                    debug_api =debug_api) for partition in pl])
         if is_index:
             await self.index_dataset()
 
