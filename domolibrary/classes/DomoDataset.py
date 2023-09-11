@@ -862,24 +862,21 @@ async def reset_dataset(self: DomoDataset,
     empty_df = empty_df.head(0)
 
     # get partition list
-#         partition_list = await dataset_routes.list_partitions(auth=auth,
-#                                                               dataset_id=self.id,
-#                                                               debug=debug,
-#                                                               session=session)
+    partition_list = await dataset_routes.list_partitions(auth=auth,
+                                                          dataset_id=self.id,
+                                                          debug_api=debug_api)
+    if len(partition_list) > 0:
+        partition_list = ce.chunk_list(partition_list, 100)
 
-#         if len(partition_list) > 0:
-#             partition_list = chunk_list(partition_list, 100)
+    for index, pl in enumerate(partition_list):
+        print(f'🥫 starting chunk {index + 1} of {len(partition_list)}')
 
-#             for index, pl in enumerate(partition_list):
-#                 print(f'🥫 starting chunk {index + 1} of {len(partition_list)}')
-
-#                 await asyncio.gather(*[self.delete_partition(auth=auth,
-#                                                              dataset_partition_id=partition.get('partitionId'),
-#                                                              session=session,
-#                                                              empty_df=empty_df,
-#                                                              debug=False) for partition in pl])
-#                 if is_index:
-#                     await self.index_dataset(session=session)
+        await asyncio.gather(*[self.delete_partition(auth=auth,
+                                                    dataset_partition_id=partition.get('partitionId'),
+                                                    empty_df=empty_df,
+                                                    debug=False) for partition in pl])
+        if is_index:
+            await self.index_dataset()
 
     res = await self.upload_data(upload_df=empty_df,
                                 upload_method='REPLACE',
