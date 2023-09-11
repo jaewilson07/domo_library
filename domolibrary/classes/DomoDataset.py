@@ -862,9 +862,7 @@ async def reset_dataset(self: DomoDataset,
     empty_df = empty_df.head(0)
 
     # get partition list
-    partition_list = await dataset_routes.list_partitions(auth=auth,
-                                                          dataset_id=self.id,
-                                                          debug_api=debug_api)
+    partition_list = await self.list_partitions()
     if len(partition_list) > 0:
         partition_list = ce.chunk_list(partition_list, 100)
 
