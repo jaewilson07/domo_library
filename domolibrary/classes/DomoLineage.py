@@ -17,6 +17,8 @@ import domolibrary.classes.DomoDatacenter as dmdc
 
 import domolibrary.routes.datacenter as datacenter_routes
 
+import domolibrary.utils.chunk_execution as ce
+
 # %% ../../nbs/classes/50_DomoLineage.ipynb 3
 class DomoLineage_Type(Enum):
     DomoDataflow = "DATAFLOW"
@@ -110,7 +112,7 @@ async def _get_page_card_ids(self: DomoLineage):
     if not self.parent.content_page_id_ls or len(self.parent.content_page_id_ls) == 0:
         return None
 
-    page_card_ls = await asyncio.gather(
+    page_card_ls = await ce.gather_with_concurrency( n = 60,
         *[
             dmpg.DomoPage.get_cards(page_id=page_id, auth=self.parent.auth)
             for page_id in self.parent.content_page_id_ls

@@ -16,7 +16,7 @@ from pprint import pprint
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoError as de
-
+import domolibrary.client.Logger as dl
 
 # %% ../../nbs/client/10_get_data.ipynb 3
 async def get_data_aiohttp(
@@ -31,7 +31,7 @@ async def get_data_aiohttp(
     params: Optional[dict] = None,
     debug_api: bool = False,
     process_stream: bool = False,
-    stream_chunks: int = 10
+    stream_chunks: int = 10,
 ) -> rgd.ResponseGetData:
     """async wrapper for asyncio requests"""
 
@@ -91,7 +91,9 @@ async def get_data_aiohttp(
             res = await session.request(
                 method=method.upper(), url=url, headers=headers, params=params
             )
-        return await rgd.ResponseGetData._from_aiohttp_response(res, auth=auth, process_stream=process_stream, stream_chunks=stream_chunks)
+        return await rgd.ResponseGetData._from_aiohttp_response(
+            res, auth=auth, process_stream=process_stream, stream_chunks=stream_chunks
+        )
 
     except Exception as e:
         print(e)
@@ -100,12 +102,10 @@ async def get_data_aiohttp(
         if is_close_session:
             await session.close()
 
-
 # %% ../../nbs/client/10_get_data.ipynb 6
 class GetData_Error(de.DomoError):
     def __init__(self, message, url):
-        super().__init__( message = message, domo_instance = url)
-        
+        super().__init__(message=message, domo_instance=url)
 
 # %% ../../nbs/client/10_get_data.ipynb 7
 async def get_data(
@@ -120,7 +120,10 @@ async def get_data(
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
     is_follow_redirects: bool = False,
-    timeout = 10
+    timeout=10,
+    parent_class: str = None,  # name of the parent calling class
+    num_stacks_to_drop: int = 2,  # number of stacks to drop from the stack trace.  see `domolibrary.client.Logger.TracebackDetails`.  use 2 with class > route structure.  use 1 with route based approach
+    debug_traceback: bool = False,
 ) -> rgd.ResponseGetData:
     """async wrapper for asyncio requests"""
 
@@ -158,10 +161,16 @@ async def get_data(
 
     session = session or httpx.AsyncClient()
 
+    traceback_details = dl.get_traceback(
+        num_stacks_to_drop=num_stacks_to_drop,
+        root_module="<module>",
+        parent_class=parent_class,
+        debug_traceback=debug_traceback,
+    )
 
     attempt = 1
     max_attempt = 4
-    
+
     while attempt <= max_attempt:
         try:
             if isinstance(body, dict) or isinstance(body, list):
@@ -173,7 +182,7 @@ async def get_data(
                     json=body,
                     params=params,
                     follow_redirects=is_follow_redirects,
-                    timeout = timeout
+                    timeout=timeout,
                 )
 
             elif body:
@@ -186,7 +195,7 @@ async def get_data(
                     data=body,
                     params=params,
                     follow_redirects=is_follow_redirects,
-                    timeout = timeout
+                    timeout=timeout,
                 )
 
             else:
@@ -198,7 +207,7 @@ async def get_data(
                     headers=headers,
                     params=params,
                     follow_redirects=is_follow_redirects,
-                    timeout = timeout
+                    timeout=timeout,
                 )
 
             if debug_api:
@@ -207,25 +216,39 @@ async def get_data(
             if return_raw:
                 return res
 
-            return rgd.ResponseGetData._from_httpx_response(res, auth=auth)
-        
+            return rgd.ResponseGetData._from_httpx_response(
+                res, 
+                auth=auth, 
+                traceback_details=traceback_details
+            )
+
         except httpx.TransportError as e:
             print(f"ℹ️ get_data error - {e} at {url}")
-            attempt +=1
+            attempt += 1
+
+            session = httpx.AsyncClient()
 
             if attempt == max_attempt:
                 raise GetData_Error(url=url, message=e) from e
 
             await asyncio.sleep(5)
+        
+        except RuntimeError as e:
+            print(f"ℹ️ get_data error - {e} at {url}")
+            attempt += 1
 
+            session = httpx.AsyncClient()
 
+            if attempt == max_attempt:
+                raise GetData_Error(url=url, message=e) from e
+
+            await asyncio.sleep(5)
+        
         finally:
             if is_close_session:
                 await session.aclose()
 
-
-
-# %% ../../nbs/client/10_get_data.ipynb 11
+# %% ../../nbs/client/10_get_data.ipynb 12
 async def get_data_stream(
     url: str,
     auth: dmda.DomoAuth,
@@ -294,20 +317,20 @@ async def get_data_stream(
 
         await asyncio.sleep(5)
 
-# %% ../../nbs/client/10_get_data.ipynb 15
-class LooperError(Exception):
-    def __init__(self, loop_stage: str, message):
-
-        super().__init__(f"{loop_stage} - {message}")
 
 # %% ../../nbs/client/10_get_data.ipynb 16
+class LooperError(Exception):
+    def __init__(self, loop_stage: str, message):
+        super().__init__(f"{loop_stage} - {message}")
+
+# %% ../../nbs/client/10_get_data.ipynb 17
 async def looper(
     auth: dmda.DomoAuth,
     session: httpx.AsyncClient,
     url,
     offset_params,
     arr_fn: callable,
-    loop_until_end: bool = False, # usually you'll set this to true.  it will override maximum
+    loop_until_end: bool = False,  # usually you'll set this to true.  it will override maximum
     method="POST",
     body: dict = None,
     fixed_params: dict = None,
@@ -318,10 +341,9 @@ async def looper(
     maximum=0,
     debug_api: bool = False,
     debug_loop: bool = False,
-    timeout : bool = 10,
-    wait_sleep : int = 0
+    timeout: bool = 10,
+    wait_sleep: int = 0,
 ) -> rgd.ResponseGetData:
-
     is_close_session = False
 
     if not session:
@@ -335,7 +357,6 @@ async def looper(
 
     if maximum and maximum <= limit and not loop_until_end:
         limit = maximum
-    
 
     while isLoop:
         params = fixed_params or {}
@@ -370,13 +391,13 @@ async def looper(
             session=session,
             body=body,
             debug_api=debug_api,
-            timeout = timeout
+            timeout=timeout,
         )
 
         if not res.is_success:
             if is_close_session:
                 await session.aclose()
-                
+
             return res
 
         try:
@@ -390,15 +411,14 @@ async def looper(
 
         if len(newRecords) == 0:
             isLoop = False
-        
+
         if maximum and len(allRows) >= maximum and not loop_until_end:
             isLoop = False
 
-        
         if debug_loop:
             print({"all_rows": len(allRows), "new_records": len(newRecords)})
             print(f"skip: {skip}, limit: {limit}")
-        
+
         if maximum and skip + limit > maximum and not loop_until_end:
             limit = maximum - len(allRows)
 
@@ -415,7 +435,7 @@ async def looper(
 
     return await rgd.ResponseGetData._from_looper(res=res, array=allRows)
 
-# %% ../../nbs/client/10_get_data.ipynb 20
+# %% ../../nbs/client/10_get_data.ipynb 21
 async def looper_aiohttp(
     auth: dmda.DomoAuth,
     session: aiohttp.ClientSession,
@@ -434,7 +454,6 @@ async def looper_aiohttp(
     debug_api: bool = False,
     debug_loop: bool = False,
 ) -> rgd.ResponseGetData:
-
     is_close_session = False
 
     if not session:

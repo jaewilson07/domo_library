@@ -13,8 +13,7 @@ import asyncio
 from fastcore.basics import patch_to
 
 
-# from ..utils.Base import Base
-# from ..utils.DictDot import DictDot
+import domolibrary.utils.chunk_execution as ce
 
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
@@ -161,7 +160,7 @@ async def get_owners(
     
     group_ids = [obj.get('id') for obj in res.response if obj.get('type') == 'GROUP']
     if group_ids:
-        domo_groups = await asyncio.gather(* [DomoGroup.get_by_id(group_id=group_id, auth=auth) for group_id in group_ids])
+        domo_groups = await ce.gather_with_concurrency(n = 60, * [DomoGroup.get_by_id(group_id=group_id, auth=auth) for group_id in group_ids])
         self._current_owner_ls += domo_groups
     
     user_ids = [obj.get('id') for obj in res.response if obj.get('type') == 'USER']

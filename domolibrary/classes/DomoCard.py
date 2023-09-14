@@ -10,10 +10,12 @@ import asyncio
 import httpx
 from fastcore.basics import patch_to
 
+import domolibrary.utils.DictDot as util_dd
+import domolibrary.utils.chunk_execution as ce
+
 import domolibrary.routes.card as card_routes
 
 import domolibrary.client.DomoAuth as dmda
-import domolibrary.utils.DictDot as util_dd
 
 # %% ../../nbs/classes/50_DomoCard.ipynb 3
 @dataclass
@@ -68,7 +70,7 @@ class DomoCard:
             if user.type == 'GROUP':
                 tasks.append(dmg.DomoGroup.get_by_id(group_id=user.id, auth=auth))
 
-        card.owners = await asyncio.gather( *tasks)
+        card.owners = await ce.gather_with_concurrency( n = 60, *tasks)
 
         return card
 

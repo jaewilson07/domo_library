@@ -255,7 +255,7 @@ async def get_domains_with_instance_auth(
         
         
         if isinstance(creds, DomoJupyterAccount_InstanceAuth):
-            creds = creds._generate_auth(domo_instance=domo_instance)
+            creds = creds.generate_auth(domo_instance=domo_instance)
             creds.domo_instance = domo_instance
         
         config_df.at[index, "instance_auth"] = creds
@@ -271,7 +271,7 @@ async def get_domains_with_instance_auth(
                 auth  = auth_enum['config_0'].value
             
             if isinstance(auth, DomoJupyterAccount_InstanceAuth):
-                auth = auth._generate_auth(domo_instance=domo_instance)
+                auth = auth.generate_auth(domo_instance=domo_instance)
                 auth.domo_instance = domo_instance
             
             config_df.at[index, 'config_auth'] = auth
@@ -357,7 +357,7 @@ class GenerateAuth_CredentialsNotProvided(Exception):
 
 
 @patch_to(DomoJupyterAccount_InstanceAuth)
-def _generate_auth(self, domo_instance):
+def generate_auth(self, domo_instance):
     if self.domo_access_token:
         auth = dmda.DomoTokenAuth(
             domo_instance=domo_instance, domo_access_token=self.domo_access_token
@@ -395,7 +395,7 @@ def generate_auth_ls(
 
     self.auth_ls = []
     for domo_instance in self.domo_instance_ls:
-        auth = self._generate_auth(domo_instance)
+        auth = self.generate_auth(domo_instance)
 
         self.auth_ls.append(auth)
 

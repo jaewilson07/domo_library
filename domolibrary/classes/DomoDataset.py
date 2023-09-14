@@ -19,11 +19,14 @@ from enum import Enum
 
 from fastcore.basics import patch_to
 
-import domolibrary.client.DomoError as de
 import domolibrary.utils.DictDot as util_dd
+import domolibrary.utils.chunk_execution as ce
+
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
+
 import domolibrary.routes.dataset as dataset_routes
+
 import domolibrary.classes.DomoPDP as dmpdp
 import domolibrary.classes.DomoCertification as dmdc
 
@@ -658,7 +661,7 @@ async def upload_data(self: DomoDataset,
         if debug_prn:
             print(f"\n\n🎭 starting Stage 2 - upload file for {status_message}")
 
-        res = await asyncio.gather(*[dataset_routes.upload_dataset_stage_2_file(auth=auth,
+        res = await ce.gather_with_concurrency(n = 60, *[dataset_routes.upload_dataset_stage_2_file(auth=auth,
                                                                                 dataset_id=dataset_id,
                                                                                 upload_id=dataset_upload_id,
                                                                                 part_id=1,
@@ -670,7 +673,7 @@ async def upload_data(self: DomoDataset,
             print(
                 f"\n\n🎭 starting Stage 2 - {len(upload_df_ls)} - number of parts for {status_message}")
 
-        res = await asyncio.gather(*[dataset_routes.upload_dataset_stage_2_df(auth=auth,
+        res = await ce.gather_with_concurrency(n = 60, *[dataset_routes.upload_dataset_stage_2_df(auth=auth,
                                                                               dataset_id=dataset_id,
                                                                               upload_id=dataset_upload_id,
                                                                               part_id=index + 1,
@@ -859,24 +862,19 @@ async def reset_dataset(self: DomoDataset,
     empty_df = empty_df.head(0)
 
     # get partition list
-#         partition_list = await dataset_routes.list_partitions(auth=auth,
-#                                                               dataset_id=self.id,
-#                                                               debug=debug,
-#                                                               session=session)
+    partition_list = await self.list_partitions()
+    if len(partition_list) > 0:
+        partition_list = ce.chunk_list(partition_list, 100)
 
-#         if len(partition_list) > 0:
-#             partition_list = chunk_list(partition_list, 100)
+    for index, pl in enumerate(partition_list):
+        print(f'🥫 starting chunk {index + 1} of {len(partition_list)}')
 
-#             for index, pl in enumerate(partition_list):
-#                 print(f'🥫 starting chunk {index + 1} of {len(partition_list)}')
-
-#                 await asyncio.gather(*[self.delete_partition(auth=auth,
-#                                                              dataset_partition_id=partition.get('partitionId'),
-#                                                              session=session,
-#                                                              empty_df=empty_df,
-#                                                              debug=False) for partition in pl])
-#                 if is_index:
-#                     await self.index_dataset(session=session)
+        await asyncio.gather(*[self.delete_partition(auth=auth,
+                                                    dataset_partition_id=partition.get('partitionId'),
+                                                    empty_df=empty_df,
+                                                    debug_api =debug_api) for partition in pl])
+        if is_index:
+            await self.index_dataset()
 
     res = await self.upload_data(upload_df=empty_df,
                                 upload_method='REPLACE',

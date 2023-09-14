@@ -23,6 +23,8 @@ import domolibrary.routes.publish as publish_routes
 
 import domolibrary.classes.DomoLineage as dmdl
 
+import domolibrary.utils.chunk_execution as ce
+
 # %% ../../nbs/classes/50_DomoPublish.ipynb 4
 @dataclass
 class DomoPublication_Subscription:
@@ -39,16 +41,11 @@ class DomoPublication_Subscription:
             dd = util_dd.DictDot(json)
 
         return cls(
-            subscription_id=dd.id,
+            subscription_id=dd.id or dd.subscriptionId,
             publication_id=dd.publicationId,
-            domain=dd.domain,
-            created_dt=dt.datetime.fromtimestamp(dd.created / 1000)
-            if dd.created
-            else None,
+            domain=dd.domain or dd.publisherDomain,
+            created_dt=dt.datetime.fromtimestamp(dd.created / 1000) if dd.created else None,
         )
-
-
-
 
 # %% ../../nbs/classes/50_DomoPublish.ipynb 6
 @dataclass
@@ -204,10 +201,7 @@ class DomoPublications:
 
         sub_ls = res.response
 
-        return [ sub for sub in sub_ls]
-        
-        
-
+        return [ DomoPublication_Subscription._from_json(sub) for sub in sub_ls]
 
 # %% ../../nbs/classes/50_DomoPublish.ipynb 18
 @patch_to(DomoPublications, cls_method=True)
@@ -232,7 +226,7 @@ async def search_publications(
     if not res.is_success or (res.is_success and len(res.response) == 0):
         return None
 
-    return await asyncio.gather(
+    return await ce.gather_with_concurrency( n = 60,
         *[
             DomoPublication.get_from_id(publication_id=sub_obj["id"], auth=auth)
             for sub_obj in res.response
