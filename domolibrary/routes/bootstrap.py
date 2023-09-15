@@ -15,20 +15,19 @@ async def get_bootstrap(
     auth: dmda.DomoFullAuth, ## only works with DomoFullAuth authentication, do not use TokenAuth
     debug_api: bool = False, 
     session: httpx.AsyncClient = None,
-    return_raw: bool = False
+    return_raw: bool = False,
+    parent_class = None,
+    debug_num_stacks_to_drop = 1
 ) -> rgd.ResponseGetData:
     """get bootstrap data"""
 
-    if auth.__class__.__name__ != 'DomoFullAuth':
-        raise dmda.InvalidAuthTypeError(function_name='get_bootstrap',
-                                        domo_instance=auth.domo_instance, 
-                                        required_auth_type =  dmda.DomoFullAuth )
+    dmda.test_is_full_auth(auth, num_stacks_to_drop=1)
 
     # url = f"https://{auth.domo_instance}.domo.com/api/domoweb/bootstrap?v2Navigation=false"
     url = f"https://{auth.domo_instance}.domo.com/api/domoweb/bootstrap?v2Navigation=true"
 
     res = await gd.get_data(
-        url=url, method="GET", auth=auth, debug_api=debug_api, session=session, is_follow_redirects = True
+        url=url, method="GET", auth=auth, debug_api=debug_api, session=session, is_follow_redirects = True, num_stacks_to_drop = debug_num_stacks_to_drop, parent_class = parent_class
     )
 
     if res.response == '' and not return_raw:
@@ -41,10 +40,12 @@ async def get_bootstrap(
 async def get_bootstrap_features(
     auth: dmda.DomoAuth, session: httpx.AsyncClient = None,
     debug_api: bool = False,
-    return_raw: bool = False
+    return_raw: bool = False,
+    debug_num_stacks_to_drop = 2,
+    parent_class = None
 ) -> rgd.ResponseGetData:
 
-    res = await get_bootstrap(auth=auth, session=session, debug_api=debug_api, return_raw=return_raw)
+    res = await get_bootstrap(auth=auth, session=session, debug_api=debug_api, return_raw=return_raw, debug_num_stacks_to_drop = debug_num_stacks_to_drop, parent_class= parent_class)
 
     if return_raw:
         return res
@@ -58,9 +59,9 @@ async def get_bootstrap_features(
 
 # %% ../../nbs/routes/bootstrap.ipynb 11
 async def get_bootstrap_pages(
-    auth: dmda.DomoAuth, session: httpx.AsyncClient = None, debug_api: bool = False, return_raw: bool = False
+    auth: dmda.DomoAuth, session: httpx.AsyncClient = None, debug_api: bool = False, return_raw: bool = False, debug_num_stacks_to_drop= 2, parent_class = None
 ) -> rgd.ResponseGetData:
-    res = await get_bootstrap(auth=auth, session=session, debug_api=debug_api)
+    res = await get_bootstrap(auth=auth, session=session, debug_api=debug_api, debug_num_stacks_to_drop= debug_num_stacks_to_drop, parent_class = parent_class)
 
     if return_raw:
         return res

@@ -146,9 +146,17 @@ async def get_data(
     if auth:
         headers.update(**auth.auth_header)
 
+    traceback_details = dl.get_traceback(
+        num_stacks_to_drop=num_stacks_to_drop,
+        root_module="<module>",
+        parent_class=parent_class,
+        debug_traceback=debug_traceback,
+    )
+
     if debug_api:
         pprint(
-            {
+            {   "parent_class" : parent_class,
+                "function_name" : traceback_details.function_name,
                 "method": method,
                 "url": url,
                 "headers": headers,
@@ -160,13 +168,6 @@ async def get_data(
     is_close_session = False if session else True
 
     session = session or httpx.AsyncClient()
-
-    traceback_details = dl.get_traceback(
-        num_stacks_to_drop=num_stacks_to_drop,
-        root_module="<module>",
-        parent_class=parent_class,
-        debug_traceback=debug_traceback,
-    )
 
     attempt = 1
     max_attempt = 4
