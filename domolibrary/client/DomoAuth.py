@@ -2,16 +2,20 @@
 
 # %% auto 0
 __all__ = ['get_full_auth', 'get_developer_auth', 'test_access_token', 'DomoAuth', 'InvalidCredentialsError',
-           'InvalidAuthTypeError', 'InvalidInstanceError', 'NoAccessTokenReturned', 'DomoFullAuth', 'DomoTokenAuth',
-           'DomoDeveloperAuth']
+           'InvalidAuthTypeError', 'InvalidInstanceError', 'NoAccessTokenReturned', 'DomoFullAuth', 'test_is_full_auth',
+           'DomoTokenAuth', 'DomoDeveloperAuth', 'DomoJupyterAuth', 'DomoJupyterFullAuth', 'DomoJupyterTokenAuth',
+           'test_is_jupyter_auth']
 
 # %% ../../nbs/client/95_DomoAuth.ipynb 3
 from dataclasses import dataclass, field
 from typing import Optional, Union
+from urllib.parse import urlparse
+
 
 import httpx
 
 import domolibrary.client.ResponseGetData as rgd
+import domolibrary.client.Logger as lg
 import domolibrary.client.DomoError as de
 
 # %% ../../nbs/client/95_DomoAuth.ipynb 5
@@ -113,7 +117,7 @@ async def test_access_token(
 
     return rgd.ResponseGetData._from_httpx_response(res)
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 20
+# %% ../../nbs/client/95_DomoAuth.ipynb 21
 @dataclass
 class _DomoAuth_Required:
     """required parameters for all Domo Auth classes"""
@@ -169,12 +173,12 @@ class _DomoAuth_Optional:
         return True
 
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 21
+# %% ../../nbs/client/95_DomoAuth.ipynb 22
 @dataclass
 class DomoAuth(_DomoAuth_Optional, _DomoAuth_Required):
     """abstract DomoAuth class"""
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 25
+# %% ../../nbs/client/95_DomoAuth.ipynb 26
 class InvalidCredentialsError(de.DomoError):
     """return invalid credentials sent to API"""
 
@@ -194,11 +198,13 @@ class InvalidAuthTypeError(de.DomoError):
 
     def __init__(
         self,
-        required_auth_type :DomoAuth ,
+        required_auth_type :DomoAuth =None,
+        required_auth_type_ls :DomoAuth =None,
+
         function_name: Optional[str] = None,
         domo_instance: Optional[str] = None,
     ):
-        message = f"This API rquires {required_auth_type.__name__}"
+        message = f"This API rquires {required_auth_type.__name__ if required_auth_type else ', '.join([auth_type.__name__ for auth_type in required_auth_type_ls])}"
 
         super().__init__(message=message, domo_instance=domo_instance, function_name = function_name)
 
@@ -225,18 +231,18 @@ class NoAccessTokenReturned(de.DomoError):
     ):
         super().__init__(status = status, message = message, domo_instance = domo_instance)
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 28
+# %% ../../nbs/client/95_DomoAuth.ipynb 29
 @dataclass
-class _DomoFullAuth_Required(_DomoAuth_Required):
+class _DomoFullAuth_Required:
     """mix requied parameters for DomoFullAuth"""
 
     domo_username: str
     domo_password: str = field(repr=False)
 
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 29
+# %% ../../nbs/client/95_DomoAuth.ipynb 30
 @dataclass
-class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required):
+class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required, _DomoAuth_Required):
     """use for full authentication token"""
 
     def generate_auth_header(self, token: str) -> dict:
@@ -309,15 +315,30 @@ class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required):
         return self.token
 
 # %% ../../nbs/client/95_DomoAuth.ipynb 35
+def test_is_full_auth(auth, function_name=None, num_stacks_to_drop = 1 # pass q for route pass 2 for class
+):
+    
+    tb= lg.get_traceback(num_stacks_to_drop=num_stacks_to_drop)
+
+    function_name = function_name or tb.function_name
+
+
+    if auth.__class__.__name__ != 'DomoFullAuth':
+        raise InvalidAuthTypeError(function_name=function_name,
+                                        domo_instance=auth.domo_instance,
+                                        required_auth_type=DomoFullAuth)
+
+
+# %% ../../nbs/client/95_DomoAuth.ipynb 37
 @dataclass
-class _DomoTokenAuth_Required(_DomoAuth_Required):
+class _DomoTokenAuth_Required:
     """mix requied parameters for DomoFullAuth"""
 
     domo_access_token: str = field(repr=False)
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 36
+# %% ../../nbs/client/95_DomoAuth.ipynb 38
 @dataclass
-class DomoTokenAuth(_DomoAuth_Optional, _DomoTokenAuth_Required):
+class DomoTokenAuth(_DomoAuth_Optional, _DomoTokenAuth_Required, _DomoAuth_Required):
     
 
     """
@@ -367,23 +388,31 @@ class DomoTokenAuth(_DomoAuth_Optional, _DomoTokenAuth_Required):
 
         return self.token
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 40
+# %% ../../nbs/client/95_DomoAuth.ipynb 42
 @dataclass
-class _DomoDeveloperAuth_Required(_DomoAuth_Required):
-    """mix requied parameters for DomoFullAuth"""
+class _DomoDeveloperAuth_Required:
+    """mix requied parameters for DomoDeveloperAuth"""
 
     domo_client_id: str
     domo_client_secret: str = field(repr=False)
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 41
-@dataclass(init=False)
-class DomoDeveloperAuth(_DomoAuth_Optional, _DomoDeveloperAuth_Required):
+@dataclass
+class _DomoDeveloperAuth_Optional:
+    """mix optional parameters for DomoDeveloperAuth"""
+
+    domo_instance: str = None  # because api.domo.com apis don't require domo_instance
+
+
+# %% ../../nbs/client/95_DomoAuth.ipynb 43
+@dataclass
+# (init=False)
+class DomoDeveloperAuth(_DomoDeveloperAuth_Optional, _DomoAuth_Optional, _DomoDeveloperAuth_Required):
     """use for full authentication token"""
 
-    def __init__(self, domo_client_id: str, domo_client_secret: str):
-        self.domo_client_id = domo_client_id
-        self.domo_client_secret = domo_client_secret
-        self.domo_instance = ""
+    # def __init__(self, domo_client_id: str, domo_client_secret: str):
+    #     self.domo_client_id = domo_client_id
+    #     self.domo_client_secret = domo_client_secret
+    #     self.domo_instance = ""
 
     def generate_auth_header(self, token: str) -> dict:
         self.auth_header = {"Authorization": "bearer " + token}
@@ -424,3 +453,101 @@ class DomoDeveloperAuth(_DomoAuth_Optional, _DomoDeveloperAuth_Required):
             self.token_name = "developer_auth"
 
         return token
+
+# %% ../../nbs/client/95_DomoAuth.ipynb 47
+@dataclass
+class _DomoJupyter_Optional:
+    def __post_init__(self):
+        
+        self.jupyter_token = self.jupyter_token or input( "jupyter token: # retrieve this by monitoring domo jupyter network traffic.  it is the Authorization header")
+        self.service_location = self.service_location or input( "service_location:  # retrieve from domo jupyter env")
+        self.service_prefix = self.service_prefix or input("service prefix: # retrieve from domo jupyter env")
+                
+        self._test_prereq()
+        self.set_manual_login()
+        
+    def generate_auth_header(self, token: str) -> dict:
+        self.auth_header = {"x-domo-authentication": token,
+                            "authorization": f"Token {self.jupyter_token}"}
+
+        return self.auth_header
+
+
+@dataclass
+class _DomoJupyter_Required:
+    jupyter_token: str
+    service_location: str
+    service_prefix: str
+
+    def get_jupyter_token_flow(self):
+        """stub"""
+        print('hello world i am a jupyter_token')
+
+    def _test_prereq(self):
+        if not self.jupyter_token:
+            raise Exception("DomoJupyterAuth objects must have a jupyter_token")
+
+        if not self.service_location:
+            raise Exception("DomoJupyterAuth objects must have a service_location")
+
+        if not self.service_prefix:
+            raise Exception("DomoJupyterAuth objects must have a service_prefix")
+
+        if not self.jupyter_token or not self.service_location or not self.service_prefix:
+            raise Exception("DomoJupyterAuth objects must have jupyter_token, service_location and service_prefix")
+
+
+
+# %% ../../nbs/client/95_DomoAuth.ipynb 48
+@dataclass
+class DomoJupyterAuth(_DomoJupyter_Optional,_DomoJupyter_Required ):
+    """base class"""
+
+# %% ../../nbs/client/95_DomoAuth.ipynb 50
+@dataclass
+class DomoJupyterFullAuth(
+    _DomoJupyter_Optional, DomoFullAuth, _DomoJupyter_Required):
+
+    @classmethod
+    def convert_auth(cls, full_auth : DomoFullAuth, jupyter_token, service_location, service_prefix):
+        """converts DomoFullAuth to DomoJupyterFullAuth
+        i.e. adds DomoJupyter specific auth fields
+        eventually can add DomoJupyter specific auth flow for generating auth token
+        """
+        return cls(domo_instance=full_auth.domo_instance,
+                   domo_username=full_auth.domo_username,
+                   domo_password=full_auth.domo_password,
+                   jupyter_token=jupyter_token,
+                   service_location=service_location,
+                   service_prefix=service_prefix)
+
+# %% ../../nbs/client/95_DomoAuth.ipynb 54
+@dataclass
+class DomoJupyterTokenAuth(
+        _DomoJupyter_Optional, DomoTokenAuth, _DomoJupyter_Required):
+
+    @classmethod
+    def convert_auth(cls, token_auth: DomoTokenAuth, jupyter_token, service_location, service_prefix):
+        """converts DomoTokenAuth to DomoJupyterTokenAuth
+        i.e. adds DomoJupyter specific auth fields
+        eventually can add DomoJupyter specific auth flow for generating auth token
+        """
+        return cls(domo_instance=token_auth.domo_instance,
+                   domo_access_token=token_auth.domo_access_token,
+                   jupyter_token=jupyter_token,
+                   service_location=service_location,
+                   service_prefix=service_prefix)
+
+
+# %% ../../nbs/client/95_DomoAuth.ipynb 58
+def test_is_jupyter_auth(auth: DomoJupyterAuth,
+                         function_name=None,
+                         required_auth_type_ls=[DomoJupyterFullAuth, DomoJupyterTokenAuth]):
+
+    tb= lg.get_traceback()
+
+    if auth.__class__.__name__ not in [auth_type.__name__ for auth_type in required_auth_type_ls]:
+        raise InvalidAuthTypeError(
+            function_name=tb.function_name, domo_instance=auth.domo_instance, required_auth_type_ls=required_auth_type_ls
+        )
+

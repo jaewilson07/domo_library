@@ -62,11 +62,13 @@ class Bootstrap_RetrievalError(de.DomoError):
 async def get_all(
     self: DomoBootstrap, 
     auth: dmda.DomoFullAuth = None, 
-    debug_api: bool = False
+    debug_api: bool = False,
+    return_raw: bool = False,
+    debug_num_stacks_to_drop = 2
 ):
     auth = auth or self.auth
 
-    res = await bootstrap_routes.get_bootstrap(auth=auth, debug_api=debug_api)
+    res = await bootstrap_routes.get_bootstrap(auth=auth, debug_api=debug_api, debug_num_stacks_to_drop= debug_num_stacks_to_drop, parent_class= self.__class__.__name__)
 
     if not res.is_success:
         raise Bootstrap_RetrievalError(
@@ -75,6 +77,9 @@ async def get_all(
 
     self.bootstrap = res.response
 
+    if return_raw:
+        return res
+
     return res.response
 
 
@@ -82,8 +87,8 @@ async def get_all(
 @patch_to(
     DomoBootstrap,
 )
-async def get_customer_id(self: DomoBootstrap, auth: dmda.DomoFullAuth = None):
-    await self.get_all(auth=auth or self.auth)
+async def get_customer_id(self: DomoBootstrap, auth: dmda.DomoFullAuth = None, debug_api : bool =  False) :
+    await self.get_all(auth=auth or self.auth , debug_api = debug_api, debug_num_stacks_to_drop = 3)
 
     self.customer_id = self.bootstrap["currentUser"]["USER_GROUP"]
     return self.customer_id
@@ -98,7 +103,7 @@ async def get_pages(
 ) -> list[dmpg.DomoPage]:
     auth = auth or self.auth
 
-    res = await bootstrap_routes.get_bootstrap_pages(auth=auth, debug_api=debug_api)
+    res = await bootstrap_routes.get_bootstrap_pages(auth=auth, debug_api=debug_api, parent_class = self.__class__.__name__)
 
     if return_raw:
         return res.response
@@ -122,12 +127,15 @@ async def get_features(
     auth: dmda.DomoAuth = None,
     debug_api: bool = False,
     return_raw: bool = False,
+    debug_num_stacks_to_drop = 2,
     session: httpx.AsyncClient = None,
 ):
     auth = auth or self.auth
 
     res = await bootstrap_routes.get_bootstrap_features(
-        auth=auth, session=session, debug_api=debug_api, return_raw=return_raw
+        auth=auth, session=session, debug_api=debug_api, return_raw=return_raw, 
+        debug_num_stacks_to_drop = debug_num_stacks_to_drop,
+        parent_class = self.__class__.__name__
     )
 
     if return_raw:
@@ -143,8 +151,12 @@ async def get_features(
 
 # %% ../../nbs/classes/50_DomoBootstrap.ipynb 16
 @patch_to(DomoBootstrap)
-async def is_group_ownership_beta(self, return_raw: bool = False):
-    domo_feature_ls = await self.get_features(return_raw=return_raw)
+async def is_group_ownership_beta(self, debug_api: bool = False,
+                                  return_raw: bool = False):
+                                  
+    domo_feature_ls = await self.get_features(return_raw=return_raw,
+                                              debug_api=debug_api,
+                                              debug_num_stacks_to_drop=3)
 
     if return_raw:
         return domo_feature_ls
