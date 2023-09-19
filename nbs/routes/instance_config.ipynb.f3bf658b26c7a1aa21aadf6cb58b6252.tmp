@@ -1,0 +1,19 @@
+import os
+
+ip_address_ls = ["0.0.0.0/0"]
+
+auth = dmda.DomoTokenAuth(
+    domo_instance="domo-community",
+    domo_access_token=os.environ["DOMO_DOJO_ACCESS_TOKEN"],
+)
+
+auth = dmda.DomoFullAuth(
+    domo_instance="domo-community",
+    domo_username=os.environ["DOMO_USERNAME"],
+    domo_password=os.environ["DOJO_PASSWORD"],
+)
+try:
+    res = await set_allowlist(auth=auth, ip_address_ls=ip_address_ls)
+    res
+except Exception as e:
+    print(e)

@@ -1,0 +1,11 @@
+import os
+import requests
+
+auth = dmda.DomoTokenAuth(
+    domo_instance="domo-community",
+    domo_access_token=os.environ["DOMO_DOJO_ACCESS_TOKEN"],
+)
+
+res = await toggle_is_user_invite_enabled(auth=auth, is_enabled=True, debug_api=False)
+
+res.response

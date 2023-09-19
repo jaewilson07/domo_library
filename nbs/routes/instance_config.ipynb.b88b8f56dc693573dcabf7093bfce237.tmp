@@ -1,0 +1,45 @@
+# | export
+
+class GetDomains_NotFound(de.DomoError):
+    def __init__(self, status, message, domo_instance):
+        super().__init__(status=status, message=message, domo_instance=domo_instance)
+        
+async def get_authorized_domains(
+    auth: dmda.DomoAuth,
+    return_raw: bool = False,
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+):
+    url = f"https://{auth.domo_instance}.domo.com/api/content/v1/customer-states/authorized-domains"
+
+    res = await gd.get_data(
+        auth=auth,
+        url=url,
+        method="GET",
+        debug_api=debug_api,
+        session=session,
+    )
+
+    if return_raw:
+        return res
+
+    # domo raises a 404 error even if the success is valid but there are no approved domains
+    if res.status == 404 and res.response == "Not Found":
+        res_test = await user_routes.get_all_users(auth=auth)
+
+        if not res_test.is_success:
+            raise GetDomains_NotFound(
+                domo_instance=auth.domo_instance,
+                status=res.status,
+                message=res.response,
+            )
+
+        if res_test.is_success:
+            res.status = 200
+            res.is_success = True
+            res.response = []
+
+        return res
+
+    res.response = [domain.strip() for domain in res.response.get("value").split(",")]
+    return res

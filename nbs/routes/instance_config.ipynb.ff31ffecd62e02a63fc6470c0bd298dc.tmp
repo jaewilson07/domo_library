@@ -1,0 +1,19 @@
+import os
+import requests
+
+full_auth = dmda.DomoFullAuth(
+    domo_instance="domo-community",
+    domo_password=os.environ["DOJO_PASSWORD"],
+    domo_username=os.environ["DOMO_USERNAME"],
+)
+
+bootstrap_info_res = await bootstrap_routes.get_bootstrap(
+    auth=full_auth, debug_api=False
+)
+customer_id = bootstrap_info_res.response["currentUser"]["USER_GROUP"]
+
+res = await get_is_invite_social_users_enabled(
+    auth=auth, customer_id=customer_id, debug_api=False
+)
+
+res.response

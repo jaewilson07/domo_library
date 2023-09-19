@@ -1,0 +1,12 @@
+import os
+import requests
+
+auth = dmda.DomoTokenAuth(
+    domo_instance="domo-community",
+    domo_access_token=os.environ["DOMO_DOJO_ACCESS_TOKEN"],
+)
+
+try:
+    await get_allowlist(auth=auth)
+except dmda.InvalidAuthTypeError as e:
+    print(e)

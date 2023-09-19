@@ -1,0 +1,21 @@
+# | export
+async def set_authorized_domains(
+    auth: dmda.DomoAuth,
+    authorized_domain_ls: [str],
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+):
+    url = f"https://{auth.domo_instance}.domo.com/api/content/v1/customer-states/authorized-domains"
+
+    body = {"name": "authorized-domains", "value": ",".join(authorized_domain_ls)}
+
+    res = await gd.get_data(
+        auth=auth,
+        url=url,
+        method="PUT",
+        body=body,
+        debug_api=debug_api,
+        session=session,
+    )
+
+    return res

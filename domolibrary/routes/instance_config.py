@@ -160,7 +160,7 @@ async def get_is_user_invite_notifications_enabled(
 
     return res
 
-# %% ../../nbs/routes/instance_config.ipynb 18
+# %% ../../nbs/routes/instance_config.ipynb 27
 async def get_allowlist(
     auth: dmda.DomoFullAuth,
     session: httpx.AsyncClient = None,
@@ -189,7 +189,7 @@ async def get_allowlist(
 
     return res
 
-# %% ../../nbs/routes/instance_config.ipynb 23
+# %% ../../nbs/routes/instance_config.ipynb 32
 class Allowlist_UnableToUpdate(de.DomoError):
     def __init__(
         self,
@@ -205,7 +205,7 @@ class Allowlist_UnableToUpdate(de.DomoError):
             domo_instance=domo_instance,
         )
 
-# %% ../../nbs/routes/instance_config.ipynb 24
+# %% ../../nbs/routes/instance_config.ipynb 33
 async def set_allowlist(
     auth: dmda.DomoAuth,
     ip_address_ls: list[str],
@@ -240,7 +240,7 @@ async def set_allowlist(
 
     return res
 
-# %% ../../nbs/routes/instance_config.ipynb 27
+# %% ../../nbs/routes/instance_config.ipynb 36
 async def set_authorized_domains(
     auth: dmda.DomoAuth,
     authorized_domain_ls: [str],
@@ -262,7 +262,7 @@ async def set_authorized_domains(
 
     return res
 
-# %% ../../nbs/routes/instance_config.ipynb 28
+# %% ../../nbs/routes/instance_config.ipynb 37
 class GetDomains_NotFound(de.DomoError):
     def __init__(self, status, message, domo_instance):
         super().__init__(status=status, message=message, domo_instance=domo_instance)
