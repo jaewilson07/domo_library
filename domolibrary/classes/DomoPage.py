@@ -5,6 +5,7 @@ __all__ = ['DomoPage', 'PageLayoutTemplate', 'PageLayoutBackground', 'PageLayout
            'PageLayoutCompact', 'PageLayout', 'DomoPages']
 
 # %% ../../nbs/classes/50_DomoPage.ipynb 2
+from nbdev import show_doc
 from fastcore.basics import patch_to
 from dataclasses import dataclass, field
 
@@ -472,7 +473,7 @@ class DomoPage:
 
         return [member for member_ls in res for member in member_ls]
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 7
+# %% ../../nbs/classes/50_DomoPage.ipynb 8
 @patch_to(DomoPage, cls_method=True)
 async def _from_bootstrap(cls: DomoPage, page_obj, auth: dmda.DomoAuth = None):
     dd = page_obj
@@ -497,7 +498,7 @@ async def _from_bootstrap(cls: DomoPage, page_obj, auth: dmda.DomoAuth = None):
 
     return pg
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 10
+# %% ../../nbs/classes/50_DomoPage.ipynb 11
 @patch_to(DomoPage, cls_method=True)
 async def _from_content_stacks_v3(cls: DomoPage, page_obj, auth: dmda.DomoAuth = None):
     # import domolibrary.classes.DomoCard as dc
@@ -551,7 +552,7 @@ async def get_by_id(
 
     return pg
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 13
+# %% ../../nbs/classes/50_DomoPage.ipynb 15
 @patch_to(DomoPage, cls_method=True)
 async def _from_adminsummary(cls, page_obj, auth: dmda.DomoAuth):
     import domolibrary.classes.DomoCard as dmc
@@ -580,7 +581,7 @@ async def _from_adminsummary(cls, page_obj, auth: dmda.DomoAuth):
 
     return pg
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 14
+# %% ../../nbs/classes/50_DomoPage.ipynb 16
 @patch_to(DomoPage)
 async def get_accesslist(
     self,
@@ -615,7 +616,7 @@ async def get_accesslist(
             for group in res.response.get("groups")]])
     return res.response
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 17
+# %% ../../nbs/classes/50_DomoPage.ipynb 19
 @patch_to(DomoPage)
 async def share(self: DomoPage,
                      auth: dmda.DomoAuth = None,
@@ -643,7 +644,7 @@ async def share(self: DomoPage,
     return res
 
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 20
+# %% ../../nbs/classes/50_DomoPage.ipynb 22
 @patch_to(DomoPage, cls_method=True)
 async def get_cards(cls,
                     auth: dmda.DomoAuth,
@@ -685,7 +686,7 @@ async def get_datasets(cls,
 
     return await ce.gather_with_concurrency(n= 60, *[ dmds.DomoDataset.get_from_id(dataset_id = ds.get('dataSourceId'), auth = auth) for card in res.response.get('cards') for ds in card.get('datasources')])
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 23
+# %% ../../nbs/classes/50_DomoPage.ipynb 25
 from datetime import datetime
 from utils import convert
 
@@ -722,7 +723,7 @@ async def update_layout(
 
     return True
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 28
+# %% ../../nbs/classes/50_DomoPage.ipynb 30
 @dataclass
 class DomoPages:
     
