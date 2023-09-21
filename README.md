@@ -146,7 +146,10 @@ ds_res = await dataset_routes.get_dataset_by_id( auth = token_auth, dataset_id =
 ds_res
 ```
 
-    ResponseGetData(status=200, response={'id': '04c1574e-c8be-4721-9846-c6ffa491144b', 'displayType': 'domo-jupyterdata', 'dataProviderType': 'domo-jupyterdata', 'type': 'Jupyter', 'name': 'domo_kbs', 'owner': {'id': '1893952720', 'name': 'Jae Wilson', 'type': 'USER', 'group': False}, 'status': 'SUCCESS', 'created': 1668379680000, 'lastTouched': 1668385822000, 'lastUpdated': 1668385822045, 'rowCount': 1185, 'columnCount': 7, 'cardInfo': {'cardCount': 0, 'cardViewCount': 0}, 'properties': {'formulas': {'formulas': {}}}, 'state': 'SUCCESS', 'validConfiguration': True, 'validAccount': True, 'streamId': 825, 'transportType': 'API', 'adc': False, 'adcExternal': False, 'cloudId': 'domo', 'cloudName': 'Domo', 'permissions': 'READ_WRITE_DELETE_SHARE_ADMIN', 'hidden': False, 'tags': '["developer_documentation","hackercore"]', 'scheduleActive': True, 'cryoStatus': 'ADRENALINE'}, is_success=True)
+    adjusting num_stacks_to_drop, consider revising `get_traceback` call
+    {16, 3, 12}
+
+    ResponseGetData(status=200, response={'id': '04c1574e-c8be-4721-9846-c6ffa491144b', 'displayType': 'domo-jupyterdata', 'dataProviderType': 'domo-jupyterdata', 'type': 'Jupyter', 'name': 'domo_kbs', 'owner': {'id': '1893952720', 'name': 'Jae Wilson1', 'type': 'USER', 'group': False}, 'status': 'SUCCESS', 'created': 1668379680000, 'lastTouched': 1694281720000, 'lastUpdated': 1668385822045, 'rowCount': 1185, 'columnCount': 7, 'cardInfo': {'cardCount': 2, 'cardViewCount': 0}, 'properties': {'formulas': {'formulas': {'calculation_ca9d4b1c-f73a-4f76-9f94-d3c4ca6871c5': {'templateId': 2664, 'id': 'calculation_ca9d4b1c-f73a-4f76-9f94-d3c4ca6871c5', 'name': 'rowcount', 'formula': 'sum(1)', 'status': 'VALID', 'dataType': 'LONG', 'persistedOnDataSource': True, 'isAggregatable': True, 'bignumber': False}, 'calculation_38846559-d190-4ab1-809b-bcd361db5670': {'templateId': 2665, 'id': 'calculation_38846559-d190-4ab1-809b-bcd361db5670', 'name': 'max_views', 'formula': 'max(views)', 'status': 'VALID', 'dataType': 'LONG', 'persistedOnDataSource': True, 'isAggregatable': True, 'bignumber': False, 'columnPositions': [{'columnName': 'views', 'columnPosition': 4}]}}}}, 'state': 'SUCCESS', 'validConfiguration': True, 'validAccount': True, 'streamId': 825, 'transportType': 'API', 'adc': False, 'adcExternal': False, 'cloudId': 'domo', 'cloudName': 'Domo', 'permissions': 'READ_WRITE_DELETE_SHARE_ADMIN', 'hidden': False, 'tags': '["Sep-09-2023 17:48","developer_documentation","hackercore"]', 'scheduleActive': True, 'cardCount': 2, 'cryoStatus': 'ADRENALINE'}, is_success=True, parent_class=None, traceback_details=TracebackDetails(function_name='get_dataset_by_id', file_name='/workspaces/domo_library/domolibrary/routes/dataset.py', function_trail='<module> -> get_dataset_by_id', traceback_stack=[<FrameSummary file /tmp/ipykernel_16238/1373906764.py, line 3 in <module>>, <FrameSummary file /workspaces/domo_library/domolibrary/routes/dataset.py, line 171 in get_dataset_by_id>], parent_class=None))
 
 [`ResponseGetData`](https://jaewilson07.github.io/domo_library/client/responsegetdata.html#responsegetdata)
 will always include a boolean `is_success`, the API `status`, and raw
@@ -163,9 +166,11 @@ artificially alter the response in the function.)
 
     [('auth', domolibrary.client.DomoAuth.DomoTokenAuth),
      ('is_success', bool),
+     ('parent_class', NoneType),
      ('response', dict),
      ('set_response', method),
-     ('status', int)]
+     ('status', int),
+     ('traceback_details', domolibrary.client.Logger.TracebackDetails)]
 
 ``` python
 ds_res.response
@@ -177,17 +182,35 @@ ds_res.response
      'type': 'Jupyter',
      'name': 'domo_kbs',
      'owner': {'id': '1893952720',
-      'name': 'Jae Wilson',
+      'name': 'Jae Wilson1',
       'type': 'USER',
       'group': False},
      'status': 'SUCCESS',
      'created': 1668379680000,
-     'lastTouched': 1668385822000,
+     'lastTouched': 1694281720000,
      'lastUpdated': 1668385822045,
      'rowCount': 1185,
      'columnCount': 7,
-     'cardInfo': {'cardCount': 0, 'cardViewCount': 0},
-     'properties': {'formulas': {'formulas': {}}},
+     'cardInfo': {'cardCount': 2, 'cardViewCount': 0},
+     'properties': {'formulas': {'formulas': {'calculation_ca9d4b1c-f73a-4f76-9f94-d3c4ca6871c5': {'templateId': 2664,
+         'id': 'calculation_ca9d4b1c-f73a-4f76-9f94-d3c4ca6871c5',
+         'name': 'rowcount',
+         'formula': 'sum(1)',
+         'status': 'VALID',
+         'dataType': 'LONG',
+         'persistedOnDataSource': True,
+         'isAggregatable': True,
+         'bignumber': False},
+        'calculation_38846559-d190-4ab1-809b-bcd361db5670': {'templateId': 2665,
+         'id': 'calculation_38846559-d190-4ab1-809b-bcd361db5670',
+         'name': 'max_views',
+         'formula': 'max(views)',
+         'status': 'VALID',
+         'dataType': 'LONG',
+         'persistedOnDataSource': True,
+         'isAggregatable': True,
+         'bignumber': False,
+         'columnPositions': [{'columnName': 'views', 'columnPosition': 4}]}}}},
      'state': 'SUCCESS',
      'validConfiguration': True,
      'validAccount': True,
@@ -199,8 +222,9 @@ ds_res.response
      'cloudName': 'Domo',
      'permissions': 'READ_WRITE_DELETE_SHARE_ADMIN',
      'hidden': False,
-     'tags': '["developer_documentation","hackercore"]',
+     'tags': '["Sep-09-2023 17:48","developer_documentation","hackercore"]',
      'scheduleActive': True,
+     'cardCount': 2,
      'cryoStatus': 'ADRENALINE'}
 
 ### Access Paginated APIs using the Looper
@@ -215,3 +239,11 @@ from the `routes.dataset`.
 Inside this function we are using
 [`looper`](https://jaewilson07.github.io/domo_library/client/get_data.html#looper)
 from `client.get_data` to paginate over the API response.
+
+# known errors
+
+- utils/upload_data is using a general try/except
+- bootstrap route raising a general exception
+- integrations/role_hierarchy raising general exception
+- integrations/domoJupyter raising general exception
+- DomoUser general Exception

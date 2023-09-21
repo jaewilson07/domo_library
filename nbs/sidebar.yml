@@ -39,6 +39,7 @@ website:
           - classes/50_DomoGroup.ipynb
           - classes/50_DomoInstanceConfig.ipynb
           - classes/50_DomoJob.ipynb
+          - classes/50_DomoJupyter.ipynb
           - classes/50_DomoLineage.ipynb
           - classes/50_DomoPDP.ipynb
           - classes/50_DomoPage.ipynb
@@ -96,6 +97,13 @@ website:
               - section: 2023-04-14_BackupCards
                 contents:
                   - projects/posts/2023-04-14_BackupCards/index.ipynb
+      - section: projects
+        contents:
+          - section: posts
+            contents:
+              - section: 2023-09-13_Domo_Jupyter
+                contents:
+                  - projects/posts/2023-09-13_Domo_Jupyter/index.ipynb
       - section: routes
         contents:
           - routes/account.ipynb
@@ -110,6 +118,7 @@ website:
           - routes/group.ipynb
           - routes/instance_config.ipynb
           - routes/job.ipynb
+          - routes/jupyter.ipynb
           - routes/page.ipynb
           - routes/pdp.ipynb
           - routes/publish.ipynb

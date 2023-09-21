@@ -3,6 +3,9 @@
 # %% auto 0
 __all__ = ['DomoInstanceConfig', 'SSO_Config']
 
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 2
+from ..routes.instance_config import UpdateSSO_Error
+
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 3
 import httpx
 import datetime as dt
@@ -24,7 +27,6 @@ import domolibrary.routes.instance_config as instance_config_routes
 import domolibrary.routes.bootstrap as bootstrap_routes
 import domolibrary.routes.publish as publish_routes
 
-
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 4
 @dataclass
 class DomoInstanceConfig:
@@ -36,6 +38,7 @@ class DomoInstanceConfig:
     is_invite_social_users_enabled: bool = field(default=None)
 
     sso_config: dict = field(default=None)
+
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 6
 @patch_to(DomoInstanceConfig)
@@ -63,7 +66,6 @@ async def get_is_user_invite_notification_enabled(
         return res
 
     return self.is_user_invite_notification_enabled
-
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 9
 @patch_to(DomoInstanceConfig)
@@ -104,7 +106,6 @@ async def toggle_is_user_invite_enabled(
 
     return await self.get_is_user_invite_notification_enabled(auth=auth)
 
-
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 13
 @patch_to(DomoInstanceConfig)
 async def get_is_invite_social_users_enabled(
@@ -132,7 +133,6 @@ async def get_is_invite_social_users_enabled(
         return res
 
     return res.response["enabled"]
-
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 16
 @patch_to(DomoInstanceConfig)
@@ -173,7 +173,6 @@ async def toggle_social_users(
 
     return await self.get_is_invite_social_users_enabled()
 
-
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 20
 # class SSOConfig_InstantiationError(de.DomoError):
 #     def __init__(self, domo_instance, parent_class, function_name, message="invalid data types, check attribute types"):
@@ -213,34 +212,38 @@ class SSO_Config:
 
     @classmethod
     def _from_json(cls, auth: dmda.DomoAuth, obj: dict):
-
         dd = obj
 
         if not isinstance(obj, util_dd.DictDot):
             dd = util_dd.DictDot(obj)
 
-        return cls(auth=auth,
-                   login_enabled=dd.loginEnabled,
-                   idp_enabled=dd.idpEnabled,
-                   import_groups=dd.importGroups,
-                   require_invitation=dd.requireInvitation,
-                   enforce_allowlist=dd.enforceWhitelist,
-                   skip_to_idp=dd.skipToIdp,
-                   auth_request_endpoint=dd.authRequestEndpoint,
-                   token_endpoint=dd.tokenEndpoint,
-                   user_info_endpoint=dd.userInfoEndpoint,
-                   public_key=dd.publicKey,
-                   redirect_url=dd.redirectUrl,
-                   certificate=dd.certificate,
-                   override_sso=dd.overrideSSO,
-                   override_embed=dd.overrideEmbed,
-                   well_known_config=dd.wellKnownConfig,
-                   assertion_endpoint=dd.assertionEndpoint,
-                   ingest_attributes=dd.ingestAttributes)
+        return cls(
+            auth=auth,
+            login_enabled=dd.loginEnabled,
+            idp_enabled=dd.idpEnabled,
+            import_groups=dd.importGroups,
+            require_invitation=dd.requireInvitation,
+            enforce_allowlist=dd.enforceWhitelist,
+            skip_to_idp=dd.skipToIdp,
+            auth_request_endpoint=dd.authRequestEndpoint,
+            token_endpoint=dd.tokenEndpoint,
+            user_info_endpoint=dd.userInfoEndpoint,
+            public_key=dd.publicKey,
+            redirect_url=dd.redirectUrl,
+            certificate=dd.certificate,
+            override_sso=dd.overrideSSO,
+            override_embed=dd.overrideEmbed,
+            well_known_config=dd.wellKnownConfig,
+            assertion_endpoint=dd.assertionEndpoint,
+            ingest_attributes=dd.ingestAttributes,
+        )
 
     def add_attribute(self, overwrite_existing: bool = False, **kwargs):
-        [setattr(self, key,  value)
-            for key, value in kwargs.items() if value is not None]
+        [
+            setattr(self, key, value)
+            for key, value in kwargs.items()
+            if value is not None
+        ]
         return self
 
         # except TypeError as e:
@@ -277,7 +280,6 @@ class SSO_Config:
 
         return r
 
-
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 22
 @patch_to(DomoInstanceConfig)
 async def get_sso_config(
@@ -301,6 +303,120 @@ async def get_sso_config(
 
     return self.sso_config
 
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 26
+@patch_to(DomoInstanceConfig)
+async def update_sso_config(
+    self: DomoInstanceConfig,
+    login_enabled: bool = None,  # False
+    idp_enabled: bool = None,  # False
+    import_groups: bool = None,  # False
+    require_invitation: bool = None,  # False
+    enforce_allowlist: bool = None,  # False
+    skip_to_idp: bool = None,  # False
+    auth_request_endpoint: str = None,
+    token_endpoint: str = None,
+    user_info_endpoint: str = None,
+    public_key: str = None,
+    redirect_url: str = None,
+    certificate: str = None,
+    override_sso: bool = None,  # False
+    override_embed: bool = None,  # False
+    # "https://{domo_instance}}.domo.com/auth/oidc"
+    well_known_config: str = None,
+    assertion_endpoint: str = None,
+    ingest_attributes: bool = None,  # False
+    debug_is_test: bool = False,
+    session: httpx.AsyncClient = None,
+    debug_api: bool = False,
+):
+    update_config = await self.get_sso_config()
+
+    update_config.add_attribute(
+        overwrite_existing=True,
+        login_enabled=login_enabled,
+        idp_enabled=idp_enabled,
+        import_groups=import_groups,
+        require_invitation=require_invitation,
+        enforce_allowlist=enforce_allowlist,
+        skip_to_idp=skip_to_idp,
+        auth_request_endpoint=auth_request_endpoint,
+        token_endpoint=token_endpoint,
+        user_info_endpoint=user_info_endpoint,
+        public_key=public_key,
+        redirect_url=redirect_url,
+        certificate=certificate,
+        override_sso=override_sso,
+        override_embed=override_embed,
+        well_known_config=well_known_config,
+        assertion_endpoint=assertion_endpoint,
+        ingest_attributes=ingest_attributes,
+    )
+
+    config_body = update_config.to_json()
+
+    if debug_is_test:
+        print("⚗️⚠️ This is a test, SSO Config will not be updated")
+        return config_body
+
+    res = await instance_config_routes.update_sso_config(
+        auth=self.auth,
+        config_body=config_body,
+        parent_class=self.__class__.__name__,
+        session=session,
+        debug_api=debug_api,
+        debug_num_stacks_to_drop=2,
+    )
+
+    # await asyncio.sleep(3)
+
+    await self.get_sso_config()
+
+    errors_obj = {
+        update_key: f"expected_value: {str(update_value)  } , current_value: { str(self.sso_config[update_key])}"
+        for update_key, update_value in asdict(update_config).items()
+        if asdict(self.sso_config)[update_key] != update_value
+    }
+
+    if len(errors_obj.keys()) > 0:
+        raise instance_config_routes.UpdateSSO_Error(
+            domo_instance=self.auth.domo_instance,
+            config_body=errors_obj,
+            function_name=res.traceback_details.function_name,
+            parent_class=self.__class__.__name,
+        )
+
+    return self.sso_config
+
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 30
+@patch_to(DomoInstanceConfig, cls_method=True)
+async def get_publications(
+    cls: DomoInstanceConfig,
+    auth: dmda.DomoFullAuth,
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+    return_raw: bool = False,
+):
+    import domolibrary.classes.DomoPublish as dmpb
+
+    res = await publish_routes.search_publications(
+        auth=auth, debug_api=debug_api, session=session
+    )
+    if debug_api:
+        print("Getting Publish jobs")
+
+    if res.status == 200 and not return_raw:
+        return await ce.gather_with_concurrency(
+            n=60,
+            *[
+                dmpb.DomoPublication.get_from_id(
+                    publication_id=job.get("id"), auth=auth
+                )
+                for job in res.response
+            ]
+        )
+
+    if res.status == 200 and return_raw:
+        return res.response
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 34
 @patch_to(DomoInstanceConfig)
@@ -339,6 +455,7 @@ async def get_allowlist(
     self.allowlist = allowlist
 
     return allowlist
+
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 38
 @patch_to(DomoInstanceConfig)
@@ -380,6 +497,7 @@ async def upsert_allowlist(
         session=session,
     )
 
+
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 43
 @patch_to(DomoInstanceConfig)
 async def get_grants(
@@ -398,7 +516,6 @@ async def get_grants(
         auth=auth, return_raw=return_raw, session=session, debug_api=debug_api
     )
 
-
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 46
 @patch_to(DomoInstanceConfig)
 async def get_roles(
@@ -415,7 +532,6 @@ async def get_roles(
     return await dmr.DomoRoles.get_roles(
         auth=auth, debug_api=debug_api, return_raw=return_raw, session=session
     )
-
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 50
 @patch_to(DomoInstanceConfig)
@@ -448,8 +564,7 @@ async def set_authorized_domains(
     session: httpx.AsyncClient = None,
 ):
     if debug_prn:
-        print(
-            f'🌡️ setting authorized domain with {",".join(authorized_domains)}')
+        print(f'🌡️ setting authorized domain with {",".join(authorized_domains)}')
 
     res = await instance_config_routes.set_authorized_domains(
         auth=auth,
@@ -484,8 +599,7 @@ async def upsert_authorized_domains(
     authorized_domains += existing_domains
 
     if debug_prn:
-        print(
-            f'🌡️ upsertting authorized domain to {",".join(authorized_domains)}')
+        print(f'🌡️ upsertting authorized domain to {",".join(authorized_domains)}')
 
     return await cls.set_authorized_domains(
         auth=auth,
@@ -493,7 +607,6 @@ async def upsert_authorized_domains(
         debug_api=debug_api,
         session=session,
     )
-
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 54
 @patch_to(DomoInstanceConfig, cls_method=True)
@@ -515,4 +628,3 @@ async def get_applications(
         return res
 
     return [DomoApplication._from_json(job) for job in res.response]
-

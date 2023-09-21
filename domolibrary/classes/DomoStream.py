@@ -27,7 +27,7 @@ import domolibrary.classes.DomoDatacenter as dmdc
 import domolibrary.client.DomoError as de
 import domolibrary.routes.stream as stream_routes
 
-# %% ../../nbs/classes/50_DomoStream.ipynb 5
+# %% ../../nbs/classes/50_DomoStream.ipynb 6
 custom_query = ['enteredCustomQuery', 'query', 'customQuery']
 
 
