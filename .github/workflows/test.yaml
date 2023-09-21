@@ -5,8 +5,10 @@ jobs:
   echosecrets:
     runs-on: windows-latest
     env:
+      DOMO_USERNAME : ${{ secrets.DOMO_USERNAME}}
       DOJO_PASSWORD: ${{ secrets.DOJO_PASSWORD }}
       DOMO_DOJO_ACCESS_TOKEN: ${{ secrets.DOMO_DOJO_ACCESS_TOKEN }}
+      DOMO_DOJO_USER_ID : ${{ secrets.DOMO_DOJO_USER_ID}}
     steps:
       - name: print github secrets
         run: |
