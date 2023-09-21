@@ -24,9 +24,12 @@ jobs:
       - name: Lint Code Base
         uses: github/super-linter@v4
         env:
-          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_ALL_CODEBASE: true
           VALIDATE_PYTHON_BLACK: true
           DEFAULT_BRANCH: "main"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOMO_USERNAME : ${{ secrets.DOMO_USERNAME}}
           DOJO_PASSWORD: ${{ secrets.DOJO_PASSWORD }}
-          DOMO_DOJO_ACCESS_TOKEN: ${{ secrets.DOMO_DOJO_ACCESS_TOKEN }}
+          DOMO_DOJO_USER_ID: ${{secrets.DOMO_DOJO_USER_ID}}
+          DOMO_DOJO_ACCESS_TOKEN: ${{ secrets.DOMO_DOJO_ACCESS_TOKEN }}    
+          DOJO_DATASET_ID: ${{ secrets.DOJO_DATASET_ID}}
