@@ -11,6 +11,7 @@ import httpx
 import datetime as dt
 import asyncio
 from fastcore.basics import patch_to
+import sys
 
 
 from dataclasses import dataclass, field, asdict
@@ -174,6 +175,9 @@ async def toggle_social_users(
     return await self.get_is_invite_social_users_enabled()
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 20
+py310 = sys.version_info.minor >= 10 or sys.version_info.major > 3
+
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 21
 # class SSOConfig_InstantiationError(de.DomoError):
 #     def __init__(self, domo_instance, parent_class, function_name, message="invalid data types, check attribute types"):
 
@@ -183,8 +187,7 @@ async def toggle_social_users(
 #             parent_class=parent_class,
 #             function_name=function_name)
 
-
-@dataclass(slots=True)
+@dataclass(**({"slots": True} if py310 else {}))
 class SSO_Config:
     auth: dmda.DomoAuth = field(repr=False)
 
@@ -280,7 +283,7 @@ class SSO_Config:
 
         return r
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 22
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 23
 @patch_to(DomoInstanceConfig)
 async def get_sso_config(
     self: DomoInstanceConfig,
@@ -303,7 +306,7 @@ async def get_sso_config(
 
     return self.sso_config
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 26
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 27
 @patch_to(DomoInstanceConfig)
 async def update_sso_config(
     self: DomoInstanceConfig,
@@ -387,7 +390,7 @@ async def update_sso_config(
 
     return self.sso_config
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 30
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 31
 @patch_to(DomoInstanceConfig, cls_method=True)
 async def get_publications(
     cls: DomoInstanceConfig,
@@ -418,7 +421,7 @@ async def get_publications(
     if res.status == 200 and return_raw:
         return res.response
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 34
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 35
 @patch_to(DomoInstanceConfig)
 async def get_allowlist(
     self: DomoInstanceConfig,
@@ -457,7 +460,7 @@ async def get_allowlist(
     return allowlist
 
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 38
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 39
 @patch_to(DomoInstanceConfig)
 async def set_allowlist(
     self: DomoInstanceConfig,
@@ -498,7 +501,7 @@ async def upsert_allowlist(
     )
 
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 43
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 44
 @patch_to(DomoInstanceConfig)
 async def get_grants(
     self: DomoInstanceConfig,
@@ -516,7 +519,7 @@ async def get_grants(
         auth=auth, return_raw=return_raw, session=session, debug_api=debug_api
     )
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 46
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 47
 @patch_to(DomoInstanceConfig)
 async def get_roles(
     self,
@@ -533,7 +536,7 @@ async def get_roles(
         auth=auth, debug_api=debug_api, return_raw=return_raw, session=session
     )
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 50
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 51
 @patch_to(DomoInstanceConfig)
 async def get_authorized_domains(
     self: DomoInstanceConfig,
@@ -553,7 +556,7 @@ async def get_authorized_domains(
 
     return res.response
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 53
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 54
 @patch_to(DomoInstanceConfig, cls_method=True)
 async def set_authorized_domains(
     cls: DomoInstanceConfig,
@@ -608,7 +611,7 @@ async def upsert_authorized_domains(
         session=session,
     )
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 54
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 55
 @patch_to(DomoInstanceConfig, cls_method=True)
 async def get_applications(
     cls,
