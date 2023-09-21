@@ -16,7 +16,7 @@ import domolibrary.utils.DictDot as util_dd
 import domolibrary.client.DomoAuth as dmda
 
 
-# %% ../../nbs/classes/50_DomoApplication.ipynb 3
+# %% ../../nbs/classes/50_DomoApplication.ipynb 4
 @dataclass
 class DomoApplication:
     id: str

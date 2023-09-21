@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['DomoDatacenter']
 
-# %% ../../nbs/classes/50_DomoDatacenter.ipynb 3
+# %% ../../nbs/classes/50_DomoDatacenter.ipynb 2
 import asyncio
 from dataclasses import dataclass
 from typing import Union
@@ -24,13 +24,13 @@ import domolibrary.routes.datacenter as datacenter_routes
 import domolibrary.routes.card as card_routes
 
 
-# %% ../../nbs/classes/50_DomoDatacenter.ipynb 5
+# %% ../../nbs/classes/50_DomoDatacenter.ipynb 4
 @dataclass
 class DomoDatacenter:
     "class for quering entities in the datacenter"
     auth: dmda.DomoAuth = None
 
-# %% ../../nbs/classes/50_DomoDatacenter.ipynb 6
+# %% ../../nbs/classes/50_DomoDatacenter.ipynb 5
 @patch_to(DomoDatacenter, cls_method=True)
 async def search_datacenter(
     cls,
@@ -62,7 +62,7 @@ async def search_datacenter(
 
     return res.response
 
-# %% ../../nbs/classes/50_DomoDatacenter.ipynb 10
+# %% ../../nbs/classes/50_DomoDatacenter.ipynb 9
 @patch_to(DomoDatacenter, cls_method=True)
 async def search_datasets(
     cls,
@@ -102,7 +102,7 @@ async def search_datasets(
         ]
     )
 
-# %% ../../nbs/classes/50_DomoDatacenter.ipynb 13
+# %% ../../nbs/classes/50_DomoDatacenter.ipynb 12
 @patch_to(DomoDatacenter, cls_method=True)
 async def get_accounts(
     cls,
@@ -138,7 +138,7 @@ Note: at the time of this writing 7/18/2023, the datacenter api does not support
     
     return domo_account_ls
 
-# %% ../../nbs/classes/50_DomoDatacenter.ipynb 17
+# %% ../../nbs/classes/50_DomoDatacenter.ipynb 16
 class LineageTypes_Enum(Enum):
     DomoDataset = 'DATA_SOURCE'
     DomoDataflow = 'DATAFLOW'
@@ -197,7 +197,7 @@ async def get_lineage_upstream(
     return domo_obj
     
 
-# %% ../../nbs/classes/50_DomoDatacenter.ipynb 19
+# %% ../../nbs/classes/50_DomoDatacenter.ipynb 18
 @patch_to(DomoDatacenter, cls_method=True)
 async def search_cards(
     cls,
@@ -237,7 +237,7 @@ async def search_cards(
         ]
     )
 
-# %% ../../nbs/classes/50_DomoDatacenter.ipynb 21
+# %% ../../nbs/classes/50_DomoDatacenter.ipynb 20
 @patch_to(DomoDatacenter, cls_method=True)
 async def get_cards_admin_summary(
     cls,

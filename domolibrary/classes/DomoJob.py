@@ -6,7 +6,7 @@ __all__ = []
 # %% ../../nbs/classes/50_DomoJob.ipynb 2
 import domolibrary.routes.job as job_routes
 
-# %% ../../nbs/classes/50_DomoJob.ipynb 3
+# %% ../../nbs/classes/50_DomoJob.ipynb 4
 from dataclasses import dataclass
 
 from pprint import pprint
