@@ -17,24 +17,27 @@ class DomoError(Exception):
         status: Optional[int] = None,  # API request status
         message: str = "error",  # <domo_instance>.domo.com
         domo_instance: Optional[str] = None,
-        parent_class : str = None
+        parent_class : str = None,
+        is_exception_not_error: bool = False
     ):
         function_str = ""
+
 
         if function_name:
             function_str = f"{function_name} || "
         
         if parent_class and function_name:
             function_str = f"{parent_class}.{function_str}"
-
         if parent_class and not function_name:
             function_str = f"{parent_class} || "
+        function_str = f"functionn: {function_str}"
         
         entity_str = f"{entity_id} || " if entity_id else ""
         instance_str = f" at {domo_instance}" if domo_instance else ""
         status_str = f"status {status} || " if status else ""
+        prefix = '🛑 ' if not is_exception_not_error else '⚠️ '
 
-        self.message = f"{function_str}{entity_str}{status_str}{message}{instance_str}"
+        self.message = f"{prefix} {self.__class__.__name__} {prefix}- {function_str}{entity_str}{status_str}{message}{instance_str}"
         super().__init__(self.message)
 
 
