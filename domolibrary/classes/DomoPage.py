@@ -11,12 +11,15 @@ from dataclasses import dataclass, field
 import asyncio
 import httpx
 
+import domolibrary.client.Logger as lg
+import domolibrary.client.DomoError as de
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.classes.DomoPage_Content as dmpg_c
 import domolibrary.routes.page as page_routes
 
 import domolibrary.utils.DictDot as util_dd
 import domolibrary.utils.chunk_execution as ce
+
 
 # %% ../../nbs/classes/50_DomoPage.ipynb 4
 @dataclass
@@ -28,11 +31,16 @@ class DomoPage:
     auth: dmda.DomoAuth = field(default=None, repr=False)
     is_locked: bool = None
 
+    parent_hierarchy: [dict] = None
+    parent_page: dict = None  # DomoPage
+    top_page: dict = None  # DomoPage
+
     collections: list = field(default_factory=list)
 
     owners: list = field(default_factory=list)
     cards: list = field(default_factory=list)
     children: list = field(default_factory=list)
+    flat_children: list = None
 
     layout: dmpg_c.PageLayout = None
 
@@ -67,7 +75,7 @@ class DomoPage:
             if isinstance(owner, list):
                 [res.append(member) for member in owner]
             else:
-                res.append( owner )
+                res.append(owner)
 
         return res
 
@@ -95,11 +103,12 @@ async def _from_adminsummary(cls, page_obj, auth: dmda.DomoAuth):
         pg.owners = await pg._get_domo_owners_from_dd(dd.page.owners)
 
     if dd.cards and len(dd.cards) > 0:
-        pg.cards = await ce.gather_with_concurrency( n = 60,
-            *[dmc.DomoCard.get_from_id(id=card.id, auth=auth) for card in dd.cards]
-        )
+        pg.cards = await ce.gather_with_concurrency(n=60,
+                                                    *[dmc.DomoCard.get_from_id(id=card.id, auth=auth) for card in dd.cards]
+                                                    )
 
     return pg
+
 
 # %% ../../nbs/classes/50_DomoPage.ipynb 6
 @patch_to(DomoPage, cls_method=True)
@@ -112,24 +121,27 @@ async def _from_bootstrap(cls: DomoPage, page_obj, auth: dmda.DomoAuth = None):
 
     if isinstance(dd.owners, list) and len(dd.owners) > 0:
         pg.owners = await pg._get_domo_owners_from_dd(dd.owners)
-    
-    if isinstance(dd.children, list) and len(dd.children) > 0:
-        pg.children = await ce.gather_with_concurrency(n = 60,
-            *[
-                cls._from_bootstrap(page_obj=child_dd, auth=auth)
-                for child_dd in dd.children
-                if child_dd.type == "page"
-            ]
-        )
 
-        [print(other_dd) for other_dd in dd.children if other_dd.type != "page"]
+    if isinstance(dd.children, list) and len(dd.children) > 0:
+        pg.children = await ce.gather_with_concurrency(n=60,
+                                                       *[
+                                                           cls._from_bootstrap(
+                                                               page_obj=child_dd, auth=auth)
+                                                           for child_dd in dd.children
+                                                           if child_dd.type == "page"
+                                                       ]
+                                                       )
+
+        [print(other_dd)
+         for other_dd in dd.children if other_dd.type != "page"]
 
     return pg
+
 
 # %% ../../nbs/classes/50_DomoPage.ipynb 8
 @dataclass
 class DomoPages:
-    
+
     @classmethod
     async def get_pages(
         cls,
@@ -154,16 +166,18 @@ class DomoPages:
             if not res.is_success:
                 raise Exception("unable to retrieve pages")
 
-            return await ce.gather_with_concurrency(n = 60,
-                *[
-                    DomoPage._from_adminsummary(page_obj, auth=auth)
-                    for page_obj in res.response
-                ]
-            )
+            return await ce.gather_with_concurrency(n=60,
+                                                    *[
+                                                        DomoPage._from_adminsummary(
+                                                            page_obj, auth=auth)
+                                                        for page_obj in res.response
+                                                    ]
+                                                    )
 
         finally:
             if is_close_session:
                 await session.aclose()
+
 
 # %% ../../nbs/classes/50_DomoPage.ipynb 12
 @patch_to(DomoPage, cls_method=True)
@@ -177,7 +191,8 @@ async def _from_content_stacks_v3(cls: DomoPage, page_obj, auth: dmda.DomoAuth =
     pg = cls(
         id=int(dd.id),
         title=dd.title,
-        parent_page_id=int(dd.page.parentPageId) if dd.page.parentPageId else None,
+        parent_page_id=int(
+            dd.page.parentPageId) if dd.page.parentPageId else None,
         collections=dd.collections,
         auth=auth,
     )
@@ -195,6 +210,16 @@ async def _from_content_stacks_v3(cls: DomoPage, page_obj, auth: dmda.DomoAuth =
     return pg
 
 
+class DomoPage_GetRecursive(de.DomoError):
+    def __init__(self,  include_recursive_children, include_recursive_parents, page_id, domo_instance, function_name, parent_class):
+        super().__init__(
+            domo_instance=domo_instance,
+            function_name=function_name,
+            parent_class=parent_class,
+            message=f"error retrieving {page_id} can only trace parents OR children recursively but not both. include_recursive_children : {include_recursive_children}, include_recursive_parents: {include_recursive_parents}"
+        )
+
+
 @patch_to(DomoPage, cls_method=True)
 async def get_by_id(
     cls: DomoPage,
@@ -203,8 +228,21 @@ async def get_by_id(
     return_raw: bool = False,
     debug_api: bool = False,
     include_layout: bool = False,
-    include_children_recursively : bool = True
+
+    # if True, will drill down to all the Children.  Set to False to prevent calculating children
+    include_recursive_children: bool = True,
+    include_recursive_parents: bool = False,
 ):
+
+    # can only trace upstream or downstream but not both
+    if include_recursive_children and include_recursive_parents:
+        traceback_details = lg.get_traceback()
+
+        raise DomoPage_GetRecursive(include_recursive_children=include_recursive_children,
+                                    include_recursive_parents=include_recursive_parents,
+                                    page_id=page_id,
+                                    domo_instance=auth.domo_instance,
+                                    function_name=traceback_details.function_name, parent_class=cls.__name__)
 
     res = await page_routes.get_page_by_id(
         auth=auth, page_id=page_id, debug_api=debug_api, include_layout=include_layout
@@ -215,16 +253,51 @@ async def get_by_id(
 
     if not res.is_success:
         return None
-    
+
     pg = await cls._from_content_stacks_v3(page_obj=res.response, auth=auth)
 
+    if pg.parent_page_id and include_recursive_parents:
+        pg.parent_page = await cls.get_by_id(auth=auth, page_id=pg.parent_page_id,
+                                             include_recursive_parents=include_recursive_parents,
+                                             include_recursive_children=False
+                                             )
 
-    await pg.get_children(include_children_recursively = include_children_recursively)
+        if pg.parent_page:
+            pg.parent_hierarchy = pg.get_parent_hierarchy()
+
+            pg.top_page = pg.parent_hierarchy[-1]['page']
+            pg.top_page_id = pg.parent_hierarchy[-1]['page'].id
+
+    if include_recursive_children:
+        await pg.get_children(include_recursive_children=include_recursive_children,
+                              )
+        pg.flat_children = pg.flatten_children()
 
     return pg
 
+
 @patch_to(DomoPage)
-async def get_children(self: DomoPage, include_children_recursively: bool = False):
+def get_parent_hierarchy(self: DomoPage, path=None, hierarchy=0, results=None):
+    results = results or []
+
+    path = path or self.title
+
+    results.append(
+        {"hierarchy": hierarchy,
+         "path":  path,
+         "page": self})
+
+    if self.parent_page:
+        path = f"{path} > {self.parent_page.title}"
+        self.parent_page.get_parent_hierarchy(path, hierarchy+1, results)
+
+    return results
+
+
+@patch_to(DomoPage)
+async def get_children(self: DomoPage,
+                       include_recursive_children: bool = False):
+
     all_pages = await DomoPages.get_pages(auth=self.auth)
 
     self.children = await ce.gather_with_concurrency(
@@ -233,7 +306,8 @@ async def get_children(self: DomoPage, include_children_recursively: bool = Fals
             DomoPage.get_by_id(
                 page_id=page.id,
                 auth=self.auth,
-                include_children_recursively=include_children_recursively,
+                include_recursive_children=include_recursive_children,
+                include_recursive_parents=False
             )
             for page in all_pages
             if page.parent_page_id == self.id
@@ -242,7 +316,26 @@ async def get_children(self: DomoPage, include_children_recursively: bool = Fals
 
     return self.children
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 17
+
+@patch_to(DomoPage)
+def flatten_children(self: DomoPage, path=None, hierarchy=0, results=None):
+    results = results or []
+
+    path = f"{path} > {self.title}" if path else self.title
+
+    results.append(
+        {"hierarchy": hierarchy,
+            "path":  path,
+            "page": self})
+
+    if self.children:
+        [child.flatten_children(path, hierarchy+1, results)
+         for child in self.children]
+
+    return results
+
+
+# %% ../../nbs/classes/50_DomoPage.ipynb 19
 @patch_to(DomoPage)
 async def get_accesslist(
     self,
@@ -254,9 +347,9 @@ async def get_accesslist(
     auth = auth or self.auth
 
     res = await page_routes.get_page_access_list(
-        auth=auth, 
-        is_expand_users=is_expand_users, 
-        page_id=self.id, 
+        auth=auth,
+        is_expand_users=is_expand_users,
+        page_id=self.id,
         debug_api=debug_api
     )
 
@@ -271,7 +364,8 @@ async def get_accesslist(
 
     tasks_cn = await ce.gather_with_concurrency(n=60,
                                                 * [dmu.DomoUsers.by_id(
-                                                    user_ids=[ user.get("id") for user in res.response.get("users")],
+                                                    user_ids=[
+                                                        user.get("id") for user in res.response.get("users")],
                                                     only_allow_one=False,
                                                     auth=auth)],
                                                 *[
@@ -280,23 +374,26 @@ async def get_accesslist(
                                                     for group in res.response.get("groups")
                                                 ]
                                                 )
-    return [ *tasks_cn[0], tasks_cn[1]]
+    return [*tasks_cn[0], tasks_cn[1]]
 
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 20
+# %% ../../nbs/classes/50_DomoPage.ipynb 22
 @patch_to(DomoPage)
 async def share(self: DomoPage,
-                     auth: dmda.DomoAuth = None,
-                     domo_users: list = None,  # DomoUsers to share page with,
-                     domo_groups: list = None,  # DomoGroups to share page with
-                     message: str = None,  # message for automated email
-                     debug_api: bool = False, session: httpx.AsyncClient = None):
+                auth: dmda.DomoAuth = None,
+                domo_users: list = None,  # DomoUsers to share page with,
+                domo_groups: list = None,  # DomoGroups to share page with
+                message: str = None,  # message for automated email
+                debug_api: bool = False, session: httpx.AsyncClient = None):
 
     import domolibrary.routes.datacenter as datacenter_routes
 
-    if domo_groups : domo_groups = domo_groups if isinstance(domo_groups, list) else [domo_groups]
-    if domo_users : domo_users = domo_users if isinstance(domo_users, list) else [domo_users]
-
+    if domo_groups:
+        domo_groups = domo_groups if isinstance(
+            domo_groups, list) else [domo_groups]
+    if domo_users:
+        domo_users = domo_users if isinstance(
+            domo_users, list) else [domo_users]
 
     res = await datacenter_routes.share_resource(
         auth=auth or self.auth,
@@ -311,7 +408,7 @@ async def share(self: DomoPage,
     return res
 
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 23
+# %% ../../nbs/classes/50_DomoPage.ipynb 25
 @patch_to(DomoPage, cls_method=True)
 async def get_cards(cls,
                     auth: dmda.DomoAuth,
@@ -329,8 +426,8 @@ async def get_cards(cls,
     if len(res.response.get('cards')) == 0:
         return []
 
-    return await ce.gather_with_concurrency( n = 60, *[dc.DomoCard.get_by_id(card_id=card['id'],
-                                                  auth=auth) for card in res.response.get('cards')])
+    return await ce.gather_with_concurrency(n=60, *[dc.DomoCard.get_by_id(card_id=card['id'],
+                                                                          auth=auth) for card in res.response.get('cards')])
 
 
 @patch_to(DomoPage, cls_method=True)
@@ -346,14 +443,16 @@ async def get_datasets(cls,
                                                 debug_api=debug_api, session=session)
 
     if res.status != 200:
-        raise Exception( f"unable to retrieve datasets for page {page_id} in {auth.domo_instance}")
+        raise Exception(
+            f"unable to retrieve datasets for page {page_id} in {auth.domo_instance}")
 
     if len(res.response.get('cards')) == 0:
         return []
 
-    return await ce.gather_with_concurrency(n= 60, *[ dmds.DomoDataset.get_from_id(dataset_id = ds.get('dataSourceId'), auth = auth) for card in res.response.get('cards') for ds in card.get('datasources')])
+    return await ce.gather_with_concurrency(n=60, *[dmds.DomoDataset.get_from_id(dataset_id=ds.get('dataSourceId'), auth=auth) for card in res.response.get('cards') for ds in card.get('datasources')])
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 26
+
+# %% ../../nbs/classes/50_DomoPage.ipynb 28
 from datetime import datetime
 from utils import convert
 
@@ -363,7 +462,8 @@ async def update_layout(
     cls, auth: dmda.DomoAuth, body: dict, layout_id: str, debug_api: bool = False
 ):
     datetime_now = datetime.now()
-    start_time_epoch = convert.convert_datetime_to_epoch_millisecond(datetime_now)
+    start_time_epoch = convert.convert_datetime_to_epoch_millisecond(
+        datetime_now)
 
     res_writelock = await page_routes.put_writelock(
         auth=auth,
@@ -389,3 +489,4 @@ async def update_layout(
         return False
 
     return True
+
