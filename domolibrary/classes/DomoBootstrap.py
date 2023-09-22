@@ -103,19 +103,18 @@ async def get_pages(
 ) -> list[dmpg.DomoPage]:
     auth = auth or self.auth
 
-    res = await bootstrap_routes.get_bootstrap_pages(auth=auth, debug_api=debug_api, parent_class = self.__class__.__name__)
+    res = await bootstrap_routes.get_bootstrap_pages(auth=auth, debug_api=debug_api, parent_class=self.__class__.__name__)
 
     if return_raw:
-        return res.response
+        return res
 
     if not res.is_success:
         return None
 
-    page_ls = res.response
-
-    self.page_ls = await ce.gather_with_concurrency(n = 60,
-        *[dmpg.DomoPage._from_bootstrap(page_obj, auth=auth) for page_obj in page_ls]
-    )
+    self.page_ls = await ce.gather_with_concurrency(n=60,
+                                                    *[dmpg.DomoPage._from_bootstrap(page_obj, auth=auth)
+                                                      for page_obj in res.response]
+                                                    )
 
     return self.page_ls
 
