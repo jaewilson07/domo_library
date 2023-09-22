@@ -36,7 +36,8 @@ async def get_page_by_id(
  
     """retrieves a page or throws an error"""
 
-    url = f"https://{auth.domo_instance}.domo.com/api/content/v3/stacks/{page_id}"
+    # 9/21/2023 - the domo UI uses /cards to get page info
+    url = f"https://{auth.domo_instance}.domo.com/api/content/v3/stacks/{page_id}/cards" 
 
     if include_layout:
         url += "?includeV4PageLayouts=true"

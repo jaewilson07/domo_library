@@ -43,6 +43,7 @@ website:
           - classes/50_DomoLineage.ipynb
           - classes/50_DomoPDP.ipynb
           - classes/50_DomoPage.ipynb
+          - classes/50_DomoPage_Content.ipynb
           - classes/50_DomoPublish.ipynb
           - classes/50_DomoRole.ipynb
           - classes/50_DomoSandbox.ipynb
