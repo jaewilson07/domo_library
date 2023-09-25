@@ -405,7 +405,6 @@ async def test_page_access(
 async def get_accesslist(
     self,
     auth: dmda.DomoAuth = None,
-    is_expand_users: bool = False,
     return_raw: bool = False,
     debug_api: bool = False,
 ):
@@ -413,7 +412,7 @@ async def get_accesslist(
 
     res = await page_routes.get_page_access_list(
         auth=auth,
-        is_expand_users=is_expand_users,
+        is_expand_users=True,
         page_id=self.id,
         debug_api=debug_api,
         debug_num_stacks_to_drop=2,
@@ -429,69 +428,57 @@ async def get_accesslist(
     import domolibrary.classes.DomoUser as dmu
     import domolibrary.classes.DomoGroup as dmg
 
-    user_ls = res.response.get("users", None)
-    group_ls = res.response.get("groups", None)
-
     s = {'explicit_shared_user_count': res.response.get('explicitSharedUserCount'),
-         'expand_user_count': res.response.get('expandUserCount'),
          'total_user_count': res.response.get('totalUserCount')
          }
 
-    res = await self.test_page_access(suppress_no_access_error=True)
-    owner_ls = res.response['owners']
-
-    # create domo_users and set "is_explicit_share"
+    user_ls = res.response.get("users", None)
+    domo_users = []
     if user_ls and isinstance(user_ls, list) and len(user_ls) > 0:
-
-        # get all users from user_ls
         domo_users = await dmu.DomoUsers.by_id(
             user_ids=[
                 user.get("id") for user in user_ls],
             only_allow_one=False,
             auth=auth)
 
-        for domo_user in domo_users:
-            # update is_explicit_share
-            match_user = next((user_obj for user_obj in user_ls if int(
-                user_obj.get('id')) == int(domo_user.id)))
-                
-            domo_user.custom_attributes['is_explicit_share'] = match_user.get(
-                'isExplicitShare')
-
-            domo_user.custom_attributes['is_owner'] = False
-
-            # update match_owner
-            match_owner = next((owner_obj for owner_obj in owner_ls if int(
-                owner_obj['id']) == int(domo_user.id) and owner_obj['type'] == 'USER'), None)
-            if match_owner:
-                domo_user.custom_attributes['is_owner'] = True
-
-    else:
-        domo_users = []
-
+    group_ls = res.response.get("groups", None)
+    domo_groups = []
     if group_ls and isinstance(group_ls, list) and len(group_ls) > 0:
         domo_groups = await ce.gather_with_concurrency(n=60, *[dmg.DomoGroup.get_by_id(group_id=group.get("id"),
                                                                                        auth=auth) for group in group_ls])
 
-        for domo_group in domo_groups:
-            match_owner = next((owner_obj for owner_obj in owner_ls if int(
-                owner_obj['id']) == int(domo_group.id) and owner_obj['type'] == 'GROUP'), None)
+    res = await self.test_page_access(suppress_no_access_error=True)
+    owner_ls = res.response['owners']  # from test_page_access
 
-            domo_group.custom_attributes['is_owner'] = True if match_owner else False
+    for domo_user in domo_users:
+        # isExplicitShare is set by the get_access_list API response
+        domo_user.custom_attributes['is_explicit_share'] = next((user_obj['isExplicitShare'] for user_obj in user_ls if int(
+            user_obj.get('id')) == int(domo_user.id)))
 
-            match_group_users = next((group_obj.get('users', None) for group_obj in group_ls if group_obj['id'] == domo_group.id), None)
-            
-            if not match_group_users: 
-                continue
+        # group membership is determined by get_access_list API response
+        domo_user.custom_attributes['group_membership'] = [domo_group for group_obj in group_ls for domo_group in domo_groups
+                                                           if int(domo_user.id) in [int(user_obj['id']) for user_obj in group_obj.get('users')]
+                                                           and domo_group.id == group_obj['id']]
 
-            for user in match_group_users:
-                for domo_user in domo_users:
-                    if int(user['id']) == int(domo_user.id):
-                        domo_user.custom_attributes['is_owner'] = True 
+        # isOwner determined by test_access API response and group membership
+        domo_user.custom_attributes['is_owner'] = False
 
-            
-    else:
-        domo_groups = []
+        # test ownership as a user
+        match_owner = next((owner_obj for owner_obj in owner_ls if int(
+            owner_obj['id']) == int(domo_user.id) and owner_obj['type'] == 'USER'), None)
+        
+        match_group = next((owner_obj for owner_obj in owner_ls if int(owner_obj['id']) in [int( domo_group.id) for domo_group in domo_user.custom_attributes['group_membership']]
+        and owner_obj['type'] =='GROUP'), None)
+
+        if match_owner or match_group:
+            domo_user.custom_attributes['is_owner'] = True
+        
+    # group ownership is confirmed test_access API
+    for domo_group in domo_groups:
+        match_owner = next((owner_obj for owner_obj in owner_ls if int(
+            owner_obj['id']) == int(domo_group.id) and owner_obj['type'] == 'GROUP'), None)
+
+        domo_group.custom_attributes['is_owner'] = True if match_owner else False
 
     return {**s, 'domo_users': domo_users,
             'domo_groups': domo_groups,
