@@ -353,6 +353,8 @@ class DomoGroup:
     members_ls: list[dict] = field(repr=False, default_factory=list)
     owner_ls : list[dict]= field(repr = False, default_factory = list)
 
+    custom_attributes : dict = field(default_factory = dict)
+
     def __post_init__(self):
         # self.domo_instance = self.domo_instance or auth.domo_instance
         self.Membership = GroupMembership(self)

@@ -47,6 +47,8 @@ class DomoUser:
     subscriber_domain: str = None
     virtual_user_id: str = None
 
+    custom_attributes : dict = field(default_factory = dict)
+
     auth: Optional[dmda.DomoAuth] = field(repr=False, default=None)
 
     def __post_init__(self):
