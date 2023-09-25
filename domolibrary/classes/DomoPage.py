@@ -100,14 +100,6 @@ async def _from_adminsummary(cls, page_obj, auth: dmda.DomoAuth):
     if isinstance(page_obj, dict):
         dd = util_dd.DictDot(page_obj)
 
-    print({ 'id': int(dd.id or dd.pageId),
-          'title' : dd.title or dd.pageTitle,
-          'parent_page_id': int(dd.parentPageId) if dd.parentPageId else None,
-          'top_page_id': int(dd.topPageId) if dd.topPageId else None,
-          'collections': dd.collections,
-          'locked': dd.locked,
-          })
-
     pg = cls(
         id=int(dd.id or dd.pageId),
         title=dd.title or dd.pageTitle,
@@ -118,13 +110,13 @@ async def _from_adminsummary(cls, page_obj, auth: dmda.DomoAuth):
         auth=auth,
     )
 
-    # if dd.page and dd.page.owners and len(dd.page.owners) > 0:
-    #     pg.owners = await pg._get_domo_owners_from_dd(dd.page.owners)
+    if dd.page and dd.page.owners and len(dd.page.owners) > 0:
+        pg.owners = await pg._get_domo_owners_from_dd(dd.page.owners)
 
-    # if dd.cards and len(dd.cards) > 0:
-    #     pg.cards = await ce.gather_with_concurrency(n=60,
-    #                                                 *[dmc.DomoCard.get_from_id(id=card.id, auth=auth) for card in dd.cards]
-    #                                                 )
+    if dd.cards and len(dd.cards) > 0:
+        pg.cards = await ce.gather_with_concurrency(n=60,
+                                                    *[dmc.DomoCard.get_from_id(id=card.id, auth=auth) for card in dd.cards]
+                                                    )
 
     return pg
 
@@ -361,7 +353,7 @@ def flatten_children(self: DomoPage, path=None, hierarchy=0, results=None):
     return results
 
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 19
+# %% ../../nbs/classes/50_DomoPage.ipynb 20
 class Page_NoAccess(de.DomoError):
     def __init__(self, page_id, page_title, domo_instance, function_name, parent_class):
         super().__init__(
@@ -371,14 +363,18 @@ class Page_NoAccess(de.DomoError):
             message = f"authenticated user doesn't have access to {page_id} - \"{page_title}\" contact owners to share access"
          )
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 20
+# %% ../../nbs/classes/50_DomoPage.ipynb 21
 @patch_to(DomoPage)
 async def test_page_access(
     self: DomoPage,
-    suppress_no_access_error: bool = False,
+    suppress_no_access_error: bool = False, # suppresses error if user doesn't have access
     debug_api: bool = False,
     return_raw: bool = False
 ):
+    """throws an error if user doesn't have access to the page
+    API returns the owners of the page
+    """
+
     res = await page_routes.test_page_access(auth=self.auth,
                                              page_id=self.id)
 
@@ -404,7 +400,7 @@ async def test_page_access(
     return res
 
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 23
+# %% ../../nbs/classes/50_DomoPage.ipynb 25
 @patch_to(DomoPage)
 async def get_accesslist(
     self,
@@ -497,7 +493,7 @@ async def get_accesslist(
             }
 
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 26
+# %% ../../nbs/classes/50_DomoPage.ipynb 28
 @patch_to(DomoPage)
 async def share(self: DomoPage,
                 auth: dmda.DomoAuth = None,
@@ -528,7 +524,7 @@ async def share(self: DomoPage,
     return res
 
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 29
+# %% ../../nbs/classes/50_DomoPage.ipynb 31
 @patch_to(DomoPage, cls_method=True)
 async def get_cards(cls,
                     auth: dmda.DomoAuth,
@@ -572,7 +568,7 @@ async def get_datasets(cls,
     return await ce.gather_with_concurrency(n=60, *[dmds.DomoDataset.get_from_id(dataset_id=ds.get('dataSourceId'), auth=auth) for card in res.response.get('cards') for ds in card.get('datasources')])
 
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 32
+# %% ../../nbs/classes/50_DomoPage.ipynb 34
 from datetime import datetime
 from utils import convert
 
