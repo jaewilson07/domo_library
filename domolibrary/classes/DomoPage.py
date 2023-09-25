@@ -477,8 +477,11 @@ async def get_accesslist(
 
             domo_group.custom_attributes['is_owner'] = True if match_owner else False
 
-            match_group_users = next((group_obj['users'] for group_obj in group_ls if group_obj['id'] == domo_group.id), None)
+            match_group_users = next((group_obj.get('users', None) for group_obj in group_ls if group_obj['id'] == domo_group.id), None)
             
+            if not match_group_users: 
+                continue
+
             for user in match_group_users:
                 for domo_user in domo_users:
                     if int(user['id']) == int(domo_user.id):
