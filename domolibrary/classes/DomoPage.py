@@ -78,7 +78,7 @@ class DomoPage:
             domo_users = await dmu.DomoUsers.by_id(
                 user_ids=owner_user_ls, only_allow_one=False, auth=self.auth)
 
-        owner_ce = domo_groups + domo_users
+        owner_ce = (domo_groups or []) + (domo_users or [])
 
         res = []
         for owner in owner_ce:
@@ -433,7 +433,9 @@ async def get_accesslist(
     group_ls = res.response.get("groups", None)
 
     s = {'explicit_shared_user_count': res.response.get('explicitSharedUserCount'),
-         'expand_user_count': res.response.get('expandUserCount', None)}
+         'expand_user_count': res.response.get('expandUserCount'),
+         'total_user_count': res.response.get('totalUserCount')
+         }
 
     res = await self.test_page_access(suppress_no_access_error=True)
     owner_ls = res.response['owners']

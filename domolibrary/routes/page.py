@@ -159,8 +159,6 @@ async def get_page_access_list(
         users = res.response.get("users") + [group_user for group_user in group_users if group_user.get('id') not in [user.get('id') for user in res.response.get("users")]]
         res.response.update({"users": users})
 
-    res.response['expandUserCount'] = len(res.response.get('users'))
-
     return res
 
 
