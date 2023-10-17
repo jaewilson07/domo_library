@@ -602,3 +602,27 @@ async def update_layout(
 
     return True
 
+
+# %% ../../nbs/classes/50_DomoPage.ipynb 38
+@patch_to(DomoPage, cls_method=True)
+async def add_page_owner(cls,
+                auth: dmda.DomoAuth,
+                page_id_ls: [],  # Page IDs to be updated by owner,
+                group_id_ls: [],  # DomoGroup IDs to share page with
+                user_id_ls: [], # DomoUser IDs to share page with
+                note: str = None,  # message for automated email
+                send_email: bool = False, # send or not email to the new owners
+                debug_api: bool = False, session: httpx.AsyncClient = None):
+    
+
+    res = await page_routes.add_page_owner(
+        auth=auth,
+        page_id_ls=page_id_ls,
+        group_id_ls=group_id_ls,
+        user_id_ls = user_id_ls,
+        note = note,
+        send_email = send_email,
+        debug_api=debug_api, session=session
+    )
+
+    return res
