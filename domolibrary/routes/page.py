@@ -2,7 +2,7 @@
 
 # %% auto 0
 __all__ = ['PageRetrieval_byId_Error', 'get_page_by_id', 'get_page_definition', 'get_page_access_test', 'get_page_access_list',
-           'get_pages_adminsummary', 'update_page_layout', 'put_writelock', 'delete_writelock']
+           'get_pages_adminsummary', 'update_page_layout', 'put_writelock', 'delete_writelock', 'add_page_owner']
 
 # %% ../../nbs/routes/page.ipynb 2
 import httpx
@@ -277,4 +277,39 @@ async def delete_writelock(
         print(res)
 
     return res
+
+
+# %% ../../nbs/routes/page.ipynb 24
+async def add_page_owner(auth: dmda.DomoAuth,
+                        page_id_ls : [],
+                        group_id_ls: [],
+                        user_id_ls:[],
+                        note: str = "",
+                        send_email: bool = False,
+                        session: httpx.AsyncClient = None, debug_api: bool = False) -> rgd.ResponseGetData:
+
+
+    url = f'https://{auth.domo_instance}.domo.com/api/content/v1/pages/bulk/owners'
+    owners = []
+    for group in group_id_ls:
+        owners.append({"id":group,"type":"GROUP"})
+    for user in user_id_ls:
+        owners.append({"id":user,"type":"USER"})
+    
+
+    body = {"pageIds":page_id_ls,  
+            "owners": owners, 
+            "note": note,
+            "sendEmail": send_email
+             }
+    
+    res = await gd.get_data(auth=auth,
+                        method='PUT',
+                        url=url,
+                        body = body,
+                        session=session,
+                        debug_api=debug_api)
+    return res
+
+
 
