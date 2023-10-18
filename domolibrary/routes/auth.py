@@ -262,6 +262,7 @@ async def who_am_i(
     parent_class :str = None,
     debug_num_stacks_to_drop = 0,
     debug_api: bool = False,
+    return_raw: bool = False
 ):
     """
     will attempt to validate against the 'me' API.
@@ -283,6 +284,9 @@ async def who_am_i(
 
     if is_close_session:
         await session.aclose()
+    
+    if return_raw:
+        return res
     
     traceback_details = lg.get_traceback(num_stacks_to_drop= debug_num_stacks_to_drop)
 

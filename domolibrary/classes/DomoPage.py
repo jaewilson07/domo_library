@@ -4,6 +4,10 @@
 __all__ = ['DomoPage', 'DomoPages', 'Page_NoAccess']
 
 # %% ../../nbs/classes/50_DomoPage.ipynb 2
+from ..routes.page import PageRetrieval_byId_Error 
+
+
+# %% ../../nbs/classes/50_DomoPage.ipynb 3
 from nbdev import show_doc
 from fastcore.basics import patch_to
 from dataclasses import dataclass, field
@@ -21,7 +25,7 @@ import domolibrary.utils.DictDot as util_dd
 import domolibrary.utils.chunk_execution as ce
 
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 4
+# %% ../../nbs/classes/50_DomoPage.ipynb 5
 @dataclass(
     # frozen = True
     )
@@ -90,7 +94,7 @@ class DomoPage:
         return res
 
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 5
+# %% ../../nbs/classes/50_DomoPage.ipynb 6
 @patch_to(DomoPage, cls_method=True)
 async def _from_adminsummary(cls, page_obj, auth: dmda.DomoAuth):
     import domolibrary.classes.DomoCard as dmc
@@ -121,7 +125,7 @@ async def _from_adminsummary(cls, page_obj, auth: dmda.DomoAuth):
     return pg
 
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 6
+# %% ../../nbs/classes/50_DomoPage.ipynb 7
 @patch_to(DomoPage, cls_method=True)
 async def _from_bootstrap(cls: DomoPage, page_obj, auth: dmda.DomoAuth = None):
     dd = page_obj
@@ -149,7 +153,7 @@ async def _from_bootstrap(cls: DomoPage, page_obj, auth: dmda.DomoAuth = None):
     return pg
 
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 8
+# %% ../../nbs/classes/50_DomoPage.ipynb 9
 @dataclass
 class DomoPages:
 
@@ -194,7 +198,7 @@ class DomoPages:
                 await session.aclose()
 
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 12
+# %% ../../nbs/classes/50_DomoPage.ipynb 13
 @patch_to(DomoPage, cls_method=True)
 async def _from_content_stacks_v3(cls: DomoPage, page_obj, auth: dmda.DomoAuth = None):
     # import domolibrary.classes.DomoCard as dc
@@ -353,7 +357,7 @@ def flatten_children(self: DomoPage, path=None, hierarchy=0, results=None):
     return results
 
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 20
+# %% ../../nbs/classes/50_DomoPage.ipynb 21
 class Page_NoAccess(de.DomoError):
     def __init__(self, page_id, page_title, domo_instance, function_name, parent_class):
         super().__init__(
@@ -363,7 +367,7 @@ class Page_NoAccess(de.DomoError):
             message = f"authenticated user doesn't have access to {page_id} - \"{page_title}\" contact owners to share access"
          )
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 21
+# %% ../../nbs/classes/50_DomoPage.ipynb 22
 @patch_to(DomoPage)
 async def test_page_access(
     self: DomoPage,
@@ -375,12 +379,12 @@ async def test_page_access(
     API returns the owners of the page
     """
 
-    res = await page_routes.test_page_access(auth=self.auth,
+    res = await page_routes.get_page_access_test(auth=self.auth,
                                              page_id=self.id)
 
 
     try:
-        page_access = res.response.get('PageAccess')
+        page_access = res.response.get('pageAccess')
     
         if not page_access:
             raise Page_NoAccess(
@@ -400,7 +404,7 @@ async def test_page_access(
     return res
 
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 25
+# %% ../../nbs/classes/50_DomoPage.ipynb 26
 @patch_to(DomoPage)
 async def get_accesslist(
     self,
@@ -485,7 +489,7 @@ async def get_accesslist(
             }
 
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 28
+# %% ../../nbs/classes/50_DomoPage.ipynb 29
 @patch_to(DomoPage)
 async def share(self: DomoPage,
                 auth: dmda.DomoAuth = None,
@@ -516,7 +520,7 @@ async def share(self: DomoPage,
     return res
 
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 31
+# %% ../../nbs/classes/50_DomoPage.ipynb 32
 @patch_to(DomoPage, cls_method=True)
 async def get_cards(cls,
                     auth: dmda.DomoAuth,
@@ -560,7 +564,7 @@ async def get_datasets(cls,
     return await ce.gather_with_concurrency(n=60, *[dmds.DomoDataset.get_from_id(dataset_id=ds.get('dataSourceId'), auth=auth) for card in res.response.get('cards') for ds in card.get('datasources')])
 
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 34
+# %% ../../nbs/classes/50_DomoPage.ipynb 35
 from datetime import datetime
 from utils import convert
 

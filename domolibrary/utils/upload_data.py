@@ -92,7 +92,7 @@ async def upload_data(
 
         upload_df = await data_fn(instance_auth, instance_session, debug_api=debug_api)
 
-        if upload_df is None or len(upload_df.index) == 0:
+        if upload_df is None or (isinstance(upload_df, pd.DataFrame) and len(upload_df.index) == 0):
             message = f"no data to upload for {partition_key}: {consol_ds.id} in {consol_ds.auth.domo_instance}"
             logger.log_info(message)
             print(message)
