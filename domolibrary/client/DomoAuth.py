@@ -39,14 +39,16 @@ class _DomoAuth_Required:
         return self.url_manual_login
 
     async def who_am_i(self,
-                       domo_instance: str = None,
-                       auth_header: dict = None,
                        debug_api: bool = False,
                        session: httpx.AsyncClient = None):
+        
+        auth_header = self.auth_header or await self.generate_auth_header()
+
+        print('who_am_i', self.auth_header)
 
         res = await auth_routes.who_am_i(
-            domo_instance=domo_instance or self.domo_instance,
-            auth_header=auth_header or self.auth_header, 
+            domo_instance=self.domo_instance,
+            auth_header= auth_header, 
             parent_class=self.__class__.__name__
         )
 
@@ -74,10 +76,10 @@ class _DomoAuth_Required:
 class _DomoAuth_Optional:
     """parameters are defined after initialization"""
 
-    token: Optional[str] = field(default=None, repr=False)
-    token_name: Optional[str] = field(default=None)
-    user_id: Optional[str] = field(default=None, repr=False)
-    auth_header: dict = field(default_factory=dict, repr=False)
+    token: str = field(default=None, repr=False)
+    token_name: str = field(default=None)
+    user_id: str = field(default=None, repr=False)
+    auth_header: dict = field(default= None, repr=False)
 
     is_valid_token: bool = None
 
@@ -176,6 +178,21 @@ class _DomoTokenAuth_Required:
 
     domo_access_token: str = field(repr=False)
 
+    async def who_am_i(self,
+                       debug_api: bool = False,
+                       session: httpx.AsyncClient = None):
+
+        auth_header = self.auth_header or self.generate_auth_header()
+
+        res = await auth_routes.who_am_i(
+            domo_instance=self.domo_instance,
+            auth_header=auth_header,
+            parent_class=self.__class__.__name__
+        )
+
+        return res
+
+
 # %% ../../nbs/client/95_DomoAuth.ipynb 21
 @dataclass
 class DomoTokenAuth(_DomoAuth_Optional, _DomoTokenAuth_Required, _DomoAuth_Required):
@@ -187,8 +204,19 @@ class DomoTokenAuth(_DomoAuth_Optional, _DomoTokenAuth_Required, _DomoAuth_Requi
     Necessary in cases where direct sign on is not permitted
     """
 
-    def generate_auth_header(self, token: str = None) -> dict:
-        self.auth_header = {"x-domo-developer-token": token or self.token}
+    def generate_auth_header(self) -> dict :
+        """returns auth_header for validating API requests using access_tokens / developer tokens"""
+
+        "is this being executed as part of get_auth_token chain? if yes, suppress not validated error"
+        traceback_details = lg.get_traceback(num_stacks_to_drop= 0)
+        function_name = traceback_details.function_name
+        if len(traceback_details.traceback_stack) >= 3:
+            function_name = traceback_details.traceback_stack[-3][2]
+        if not function_name == 'get_auth_token' and not self.token:
+            print('warning this token has not been validated by who_am_i, run get_auth_token first')
+        
+
+        self.auth_header = {"x-domo-developer-token": self.token or self.domo_access_token }
         return self.auth_header
 
     async def get_auth_token(
@@ -209,14 +237,14 @@ class DomoTokenAuth(_DomoAuth_Optional, _DomoTokenAuth_Required, _DomoAuth_Requi
         self.token = self.domo_access_token
         self.user_id = res.response.get("id")
 
-        self.auth_header = await self.generate_auth_header()
+        self.auth_header = self.generate_auth_header()
 
         if not self.token_name:
             self.token_name = "token_auth"
 
         return self.token
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 25
+# %% ../../nbs/client/95_DomoAuth.ipynb 26
 @dataclass
 class _DomoDeveloperAuth_Required:
     """mix requied parameters for DomoDeveloperAuth"""
@@ -231,7 +259,7 @@ class _DomoDeveloperAuth_Optional:
     domo_instance: str = None  # because api.domo.com apis don't require domo_instance
 
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 26
+# %% ../../nbs/client/95_DomoAuth.ipynb 27
 @dataclass
 # (init=False)
 class DomoDeveloperAuth(_DomoDeveloperAuth_Optional, _DomoAuth_Optional, _DomoDeveloperAuth_Required):
@@ -242,8 +270,8 @@ class DomoDeveloperAuth(_DomoDeveloperAuth_Optional, _DomoAuth_Optional, _DomoDe
     #     self.domo_client_secret = domo_client_secret
     #     self.domo_instance = ""
 
-    async def generate_auth_header(self, token: str = None) -> dict:
-        token = token or await self.get_auth_token()
+    async def generate_auth_header(self) -> dict:
+        token = self.token or await self.get_auth_token()
         
         self.auth_header = {"Authorization": "bearer " + token}
         return self.auth_header
@@ -274,9 +302,9 @@ class DomoDeveloperAuth(_DomoDeveloperAuth_Optional, _DomoAuth_Optional, _DomoDe
 
         self.token_name = self.token_name or "developer_auth"
 
-        return token
+        return self.token
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 30
+# %% ../../nbs/client/95_DomoAuth.ipynb 31
 @dataclass
 class _DomoJupyter_Optional:
     def __post_init__(self):
@@ -320,12 +348,12 @@ class _DomoJupyter_Required:
 
 
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 31
+# %% ../../nbs/client/95_DomoAuth.ipynb 32
 @dataclass
 class DomoJupyterAuth(_DomoJupyter_Optional,_DomoJupyter_Required ):
     """base class"""
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 33
+# %% ../../nbs/client/95_DomoAuth.ipynb 34
 @dataclass
 class DomoJupyterFullAuth(
     _DomoJupyter_Optional, DomoFullAuth, _DomoJupyter_Required):
@@ -343,7 +371,7 @@ class DomoJupyterFullAuth(
                    service_location=service_location,
                    service_prefix=service_prefix)
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 37
+# %% ../../nbs/client/95_DomoAuth.ipynb 38
 @dataclass
 class DomoJupyterTokenAuth(
         _DomoJupyter_Optional, DomoTokenAuth, _DomoJupyter_Required):
@@ -361,7 +389,7 @@ class DomoJupyterTokenAuth(
                    service_prefix=service_prefix)
 
 
-# %% ../../nbs/client/95_DomoAuth.ipynb 41
+# %% ../../nbs/client/95_DomoAuth.ipynb 42
 def test_is_jupyter_auth(auth: DomoJupyterAuth,
                          function_name=None,
                          required_auth_type_ls=[DomoJupyterFullAuth, DomoJupyterTokenAuth]):
