@@ -2,7 +2,8 @@
 
 # %% auto 0
 __all__ = ['PageRetrieval_byId_Error', 'get_page_by_id', 'get_page_definition', 'get_page_access_test', 'get_page_access_list',
-           'get_pages_adminsummary', 'update_page_layout', 'put_writelock', 'delete_writelock', 'add_page_owner']
+           'get_pages_adminsummary', 'update_page_layout', 'put_writelock', 'delete_writelock',
+           'PageMembership_AddOwnerError', 'add_page_owner']
 
 # %% ../../nbs/routes/page.ipynb 2
 import httpx
@@ -12,7 +13,6 @@ import domolibrary.client.get_data as gd
 import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
-
 
 # %% ../../nbs/routes/page.ipynb 4
 class PageRetrieval_byId_Error(de.DomoError):
@@ -32,6 +32,7 @@ class PageRetrieval_byId_Error(de.DomoError):
             message=f"failed to retrieve page_id: {page_id}",
         )
 
+
 # %% ../../nbs/routes/page.ipynb 7
 async def get_page_by_id(
     auth: dmda.DomoAuth,
@@ -39,7 +40,8 @@ async def get_page_by_id(
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
     include_layout: bool = False,  # passes parameter to return page layout information
-    debug_num_stacks_to_drop: int = 1,  # for traceback_details.  use 1 for route functions, 2 for class method
+    # for traceback_details.  use 1 for route functions, 2 for class method
+    debug_num_stacks_to_drop: int = 1,
     parent_class: str = None,  # pass in self.__class__.__name__ into function
 ) -> rgd.ResponseGetData:  # returns ResponseGetData on success or raise Exception on error
     """retrieves a page or throws an error"""
@@ -75,6 +77,7 @@ async def get_page_by_id(
         )
 
     return res
+
 
 # %% ../../nbs/routes/page.ipynb 11
 async def get_page_definition(
@@ -119,6 +122,7 @@ async def get_page_definition(
 
     return res
 
+
 # %% ../../nbs/routes/page.ipynb 15
 async def get_page_access_test(
     auth,
@@ -142,6 +146,7 @@ async def get_page_access_test(
     )
 
     return res
+
 
 # %% ../../nbs/routes/page.ipynb 18
 async def get_page_access_list(
@@ -188,6 +193,7 @@ async def get_page_access_list(
 
     return res
 
+
 # %% ../../nbs/routes/page.ipynb 21
 async def get_pages_adminsummary(
     auth: dmda.DomoAuth,
@@ -224,7 +230,6 @@ async def get_pages_adminsummary(
         debug_api=debug_api,
     )
     return res
-
 
 # %% ../../nbs/routes/page.ipynb 23
 async def update_page_layout(
@@ -278,38 +283,72 @@ async def delete_writelock(
 
     return res
 
-
 # %% ../../nbs/routes/page.ipynb 24
-async def add_page_owner(auth: dmda.DomoAuth,
-                        page_id_ls : [],
-                        group_id_ls: [],
-                        user_id_ls:[],
-                        note: str = "",
-                        send_email: bool = False,
-                        session: httpx.AsyncClient = None, debug_api: bool = False) -> rgd.ResponseGetData:
+class PageMembership_AddOwnerError(de.DomoError):
+    def __init__(self, domo_instance, status, message, page_id, parent_class):
+        super().__init__(
+            domo_instance=domo_instance,
+            status=status,
+            message=f"failure to add owner to {page_id} -- {message}",
+        )
 
 
-    url = f'https://{auth.domo_instance}.domo.com/api/content/v1/pages/bulk/owners'
+async def add_page_owner(
+    auth: dmda.DomoAuth,
+    page_id_ls: [],
+    group_id_ls: [],
+    user_id_ls: [],
+    note: str = "",
+    send_email: bool = False,
+    session: httpx.AsyncClient = None,
+    parent_class: str = None,
+    debug_num_stacks_to_drop=1,
+    debug_api: bool = False,
+) -> rgd.ResponseGetData:
+    url = f"https://{auth.domo_instance}.domo.com/api/content/v1/pages/bulk/owners"
+
     owners = []
-    for group in group_id_ls:
-        owners.append({"id":group,"type":"GROUP"})
-    for user in user_id_ls:
-        owners.append({"id":user,"type":"USER"})
-    
+    if group_id_ls:
+        [owners.append({"id": group, "type": "GROUP"}) for group in group_id_ls]
 
-    body = {"pageIds":page_id_ls,  
-            "owners": owners, 
-            "note": note,
-            "sendEmail": send_email
-             }
-    
-    res = await gd.get_data(auth=auth,
-                        method='PUT',
-                        url=url,
-                        body = body,
-                        session=session,
-                        debug_api=debug_api)
+    if user_id_ls:
+        [owners.append({"id": user, "type": "USER"}) for user in user_id_ls]
+
+    body = {
+        "pageIds": page_id_ls,
+        "owners": owners,
+        "note": note,
+        "sendEmail": send_email,
+    }
+
+    res = await gd.get_data(
+        auth=auth,
+        method="PUT",
+        url=url,
+        body=body,
+        session=session,
+        debug_api=debug_api,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
+        parent_class=parent_class,
+    )
+
+    if not res.is_success:
+        raise PageMembership_AddOwnerError(
+            domo_instance=auth.domo_instance,
+            status=res.status,
+            message=res.response,
+            page_id=page_id_ls,
+            parent_class=parent_class,
+        )
+
+    owner_str_ls = [
+        f"{owner.get('type')} {owner.get('id')}" for owner in body.get("owners")
+    ]
+
+    res.response = (
+        res.response
+        if res.response and res.response != ""
+        else f"{','.join(owner_str_ls)} added to page(s) {','.join(page_id_ls)} in {auth.domo_instance}"
+    )
+
     return res
-
-
-
