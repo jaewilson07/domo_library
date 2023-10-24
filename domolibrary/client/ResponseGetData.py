@@ -89,7 +89,7 @@ def _from_httpx_response(
     res: requests.Response,  # requests response object
     auth: Optional[any] = None,
     parent_class : str = None,
-    traceback_details: dl.TracebackDetails = None,
+    traceback_details: dl.TracebackDetails = field(repr=False, default = None),
 ) -> ResponseGetData:
     """returns ResponseGetData"""
 
