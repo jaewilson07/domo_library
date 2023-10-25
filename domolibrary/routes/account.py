@@ -498,7 +498,7 @@ async def share_account_v2(
     account_id: str,
     share_payload: dict,
     debug_api: bool = False,
-    parent_clas: str = None,
+    parent_class: str = None,
     debug_num_stacks_to_drop=1,
     session: httpx.AsyncClient = None,
 ):
@@ -603,7 +603,7 @@ async def share_account_v1(
         raise ShareAccount_Error(
             account_id=account_id,
             status=res.status,
-            response=f'ℹ️ - {res.response + "| User may already have access to account."}',
+            response=f'ℹ️ - {res.response + "| User may already have access to account OR may need to execute v2 share API."}',
             domo_instance= auth.domo_instance,
             function_name=res.traceback_details.function_name,
             parent_class=parent_class,)

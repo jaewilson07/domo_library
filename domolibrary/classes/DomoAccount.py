@@ -21,6 +21,7 @@ import domolibrary.routes.account as account_routes
 
 import domolibrary.utils.chunk_execution as ce
 
+
 # %% ../../nbs/classes/50_DomoAccount.ipynb 4
 from domolibrary.routes.account import (
     ShareAccount_V1_AccessLevel,
@@ -28,7 +29,7 @@ from domolibrary.routes.account import (
     ShareAccount,
     GetAccount_NoMatch,
     ShareAccount_Error,
-    DeleteAccount_Error
+    DeleteAccount_Error,
 )
 
 from domolibrary.classes.DomoAccount_Config import (
@@ -38,22 +39,21 @@ from domolibrary.classes.DomoAccount_Config import (
     AccountConfig,
 )
 
+
 class Account_CanIModify(de.DomoError):
     def __init__(self, account_id, domo_instance):
         super().__init__(
-            message = f"`DomoAccount.is_admin_summary` must be `False` to proceed.  Either set the value explicity, or retrieve the account instance using `DomoAccount.get_by_id()`",
-            domo_instance = domo_instance
+            message=f"`DomoAccount.is_admin_summary` must be `False` to proceed.  Either set the value explicity, or retrieve the account instance using `DomoAccount.get_by_id()`",
+            domo_instance=domo_instance,
         )
 
-        
+
 class UpsertAccount_MatchCriteria(de.DomoError):
     def __init__(self, domo_instance):
         super().__init__(
             message="must pass an account_id or account_name to UPSERT",
             domo_instance=domo_instance,
         )
-
-
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 6
 @dataclass
@@ -66,15 +66,17 @@ class DomoAccount:
     modified_dt: dt.datetime = None
     auth: dmda.DomoAuth = field(repr=False, default=None)
 
-    config: DomoAccount_Config = None,
+    config: DomoAccount_Config = (None,)
 
     is_admin_summary: bool = True
 
     @classmethod
-    def _from_json(cls, obj: dict,
-                   is_admin_summary: bool = True,
-                   auth: dmda.DomoAuth = None,
-                   ):
+    def _from_json(
+        cls,
+        obj: dict,
+        is_admin_summary: bool = True,
+        auth: dmda.DomoAuth = None,
+    ):
         """converts data_v1_accounts API response into an accounts class object"""
 
         dd = util_dd.DictDot(obj)
@@ -90,9 +92,8 @@ class DomoAccount:
                 dd.modifiedAt or dd.lastModified
             ),
             auth=auth,
-            is_admin_summary=is_admin_summary
+            is_admin_summary=is_admin_summary,
         )
-
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 8
 @patch_to(DomoAccount)
@@ -117,7 +118,8 @@ async def _get_config(
     if return_raw:
         return res
 
-    data_provider_type = res.response.get("_search_metadata").get("data_provider_type")
+    data_provider_type = res.response.get(
+        "_search_metadata").get("data_provider_type")
 
     config_fn = AccountConfig(data_provider_type).value
 
@@ -127,6 +129,7 @@ async def _get_config(
     self.config = config_fn._from_json(res.response)
 
     return self.config
+
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 11
 @patch_to(DomoAccount, cls_method=True)
@@ -154,17 +157,16 @@ async def get_by_id(
     if return_raw:
         return res
 
-    acc = cls._from_json(obj = res.response, auth = auth, is_admin_summary = False)
+    acc = cls._from_json(obj=res.response, auth=auth, is_admin_summary=False)
 
     await acc._get_config(
         session=session,
         debug_api=debug_api,
         debug_num_stacks_to_drop=debug_num_stacks_to_drop + 1,
-        is_suppress_no_config=is_suppress_no_config
+        is_suppress_no_config=is_suppress_no_config,
     )
 
     return acc
-
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 18
 @staticmethod
@@ -193,7 +195,6 @@ async def create_account(
         auth=auth, config_body=body, debug_api=debug_api, session=session
     )
 
-
     return await cls.get_by_id(auth=auth, account_id=res.response.get("id"))
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 20
@@ -204,13 +205,13 @@ async def update_config(
     debug_api: bool = False,
     config: DomoAccount_Config = None,
     is_suppress_no_config=False,
-    debug_num_stacks_to_drop = 2,
+    debug_num_stacks_to_drop=2,
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
 ):
     if self.is_admin_summary:
-        raise Account_CanIModify(account_id= self.id, domo_instance= auth.domo_instance)
-        
+        raise Account_CanIModify(account_id=self.id, domo_instance=auth.domo_instance)
+
     auth = auth or self.auth
     config = config or self.config
 
@@ -228,10 +229,10 @@ async def update_config(
     await self._get_config(
         debug_api=debug_api,
         debug_num_stacks_to_drop=debug_num_stacks_to_drop + 1,
-        is_suppress_no_config=is_suppress_no_config)
+        is_suppress_no_config=is_suppress_no_config,
+    )
 
     return self
-
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 25
 @patch_to(DomoAccount)
@@ -244,7 +245,7 @@ async def update_name(
     return_raw: bool = False,
 ):
     if self.is_admin_summary:
-        raise Account_CanIModify(account_id= self.id, domo_instance= auth.domo_instance)
+        raise Account_CanIModify(account_id=self.id, domo_instance=auth.domo_instance)
 
     auth = auth or self.auth
 
@@ -273,7 +274,7 @@ async def delete_account(
     debug_num_stacks_to_drop=2,
 ):
     if self.is_admin_summary:
-        raise Account_CanIModify(account_id= self.id, domo_instance= auth.domo_instance)
+        raise Account_CanIModify(account_id=self.id, domo_instance=auth.domo_instance)
 
     auth = auth or self.auth
 
@@ -288,15 +289,21 @@ async def delete_account(
 
     return res
 
-
 # %% ../../nbs/classes/50_DomoAccount.ipynb 32
 @patch_to(DomoAccount)
-async def _is_group_ownership_beta(self, auth: dmda.DomoAuth):
+async def _is_group_ownership_beta(
+    self, auth: dmda.DomoAuth = None, return_raw: bool = False
+):
     import domolibrary.classes.DomoBootstrap as dmbs
 
-    domo_bsr = dmbs.DomoBootstrap(auth=auth or self.auth)
+    auth = auth or self.auth
+
+    domo_bsr = dmbs.DomoBootstrap(auth=auth)
 
     domo_feature_ls = await domo_bsr.get_features()
+
+    if return_raw:
+        return domo_feature_ls
 
     match_accounts_v2 = next(
         (
@@ -309,173 +316,69 @@ async def _is_group_ownership_beta(self, auth: dmda.DomoAuth):
 
     return True if match_accounts_v2 else False
 
-
+# %% ../../nbs/classes/50_DomoAccount.ipynb 34
 @patch_to(DomoAccount)
-async def share_account(
-    self,
-    user_id: int = None,
-    group_id: int = None,
-    domo_user=None,  # DomoUser,
-    domo_group=None,  # DomoGroup
-    auth: dmda.DomoAuth = None,
-    is_v2: bool = None,
-    access_level: ShareAccount = None,  # will default to Read
-    debug_api: bool = False,
-    debug_prn: bool = False,
-    session: httpx.AsyncClient = None,
-):
-    if self.is_admin_summary:
-        raise Account_CanIModify(account_id= self.id, domo_instance= auth.domo_instance)
-
-    auth = auth or self.auth
-
-    user_id = user_id or (domo_user and domo_user.id)
-    group_id = group_id or (domo_group and domo_group.id)
-
-    if isinstance(auth, dmda.DomoFullAuth) and is_v2 is None:
-        is_v2 = await self._is_group_ownership_beta(auth)
-
-    if debug_prn:
-        print(
-            f"ℹ️ - {auth.domo_instance} - {'is' if is_v2 else 'is not'} v2_group_ownership"
-        )
-
-    if is_v2 is None:
-        raise Exception(
-            """🛑 ERROR must explicitly pass a value for the `is_v2` boolean to share_accounts function.ABC
-alternatively, use `dmda.DomoFullAuth` to automatically retrieve the correct setting.ABC
-account sharing differs between v1 and v2 of the API."""
-        )
-
-    res = None
-
-    if is_v2:
-        share_payload = account_routes.generate_share_account_payload_v2(
-            user_id=user_id,
-            group_id=group_id,
-            access_level=access_level or ShareAccount_V2_AccessLevel.CAN_VIEW,
-        )
-
-        res = await account_routes.share_account_v2(
-            auth=auth,
-            account_id=self.id,
-            share_payload=share_payload,
-            debug_api=debug_api,
-            session=session,
-        )
-
-    else:
-        share_payload = account_routes.generate_share_account_payload_v1(
-            user_id=user_id,
-            group_id=group_id,
-            access_level=access_level or ShareAccount_V1_AccessLevel.CAN_VIEW,
-        )
-
-        res = await account_routes.share_account_v1(
-            auth=auth,
-            account_id=self.id,
-            share_payload=share_payload,
-            debug_api=debug_api,
-            session=session,
-        )
-
-    if not res.is_success:
-        return None
-
-    if res.status == 200:
-        res.response = f"shared {self.id} - {self.name} with {user_id or group_id}"
-
-    return res
-
-
-# %% ../../nbs/classes/50_DomoAccount.ipynb 35
-@patch_to(DomoAccount)
-async def share(
+async def _share_v2(
     self: DomoAccount,
-    domo_user=None,
-    domo_group=None,
     auth: dmda.DomoAuth = None,
-    is_v2: bool = None,
-    access_level: ShareAccount = None,  # will default to Read
+    user_id=None,
+    group_id=None,
+    access_level: ShareAccount = ShareAccount_V2_AccessLevel.CAN_VIEW,
     debug_api: bool = False,
-    debug_num_stacks_to_drop: int = 2,
-    debug_prn: bool = False,
     session: httpx.AsyncClient = None,
+    debug_num_stacks_to_drop=2,
 ):
-    if self.is_admin_summary:
-        raise Account_CanIModify(account_id= self.id, domo_instance= auth.domo_instance)
+    share_payload = account_routes.generate_share_account_payload_v2(
+        user_id=user_id,
+        group_id=group_id,
+        access_level=access_level,
+    )
 
-    auth = auth or self.auth
+    return await account_routes.share_account_v2(
+        auth=auth,
+        account_id=self.id,
+        share_payload=share_payload,
+        debug_api=debug_api,
+        session=session,
+        parent_class=self.__class__.__name__,
+        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+    )
 
-    if isinstance(auth, dmda.DomoFullAuth) and is_v2 is None:
-        is_v2 = await self._is_group_ownership_beta(auth)
+# %% ../../nbs/classes/50_DomoAccount.ipynb 37
+@patch_to(DomoAccount)
+async def _share_v1(self: DomoAccount,
+                    auth: dmda.DomoAuth = None,
+                    user_id=None,
+                    group_id=None,
+                    access_level: ShareAccount = ShareAccount_V1_AccessLevel.CAN_VIEW,
+                    debug_api: bool = False,
+                    session: httpx.AsyncClient = None,
+                    debug_num_stacks_to_drop=2
+                    ):
 
-    if debug_prn:
-        print(
-            f"ℹ️ - {auth.domo_instance} - {'is' if is_v2 else 'is not'} v2_group_ownership"
-        )
+    share_payload = account_routes.generate_share_account_payload_v1(
+        user_id=user_id,
+        group_id=group_id,
+        access_level=access_level,
+    )
 
-    if is_v2 is None:
-        raise Exception(
-            """🛑 ERROR must pass `is_v2` bool to share_accounts function IF NOT passing `dmda.DomoFullAuth`.
-the group management v2 API has a different body.  
-Alternatively pass a full auth object to auto check the bootstrap.
-"""
-        )
-
-    res = None
-
-    if is_v2:
-        share_payload = account_routes.generate_share_account_payload_v2(
-            user_id=domo_user.id if domo_user else None,
-            group_id=domo_group.id if domo_group else None,
-            access_level=access_level or ShareAccount_V2_AccessLevel.CAN_VIEW,
-        )
-
-        res = await account_routes.share_account_v2(
-            auth=auth,
-            account_id=self.id,
-            share_payload=share_payload,
-            debug_api=debug_api,
-            debug_num_stacks_to_drop=debug_num_stacks_to_drop,
-            parent_class=self.__class__.__name__,
-            session=session,
-        )
-
-    else:
-        share_payload = account_routes.generate_share_account_payload_v1(
-            user_id=domo_user.id if domo_user else None,
-            group_id=domo_group.id if domo_group else None,
-            access_level=access_level or ShareAccount_V1_AccessLevel.CAN_VIEW,
-        )
-
-        res = await account_routes.share_account_v1(
-            auth=auth,
-            account_id=self.id,
-            share_payload=share_payload,
-            debug_api=debug_api,
-            session=session,
-            debug_num_stacks_to_drop=debug_num_stacks_to_drop,
-            parent_class=self.__class__.__name__,
-        )
-
-    if not res.is_success:
-        return None
-
-    if res.status == 200:
-        domo_entity = domo_user or domo_group
-        res.response = f"shared {self.id} - {self.name} with {domo_entity.id}"
-
-    return res
+    return await account_routes.share_account_v1(
+        auth=auth,
+        account_id=self.id,
+        share_payload=share_payload,
+        debug_api=debug_api,
+        session=session,
+        parent_class=self.__class__.__name__,
+        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+    )
 
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 39
+# %% ../../nbs/classes/50_DomoAccount.ipynb 44
 @dataclass
 class DomoAccounts:
     auth: dmda.DomoAuth
 
-
-# %% ../../nbs/classes/50_DomoAccount.ipynb 40
+# %% ../../nbs/classes/50_DomoAccount.ipynb 45
 @staticmethod
 @patch_to(DomoAccounts)
 async def _get_accounts_accountsapi(
@@ -490,8 +393,8 @@ async def _get_accounts_accountsapi(
 
     if return_raw:
         return res
-    
-    if  len(res.response) == 0: 
+
+    if len(res.response) == 0:
         return []
 
     return await ce.gather_with_concurrency(
@@ -531,10 +434,10 @@ async def _get_accounts_queryapi(
 
     if return_raw:
         return res
-    
-    if  len(res.response) == 0:
+
+    if len(res.response) == 0:
         return []
-        
+
     return [
         DomoAccount._from_json(account_obj, auth=auth) for account_obj in res.response
     ]
@@ -630,8 +533,7 @@ async def get_accounts(
 
     return domo_accounts
 
-
-# %% ../../nbs/classes/50_DomoAccount.ipynb 43
+# %% ../../nbs/classes/50_DomoAccount.ipynb 48
 @patch_to(DomoAccount)
 async def get_accesslist(
     self: DomoAccount,
@@ -649,19 +551,17 @@ async def get_accesslist(
 
     return res.response["list"]
 
-
-# %% ../../nbs/classes/50_DomoAccount.ipynb 47
+# %% ../../nbs/classes/50_DomoAccount.ipynb 52
 @patch_to(DomoAccounts, cls_method=True)
 async def upsert_account(
     cls: DomoAccounts,
     auth: dmda.DomoAuth,
-
-    account_config: AccountConfig = None, 
+    account_config: AccountConfig = None,
     account_name: str = None,
     account_id: str = None,
     debug_api: bool = False,
     debug_prn: bool = False,
-    session: httpx.AsyncClient = None
+    session: httpx.AsyncClient = None,
 ):
     """search for an account and upsert it"""
 
@@ -676,25 +576,22 @@ async def upsert_account(
         if acc and account_name:
             if debug_prn:
                 print(f"upsertting {acc.id}:  updating account_name")
-            await acc.update_name(account_name=account_name, debug_api = debug_api)
+            await acc.update_name(account_name=account_name, debug_api=debug_api)
 
     if account_name and acc is None:
         acc = await DomoAccounts.get_accounts(
-            account_name=account_name, auth=auth,
-            account_type_str= (account_config and account_config.data_provider_type) or None,
+            account_name=account_name,
+            auth=auth,
+            account_type_str=(account_config and account_config.data_provider_type)
+            or None,
             # is_suppress_undefined_provider_type = True
         )
 
-        if (
-            isinstance(acc, list)
-            and len(acc) > 0
-            and isinstance(acc[0], DomoAccount)
-        ):
+        if isinstance(acc, list) and len(acc) > 0 and isinstance(acc[0], DomoAccount):
             acc = acc[0]
 
         else:
             acc = None
-
 
     if acc and account_config:  # upsert account
         acc.config = account_config
@@ -702,12 +599,12 @@ async def upsert_account(
         if debug_prn:
             print(f"upsertting {acc.id}:  updating config")
 
-        await acc.update_config( debug_api = debug_api)
+        await acc.update_config(debug_api=debug_api)
 
     if not acc:
         if debug_prn:
             print(f"creating account {account_name} in {auth.domo_instance}")
-            
+
         acc = await DomoAccount.create_account(
             account_name=account_name,
             config=account_config,
@@ -717,8 +614,7 @@ async def upsert_account(
 
     return acc
 
-
-# %% ../../nbs/classes/50_DomoAccount.ipynb 51
+# %% ../../nbs/classes/50_DomoAccount.ipynb 56
 @patch_to(DomoAccount)
 async def upsert_share_account_user(
     self: DomoAccount,
@@ -732,7 +628,9 @@ async def upsert_share_account_user(
 ):
     auth = auth or self.auth
 
-    ls_share = await account_routes.get_share_account_v2(auth=auth, account_id=self.id)
+    ls_share = await account_routes.get_account_accesslist_for_v2(
+        auth=auth, account_id=self.id
+    )
     res = None
     if domo_user:
         user_id = domo_user.id
@@ -771,7 +669,9 @@ async def upsert_share_account_group(
 ):
     auth = auth or self.auth
 
-    ls_share = await account_routes.get_share_account_v2(auth=auth, account_id=self.id)
+    ls_share = await account_routes.get_account_accesslist_for_v2(
+        auth=auth, account_id=self.id
+    )
     res = None
 
     if domo_group:
@@ -796,4 +696,3 @@ async def upsert_share_account_group(
             )
 
     return res
-
