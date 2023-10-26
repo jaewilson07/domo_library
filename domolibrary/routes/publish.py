@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['search_publications', 'get_publication_by_id', 'generate_publish_body', 'create_publish_job', 'udpate_publish_job',
            'get_subscription_summaries', 'get_subscription_invititations', 'accept_invite_by_id',
-           'refresh_publish_jobs']
+           'accept_invite_by_id_v2', 'refresh_publish_jobs']
 
 # %% ../../nbs/routes/publish.ipynb 2
 import httpx
@@ -152,6 +152,32 @@ async def accept_invite_by_id(auth: dmda.DomoAuth,
     return res
 
 # %% ../../nbs/routes/publish.ipynb 19
+async def accept_invite_by_id_v2(auth: dmda.DomoAuth,
+                                publication_id: str, 
+                                owner_id : str,
+                                session: httpx.AsyncClient = None,
+                                debug_api: bool = False) -> rgd.ResponseGetData:
+    """this takes get_subscription_invites_list into account and accepts - not instant"""
+
+    url = f'https://{auth.domo_instance}.domo.com/api/publish/v2/subscriptions/v2'
+
+    body = {  "publicationId":publication_id,  
+              "customerId": "", 
+              "domain": "",
+              "groupIds": [],
+              "userId":owner_id,
+              "userIds":[]
+             }
+    
+    res = await gd.get_data(auth=auth,
+                        method='POST',
+                        url=url,
+                        body = body,
+                        session=session,
+                        debug_api=debug_api)
+    return res
+
+# %% ../../nbs/routes/publish.ipynb 20
 async def refresh_publish_jobs(auth: dmda.DomoAuth,
                                publish_ids: list,
                                session: httpx.AsyncClient = None, debug_api: bool = False) -> rgd.ResponseGetData:
