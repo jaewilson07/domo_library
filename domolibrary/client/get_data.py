@@ -260,6 +260,9 @@ async def get_data_stream(
     params: Optional[dict] = None,
     debug_api: bool = False,
     timeout: int = 10,
+    parent_class: str = None,  # name of the parent calling class
+    num_stacks_to_drop: int = 2,  # number of stacks to drop from the stack trace.  see `domolibrary.client.Logger.TracebackDetails`.  use 2 with class > route structure.  use 1 with route based approach
+    debug_traceback: bool = False,
 ) -> rgd.ResponseGetData:
     """async wrapper for asyncio requests"""
 
@@ -282,6 +285,13 @@ async def get_data_stream(
     if auth:
         headers.update(**auth.auth_header)
 
+    traceback_details = dl.get_traceback(
+        num_stacks_to_drop=num_stacks_to_drop,
+        root_module="<module>",
+        parent_class=parent_class,
+        debug_traceback=debug_traceback,
+    )
+
     if debug_api:
         pprint(
             {
@@ -290,6 +300,7 @@ async def get_data_stream(
                 "headers": headers,
                 # "body": body,
                 "params": params,
+                "traceback_details" : traceback_details
             }
         )
 
@@ -304,9 +315,10 @@ async def get_data_stream(
                 if res.status_code == 200:
                     async for chunk in res.aiter_bytes():
                         content += chunk
-
+                
                 return rgd.ResponseGetData(
-                    status=res.status_code, response=content, is_success=True, auth=auth
+                    status=res.status_code, response=content, is_success=True, auth=auth,
+                    traceback_details = traceback_details
                 )
 
     except httpx.TransportError as e:

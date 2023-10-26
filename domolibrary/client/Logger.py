@@ -68,9 +68,9 @@ def get_traceback(
     if module_index + num_stacks_to_drop >= len(traceback_stack)-1 :
         print("adjusting num_stacks_to_drop, consider revising `get_traceback` call")
         print({
-            len(traceback_stack),
-            module_index,
-            num_stacks_to_drop
+            'stack_length': len(traceback_stack),
+            'module_index': module_index,
+            'num_stacks_to_drop_passed': num_stacks_to_drop
         })
         num_stacks_to_drop -= 1
 

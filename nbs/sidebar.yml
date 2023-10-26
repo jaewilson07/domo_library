@@ -2,6 +2,7 @@ website:
   sidebar:
     contents:
       - index.ipynb
+      - test.ipynb
       - section: blog
         contents:
           - blog/index.qmd

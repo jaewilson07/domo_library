@@ -30,7 +30,7 @@ class DomoError(Exception):
             function_str = f"{parent_class}.{function_str}"
         if parent_class and not function_name:
             function_str = f"{parent_class} || "
-        function_str = f"functionn: {function_str}"
+        function_str = f"function: {function_str}"
         
         entity_str = f"{entity_id} || " if entity_id else ""
         instance_str = f" at {domo_instance}" if domo_instance else ""
