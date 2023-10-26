@@ -10,6 +10,7 @@ import domolibrary.client.get_data as gd
 import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
 
+
 # %% ../../nbs/routes/dataflow.ipynb 3
 async def get_dataflow_by_id(
     dataflow_id: int,
@@ -25,16 +26,24 @@ async def get_dataflow_by_id(
         auth=auth, url=url, method="GET", debug_api=debug_api, session=session
     )
 
+
 # %% ../../nbs/routes/dataflow.ipynb 6
-async def execute_dataflow(auth: dmda.DomoAuth,
-                          dataflow_id: int,
-                          debug_api: bool = False,
-                          session: httpx.AsyncClient = None,
-                          ) -> rgd.ResponseGetData:
+async def execute_dataflow(
+    auth: dmda.DomoAuth,
+    dataflow_id: int,
+    debug_api: bool = False,
+    debug_num_stacks_to_drop=1,
+    parent_class: str = None,
+    session: httpx.AsyncClient = None,
+) -> rgd.ResponseGetData:
+    url = f"https://{auth.domo_instance}.domo.com/api/dataprocessing/v1/dataflows/{dataflow_id}/executions"
 
-                    
-    url=f"https://{auth.domo_instance}.domo.com/api/dataprocessing/v1/dataflows/{dataflow_id}/executions"
-
-    return await gd.get_data( auth=auth, url=url, method="POST", debug_api=debug_api, session=session
+    return await gd.get_data(
+        auth=auth,
+        url=url,
+        method="POST",
+        num_stacks_to_drop=debug_num_stacks_to_drop,
+        parent_class=parent_class,
+        debug_api=debug_api,
+        session=session,
     )
-
