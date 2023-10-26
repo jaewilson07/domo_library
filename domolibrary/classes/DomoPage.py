@@ -565,7 +565,7 @@ async def get_datasets(cls,
 
 # %% ../../nbs/classes/50_DomoPage.ipynb 35
 from datetime import datetime
-from utils import convert
+from domolibrary.utils import convert
 
 
 @patch_to(DomoPage, cls_method=True)
