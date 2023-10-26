@@ -5,7 +5,8 @@ __all__ = ['DomoAccount_Config', 'AccountConfig_UsesOauth', 'AccountConfig_Provi
            'DomoAccount_NoConfig', 'DomoAccount_Config_AbstractCredential', 'DomoAccount_Config_DatasetCopy',
            'DomoAccount_Config_DomoAccessToken', 'DomoAccount_Config_Governance', 'DomoAccount_Config_AmazonS3',
            'DomoAccount_Config_AmazonS3Advanced', 'DomoAccount_Config_AwsAthena',
-           'DomoAccount_Config_HighBandwidthConnector', 'AccountConfig']
+           'DomoAccount_Config_HighBandwidthConnector', 'DomoAccount_Config_Snowflake',
+           'DomoAccount_Config_SnowflakeUnload_V2', 'AccountConfig']
 
 # %% ../../nbs/classes/50_DomoAccount_Config.ipynb 3
 from enum import Enum
@@ -13,8 +14,6 @@ from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
 
 import domolibrary.utils.DictDot as util_dd
-
-
 
 # %% ../../nbs/classes/50_DomoAccount_Config.ipynb 5
 class DomoAccount_Config(ABC):
@@ -28,25 +27,29 @@ class DomoAccount_Config(ABC):
     @abstractmethod
     def _from_json(cls, obj):
         """convert accounts API response into a class object"""
-    
 
     @abstractmethod
     def to_json(self):
         """convert class object into a format the accounts API expects"""
 
-
 # %% ../../nbs/classes/50_DomoAccount_Config.ipynb 6
 class AccountConfig_UsesOauth(Exception):
     def __init__(self, data_provider_type):
-        super().__init__(f"data provider type {data_provider_type} uses OAuth and therefore wouldn't return a Config object")
+        super().__init__(
+            f"data provider type {data_provider_type} uses OAuth and therefore wouldn't return a Config object"
+        )
+
 
 class AccountConfig_ProviderTypeNotDefined(Exception):
     def __init__(self, data_provider_type):
-        super().__init__(f"data provider type {data_provider_type} not defined yet. Extend the AccountConfig class")
+        super().__init__(
+            f"data provider type {data_provider_type} not defined yet. Extend the AccountConfig class"
+        )
+
 
 @dataclass
 class DomoAccount_NoConfig_OAuth(DomoAccount_Config):
-    is_oauth : bool = True
+    is_oauth: bool = True
     is_defined_config: bool = False
     _associated_exception = AccountConfig_UsesOauth
 
@@ -57,9 +60,10 @@ class DomoAccount_NoConfig_OAuth(DomoAccount_Config):
     def to_json(self):
         return {}
 
-@dataclass 
+
+@dataclass
 class DomoAccount_NoConfig(DomoAccount_Config):
-    is_defined_config : bool = False
+    is_defined_config: bool = False
     _associated_exception = AccountConfig_ProviderTypeNotDefined
 
     @classmethod
@@ -68,7 +72,6 @@ class DomoAccount_NoConfig(DomoAccount_Config):
 
     def to_json(self):
         return {}
-
 
 # %% ../../nbs/classes/50_DomoAccount_Config.ipynb 8
 @dataclass
@@ -85,7 +88,7 @@ class DomoAccount_Config_AbstractCredential(DomoAccount_Config):
         )
 
     def to_json(self):
-        return {"credentials": self.credentials}    
+        return {"credentials": self.credentials}
 
 # %% ../../nbs/classes/50_DomoAccount_Config.ipynb 9
 @dataclass
@@ -130,6 +133,7 @@ class DomoAccount_Config_DomoAccessToken(DomoAccount_Config):
             "password": self.password,
         }
 
+
 # %% ../../nbs/classes/50_DomoAccount_Config.ipynb 10
 @dataclass
 class DomoAccount_Config_Governance(DomoAccount_Config):
@@ -146,6 +150,7 @@ class DomoAccount_Config_Governance(DomoAccount_Config):
 
     def to_json(self):
         return {"apikey": self.access_token, "customer": self.domo_instance}
+
 
 # %% ../../nbs/classes/50_DomoAccount_Config.ipynb 12
 @dataclass
@@ -180,6 +185,7 @@ class DomoAccount_Config_AmazonS3(DomoAccount_Config):
             "region": self.region,
         }
 
+
 # %% ../../nbs/classes/50_DomoAccount_Config.ipynb 13
 @dataclass
 class DomoAccount_Config_AmazonS3Advanced(DomoAccount_Config):
@@ -213,6 +219,7 @@ class DomoAccount_Config_AmazonS3Advanced(DomoAccount_Config):
             "region": self.region,
         }
 
+
 # %% ../../nbs/classes/50_DomoAccount_Config.ipynb 14
 @dataclass
 class DomoAccount_Config_AwsAthena(DomoAccount_Config):
@@ -245,6 +252,7 @@ class DomoAccount_Config_AwsAthena(DomoAccount_Config):
             "workgroup": self.workgroup,
         }
 
+
 # %% ../../nbs/classes/50_DomoAccount_Config.ipynb 15
 @dataclass
 class DomoAccount_Config_HighBandwidthConnector(DomoAccount_Config):
@@ -276,7 +284,81 @@ class DomoAccount_Config_HighBandwidthConnector(DomoAccount_Config):
             "region": self.region,
         }
 
-# %% ../../nbs/classes/50_DomoAccount_Config.ipynb 18
+
+# %% ../../nbs/classes/50_DomoAccount_Config.ipynb 19
+@dataclass
+class DomoAccount_Config_Snowflake(DomoAccount_Config):
+    """this connector is not enabled by default contact your CSM / AE"""
+    account: str
+    username: str
+    password: str =field(repr = False)
+    role: str = None
+
+    data_provider_type = "snowflake"
+
+    @classmethod
+    def _from_json(cls, obj):
+        dd = util_dd.DictDot(obj)
+
+        return cls(
+            account=dd.account,
+            username=dd.username,
+            password=dd.password,
+            role=dd.role,
+        )
+
+    def to_json(self):
+        return {"account": self.account, "username": self.username,
+         "password": self.password, "role": self.role}
+
+
+# %% ../../nbs/classes/50_DomoAccount_Config.ipynb 21
+@dataclass
+class DomoAccount_Config_SnowflakeUnload_V2(DomoAccount_Config):
+    """this connector is not enabled by default contact your CSM / AE"""
+    account: str
+    username: str
+    password: str = field(repr = False)
+
+
+    access_key: str
+    secret_key: str = field(repr=False)
+    region :str
+    bucket: str
+
+    role: str = None
+
+    data_provider_type = "snowflake-unload-v2"
+
+    @classmethod
+    def _from_json(cls, obj):
+        dd = util_dd.DictDot(obj)
+
+        return cls(
+            account=dd.account,
+            username=dd.username,
+            password=dd.password,
+            access_key=dd.accessKey,
+            secret_key=dd.secretKey,
+            bucket=dd.bucket,
+            region=dd.region,
+            role=dd.role,
+        )
+
+    def to_json(self):
+        return
+        {
+            "account": self.account,
+            "username": self.username,
+            "password": self.password,
+            "role": self.role,
+            "accessKey": self.access_key,
+            "secretKey": self.secret_key,
+            "bucket": self.bucket,
+            "region": self.region}
+
+
+# %% ../../nbs/classes/50_DomoAccount_Config.ipynb 23
 class AccountConfig(Enum):
     """
     Enum provides appropriate spelling for data_provider_type and config object.
@@ -292,40 +374,49 @@ class AccountConfig(Enum):
     amazon_s3 = DomoAccount_Config_AmazonS3
     amazons3_advanced = DomoAccount_Config_AmazonS3Advanced
 
-    _uses_oauth = [ 'google_spreadsheets']
+    snowflake_unload_v2 = DomoAccount_Config_SnowflakeUnload_V2
+
+    _uses_oauth = ["google_spreadsheets"]
 
     _config_oauth = DomoAccount_NoConfig_OAuth
     _config_notdefined = DomoAccount_NoConfig
 
     @classmethod
     def _test_altname_search(cls, raw_value):
-        alt_search_str = raw_value.lower().replace('-', '_')
+        alt_search_str = raw_value.lower().replace("-", "_")
 
-        alt_search = next((member for member in cls if member.name == alt_search_str), None)
+        alt_search = next(
+            (member for member in cls if member.name == alt_search_str), None
+        )
 
         ## best case scenario alt_search yields a result
         if alt_search:
             return alt_search
-        
+
         ## second best case, display_type is an oauth and therefore has mo matching config
-        oauth_match = next((oauth_str for oauth_str in cls._uses_oauth.value if oauth_str == alt_search_str), None)
+        oauth_match = next(
+            (
+                oauth_str
+                for oauth_str in cls._uses_oauth.value
+                if oauth_str == alt_search_str
+            ),
+            None,
+        )
         if oauth_match:
             raise AccountConfig_UsesOauth(raw_value)
-        
+
         ## worst case, unencountered display_type
         raise AccountConfig_ProviderTypeNotDefined(raw_value)
-    
 
     @classmethod
     def _missing_(cls, value):
-
         try:
             return cls._test_altname_search(value)
-        
+
         except AccountConfig_UsesOauth as e:
             print(e)
             return cls._config_oauth
 
-        except AccountConfig_ProviderTypeNotDefined  as e:
+        except AccountConfig_ProviderTypeNotDefined as e:
             print(e)
             return cls._config_notdefined
