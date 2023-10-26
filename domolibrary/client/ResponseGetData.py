@@ -51,7 +51,7 @@ class ResponseGetData:
     is_success: bool
     auth: dict = field(repr=False, default=None)
     parent_class: str = None
-    traceback_details: any = field(default=None)
+    traceback_details: any = field(default=None, repr = False)
 
     def set_response(self, response):
         self.response = response
@@ -88,7 +88,8 @@ def _from_httpx_response(
     cls,
     res: requests.Response,  # requests response object
     auth: Optional[any] = None,
-    traceback_details: dl.TracebackDetails = None,
+    parent_class : str = None,
+    traceback_details: dl.TracebackDetails = field(repr=False, default = None),
 ) -> ResponseGetData:
     """returns ResponseGetData"""
 
@@ -108,6 +109,7 @@ def _from_httpx_response(
                 is_success=True,
                 auth=auth,
                 traceback_details=traceback_details,
+                parent_class = parent_class
             )
 
         except Exception as e:
@@ -117,6 +119,7 @@ def _from_httpx_response(
                 is_success=True,
                 auth=auth,
                 traceback_details=traceback_details,
+                parent_class = parent_class
             )
 
     # default text responses
@@ -127,6 +130,7 @@ def _from_httpx_response(
             is_success=True,
             auth=auth,
             traceback_details=traceback_details,
+            parent_class=parent_class
         )
 
     # errors
@@ -136,6 +140,7 @@ def _from_httpx_response(
         is_success=False,
         auth=auth,
         traceback_details=traceback_details,
+        parent_class = parent_class
     )
 
 # %% ../../nbs/client/99_ResponseGetData.ipynb 19
