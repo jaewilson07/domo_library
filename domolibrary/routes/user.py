@@ -253,23 +253,53 @@ def process_v1_search_users(
 async def search_users(
     auth: dmda.DomoAuth,
     body: dict,
+    
+    loop_until_end: bool = True,  # retrieve all available rows
+    limit=200,  # maximum rows to return per request.  refers to PAGINATION
+    maximum=100,  # equivalent to the LIMIT or TOP clause in SQL, the number of rows to return total
+  
+    suppress_no_results_error: bool = False,
     debug_api: bool = False,
     return_raw: bool = False,
-    suppress_no_results_error: bool = False,
+    debug_loop: bool = False,
     debug_num_stacks_to_drop=1,
     parent_class=None,
+    session: httpx.AsyncClient = None
+
 ) -> rgd.ResponseGetData:
     url = f"https://{auth.domo_instance}.domo.com/api/identity/v1/users/search"
 
-    res = await gd.get_data(
-        url=url,
-        method="POST",
+    offset_params = { "offset" : 'offset', 'limit' : 'limit'}
+
+    def body_fn(skip, limit, body):
+        return {**body, "limit": limit,  "offset": skip}
+
+    def arr_fn(res: rgd.ResponseGetData):
+        return res.response.get('users')
+
+    res = await gd.looper(
         auth=auth,
-        body=body,
+        method="POST",
+        url=url,
+        maximum=maximum,
+        
+        limit=limit,
+        offset_params = offset_params,
+        offset_params_in_body = True,
+        loop_until_end=loop_until_end,
+        
+        arr_fn=arr_fn,
+        body_fn=body_fn,
+        body = body,
+        
         debug_api=debug_api,
-        num_stacks_to_drop=debug_num_stacks_to_drop,
+
+        debug_loop=debug_loop,
+        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
         parent_class=parent_class,
+        session=session,
     )
+
 
     if return_raw:
         return res
@@ -283,14 +313,15 @@ async def search_users(
             parent_class=parent_class,
         )
 
-    if not suppress_no_results_error and len(res.response.get("users")) == 0:
+    if not suppress_no_results_error and len(res.response) == 0:
         raise SearchUser_NoResults(
             domo_instance=auth.domo_instance,
             function_name=res.traceback_details.function_name,
             parent_class=parent_class,
         )
 
-    res.response = process_v1_search_users(res.response.get("users"))
+    res.response = process_v1_search_users(res.response)
+
     return res
 
 

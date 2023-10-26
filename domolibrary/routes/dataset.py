@@ -87,7 +87,7 @@ async def query_dataset_private(
     # def body_fn(skip, limit):
     #     return {"sql": f"{sql} limit {limit} offset {skip}"}
 
-    def body_fn(skip, limit):
+    def body_fn(skip, limit, body = None):
         body = {"sql": f"{sql} limit {limit} offset {skip}"}
 
         if filter_pdp_policy_id_ls:
@@ -649,10 +649,10 @@ def generate_share_dataset_payload(
 
 # %% ../../nbs/routes/dataset.ipynb 40
 class ShareDataset_Error(de.DomoError):
-    def __init__(self, dataset_id, status, response, domo_instance):
+    def __init__(self, dataset_id, status, response, domo_instance, parent_class = None, function_name = None):
         message = f"error sharing dataset {dataset_id} - {response}"
 
-        super().__init__(status=status, domo_instance=domo_instance, message=message)
+        super().__init__(status=status, domo_instance=domo_instance, message=message, parent_class = parent_class, function_name =function_name)
 
 
 async def share_dataset(
@@ -661,6 +661,8 @@ async def share_dataset(
     body: dict,
     session: httpx.AsyncClient = None,
     debug_api=False,
+    parent_class = None,
+    debug_num_stacks_to_drop = 1
 ):
     url = f"https://{auth.domo_instance}.domo.com/api/data/v3/datasources/{dataset_id}/share"
 
@@ -671,6 +673,8 @@ async def share_dataset(
         body=body,
         session=session,
         debug_api=debug_api,
+        parent_class = parent_class,
+        num_stacks_to_drop = debug_num_stacks_to_drop
     )
 
     if not res.is_success:
