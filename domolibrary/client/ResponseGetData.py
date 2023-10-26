@@ -51,7 +51,7 @@ class ResponseGetData:
     is_success: bool
     auth: dict = field(repr=False, default=None)
     parent_class: str = None
-    traceback_details: any = field(default=None)
+    traceback_details: any = field(default=None, repr = False)
 
     def set_response(self, response):
         self.response = response
