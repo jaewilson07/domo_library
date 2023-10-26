@@ -27,6 +27,7 @@ website:
       - section: classes
         contents:
           - classes/50_DomoAccount.ipynb
+          - classes/50_DomoAccount_Config.ipynb
           - classes/50_DomoActivityLog.ipynb
           - classes/50_DomoApplication.ipynb
           - classes/50_DomoBootstrap.ipynb
@@ -110,6 +111,7 @@ website:
           - routes/account.ipynb
           - routes/activity_log.ipynb
           - routes/application.ipynb
+          - routes/auth.ipynb
           - routes/bootstrap.ipynb
           - routes/card.ipynb
           - routes/datacenter.ipynb

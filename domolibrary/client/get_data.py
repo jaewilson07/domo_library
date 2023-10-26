@@ -18,6 +18,7 @@ import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoError as de
 import domolibrary.client.Logger as dl
 
+
 # %% ../../nbs/client/10_get_data.ipynb 3
 async def get_data_aiohttp(
     url: str,
@@ -102,10 +103,12 @@ async def get_data_aiohttp(
         if is_close_session:
             await session.close()
 
+
 # %% ../../nbs/client/10_get_data.ipynb 6
 class GetData_Error(de.DomoError):
     def __init__(self, message, url):
         super().__init__(message=message, domo_instance=url)
+
 
 # %% ../../nbs/client/10_get_data.ipynb 7
 async def get_data(
@@ -155,8 +158,9 @@ async def get_data(
 
     if debug_api:
         pprint(
-            {   "parent_class" : parent_class,
-                "function_name" : traceback_details.function_name,
+            {
+                "parent_class": parent_class,
+                "function_name": traceback_details.function_name,
                 "method": method,
                 "url": url,
                 "headers": headers,
@@ -218,9 +222,7 @@ async def get_data(
                 return res
 
             return rgd.ResponseGetData._from_httpx_response(
-                res, 
-                auth=auth, 
-                traceback_details=traceback_details
+                res, auth=auth, traceback_details=traceback_details
             )
 
         except httpx.TransportError as e:
@@ -233,7 +235,7 @@ async def get_data(
                 raise GetData_Error(url=url, message=e) from e
 
             await asyncio.sleep(5)
-        
+
         except RuntimeError as e:
             print(f"ℹ️ get_data error - {e} at {url}")
             attempt += 1
@@ -244,7 +246,7 @@ async def get_data(
                 raise GetData_Error(url=url, message=e) from e
 
             await asyncio.sleep(5)
-        
+
         finally:
             if is_close_session:
                 await session.aclose()
@@ -260,6 +262,9 @@ async def get_data_stream(
     params: Optional[dict] = None,
     debug_api: bool = False,
     timeout: int = 10,
+    parent_class: str = None,  # name of the parent calling class
+    num_stacks_to_drop: int = 2,  # number of stacks to drop from the stack trace.  see `domolibrary.client.Logger.TracebackDetails`.  use 2 with class > route structure.  use 1 with route based approach
+    debug_traceback: bool = False,
 ) -> rgd.ResponseGetData:
     """async wrapper for asyncio requests"""
 
@@ -282,6 +287,13 @@ async def get_data_stream(
     if auth:
         headers.update(**auth.auth_header)
 
+    traceback_details = dl.get_traceback(
+        num_stacks_to_drop=num_stacks_to_drop,
+        root_module="<module>",
+        parent_class=parent_class,
+        debug_traceback=debug_traceback,
+    )
+
     if debug_api:
         pprint(
             {
@@ -290,6 +302,7 @@ async def get_data_stream(
                 "headers": headers,
                 # "body": body,
                 "params": params,
+                "traceback_details": traceback_details,
             }
         )
 
@@ -306,7 +319,11 @@ async def get_data_stream(
                         content += chunk
 
                 return rgd.ResponseGetData(
-                    status=res.status_code, response=content, is_success=True, auth=auth
+                    status=res.status_code,
+                    response=content,
+                    is_success=True,
+                    auth=auth,
+                    traceback_details=traceback_details,
                 )
 
     except httpx.TransportError as e:
@@ -318,11 +335,11 @@ async def get_data_stream(
 
         await asyncio.sleep(5)
 
-
 # %% ../../nbs/client/10_get_data.ipynb 16
 class LooperError(Exception):
     def __init__(self, loop_stage: str, message):
         super().__init__(f"{loop_stage} - {message}")
+
 
 # %% ../../nbs/client/10_get_data.ipynb 17
 async def looper(
@@ -342,6 +359,8 @@ async def looper(
     maximum=0,
     debug_api: bool = False,
     debug_loop: bool = False,
+    debug_num_stacks_to_drop: int = 2,
+    parent_class: str = None,
     timeout: bool = 10,
     wait_sleep: int = 0,
 ) -> rgd.ResponseGetData:
@@ -363,16 +382,18 @@ async def looper(
         params = fixed_params or {}
 
         if offset_params_in_body:
-            body[offset_params.get("offset")] = skip
-            body[offset_params.get("limit")] = limit
+            body.update(
+                {offset_params.get("offset"): skip, offset_params.get("limit"): limit}
+            )
 
         else:
-            params[offset_params.get("offset")] = skip
-            params[offset_params.get("limit")] = limit
+            params.update(
+                {offset_params.get("offset"): skip, offset_params.get("limit"): limit}
+            )
 
         if body_fn:
             try:
-                body = body_fn(skip, limit)
+                body = body_fn(skip, limit, body)
 
             except Exception as e:
                 await session.aclose()
@@ -393,6 +414,8 @@ async def looper(
             body=body,
             debug_api=debug_api,
             timeout=timeout,
+            parent_class=parent_class,
+            num_stacks_to_drop=debug_num_stacks_to_drop,
         )
 
         if not res.is_success:
@@ -491,7 +514,8 @@ async def looper_aiohttp(
                 ) from e
 
         if debug_loop:
-            print(f"\n🚀 Retrieving records {skip} through {skip + limit} via {url}")
+            print(
+                f"\n🚀 Retrieving records {skip} through {skip + limit} via {url}")
             # pprint(params)
 
         res = await get_data_aiohttp(
@@ -514,7 +538,8 @@ async def looper_aiohttp(
 
         except Exception as e:
             await session.close()
-            raise LooperError(loop_stage="processing arr_fn", message=str(e)) from e
+            raise LooperError(loop_stage="processing arr_fn",
+                              message=str(e)) from e
 
         allRows += newRecords
 
@@ -544,3 +569,4 @@ async def looper_aiohttp(
         await session.close()
 
     return await rgd.ResponseGetData._from_looper(res=res, array=allRows)
+

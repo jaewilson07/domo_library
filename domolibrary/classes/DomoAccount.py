@@ -373,6 +373,132 @@ async def _share_v1(self: DomoAccount,
     )
 
 
+# %% ../../nbs/classes/50_DomoAccount.ipynb 40
+# @patch_to(DomoAccount)
+# async def share(
+#     self: DomoAccount,
+#     user_id = None,
+#     group_id = None,
+#     domo_user=None,
+#     domo_group=None,
+#     auth: dmda.DomoAuth = None,
+#     is_v2: bool = None,
+#     access_level: ShareAccount = None,  # will default to Read
+#     debug_api: bool = False,
+#     debug_num_stacks_to_drop: int = 2,
+#     debug_prn: bool = False,
+#     session: httpx.AsyncClient = None,
+# ):
+#     if self.is_admin_summary:
+#         raise Account_CanIModify(account_id=self.id, domo_instance=auth.domo_instance)
+
+#     auth = auth or self.auth
+
+#     if isinstance(auth, dmda.DomoFullAuth) and is_v2 is None:
+#         is_v2 = await self._is_group_ownership_beta(auth)
+
+#     if debug_prn:
+#         print(
+#             f"ℹ️ - {auth.domo_instance} - {'is' if is_v2 else 'is not'} v2_group_ownership"
+#         )
+
+#     if is_v2 is None:
+#         raise Exception(
+#             """🛑 ERROR must pass `is_v2` bool to share_accounts function IF NOT passing `dmda.DomoFullAuth`.
+# the group management v2 API has a different body.  
+# Alternatively pass a full auth object to auto check the bootstrap.
+# """
+#         )
+
+#     res = None
+
+#     if is_v2:
+#         share_payload = account_routes.generate_share_account_payload_v2(
+#             user_id=domo_user.id if domo_user else None,
+#             group_id=domo_group.id if domo_group else None,
+#             access_level=access_level or ShareAccount_V2_AccessLevel.CAN_VIEW,
+#         )
+
+#         res = await account_routes.share_account_v2(
+#             auth=auth,
+#             account_id=self.id,
+#             share_payload=share_payload,
+#             debug_api=debug_api,
+#             debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+#             parent_class=self.__class__.__name__,
+#             session=session,
+#         )
+
+#     else:
+#         share_payload = account_routes.generate_share_account_payload_v1(
+#             user_id=domo_user.id if domo_user else None,
+#             group_id=domo_group.id if domo_group else None,
+#             access_level=access_level or ShareAccount_V1_AccessLevel.CAN_VIEW,
+#         )
+
+#         res = await account_routes.share_account_v1(
+#             auth=auth,
+#             account_id=self.id,
+#             share_payload=share_payload,
+#             debug_api=debug_api,
+#             session=session,
+#             debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+#             parent_class=self.__class__.__name__,
+#         )
+
+#     if not res.is_success:
+#         return None
+
+#     if res.status == 200:
+#         domo_entity = domo_user or domo_group
+#         res.response = f"shared {self.id} - {self.name} with {domo_entity.id}"
+
+#     return res
+
+# | exporti
+
+
+@patch_to(DomoAccount)
+async def share(
+    self: DomoAccount,
+    user_id = None,
+    group_id = None,
+    domo_user=None,
+    domo_group=None,
+    auth: dmda.DomoAuth = None,
+    access_level: ShareAccount = None,  # will default to Read
+    debug_api: bool = False,
+    debug_num_stacks_to_drop: int = 3,
+    debug_prn: bool = False,
+    session: httpx.AsyncClient = None,
+):
+    """even though the UI hasn't been updated to push v2 sharing across all instances, 
+    the _share_v1 API method may have been deprecated with the March 2023 release
+    if your instance doesn't support the V2 API use the hidden `._share_v1` method 
+    """
+
+    if self.is_admin_summary:
+        raise Account_CanIModify(account_id=self.id, domo_instance=auth.domo_instance)
+
+    auth = auth or self.auth
+    group_id = group_id or (domo_group and domo_group.id)
+    user_id = user_id or (domo_user and domo_user.id)
+    res = None
+
+    res = await self._share_v2(
+            auth=auth,
+            user_id = user_id,
+            group_id = group_id,
+            debug_api=debug_api,
+            debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+            session=session,
+        )
+
+    if res.status == 200:
+        res.response = f"shared {self.id} - {self.name} with {group_id or user_id}"
+
+    return res
+
 # %% ../../nbs/classes/50_DomoAccount.ipynb 44
 @dataclass
 class DomoAccounts:
