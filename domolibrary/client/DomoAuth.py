@@ -44,7 +44,6 @@ class _DomoAuth_Required:
         
         auth_header = self.auth_header or await self.generate_auth_header()
 
-        print('who_am_i', self.auth_header)
 
         res = await auth_routes.who_am_i(
             domo_instance=self.domo_instance,

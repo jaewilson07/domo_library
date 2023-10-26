@@ -30,7 +30,6 @@ import domolibrary.utils.chunk_execution as ce
     # frozen = True
     )
 
-
 class DomoPage:
     id: int
     title: str = None
