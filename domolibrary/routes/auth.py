@@ -172,7 +172,7 @@ async def get_full_auth(
                 parent_class=parent_class,
                 status=res.status,
                 message=str(res.response.get("reason")),
-                domo_instance=self.domo_instance,
+                domo_instance = domo_instance,
             )
 
         if res.response == {} or res.response == "":  # no access token
@@ -181,7 +181,7 @@ async def get_full_auth(
                 function_name=res.traceback_details.function_name,
                 parent_class=parent_class,
                 status=res.status,
-                domo_instance=self.domo_instance,
+                domo_instance= domo_instance,
             )
 
     if res.status == 403 and res.response == "Forbidden":
