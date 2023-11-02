@@ -115,7 +115,8 @@ class GetInstanceConfig:
         """wrapper for `DomoDataset.query_dataset_private` retrieves company configuration dataset and stores it as config"""
 
         ds = await dmds.DomoDataset.get_from_id(
-            auth=config_auth, dataset_id=dataset_id, debug_api=debug_api
+            auth=config_auth, dataset_id=dataset_id, debug_api=debug_api, 
+            debug_num_stacks_to_drop = 3
         )
 
         message = (
