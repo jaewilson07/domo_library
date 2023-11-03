@@ -393,13 +393,18 @@ async def get_from_id(
     auth: dmda.DomoAuth,
     debug_api: bool = False,
     return_raw: bool = False,
-    session : httpx.AsyncClient = None,
+    session: httpx.AsyncClient = None,
+    debug_num_stacks_to_drop=2,
 ):
-
     """retrieves dataset metadata"""
 
     res = await dataset_routes.get_dataset_by_id(
-        auth=auth, dataset_id=dataset_id, debug_api=debug_api, session = session
+        auth=auth,
+        dataset_id=dataset_id,
+        debug_api=debug_api,
+        session=session,
+        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+        parent_class=cls.__name__,
     )
 
     if return_raw:
@@ -413,26 +418,24 @@ async def get_from_id(
         data_provider_type=dd.dataProviderType,
         name=dd.name,
         description=dd.description,
-        owner=res.response.get('owner'),
+        owner=res.response.get("owner"),
         stream_id=dd.streamId,
         row_count=int(dd.rowCount),
         column_count=int(dd.columnCount),
     )
-    
-    if dd.properties.formulas.formulas.__dict__ :
+
+    if dd.properties.formulas.formulas.__dict__:
         # print(dd.properties.formulas.formulas.__dict__)
-        ds.formula=res.response.get('properties').get('formulas').get('formulas')
+        ds.formula = res.response.get("properties").get("formulas").get("formulas")
 
     if dd.tags:
         ds.tags.tag_ls = json.loads(dd.tags)
 
     if dd.certification:
         # print('class def certification', dd.certification)
-        ds.certification = dmdc.DomoCertification._from_json(
-            dd.certification)
+        ds.certification = dmdc.DomoCertification._from_json(dd.certification)
 
     return ds
-
 
 # %% ../../nbs/classes/50_DomoDataset.ipynb 40
 class QueryExecutionError(de.DomoError):
