@@ -209,9 +209,6 @@ async def update_config(
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
 ):
-    if self.is_admin_summary:
-        raise Account_CanIModify(account_id=self.id, domo_instance=auth.domo_instance)
-
     auth = auth or self.auth
     config = config or self.config
 
@@ -225,6 +222,9 @@ async def update_config(
 
     if return_raw:
         return res
+    
+    if not res.is_success and self.is_admin_summary:
+        raise Account_CanIModify(account_id=self.id, domo_instance=auth.domo_instance)
 
     await self._get_config(
         debug_api=debug_api,
@@ -244,10 +244,9 @@ async def update_name(
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
 ):
-    if self.is_admin_summary:
-        raise Account_CanIModify(account_id=self.id, domo_instance=auth.domo_instance)
-
     auth = auth or self.auth
+
+
 
     res = await account_routes.update_account_name(
         auth=auth,
@@ -260,6 +259,9 @@ async def update_name(
     if return_raw:
         return res
 
+    if not res.is_success and self.is_admin_summary:
+        raise Account_CanIModify(account_id=self.id, domo_instance=auth.domo_instance)
+        
     await self.get_by_id(auth=auth, account_id=self.id)
 
     return self
@@ -273,10 +275,9 @@ async def delete_account(
     session: httpx.AsyncClient = None,
     debug_num_stacks_to_drop=2,
 ):
-    if self.is_admin_summary:
-        raise Account_CanIModify(account_id=self.id, domo_instance=auth.domo_instance)
-
     auth = auth or self.auth
+
+
 
     res = await account_routes.delete_account(
         auth=auth,
@@ -286,6 +287,9 @@ async def delete_account(
         debug_num_stacks_to_drop=debug_num_stacks_to_drop,
         parent_class=parent_class,
     )
+
+    if not res.is_success and self.is_admin_summary:
+        raise Account_CanIModify(account_id=self.id, domo_instance=auth.domo_instance)
 
     return res
 
@@ -477,9 +481,7 @@ async def share(
     if your instance doesn't support the V2 API use the hidden `._share_v1` method 
     """
 
-    if self.is_admin_summary:
-        raise Account_CanIModify(account_id=self.id, domo_instance=auth.domo_instance)
-
+    
     auth = auth or self.auth
     group_id = group_id or (domo_group and domo_group.id)
     user_id = user_id or (domo_user and domo_user.id)
@@ -493,6 +495,10 @@ async def share(
             debug_num_stacks_to_drop=debug_num_stacks_to_drop,
             session=session,
         )
+        
+    if not res.is_success and self.is_admin_summary:
+        raise Account_CanIModify(account_id=self.id, domo_instance=auth.domo_instance)
+
 
     if res.status == 200:
         res.response = f"shared {self.id} - {self.name} with {group_id or user_id}"
