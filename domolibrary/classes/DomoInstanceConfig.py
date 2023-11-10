@@ -12,6 +12,7 @@ import datetime as dt
 import asyncio
 from fastcore.basics import patch_to
 import sys
+import pandas as pd
 
 
 from dataclasses import dataclass, field, asdict
@@ -27,6 +28,7 @@ import domolibrary.client.Logger as lg
 import domolibrary.routes.instance_config as instance_config_routes
 import domolibrary.routes.bootstrap as bootstrap_routes
 import domolibrary.routes.publish as publish_routes
+import domolibrary.routes.application as application_routes
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 4
 @dataclass
@@ -39,7 +41,6 @@ class DomoInstanceConfig:
     is_invite_social_users_enabled: bool = field(default=None)
 
     sso_config: dict = field(default=None)
-
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 6
 @patch_to(DomoInstanceConfig)
@@ -186,6 +187,7 @@ py310 = sys.version_info.minor >= 10 or sys.version_info.major > 3
 #             message=message,
 #             parent_class=parent_class,
 #             function_name=function_name)
+
 
 @dataclass(**({"slots": True} if py310 else {}))
 class SSO_Config:
@@ -415,7 +417,7 @@ async def get_publications(
                     publication_id=job.get("id"), auth=auth
                 )
                 for job in res.response
-            ]
+            ],
         )
 
     if res.status == 200 and return_raw:
@@ -459,7 +461,6 @@ async def get_allowlist(
 
     return allowlist
 
-
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 39
 @patch_to(DomoInstanceConfig)
 async def set_allowlist(
@@ -499,7 +500,6 @@ async def upsert_allowlist(
         debug_api=debug_api,
         session=session,
     )
-
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 44
 @patch_to(DomoInstanceConfig)
@@ -619,9 +619,16 @@ async def get_applications(
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
+    debug_num_stacks_to_drop=2,
 ):
+    import domolibrary.classes.DomoApplication as dmapp
+
     res = await application_routes.get_applications(
-        auth=auth, debug=debug_api, session=session
+        auth=auth,
+        debug_api=debug_api,
+        session=session,
+        parent_class=cls.__name__,
+        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
     if return_raw:
@@ -630,4 +637,33 @@ async def get_applications(
     if res.status != 200:
         return res
 
-    return [DomoApplication._from_json(job) for job in res.response]
+    return [dmapp.DomoApplication._from_json(job) for job in res.response]
+
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 58
+@patch_to(DomoInstanceConfig)
+async def generate_applications_report(
+    self,
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+    return_raw: bool = False,
+    debug_num_stacks_to_drop=2,
+):
+    import domolibrary.classes.DomoApplication as dmapp
+
+    domo_apps = await self.get_applications(auth=self.auth, debug_api=debug_api)
+
+    df = pd.DataFrame([app.__dict__ for app in domo_apps])
+    df["domo_instance"] = self.auth.domo_instance
+
+    df.drop(columns=["auth"], inplace=True)
+    df.rename(
+        columns={
+            "id": "application_id",
+            "name": "application_name",
+            "description": "application_description",
+            "version": "application_version",
+        },
+        inplace=True,
+    )
+
+    return df.sort_index(axis=1)
