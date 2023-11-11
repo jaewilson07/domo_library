@@ -37,13 +37,10 @@ class DomoCard:
         pass
 
     def display_url(self) -> str:
-        return f'https://{self.auth.domo_instance}.domo.com/kpis/details/{self.id}'
+        return f"https://{self.auth.domo_instance}.domo.com/kpis/details/{self.id}"
 
     @classmethod
-    async def _from_json(cls,
-                  card_obj,
-                   auth: dmda.DomoAuth):
-
+    async def _from_json(cls, card_obj, auth: dmda.DomoAuth):
         import domolibrary.classes.DomoUser as dmu
         import domolibrary.classes.DomoGroup as dmg
 
@@ -59,53 +56,58 @@ class DomoCard:
             type=dd.type,
             urn=dd.urn,
             certification=dd.certification,
-            chart_type= dd.metadata and dd.metadata.chartType,
-            dataset_id = dd.datasources[0].dataSourceId if dd.datasources else None
+            chart_type=dd.metadata and dd.metadata.chartType,
+            dataset_id=dd.datasources[0].dataSourceId if dd.datasources else None,
         )
 
         tasks = []
         for user in dd.owners:
-            if user.type =='USER':
+            if user.type == "USER":
                 tasks.append(dmu.DomoUser.get_by_id(user_id=user.id, auth=auth))
-            if user.type == 'GROUP':
+            if user.type == "GROUP":
                 tasks.append(dmg.DomoGroup.get_by_id(group_id=user.id, auth=auth))
 
-        card.owners = await ce.gather_with_concurrency( n = 60, *tasks)
+        card.owners = await ce.gather_with_concurrency(n=60, *tasks)
 
         return card
 
-
 # %% ../../nbs/classes/50_DomoCard.ipynb 4
 @patch_to(DomoCard, cls_method=True)
-async def get_by_id(cls: DomoCard, card_id: str,
-                      auth: dmda.DomoAuth, debug_api: bool = False, 
-                      session: httpx.AsyncClient = None):
-
-    res = await card_routes.get_card_metadata(auth=auth,
-                                              card_id=card_id, debug_api=debug_api, session = session)
+async def get_by_id(
+    cls: DomoCard,
+    card_id: str,
+    auth: dmda.DomoAuth,
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+):
+    res = await card_routes.get_card_metadata(
+        auth=auth, card_id=card_id, debug_api=debug_api, session=session
+    )
 
     if not res.is_success:
-        raise Exception('unable to retrieve card {card_id}')
+        raise Exception("unable to retrieve card {card_id}")
 
     domo_card = await cls._from_json(res.response, auth)
 
     return domo_card
 
-
 # %% ../../nbs/classes/50_DomoCard.ipynb 6
 @patch_to(DomoCard)
-async def share(self: DomoCard,
-                     auth: dmda.DomoAuth = None,
-                     domo_users: list = None,  # DomoUsers to share card with,
-                     domo_groups: list = None,  # DomoGroups to share card with
-                     message: str = None,  # message for automated email
-                     debug_api: bool = False, session: httpx.AsyncClient = None):
-
+async def share(
+    self: DomoCard,
+    auth: dmda.DomoAuth = None,
+    domo_users: list = None,  # DomoUsers to share card with,
+    domo_groups: list = None,  # DomoGroups to share card with
+    message: str = None,  # message for automated email
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+):
     import domolibrary.routes.datacenter as datacenter_routes
 
-    if domo_groups : domo_groups = domo_groups if isinstance(domo_groups, list) else [domo_groups]
-    if domo_users : domo_users = domo_users if isinstance(domo_users, list) else [domo_users]
-
+    if domo_groups:
+        domo_groups = domo_groups if isinstance(domo_groups, list) else [domo_groups]
+    if domo_users:
+        domo_users = domo_users if isinstance(domo_users, list) else [domo_users]
 
     res = await datacenter_routes.share_resource(
         auth=auth or self.auth,
@@ -114,8 +116,8 @@ async def share(self: DomoCard,
         group_ids=[group.id for group in domo_groups] if domo_groups else None,
         user_ids=[user.id for user in domo_users] if domo_users else None,
         message=message,
-        debug_api=debug_api, session=session,
+        debug_api=debug_api,
+        session=session,
     )
 
     return res
-

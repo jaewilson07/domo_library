@@ -693,6 +693,7 @@ async def upsert_account(
     account_id: str = None,
     debug_api: bool = False,
     debug_prn: bool = False,
+    return_raw: bool = False,
     session: httpx.AsyncClient = None,
 ):
     """search for an account and upsert it"""
@@ -701,6 +702,7 @@ async def upsert_account(
         raise UpsertAccount_MatchCriteria(domo_instance=auth.domo_instance)
 
     acc = None
+    res = None
 
     if account_id:
         acc = await DomoAccounts.get_accounts(account_id=account_id, auth=auth)
@@ -708,7 +710,9 @@ async def upsert_account(
         if acc and account_name:
             if debug_prn:
                 print(f"upsertting {acc.id}:  updating account_name")
-            await acc.update_name(account_name=account_name, debug_api=debug_api)
+            res = await acc.update_name(
+                account_name=account_name, debug_api=debug_api, return_raw=return_raw
+            )
 
     if account_name and acc is None:
         acc = await DomoAccounts.get_accounts(
@@ -731,7 +735,10 @@ async def upsert_account(
         if debug_prn:
             print(f"upsertting {acc.id}:  updating config")
 
-        await acc.update_config(debug_api=debug_api)
+        res = await acc.update_config(debug_api=debug_api, return_raw=return_raw)
+
+    if return_raw and acc:
+        return res
 
     if not acc:
         if debug_prn:
@@ -742,11 +749,12 @@ async def upsert_account(
             config=account_config,
             auth=auth,
             debug_api=debug_api,
+            return_raw=return_raw,
         )
 
     return acc
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 56
+# %% ../../nbs/classes/50_DomoAccount.ipynb 55
 @patch_to(DomoAccount)
 async def upsert_share_account_user(
     self: DomoAccount,
