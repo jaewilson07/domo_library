@@ -74,6 +74,7 @@ class Datacenter_Filter_Field_Enum(Enum):
     DATAPROVIDER = "dataprovidername_facet"
     CERTIFICATION = "certification.state"
 
+
 class Datacenter_Filter_Field_Certification_Enum(Enum):
     CERTIFIED = "CERTIFIED"
     PENDING = "PENDING"
@@ -159,10 +160,18 @@ def generate_search_datacenter_account_body(
 
 # %% ../../nbs/routes/datacenter.ipynb 13
 class SearchDatacenter_NoResultsFound(de.DomoError):
-    def __init__(self, body, domo_instance):
-        super().__init__(message=body, domo_instance=domo_instance)
+    def __init__(
+        self, body, domo_instance, parent_class: str = None, function_name: str = None
+    ):
+        super().__init__(
+            message=body,
+            domo_instance=domo_instance,
+            parent_class=parent_class,
+            function_name=function_name,
+        )
 
 
+@gd.route_function
 async def search_datacenter(
     auth: dmda.DomoAuth,
     maximum: int = None,
@@ -175,10 +184,10 @@ async def search_datacenter(
     arr_fn: callable = None,
     session: httpx.AsyncClient = None,
     debug_api: bool = False,
-    debug_loop: bool = False
-
+    debug_loop: bool = False,
+    parent_class: str = None,
+    debug_num_stacks_to_drop: int = 1,
 ) -> rgd.ResponseGetData:
-    
     limit = 100  # api enforced limit
 
     if not body:
@@ -210,23 +219,31 @@ async def search_datacenter(
         maximum=maximum,
         limit=limit,
         debug_api=debug_api,
-        debug_loop = debug_loop
+        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+        parent_class=parent_class,
+        debug_loop=debug_loop,
     )
 
     if res.is_success and len(res.response) == 0:
         raise SearchDatacenter_NoResultsFound(
-            body=body, domo_instance=auth.domo_instance
+            body=body,
+            domo_instance=auth.domo_instance,
+            parent_class=parent_class,
+            function_name=res.traceback_details.function_name,
         )
 
     return res
 
 # %% ../../nbs/routes/datacenter.ipynb 16
+@gd.route_function
 async def get_lineage_upstream(
     auth: dmda.DomoAuth,
     entity_type: str,
     entity_id: str,
     session: httpx.AsyncClient = None,
     debug_api: bool = False,
+    parent_class: str = None,
+    debug_num_stacks_to_drop=1,
 ):
     url = f"https://{auth.domo_instance}.domo.com/api/data/v1/lineage/{entity_type}/{entity_id}"
 
@@ -239,8 +256,9 @@ async def get_lineage_upstream(
         params=params,
         session=session,
         debug_api=debug_api,
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
     )
-
 
 # %% ../../nbs/routes/datacenter.ipynb 19
 class ShareResource_Enum(Enum):
@@ -248,6 +266,7 @@ class ShareResource_Enum(Enum):
     CARD = "badge"
 
 
+@gd.route_function
 async def share_resource(
     auth: dmda.DomoAuth,
     resource_ids: list,
@@ -257,6 +276,8 @@ async def share_resource(
     message: str = None,  # email to user
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
+    parent_class: str = None,
+    debug_num_stacks_to_drop=1,
 ):
     """shares page or card with users or groups
 
@@ -277,9 +298,13 @@ async def share_resource(
     }"""
 
     resource_ids = resource_ids if isinstance(resource_ids, list) else [resource_ids]
-    if group_ids: group_ids = group_ids and group_ids if isinstance(group_ids, list) else [group_ids]
-    
-    if user_ids: user_ids = user_ids if isinstance(user_ids, list) else [user_ids]
+    if group_ids:
+        group_ids = (
+            group_ids and group_ids if isinstance(group_ids, list) else [group_ids]
+        )
+
+    if user_ids:
+        user_ids = user_ids if isinstance(user_ids, list) else [user_ids]
 
     url = f"https://{auth.domo_instance}.domo.com/api/content/v1/share?sendEmail=false"
 
@@ -300,10 +325,17 @@ async def share_resource(
     }
 
     res = await gd.get_data(
-        url, method="POST", auth=auth, body=body, session=session, debug_api=debug_api
+        url,
+        method="POST",
+        auth=auth,
+        body=body,
+        session=session,
+        debug_api=debug_api,
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
     if res.is_success:
         res.response = f"{resource_type.value} {','.join([resource['id'] for resource in  resource_ls])} successfully shared with {', '.join([recipient['id'] for recipient in recipient_ls])}"
-    
+
     return res

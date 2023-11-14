@@ -395,8 +395,11 @@ async def get_from_id(
     return_raw: bool = False,
     session: httpx.AsyncClient = None,
     debug_num_stacks_to_drop=2,
+    parent_class :str = None
 ):
     """retrieves dataset metadata"""
+
+    parent_class = parent_class or cls.__name__
 
     res = await dataset_routes.get_dataset_by_id(
         auth=auth,
@@ -404,7 +407,7 @@ async def get_from_id(
         debug_api=debug_api,
         session=session,
         debug_num_stacks_to_drop=debug_num_stacks_to_drop,
-        parent_class=cls.__name__,
+        parent_class=parent_class,
     )
 
     if return_raw:
@@ -469,10 +472,13 @@ async def query_dataset_private(cls: DomoDataset,
                                 
                                 debug_api: bool = False,
                                 debug_loop: bool = False,
+                                debug_num_stacks_to_drop : int = 2,
                                 timeout = 10, # larger API requests may require a longer response time
-                                maximum_retry : int = 5
+                                maximum_retry : int = 5,
+                                parent_class : str = None
                                 ) -> pd.DataFrame:
-    
+
+    parent_class = parent_class or cls.__name__
     res = None
     retry = 1
 
@@ -492,7 +498,9 @@ async def query_dataset_private(cls: DomoDataset,
                                                             session=session,
                                                             debug_loop=debug_loop,
                                                             debug_api=debug_api,
-                                                            timeout = timeout
+                                                            timeout = timeout,
+                                                            debug_num_stacks_to_drop = debug_num_stacks_to_drop,
+                                                            parent_class = parent_class
                                                             )
         except dataset_routes.DatasetNotFoundError as e:
             print(e)

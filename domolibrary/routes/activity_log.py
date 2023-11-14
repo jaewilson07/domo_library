@@ -10,25 +10,38 @@ import domolibrary.client.get_data as gd
 import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
 
-
 # %% ../../nbs/routes/activity_log.ipynb 4
-async def get_activity_log_object_types(auth: dmda.DomoAuth) -> rgd.ResponseGetData:
+@gd.route_function
+async def get_activity_log_object_types(
+    auth: dmda.DomoAuth,
+    parent_class: str = None,
+) -> rgd.ResponseGetData:
     """retrieves a list of valid objectTypes that can be used to search the activity_log API"""
 
-    url = "https://domo-community.domo.com/api/audit/v1/user-audits/objectTypes"
+    url = f"https://{auth.domo+_instance}.domo.com/api/audit/v1/user-audits/objectTypes"
 
-    return await gd.get_data(url=url, method="GET", auth=auth)
+    return await gd.get_data(
+        url=url,
+        method="GET",
+        auth=auth,
+        parent_class=parent_class,
+        debug_api=debug_api,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
+    )
 
 # %% ../../nbs/routes/activity_log.ipynb 7
+@gd.route_function
 async def search_activity_log(
     auth: dmda.DomoAuth,
     start_time: int,  # epoch time in milliseconds
     end_time: int,  # epoch time in milliseconds
     maximum: int,
     object_type: str = None,
-    session: httpx.AsyncClient = None,
     debug_api: bool = False,
     debug_loop: bool = False,
+    parent_class: str = None,
+    debug_num_stacks_to_drop: int = 1,
+    session: httpx.AsyncClient = None,
 ) -> rgd.ResponseGetData:
     """loops over activity log api to retrieve audit logs"""
 
@@ -40,7 +53,7 @@ async def search_activity_log(
 
     url = f"https://{auth.domo_instance}.domo.com/api/audit/v1/user-audits"
 
-    if object_type and object_type != 'ACTIVITY_LOG':
+    if object_type and object_type != "ACTIVITY_LOG":
         url = f"{url}/objectTypes/{object_type}"
 
     fixed_params = {"end": end_time, "start": start_time}
@@ -64,10 +77,11 @@ async def search_activity_log(
         maximum=maximum,
         debug_loop=debug_loop,
         debug_api=debug_api,
+        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+        parent_class=parent_class,
     )
 
     if is_close_session:
         await session.aclose()
 
     return res
-

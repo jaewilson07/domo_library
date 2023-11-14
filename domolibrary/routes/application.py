@@ -11,14 +11,16 @@ import domolibrary.client.get_data as gd
 import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
 
-
 # %% ../../nbs/routes/application.ipynb 3
-async def get_applications(auth: dmda.DomoFullAuth,
-                           session: Union[httpx.AsyncClient, httpx.AsyncClient, None] = None,
-                           debug_api: bool = False
-                           )-> rgd.ResponseGetData:
-
-    url = f'https://{auth.domo_instance}.domo.com/api/executor/v1/applications/'
+@gd.route_function
+async def get_applications(
+    auth: dmda.DomoFullAuth,
+    session: Union[httpx.AsyncClient, httpx.AsyncClient, None] = None,
+    debug_api: bool = False,
+    parent_class: str = None,
+    debug_num_stacks_to_drop=1,
+) -> rgd.ResponseGetData:
+    url = f"https://{auth.domo_instance}.domo.com/api/executor/v1/applications/"
 
     if debug_api:
         print(url)
@@ -26,18 +28,24 @@ async def get_applications(auth: dmda.DomoFullAuth,
     return await gd.get_data(
         auth=auth,
         url=url,
-        method='GET',
+        method="GET",
         debug_api=debug_api,
-        session=session
+        session=session,
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
 # %% ../../nbs/routes/application.ipynb 6
-async def get_application_by_id(auth: dmda.DomoFullAuth,
-                                application_id: str,
-                                session: Union[httpx.AsyncClient, httpx.AsyncClient, None] = None,
-                                debug_api: bool = False)-> rgd.ResponseGetData:
-
-    url = f'https://{auth.domo_instance}.domo.com/api/executor/v1/applications/{application_id}'
+@gd.route_function
+async def get_application_by_id(
+    auth: dmda.DomoFullAuth,
+    application_id: str,
+    session: Union[httpx.AsyncClient, httpx.AsyncClient, None] = None,
+    debug_api: bool = False,
+    parent_class: str = None,
+    debug_num_stacks_to_drop: int = None,
+) -> rgd.ResponseGetData:
+    url = f"https://{auth.domo_instance}.domo.com/api/executor/v1/applications/{application_id}"
 
     if debug_api:
         print(url)
@@ -45,7 +53,9 @@ async def get_application_by_id(auth: dmda.DomoFullAuth,
     return await gd.get_data(
         auth=auth,
         url=url,
-        method='GET',
+        method="GET",
         debug_api=debug_api,
-        session=session
+        session=session,
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
     )

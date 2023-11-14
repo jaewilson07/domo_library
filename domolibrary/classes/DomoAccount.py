@@ -209,9 +209,6 @@ async def update_config(
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
 ):
-    if self.is_admin_summary:
-        raise Account_CanIModify(account_id=self.id, domo_instance=auth.domo_instance)
-
     auth = auth or self.auth
     config = config or self.config
 
@@ -225,6 +222,9 @@ async def update_config(
 
     if return_raw:
         return res
+    
+    if not res.is_success and self.is_admin_summary:
+        raise Account_CanIModify(account_id=self.id, domo_instance=auth.domo_instance)
 
     await self._get_config(
         debug_api=debug_api,
@@ -244,10 +244,9 @@ async def update_name(
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
 ):
-    if self.is_admin_summary:
-        raise Account_CanIModify(account_id=self.id, domo_instance=auth.domo_instance)
-
     auth = auth or self.auth
+
+
 
     res = await account_routes.update_account_name(
         auth=auth,
@@ -260,6 +259,9 @@ async def update_name(
     if return_raw:
         return res
 
+    if not res.is_success and self.is_admin_summary:
+        raise Account_CanIModify(account_id=self.id, domo_instance=auth.domo_instance)
+        
     await self.get_by_id(auth=auth, account_id=self.id)
 
     return self
@@ -273,10 +275,9 @@ async def delete_account(
     session: httpx.AsyncClient = None,
     debug_num_stacks_to_drop=2,
 ):
-    if self.is_admin_summary:
-        raise Account_CanIModify(account_id=self.id, domo_instance=auth.domo_instance)
-
     auth = auth or self.auth
+
+
 
     res = await account_routes.delete_account(
         auth=auth,
@@ -286,6 +287,9 @@ async def delete_account(
         debug_num_stacks_to_drop=debug_num_stacks_to_drop,
         parent_class=parent_class,
     )
+
+    if not res.is_success and self.is_admin_summary:
+        raise Account_CanIModify(account_id=self.id, domo_instance=auth.domo_instance)
 
     return res
 
@@ -477,9 +481,7 @@ async def share(
     if your instance doesn't support the V2 API use the hidden `._share_v1` method 
     """
 
-    if self.is_admin_summary:
-        raise Account_CanIModify(account_id=self.id, domo_instance=auth.domo_instance)
-
+    
     auth = auth or self.auth
     group_id = group_id or (domo_group and domo_group.id)
     user_id = user_id or (domo_user and domo_user.id)
@@ -493,6 +495,10 @@ async def share(
             debug_num_stacks_to_drop=debug_num_stacks_to_drop,
             session=session,
         )
+        
+    if not res.is_success and self.is_admin_summary:
+        raise Account_CanIModify(account_id=self.id, domo_instance=auth.domo_instance)
+
 
     if res.status == 200:
         res.response = f"shared {self.id} - {self.name} with {group_id or user_id}"
@@ -687,6 +693,7 @@ async def upsert_account(
     account_id: str = None,
     debug_api: bool = False,
     debug_prn: bool = False,
+    return_raw: bool = False,
     session: httpx.AsyncClient = None,
 ):
     """search for an account and upsert it"""
@@ -695,6 +702,7 @@ async def upsert_account(
         raise UpsertAccount_MatchCriteria(domo_instance=auth.domo_instance)
 
     acc = None
+    res = None
 
     if account_id:
         acc = await DomoAccounts.get_accounts(account_id=account_id, auth=auth)
@@ -702,7 +710,9 @@ async def upsert_account(
         if acc and account_name:
             if debug_prn:
                 print(f"upsertting {acc.id}:  updating account_name")
-            await acc.update_name(account_name=account_name, debug_api=debug_api)
+            res = await acc.update_name(
+                account_name=account_name, debug_api=debug_api, return_raw=return_raw
+            )
 
     if account_name and acc is None:
         acc = await DomoAccounts.get_accounts(
@@ -725,7 +735,10 @@ async def upsert_account(
         if debug_prn:
             print(f"upsertting {acc.id}:  updating config")
 
-        await acc.update_config(debug_api=debug_api)
+        res = await acc.update_config(debug_api=debug_api, return_raw=return_raw)
+
+    if return_raw and acc:
+        return res
 
     if not acc:
         if debug_prn:
@@ -736,11 +749,12 @@ async def upsert_account(
             config=account_config,
             auth=auth,
             debug_api=debug_api,
+            return_raw=return_raw,
         )
 
     return acc
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 56
+# %% ../../nbs/classes/50_DomoAccount.ipynb 55
 @patch_to(DomoAccount)
 async def upsert_share_account_user(
     self: DomoAccount,

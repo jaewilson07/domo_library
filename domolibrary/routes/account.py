@@ -21,19 +21,20 @@ import domolibrary.client.DomoError as de
 
 import domolibrary.classes.DomoAccount_Config as dmac
 
-# %% ../../nbs/routes/account.ipynb 6
+# %% ../../nbs/routes/account.ipynb 7
+@gd.route_function
 async def get_accounts(
     auth: dmda.DomoAuth,
     debug_api: bool = False,
     debug_num_stacks_to_drop=1,
     parent_class: str = None,
-    session: Union[httpx.AsyncClient, httpx.AsyncClient, None] = None,
+    session: httpx.AsyncClient = None,
 ) -> rgd.ResponseGetData:
     """retrieve a list of all the accounts the user has read access to.  Note users with "Manage all accounts" will retrieve all account objects"""
 
     url = f"https://{auth.domo_instance}.domo.com/api/data/v1/accounts"
 
-    return await gd.get_data(
+    res = await gd.get_data(
         auth=auth,
         url=url,
         method="GET",
@@ -42,8 +43,9 @@ async def get_accounts(
         parent_class=parent_class,
         session=session,
     )
+    return res
 
-# %% ../../nbs/routes/account.ipynb 9
+# %% ../../nbs/routes/account.ipynb 11
 class GetAccount_NoMatch(de.DomoError):
     def __init__(
         self,
@@ -83,6 +85,7 @@ class GetAccount_NoConfigRetrieved(de.DomoError):
             domo_instance=domo_instance,
         )
 
+
 class DeleteAccount_Error(de.DomoError):
     def __init__(
         self,
@@ -90,8 +93,8 @@ class DeleteAccount_Error(de.DomoError):
         domo_instance,
         status,
         message,
-        function_name = None,
-        parent_class = None,
+        function_name=None,
+        parent_class=None,
     ):
         super().__init__(
             entity_id=entity_id,
@@ -99,10 +102,11 @@ class DeleteAccount_Error(de.DomoError):
             status=status,
             message=message,
             function_name=function_name,
-            parent_class = parent_class
+            parent_class=parent_class,
         )
 
-# %% ../../nbs/routes/account.ipynb 10
+# %% ../../nbs/routes/account.ipynb 12
+@gd.route_function
 async def get_account_from_id(
     auth: dmda.DomoAuth,
     account_id: int,
@@ -142,7 +146,8 @@ async def get_account_from_id(
 
     return res
 
-# %% ../../nbs/routes/account.ipynb 14
+# %% ../../nbs/routes/account.ipynb 16
+@gd.route_function
 async def get_account_config(
     auth: dmda.DomoAuth,
     account_id: int,
@@ -189,13 +194,19 @@ async def get_account_config(
             function_name=res.traceback_details.function_name,
         )
 
-    res.response.update({'_search_metadata': { 
-        "account_id": account_id,
-        "data_provider_type": data_provider_type,
-    }})
+    res.response.update(
+        {
+            "_search_metadata": {
+                "account_id": account_id,
+                "data_provider_type": data_provider_type,
+            }
+        }
+    )
+
     return res
 
-# %% ../../nbs/routes/account.ipynb 19
+# %% ../../nbs/routes/account.ipynb 21
+@gd.route_function
 async def get_user_access(
     auth: dmda.DomoAuth,
     account_id: int,
@@ -205,7 +216,6 @@ async def get_user_access(
     parent_class: str = None,
     session: Union[httpx.AsyncClient, httpx.AsyncClient, None] = None,
 ) -> rgd.ResponseGetData:
-
     res = await get_account_from_id(
         auth=auth,
         account_id=account_id,
@@ -243,13 +253,18 @@ async def get_user_access(
             function_name=res.traceback_details.function_name,
         )
 
-    res.response.update({'_search_metadata': { 
-        "account_id": account_id,
-        "data_provider_type": data_provider_type,
-    }})
+    res.response.update(
+        {
+            "_search_metadata": {
+                "account_id": account_id,
+                "data_provider_type": data_provider_type,
+            }
+        }
+    )
+
     return res
 
-# %% ../../nbs/routes/account.ipynb 21
+# %% ../../nbs/routes/account.ipynb 23
 class UpdateAccount_Error(de.DomoError):
     def __init__(
         self,
@@ -272,6 +287,7 @@ class UpdateAccount_Error(de.DomoError):
         )
 
 
+@gd.route_function
 async def update_account_config(
     auth: dmda.DomoAuth,
     account_id: int,
@@ -281,7 +297,6 @@ async def update_account_config(
     parent_class: str = None,
     session: httpx.AsyncClient = None,
 ) -> rgd.ResponseGetData:
-
     # get the data_provider_type, which is necessare for updating the config setting
     res = await get_account_from_id(
         auth=auth,
@@ -325,7 +340,8 @@ async def update_account_config(
 
     return res
 
-# %% ../../nbs/routes/account.ipynb 24
+# %% ../../nbs/routes/account.ipynb 26
+@gd.route_function
 async def update_account_name(
     auth: dmda.DomoAuth,
     account_id: int,
@@ -366,7 +382,8 @@ async def update_account_name(
 
     return res
 
-# %% ../../nbs/routes/account.ipynb 27
+# %% ../../nbs/routes/account.ipynb 29
+@gd.route_function
 async def create_account(
     auth: dmda.DomoAuth,
     config_body: dict,
@@ -396,26 +413,26 @@ async def create_account(
 
         attempt += 1
         await asyncio.sleep(3)
-    
+
     if not res.is_success:
         raise CreateAccount_Error(
             entity_id=account_name,
             domo_instance=auth.domo_instance,
             status=res.status,
             message=res.response,
-            parent_class = parent_class,
-            function_name = res.traceback_details.function_name
+            parent_class=parent_class,
+            function_name=res.traceback_details.function_name,
         )
-
 
     return res
 
-# %% ../../nbs/routes/account.ipynb 28
+# %% ../../nbs/routes/account.ipynb 30
+@gd.route_function
 async def delete_account(
     auth: dmda.DomoAuth,
     account_id: str,
     debug_api: bool = False,
-    debug_num_stacks_to_drop = 1,
+    debug_num_stacks_to_drop=1,
     parent_class: str = None,
     session: httpx.AsyncClient = None,
 ) -> rgd.ResponseGetData:
@@ -424,9 +441,14 @@ async def delete_account(
     if debug_api:
         print(url)
 
-    res=  await gd.get_data(
-        auth=auth, url=url, method="DELETE", debug_api=debug_api, session=session,
-        parent_class = parent_class, num_stacks_to_drop = debug_num_stacks_to_drop
+    res = await gd.get_data(
+        auth=auth,
+        url=url,
+        method="DELETE",
+        debug_api=debug_api,
+        session=session,
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
     if not res.is_success:
@@ -435,13 +457,13 @@ async def delete_account(
             domo_instance=auth.domo_instance,
             status=res.status,
             message=res.response,
-            parent_class = parent_class,
-            function_name = res.traceback_details.function_name
+            parent_class=parent_class,
+            function_name=res.traceback_details.function_name,
         )
-    
+
     return res
 
-# %% ../../nbs/routes/account.ipynb 30
+# %% ../../nbs/routes/account.ipynb 32
 class ShareAccount_Error(de.DomoError):
     def __init__(
         self, account_id, status, response, domo_instance, function_name, parent_class
@@ -492,7 +514,8 @@ def generate_share_account_payload_v2(
     if group_id:
         return {"type": "GROUP", "id": int(group_id), "accessLevel": access_level.value}
 
-# %% ../../nbs/routes/account.ipynb 32
+# %% ../../nbs/routes/account.ipynb 34
+@gd.route_function
 async def share_account_v2(
     auth: dmda.DomoAuth,
     account_id: str,
@@ -524,8 +547,9 @@ async def share_account_v2(
             response=f'ℹ️ - {res.response + "| User may already have access to account."}',
             domo_instance=self.domo_instance,
             function_name=res.traceback_details.function_name,
-            parent_class=parent_class,)
-        
+            parent_class=parent_class,
+        )
+
     if not res.status == 200:
         raise ShareAccount_Error(
             account_id=account_id,
@@ -538,9 +562,8 @@ async def share_account_v2(
 
     return res
 
-
-
-# %% ../../nbs/routes/account.ipynb 33
+# %% ../../nbs/routes/account.ipynb 35
+@gd.route_function
 async def get_account_accesslist_for_v2(
     auth: dmda.DomoAuth,
     account_id: str,
@@ -573,8 +596,9 @@ async def get_account_accesslist_for_v2(
 
     return res
 
-# %% ../../nbs/routes/account.ipynb 36
+# %% ../../nbs/routes/account.ipynb 38
 # v1 may have been deprecated.  used to be tied to group beta
+@gd.route_function
 async def share_account_v1(
     auth: dmda.DomoAuth,
     account_id: str,
@@ -604,19 +628,19 @@ async def share_account_v1(
             account_id=account_id,
             status=res.status,
             response=f'ℹ️ - {res.response + "| User may already have access to account OR may need to execute v2 share API."}',
-            domo_instance= auth.domo_instance,
+            domo_instance=auth.domo_instance,
             function_name=res.traceback_details.function_name,
-            parent_class=parent_class,)
+            parent_class=parent_class,
+        )
 
     if not res.status == 200:
         raise ShareAccount_Error(
             account_id=account_id,
             status=res.status,
             response=res.response,
-            domo_instance= auth.domo_instance,
+            domo_instance=auth.domo_instance,
             function_name=res.traceback_details.function_name,
             parent_class=parent_class,
         )
 
     return res
-

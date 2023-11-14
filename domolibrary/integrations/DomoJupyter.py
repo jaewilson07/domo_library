@@ -100,7 +100,6 @@ class GetInstanceConfig:
     logger: lc.Logger = None
 
     def __init__(self, logger: Optional[lc.Logger] = None):
-
         self.logger = logger or lc.Logger(app_name="GetInstanceConfig")
 
     async def _retrieve_company_ds(
@@ -111,12 +110,16 @@ class GetInstanceConfig:
         debug_prn: bool = False,
         debug_api: bool = False,
         debug_log: bool = False,
+        debug_num_stacks_to_drop: int = 2,
     ) -> pd.DataFrame:  # dataframe of config query
         """wrapper for `DomoDataset.query_dataset_private` retrieves company configuration dataset and stores it as config"""
 
         ds = await dmds.DomoDataset.get_from_id(
-            auth=config_auth, dataset_id=dataset_id, debug_api=debug_api, 
-            debug_num_stacks_to_drop = 3
+            auth=config_auth,
+            dataset_id=dataset_id,
+            debug_api=debug_api,
+            debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+            parent_class=self.__class__.__name__,
         )
 
         message = (
@@ -129,8 +132,13 @@ class GetInstanceConfig:
         self.logger.log_info(message, debug_log=debug_log)
 
         config_df = await ds.query_dataset_private(
-            auth=config_auth, dataset_id=dataset_id, sql=sql, debug_api=debug_api,
-            loop_until_end = True
+            auth=config_auth,
+            dataset_id=dataset_id,
+            sql=sql,
+            debug_api=debug_api,
+            loop_until_end=True,
+            debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+            parent_class=self.__class__.__name__,
         )
         if len(config_df.index) == 0:
             raise NoConfigCompanyError(sql, domo_instance=config_auth.domo_instance)
@@ -281,7 +289,7 @@ async def get_domains_with_instance_auth(
             await creds.get_auth_token(debug_api=debug_api)
             config_df.at[index, "is_valid"] = 1
 
-        except dmda.InvalidCredentialsError as e:
+        except (dmda.InvalidCredentialsError, dmda.AccountLockedError) as e:
             if debug_prn:
                 print(e)
 

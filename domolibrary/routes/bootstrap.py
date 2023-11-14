@@ -11,41 +11,58 @@ import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
 
 # %% ../../nbs/routes/bootstrap.ipynb 4
+@gd.route_function
 async def get_bootstrap(
-    auth: dmda.DomoFullAuth, ## only works with DomoFullAuth authentication, do not use TokenAuth
-    debug_api: bool = False, 
+    auth: dmda.DomoFullAuth,  ## only works with DomoFullAuth authentication, do not use TokenAuth
+    debug_api: bool = False,
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
-    parent_class = None,
-    debug_num_stacks_to_drop = 1
+    parent_class=None,
+    debug_num_stacks_to_drop=1,
 ) -> rgd.ResponseGetData:
     """get bootstrap data"""
 
     dmda.test_is_full_auth(auth, num_stacks_to_drop=1)
 
     # url = f"https://{auth.domo_instance}.domo.com/api/domoweb/bootstrap?v2Navigation=false"
-    url = f"https://{auth.domo_instance}.domo.com/api/domoweb/bootstrap?v2Navigation=true"
-
-    res = await gd.get_data(
-        url=url, method="GET", auth=auth, debug_api=debug_api, session=session, is_follow_redirects = True, num_stacks_to_drop = debug_num_stacks_to_drop, parent_class = parent_class
+    url = (
+        f"https://{auth.domo_instance}.domo.com/api/domoweb/bootstrap?v2Navigation=true"
     )
 
-    if res.response == '' and not return_raw:
-        raise Exception('BSR_Features:  no features returned - is there a VPN?')
+    res = await gd.get_data(
+        url=url,
+        method="GET",
+        auth=auth,
+        debug_api=debug_api,
+        session=session,
+        is_follow_redirects=True,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
+        parent_class=parent_class,
+    )
+
+    if res.response == "" and not return_raw:
+        raise Exception("BSR_Features:  no features returned - is there a VPN?")
 
     return res
 
-
 # %% ../../nbs/routes/bootstrap.ipynb 8
+@gd.route_function
 async def get_bootstrap_features(
-    auth: dmda.DomoAuth, session: httpx.AsyncClient = None,
+    auth: dmda.DomoAuth,
+    session: httpx.AsyncClient = None,
     debug_api: bool = False,
     return_raw: bool = False,
-    debug_num_stacks_to_drop = 2,
-    parent_class = None
+    debug_num_stacks_to_drop=2,
+    parent_class=None,
 ) -> rgd.ResponseGetData:
-
-    res = await get_bootstrap(auth=auth, session=session, debug_api=debug_api, return_raw=return_raw, debug_num_stacks_to_drop = debug_num_stacks_to_drop, parent_class= parent_class)
+    res = await get_bootstrap(
+        auth=auth,
+        session=session,
+        debug_api=debug_api,
+        return_raw=return_raw,
+        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+        parent_class=parent_class,
+    )
 
     if return_raw:
         return res
@@ -56,19 +73,29 @@ async def get_bootstrap_features(
     res.response = res.response.get("data").get("features")
     return res
 
-
 # %% ../../nbs/routes/bootstrap.ipynb 11
+@gd.route_function
 async def get_bootstrap_pages(
-    auth: dmda.DomoAuth, session: httpx.AsyncClient = None, debug_api: bool = False, return_raw: bool = False, debug_num_stacks_to_drop= 2, parent_class = None
+    auth: dmda.DomoAuth,
+    session: httpx.AsyncClient = None,
+    debug_api: bool = False,
+    return_raw: bool = False,
+    debug_num_stacks_to_drop=2,
+    parent_class=None,
 ) -> rgd.ResponseGetData:
-    res = await get_bootstrap(auth=auth, session=session, debug_api=debug_api, debug_num_stacks_to_drop= debug_num_stacks_to_drop, parent_class = parent_class)
+    res = await get_bootstrap(
+        auth=auth,
+        session=session,
+        debug_api=debug_api,
+        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+        parent_class=parent_class,
+    )
 
     if return_raw:
         return res
-        
+
     if not res.is_success:
         return None
 
     res.response = res.response.get("data").get("pages")
     return res
-
