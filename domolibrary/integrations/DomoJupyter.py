@@ -263,8 +263,7 @@ async def process_row(
     if isinstance(config_creds, DomoJupyterAccount_InstanceAuth):
         config_creds = config_creds.generate_auth(domo_instance=domo_instance)
 
-    if isinstance(config_creds, dmda.DomoAuth):
-        instance.update({"config_auth": config_creds})
+    instance.update({"config_auth": config_creds})
     
     return instance
 

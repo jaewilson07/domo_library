@@ -360,6 +360,8 @@ async def _share_v1(self: DomoAccount,
                     debug_num_stacks_to_drop=2
                     ):
 
+    auth = auth or self.auth
+
     share_payload = account_routes.generate_share_account_payload_v1(
         user_id=user_id,
         group_id=group_id,
