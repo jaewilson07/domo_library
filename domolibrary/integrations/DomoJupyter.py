@@ -229,6 +229,7 @@ async def process_row(
     instance_creds: DomoJupyterAccount_InstanceAuth,
     config_enum=None,
     debug_api: bool = False,
+    debug_prn: bool = False
 ):
     # convert DomoJupyterAccount_InstanceAuth obj to
     if isinstance(instance_creds, DomoJupyterAccount_InstanceAuth):
@@ -318,7 +319,8 @@ async def get_domains_with_instance_auth(
             if instance['auth_match_col'] in auth_enum._member_names_
             else default_auth,
             config_enum=auth_enum if "config_1" in auth_enum._member_names_ else None,
-            debug_api = debug_api
+            debug_api = debug_api,
+            debug_prn = debug_prn
         )
         for instance in config_ls
     ], n = 10)
