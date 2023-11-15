@@ -3,8 +3,8 @@
 # %% auto 0
 __all__ = ['GetJupyter_ErrorRetrievingAccount', 'GetJupyter_ErrorRetrievingAccountProperty', 'get_jupyter_account',
            'NoConfigCompanyError', 'GetInstanceConfig', 'InvalidAccountTypeError', 'DomoJupyterAccount_InstanceAuth',
-           'GetDomains_Query_AuthMatch_Error', 'InvalidAccountNameError', 'GenerateAuth_InvalidDomoInstanceList',
-           'GenerateAuth_CredentialsNotProvided']
+           'is_v2', 'process_row', 'GetDomains_Query_AuthMatch_Error', 'InvalidAccountNameError',
+           'GenerateAuth_InvalidDomoInstanceList', 'GenerateAuth_CredentialsNotProvided']
 
 # %% ../../nbs/integrations/DomoJupyter.ipynb 2
 from dataclasses import dataclass, field
@@ -23,6 +23,7 @@ from fastcore.basics import patch_to
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.Logger as lc
 import domolibrary.classes.DomoDataset as dmds
+import domolibrary.utils.chunk_execution as ce
 
 
 # %% ../../nbs/integrations/DomoJupyter.ipynb 4
@@ -111,7 +112,7 @@ class GetInstanceConfig:
         debug_api: bool = False,
         debug_log: bool = False,
         debug_num_stacks_to_drop: int = 2,
-    ) -> pd.DataFrame:  # dataframe of config query
+    ) -> [dict]:  # list of config query
         """wrapper for `DomoDataset.query_dataset_private` retrieves company configuration dataset and stores it as config"""
 
         ds = await dmds.DomoDataset.get_from_id(
@@ -139,13 +140,14 @@ class GetInstanceConfig:
             loop_until_end=True,
             debug_num_stacks_to_drop=debug_num_stacks_to_drop,
             parent_class=self.__class__.__name__,
+            is_return_dataframe = False
         )
-        if len(config_df.index) == 0:
+        if len(config_df) == 0:
             raise NoConfigCompanyError(sql, domo_instance=config_auth.domo_instance)
 
         self.config = config_df
 
-        message = f"\n⚙️ SUCCESS 🎉 Retrieved company list \nThere are {len(config_df.index)} companies to update"
+        message = f"\n⚙️ SUCCESS 🎉 Retrieved company list \nThere are {len(config_df)} companies to update"
 
         if debug_prn:
             print(message)
@@ -210,6 +212,60 @@ class DomoJupyterAccount_InstanceAuth:
         return clean_str
 
 # %% ../../nbs/integrations/DomoJupyter.ipynb 10
+async def is_v2(instance_auth: dmda.DomoFullAuth):
+    """wrapper for the domo boostrap.is_group_ownership_beta function to return a binary for if the instance has the group ownership beta enabled"""
+
+    import domolibrary.classes.DomoBootstrap as dmbs
+
+    domo_bootstrap = dmbs.DomoBootstrap(auth=instance_auth)
+    is_v2 = await domo_bootstrap.is_group_ownership_beta()
+
+    return 1 if is_v2 else 0
+
+
+async def process_row(
+    instance: dict,
+    domo_instance,
+    instance_creds: DomoJupyterAccount_InstanceAuth,
+    config_enum=None,
+    debug_api: bool = False,
+):
+    # convert DomoJupyterAccount_InstanceAuth obj to
+    if isinstance(instance_creds, DomoJupyterAccount_InstanceAuth):
+        instance_creds = instance_creds.generate_auth(domo_instance=domo_instance)
+
+    if isinstance(instance_creds, dmda.DomoAuth):
+        instance.update({"instance_auth": instance_creds})
+
+    try:
+        await instance_creds.get_auth_token(debug_api=debug_api)
+        instance.update(
+            {"is_valid": 1}
+        )
+
+        if isinstance(instance_creds, dmda.DomoFullAuth):
+            instance.update({"is_v2": await is_v2(instance_auth=instance_creds)})
+
+    except (dmda.InvalidCredentialsError, dmda.AccountLockedError) as e:
+        if debug_prn:
+            print(e)
+        logger.log_error(str(e))
+        instance.update({"is_valid": 0})
+
+    config_creds = None
+    if config_enum and instance.get("config_exception_pw") == 0:
+        config_creds = config_enum["config_1"].value
+
+    elif config_enum and instance.get("config_exception_pw") == 1:
+        config_creds = config_enum["config_0"].value
+
+    if isinstance(config_creds, DomoJupyterAccount_InstanceAuth):
+        config_creds = config_creds.generate_auth(domo_instance=domo_instance)
+
+    if isinstance(config_creds, dmda.DomoAuth):
+        instance.update({"config_auth": config_creds})
+
+# %% ../../nbs/integrations/DomoJupyter.ipynb 13
 class GetDomains_Query_AuthMatch_Error(Exception):
     """raise if SQL query fails to return column named 'auth_match_col'"""
 
@@ -229,7 +285,6 @@ async def get_domains_with_instance_auth(
     config_auth: dmda.DomoAuth = None,  # which instance to retrieve configuration data from
     config_dataset_id: str = None,  # dataset_id to run config_sql query against
     config_sql: str = "select domain as domo_instance,concat(config_useprod, '-', project) as auth_match_col from table",
-    config_df: pd.DataFrame = None,
     debug_api: bool = False,
     debug_log: bool = False,
     debug_prn: bool = False,
@@ -242,7 +297,7 @@ async def get_domains_with_instance_auth(
 
     gic = cls(logger=logger)
 
-    config_df = config_df if isinstance(config_df, pd.DataFrame) else await gic._retrieve_company_ds(
+    config_ls = await gic._retrieve_company_ds(
         config_auth=config_auth,
         dataset_id=config_dataset_id,
         sql=config_sql,
@@ -251,55 +306,26 @@ async def get_domains_with_instance_auth(
         debug_api=debug_api,
     )
 
-    if "auth_match_col" not in config_df.columns:
+    if "auth_match_col" not in config_ls[0]:
         message = f"Query failed to return a column 'auth_match_col' sql = {config_sql} in {config_auth.domo_instance}"
         raise GetDomains_Query_AuthMatch_Error(message)
 
-    for index, instance in config_df.iterrows():
-        
-        domo_instance = instance["domo_instance"]  
-         
-        auth_match = instance["auth_match_col"]
-        creds = auth_enum[auth_match].value if auth_match in auth_enum._member_names_ else default_auth
-        
-        
-        if isinstance(creds, DomoJupyterAccount_InstanceAuth):
-            creds = creds.generate_auth(domo_instance=domo_instance)
-            creds.domo_instance = domo_instance
-        
-        config_df.at[index, "instance_auth"] = creds
+    await ce.gather_with_concurrency(*[
+        process_row(
+            instance=instance,
+            domo_instance = instance['domo_instance'],
+            instance_creds=auth_enum[instance['auth_match_col']].value
+            if instance['auth_match_col'] in auth_enum._member_names_
+            else default_auth,
+            config_enum=auth_enum if "config_1" in auth_enum._member_names_ else None,
+            debug_api = debug_api
+        )
+        for instance in config_ls
+    ], n = 10)
 
-        if 'config_1' in auth_enum._member_names_  :
-            if debug_prn:
-                print("adding config_auth objects")
+    return pd.DataFrame(config_ls)
 
-            if instance['config_exception_pw'] == 0:
-                auth  = auth_enum['config_1'].value
-            
-            elif instance['config_exception_pw'] == 1:
-                auth  = auth_enum['config_0'].value
-            
-            if isinstance(auth, DomoJupyterAccount_InstanceAuth):
-                auth = auth.generate_auth(domo_instance=domo_instance)
-                auth.domo_instance = domo_instance
-            
-            config_df.at[index, 'config_auth'] = auth
-
-        try:
-            await creds.get_auth_token(debug_api=debug_api)
-            config_df.at[index, "is_valid"] = 1
-
-        except (dmda.InvalidCredentialsError, dmda.AccountLockedError) as e:
-            if debug_prn:
-                print(e)
-
-            logger.log_error(str(e))
-            config_df.at[index, "is_valid"] = 0
-
-
-    return config_df
-
-# %% ../../nbs/integrations/DomoJupyter.ipynb 13
+# %% ../../nbs/integrations/DomoJupyter.ipynb 16
 class InvalidAccountNameError(Exception):
     """raised when account name does not follow format string"""
 
@@ -352,7 +378,7 @@ def get_domo_instance_auth_account(
         domo_instance=domo_instance or creds.get("DOMO_INSTANCE"),
     )
 
-# %% ../../nbs/integrations/DomoJupyter.ipynb 15
+# %% ../../nbs/integrations/DomoJupyter.ipynb 18
 class GenerateAuth_InvalidDomoInstanceList(Exception):
     def __init__(self):
         message = "provide a list of domo_instances"
