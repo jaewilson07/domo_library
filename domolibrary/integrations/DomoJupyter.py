@@ -7,6 +7,7 @@ __all__ = ['GetJupyter_ErrorRetrievingAccount', 'GetJupyter_ErrorRetrievingAccou
            'GenerateAuth_InvalidDomoInstanceList', 'GenerateAuth_CredentialsNotProvided']
 
 # %% ../../nbs/integrations/DomoJupyter.ipynb 2
+import pandas as pd
 from dataclasses import dataclass, field
 from typing import Optional
 from enum import Enum
@@ -16,7 +17,6 @@ import re
 import time
 import json
 
-import pandas as pd
 
 from fastcore.basics import patch_to
 
@@ -236,8 +236,7 @@ async def process_row(
     if isinstance(instance_creds, DomoJupyterAccount_InstanceAuth):
         instance_creds = instance_creds.generate_auth(domo_instance=domo_instance)
 
-    if isinstance(instance_creds, dmda.DomoAuth):
-        instance.update({"instance_auth": instance_creds})
+    instance.update({"instance_auth": instance_creds})
 
     try:
         await instance_creds.get_auth_token(debug_api=debug_api)
@@ -266,6 +265,8 @@ async def process_row(
 
     if isinstance(config_creds, dmda.DomoAuth):
         instance.update({"config_auth": config_creds})
+    
+    return instance
 
 # %% ../../nbs/integrations/DomoJupyter.ipynb 13
 class GetDomains_Query_AuthMatch_Error(Exception):
@@ -312,7 +313,7 @@ async def get_domains_with_instance_auth(
         message = f"Query failed to return a column 'auth_match_col' sql = {config_sql} in {config_auth.domo_instance}"
         raise GetDomains_Query_AuthMatch_Error(message)
 
-    await ce.gather_with_concurrency(*[
+    config_ls = await ce.gather_with_concurrency(*[
         process_row(
             instance=instance,
             domo_instance = instance['domo_instance'],
