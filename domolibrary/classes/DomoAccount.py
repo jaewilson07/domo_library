@@ -585,7 +585,7 @@ async def get_accounts(
     if isinstance(auth, dmda.DomoFullAuth) and is_v2 is None:
         instance_bsr = bsr.DomoBootstrap(auth=auth)
 
-        is_v2 = await instance_bsr.is_group_ownership_beta(auth)
+        is_v2 = await instance_bsr.is_feature_accountsv2_enabled(auth)
 
         if debug_prn:
             print(
