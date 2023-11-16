@@ -30,6 +30,7 @@ class PageRetrieval_byId_Error(de.DomoError):
             function_name=function_name,
             parent_class=parent_class,
             message=f"failed to retrieve page_id: {page_id}",
+            domo_instance = domo_instance
         )
 
 # %% ../../nbs/routes/page.ipynb 7
