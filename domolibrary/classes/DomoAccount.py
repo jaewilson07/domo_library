@@ -312,8 +312,7 @@ async def _share_v2(
     session: httpx.AsyncClient = None,
     debug_num_stacks_to_drop=2,
     return_raw: bool = False,
-    is_suppress_already_shared : bool = True
-    
+    is_suppress_already_shared: bool = True,
 ):
     auth = auth or self.auth
 
@@ -349,14 +348,12 @@ async def _share_v2(
             return res
 
         return f"shared {self.id} - {self.name} with {group_id or user_id}"
-    
+
     except ShareAccount_Error_AlreadyShared as e:
         if not is_suppress_already_shared:
             raise e
 
         return f"already shared {self.id} - {self.name} with {group_id or user_id}"
-        
-
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 38
 @patch_to(DomoAccount)
@@ -369,7 +366,7 @@ async def _share_v1(
     session: httpx.AsyncClient = None,
     debug_num_stacks_to_drop=2,
     return_raw: bool = False,
-    is_suppress_already_shared: bool = True
+    is_suppress_already_shared: bool = True,
 ):
     auth = auth or self.auth
 
@@ -404,14 +401,13 @@ async def _share_v1(
             return res
 
         return f"shared {self.id} - {self.name} with { user_id}"
-    
+
     except ShareAccount_Error_AlreadyShared as e:
         if is_suppress_already_shared:
             return f"already shared {self.id} - {self.name} with { user_id}"
-        
+
         else:
             raise e
-
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 41
 @patch_to(DomoAccount)
@@ -423,7 +419,7 @@ async def share(
     domo_group=None,
     auth: dmda.DomoAuth = None,
     access_level: ShareAccount = None,  # will default to Read
-    is_suppress_already_shared : bool = True,
+    is_suppress_already_shared: bool = True,
     debug_api: bool = False,
     debug_num_stacks_to_drop: int = 3,
     debug_prn: bool = False,
@@ -434,22 +430,22 @@ async def share(
 
     user_id = user_id or (domo_user and domo_user.id)
 
-    debug = {'is_accounts_v2' : is_v2}
-
+    debug = {"is_accounts_v2": is_v2}
 
     res = None
 
     if is_v2 == 1:
         group_id = group_id or (domo_group and domo_group.id)
 
-        debug.update({
-            'user_id*' : user_id,
-            'group_id' : group_id,
-        })
+        debug.update(
+            {
+                "user_id*": user_id,
+                "group_id": group_id,
+            }
+        )
 
         if debug_prn:
             print(debug)
-
 
         res = await self._share_v2(
             auth=auth,
@@ -458,7 +454,7 @@ async def share(
             debug_api=debug_api,
             debug_num_stacks_to_drop=debug_num_stacks_to_drop,
             session=session,
-            is_suppress_already_shared = is_suppress_already_shared
+            is_suppress_already_shared=is_suppress_already_shared,
         )
 
     elif is_v2 == 0:
@@ -466,20 +462,17 @@ async def share(
 
         if group_id:
             import domolibrary.classes.DomoGroup as dmdg
+
             domo_group = await dmdg.DomoGroup.get_by_id(group_id=group_id, auth=auth)
-        
+
         group_id = group_id or domo_group.id
         domo_users = await domo_group.Membership.get_members()
         user_ids = [domo_user.id for domo_user in domo_users]
-        
-        debug.update({
-            'group_id' : group_id,
-            'user_ids' : user_ids
-        })
+
+        debug.update({"group_id": group_id, "user_ids": user_ids})
 
         if debug_prn:
             print(debug)
-
 
         res = await ce.gather_with_concurrency(
             *[
@@ -489,7 +482,7 @@ async def share(
                     debug_api=debug_api,
                     debug_num_stacks_to_drop=debug_num_stacks_to_drop,
                     session=session,
-                    is_suppress_already_shared = is_suppress_already_shared
+                    is_suppress_already_shared=is_suppress_already_shared,
                 )
                 for user_id in user_ids
             ],
@@ -694,16 +687,16 @@ class Account_Accesslist_Share:
         return cls(
             entity=await cls._get_entity(obj),
             auth=auth,
-            access_level=cls._get_access_level(obj['accessLevel'], is_v2),
+            access_level=cls._get_access_level(obj["accessLevel"], is_v2),
         )
+
 
 @dataclass
 class Account_Accesslist:
-    account : DomoAccount
-    auth : dmda.DomoAuth
+    account: DomoAccount
+    auth: dmda.DomoAuth
     domo_users = None
     domo_groups = None
-    
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 50
 @patch_to(DomoAccount)
@@ -723,12 +716,12 @@ async def get_accesslist(
 
     is_v2 = await self.is_feature_accountsv2_enabled()
 
-    self.accesslist =  await ce.gather_with_concurrency(
+    self.accesslist = await ce.gather_with_concurrency(
         *[
-            AccountShare._from_json(obj=obj, auth=auth, is_v2=is_v2)
+            Account_Accesslist_Share._from_json(obj=obj, auth=auth, is_v2=is_v2)
             for obj in res.response["list"]
         ],
-        n=10
+        n=10,
     )
     return self.accesslist
 
@@ -805,8 +798,6 @@ async def upsert_account(
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 57
 @patch_to(DomoAccount)
-
-@patch_to(DomoAccount)
 async def upsert_share_account_user(
     self: DomoAccount,
     domo_user,
@@ -823,8 +814,6 @@ async def upsert_share_account_user(
         auth=auth, account_id=self.id
     )
     res = None
-
-
 
     if domo_user:
         user_id = domo_user.id

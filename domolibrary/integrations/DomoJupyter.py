@@ -218,8 +218,7 @@ async def is_v2(instance_auth: dmda.DomoFullAuth):
     import domolibrary.classes.DomoBootstrap as dmbs
 
     domo_bootstrap = dmbs.DomoBootstrap(auth=instance_auth)
-    is_v2 = await domo_bootstrap.is_group_ownership_beta()
-
+    is_v2 = await domo_bootstrap.is_feature_accountsv2_enabled()
     return 1 if is_v2 else 0
 
 

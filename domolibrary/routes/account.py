@@ -83,6 +83,7 @@ class ShareAccount_Error(de.DomoError):
             parent_class=parent_class,
         )
 
+
 class ShareAccount_Error_AlreadyShared(de.DomoError):
     def __init__(
         self,
@@ -101,7 +102,6 @@ class ShareAccount_Error_AlreadyShared(de.DomoError):
             function_name=function_name,
             parent_class=parent_class,
         )
-        
 
 # %% ../../nbs/routes/account.ipynb 8
 @gd.route_function
@@ -438,7 +438,7 @@ async def update_account_name(
             function_name=res.traceback_details.function_name,
             parent_class=parent_class,
             info="error updating account_name",
-            domo_instance = auth.domo_instance
+            domo_instance=auth.domo_instance,
         )
 
     return res
@@ -460,7 +460,7 @@ async def create_account(
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
     parent_class: str = None,
-    debug_num_stacks_to_drop= 1
+    debug_num_stacks_to_drop=1,
 ) -> rgd.ResponseGetData:
     url = f"https://{auth.domo_instance}.domo.com/api/data/v1/accounts"
 
@@ -478,8 +478,8 @@ async def create_account(
             body=config_body,
             debug_api=debug_api,
             session=session,
-            parent_class = parent_class,
-            num_stacks_to_drop= debug_num_stacks_to_drop
+            parent_class=parent_class,
+            num_stacks_to_drop=debug_num_stacks_to_drop,
         )
 
         if res.is_success:
@@ -491,7 +491,7 @@ async def create_account(
     if not res.is_success:
         raise CreateAccount_Error(
             status=res.status,
-            account_id=config_body.get('displayName'),
+            account_id=config_body.get("displayName"),
             domo_instance=auth.domo_instance,
             info=res.response,
             function_name=res.traceback_details.function_name,
