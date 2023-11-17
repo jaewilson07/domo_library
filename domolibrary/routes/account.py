@@ -3,8 +3,8 @@
 # %% auto 0
 __all__ = ['get_accounts', 'GetAccount_NoMatch', 'GetAccount_NoConfigRetrieved', 'DeleteAccount_Error', 'get_account_from_id',
            'get_account_config', 'get_user_access', 'UpdateAccount_Error', 'update_account_config',
-           'update_account_name', 'create_account', 'delete_account', 'ShareAccount_Error', 'ShareAccount',
-           'ShareAccount_V1_AccessLevel', 'ShareAccount_V2_AccessLevel', 'generate_share_account_payload_v1',
+           'update_account_name', 'create_account', 'delete_account', 'ShareAccount_Error', 'DomoAccount_AccessLevel',
+           'DomoAccount_AccessLevel_V1', 'DomoAccount_AccessLevel_V2', 'generate_share_account_payload_v1',
            'generate_share_account_payload_v2', 'share_account_v2', 'get_account_accesslist_for_v2', 'share_account_v1']
 
 # %% ../../nbs/routes/account.ipynb 3
@@ -478,22 +478,22 @@ class ShareAccount_Error(de.DomoError):
         )
 
 
-class ShareAccount:
+class DomoAccount_AccessLevel:
     pass
 
 
-class ShareAccount_V1_AccessLevel(ShareAccount, Enum):
+class DomoAccount_AccessLevel_V1(DomoAccount_AccessLevel, Enum):
     CAN_VIEW = "READ"
 
 
-class ShareAccount_V2_AccessLevel(ShareAccount, Enum):
+class DomoAccount_AccessLevel_V2(DomoAccount_AccessLevel, Enum):
     CAN_VIEW = "CAN_VIEW"
     CAN_EDIT = "CAN_EDIT"
     CAN_SHARE = "CAN_SHARE"
 
 
 def generate_share_account_payload_v1(
-    access_level: ShareAccount, user_id: int = None, group_id: int = None
+    access_level: DomoAccount_AccessLevel, user_id: int = None, group_id: int = None
 ):
     if user_id:
         return {"type": "USER", "id": int(user_id), "permissions": [access_level.value]}
@@ -506,7 +506,7 @@ def generate_share_account_payload_v1(
 
 
 def generate_share_account_payload_v2(
-    access_level: ShareAccount, user_id: int = None, group_id: int = None
+    access_level: DomoAccount_AccessLevel, user_id: int = None, group_id: int = None
 ):
     if user_id:
         return {"type": "USER", "id": int(user_id), "accessLevel": access_level.value}
