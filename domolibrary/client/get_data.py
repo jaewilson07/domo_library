@@ -246,7 +246,7 @@ async def get_data(
                 res, auth=auth, traceback_details=traceback_details
             )
 
-        except (httpx.TransportError, RunTimeError) as e:
+        except (httpx.TransportError, RuntimeError) as e:
             attempt = await handle_error(e, url, attempt, max_attempt)
             session = httpx.AsyncClient()
 

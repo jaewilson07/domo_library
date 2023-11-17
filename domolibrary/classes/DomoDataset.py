@@ -475,7 +475,8 @@ async def query_dataset_private(cls: DomoDataset,
                                 debug_num_stacks_to_drop : int = 2,
                                 timeout = 10, # larger API requests may require a longer response time
                                 maximum_retry : int = 5,
-                                parent_class : str = None
+                                parent_class : str = None,
+                                is_return_dataframe : bool = True
                                 ) -> pd.DataFrame:
 
     parent_class = parent_class or cls.__name__
@@ -521,8 +522,10 @@ async def query_dataset_private(cls: DomoDataset,
             function_name="query_dataset_private", 
             sql=sql, dataset_id=dataset_id, domo_instance=auth.domo_instance)
     
-
-    return pd.DataFrame(res.response)
+    if is_return_dataframe:
+        return pd.DataFrame(res.response)
+    
+    return res.response
 
 
 # %% ../../nbs/classes/50_DomoDataset.ipynb 42
