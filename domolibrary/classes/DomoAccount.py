@@ -178,7 +178,7 @@ async def create_account(
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
 ):
-    body = accountroutes.generate_create_body(account_name=account_name, config=config)
+    body = account_routes.generate_create_body(account_name=account_name, config=config)
 
     res = await account_routes.create_account(
         auth=auth, config_body=body, debug_api=debug_api, session=session
