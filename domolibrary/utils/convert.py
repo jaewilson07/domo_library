@@ -11,12 +11,12 @@ import pandas as pd
 # %% ../../nbs/utils/convert.ipynb 5
 def convert_epoch_millisecond_to_datetime(epoch: int):
     '''convert Epoch time with miliseconds to Date time'''
-    return dt.datetime.fromtimestamp(epoch / 1000.0)
+    return dt.datetime.fromtimestamp(epoch / 1000.0) if epoch else None
 
 # %% ../../nbs/utils/convert.ipynb 6
 def convert_datetime_to_epoch_millisecond(datetime: dt.datetime):
     '''convert DateTime to Epoch time with Miliseconds'''
-    return int(datetime.timestamp() * 1000)
+    return int(datetime.timestamp() * 1000) if datetime  else None
 
 # %% ../../nbs/utils/convert.ipynb 10
 def convert_snake_to_pascal(clean_str):

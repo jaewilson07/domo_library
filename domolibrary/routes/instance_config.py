@@ -16,7 +16,6 @@ import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 
 import domolibrary.routes.user as user_routes
-import domolibrary.client.DomoError as de
 import domolibrary.routes.bootstrap as bootstrap_routes
 
 
