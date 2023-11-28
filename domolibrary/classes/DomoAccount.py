@@ -176,13 +176,17 @@ async def create_account(
     config: DomoAccount_Config,
     auth: dmda.DomoAuth,
     debug_api: bool = False,
+    return_raw: bool = False,
     session: httpx.AsyncClient = None,
 ):
-    body = accountroutes.generate_create_body(account_name=account_name, config=config)
+    body = account_routes.generate_create_body(account_name=account_name, config=config)
 
     res = await account_routes.create_account(
         auth=auth, config_body=body, debug_api=debug_api, session=session
     )
+
+    if return_raw:
+        return res
 
     return await cls.get_by_id(auth=auth, account_id=res.response.get("id"))
 
@@ -261,6 +265,7 @@ async def delete_account(
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
     debug_num_stacks_to_drop=2,
+    parent_class = None
 ):
     auth = auth or self.auth
 
@@ -659,7 +664,7 @@ class Account_Accesslist_Share:
     auth: dmda.DomoAuth
 
     @staticmethod
-    async def _get_entity(obj):
+    async def _get_entity(obj, auth : dmda.DomoAuth ):
         if obj["type"] == "USER":
             import domolibrary.classes.DomoUser as dmu
 
@@ -685,7 +690,7 @@ class Account_Accesslist_Share:
         cls: ShareAccount, obj, auth: dmda.DomoAuth, is_v2: bool = False
     ):
         return cls(
-            entity=await cls._get_entity(obj),
+            entity=await cls._get_entity(obj, auth = auth),
             auth=auth,
             access_level=cls._get_access_level(obj["accessLevel"], is_v2),
         )
@@ -707,8 +712,9 @@ async def get_accesslist(
     return_raw: bool = False,
     session: httpx.AsyncClient = None,
 ):
+    auth=auth or self.auth
     res = await account_routes.get_account_accesslist(
-        auth=auth or self.auth, account_id=self.id, debug_api=debug_api, session=session
+        auth=auth, account_id=self.id, debug_api=debug_api, session=session
     )
 
     if return_raw:
@@ -851,7 +857,7 @@ async def upsert_share_account_group(
 ):
     auth = auth or self.auth
 
-    ls_share = await account_routes.get_account_accesslist_for_v2(
+    ls_share = await account_routes.get_account_accesslist(
         auth=auth, account_id=self.id
     )
     res = None
