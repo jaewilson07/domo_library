@@ -15,6 +15,10 @@ website:
               - section: 2023-01-24_Domo_Onboarding
                 contents: []
                 href: blog/posts/2023-01-24_Domo_Onboarding/index.qmd
+              - section: 2023-11-18 _creatingDomoStats_MgicETL
+                contents:
+                  - blog/posts/2023-11-18 _creatingDomoStats_MgicETL/without_domolibrary.ipynb
+                href: blog/posts/2023-11-18 _creatingDomoStats_MgicETL/index.ipynb
         href: blog/index.qmd
       - section: classes
         contents:

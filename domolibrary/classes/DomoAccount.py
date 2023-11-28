@@ -857,7 +857,7 @@ async def upsert_share_account_group(
 ):
     auth = auth or self.auth
 
-    ls_share = await account_routes.get_account_accesslist_for_v2(
+    ls_share = await account_routes.get_account_accesslist(
         auth=auth, account_id=self.id
     )
     res = None
