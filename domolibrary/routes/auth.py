@@ -194,7 +194,7 @@ async def get_full_auth(
             domo_instance=domo_instance,
         )
 
-    if not res.is_success:
+    if not res.is_success or not ( isinstance(res.response, dict) and res.response.get('sessionToken')):
         raise InvalidCredentialsError(
             function_name=res.traceback_details.function_name,
             parent_class=parent_class,
