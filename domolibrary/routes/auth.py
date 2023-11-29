@@ -155,7 +155,7 @@ async def get_full_auth(
         res, traceback_details=traceback_details, parent_class=parent_class
     )
 
-    if res.is_success and res.response.get("reason", None):
+    if res.is_success and isinstance(res.response , dict) and res.response.get("reason", None):
         if res.response.get("reason") == "INVALID_CREDENTIALS":
             res.is_success = False
             raise InvalidCredentialsError(
@@ -165,7 +165,7 @@ async def get_full_auth(
                 message=res.response["reason"],
                 domo_instance=domo_instance,
             )
-        if res.response.get("reason") == "ACCOUNT_LOCKED":
+        if isinstance(res.response, dict) and res.response.get("reason") == "ACCOUNT_LOCKED":
             res.is_success = False
             raise AccountLockedError(
                 function_name=res.traceback_details.function_name,
@@ -199,7 +199,7 @@ async def get_full_auth(
             function_name=res.traceback_details.function_name,
             parent_class=parent_class,
             status=res.status,
-            message=res.response["reason"],
+            message=res.response,
             domo_instance=domo_instance,
         )
 
