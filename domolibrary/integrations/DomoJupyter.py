@@ -246,7 +246,7 @@ async def process_row(
         if isinstance(instance_creds, dmda.DomoFullAuth):
             instance.update({"is_v2": await is_v2(instance_auth=instance_creds)})
 
-    except (dmda.InvalidCredentialsError, dmda.AccountLockedError) as e:
+    except (dmda.InvalidCredentialsError, dmda.AccountLockedError, dmda.InvalidInstanceError, dmda.NoAccessTokenReturned ) as e:
         if debug_prn:
             print(e)
         logger.log_error(str(e))
