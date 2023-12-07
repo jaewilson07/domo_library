@@ -3,86 +3,25 @@
 # %% ../../nbs/classes/50_DomoDataflow.ipynb 2
 from __future__ import annotations
 
-from enum import Enum
-from dataclasses import dataclass, field
-import httpx
-
-import datetime as dt
-import domolibrary.utils.convert as ct
-import domolibrary.utils.DictDot as util_dd
-
-import domolibrary.client.DomoAuth as dmda
-import domolibrary.client.DomoError as de
-import domolibrary.routes.dataflow as dataflow_routes
-from nbdev.showdoc import patch_to, show_doc
-
 # %% auto 0
 __all__ = ['DomoDataflow']
 
 # %% ../../nbs/classes/50_DomoDataflow.ipynb 3
-class DomoDataflow_Action_Type(Enum):
-    LoadFromVault = "LoadFromVault"
-    PublishToVault = "PublishToVault"
-    GenerateTableAction = "GenerateTableAction"
+from dataclasses import dataclass, field
+import httpx
+
+import domolibrary.utils.DictDot as util_dd
+
+import domolibrary.client.DomoAuth as dmda
+import domolibrary.routes.dataflow as dataflow_routes
+
+from nbdev.showdoc import patch_to
 
 
-@dataclass
-class DomoDataflow_Action:
-    id: str
-    name: str
-    depends_on : str
-    type: str
 
-    datasource_id: str  = None
-    sql: str = None
-
-    @classmethod
-    def _from_json(cls, obj: dict):
-        dd = obj
-
-        if isinstance(dd, dict):
-            dd = util_dd.DictDot(obj)
-
-        tbl_name = dd.dataSource.name if dd.dataSource else None
-        ds_id = dd.dataSource.guid if dd.dataSource else None
-
-        return  cls(
-            type=dd.type,
-            id=dd.id,
-            name=dd.name or dd.targetTableName or dd.tableName or tbl_name,
-            depends_on = dd.dependsOn,
-            
-            datasource_id=dd.dataSourceId or ds_id,
-            sql=dd.selectStatement or dd.query,
-        )
-
-@dataclass
-class DomoDataflow_ActionExecuted(DomoDataflow_Action):
-    begin_time : dt.datetime = None
-    end_time : dt.datetime = field(init = False )
-    is_success : bool = field(init=False)
-    rows_process : int = field(init = False)
-
-    @classmethod
-    def _from_json(cls, obj):
-        dd = obj
-
-        if isinstance(dd, dict):
-            dd = util_dd.DictDot(obj)
-
-        base_cls = super()._from_json(obj)
-
-        print(base_cls.__dict__, base_cls.__class__.__name__)
-
-        cls(
-            rows_processed =  dd.rowsProcessed,
-            is_success = dd.wasSuccessful,
-            begin_time = dd.beginTime,
-            end_time = dd.endTime,
-
-            **base_cls.__dict__,
-        
-        )
+# %% ../../nbs/classes/50_DomoDataflow.ipynb 4
+from .DomoDataflow_Action import DomoDataflow_Action
+from .DomoDataflow_History import DomoDataflow_History, DomoDataflow_ActionResult
 
 # %% ../../nbs/classes/50_DomoDataflow.ipynb 6
 @dataclass
@@ -94,7 +33,11 @@ class DomoDataflow:
     description: str = None
     tags: list[str] = None
     actions: list[DomoDataflow_Action] = None
-    execution_history : list[DataflowExecution_Summary] = None
+    
+    history : DomoDataflow_History = None # class for managing the history of a dataflow
+
+    def __post_init__(self):
+        self.history = DomoDataflow_History(dataflow = self, dataflow_id = self. id, auth = self.auth)
 
 # %% ../../nbs/classes/50_DomoDataflow.ipynb 7
 @patch_to(DomoDataflow, cls_method=True)
@@ -123,6 +66,7 @@ async def get_from_id(
         return None
 
     dd = util_dd.DictDot(res.response)
+
     domo_dataflow = cls(
         auth=auth,
         id=dd.id,
@@ -139,39 +83,7 @@ async def get_from_id(
 
     return domo_dataflow
 
-# %% ../../nbs/classes/50_DomoDataflow.ipynb 11
-@patch_to(DomoDataflow)
-async def get_execution_history(
-    self: DomoDataflow,
-    auth: dmda.DomoAuth = None,
-    maximum=100,  # maximum number of execution histories to retrieve
-    debug_api: bool = False,
-    debug_num_stacks_to_drop=2,
-    return_raw: bool = False,
-):
-    """retrieves metadata about execution history.  includes details like execution status"""
-
-    auth = auth or self.auth
-
-    res = await dataflow_routes.get_dataflow_execution_history(
-        auth=auth,
-        dataflow_id=self.id,
-        debug_api=debug_api,
-        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
-        parent_class=self.__class__.__name__,
-        maximum=maximum,
-    )
-
-    if return_raw:
-        return res
-
-    self.execution_history = [
-        DomoDataflow_ExecutionSummary._from_json(df_obj, auth) for df_obj in res.response
-    ]
-
-    return self.execution_history
-
-# %% ../../nbs/classes/50_DomoDataflow.ipynb 14
+# %% ../../nbs/classes/50_DomoDataflow.ipynb 12
 @patch_to(DomoDataflow)
 async def execute(
     self: DomoDataflow,
