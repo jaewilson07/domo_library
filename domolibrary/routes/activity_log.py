@@ -11,26 +11,26 @@ import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
 
 # %% ../../nbs/routes/activity_log.ipynb 4
-@gd.route_function
-async def get_activity_log_object_types(
-    auth: dmda.DomoAuth,
-    parent_class: str = None,
-) -> rgd.ResponseGetData:
+async def get_activity_log_object_types(auth: dmda.DomoAuth, parent_class :str=None, function_name :str=None, debug_num_stacks_to_drop=1) -> rgd.ResponseGetData:
     """retrieves a list of valid objectTypes that can be used to search the activity_log API"""
 
     url = f"https://{auth.domo+_instance}.domo.com/api/audit/v1/user-audits/objectTypes"
 
     return await gd.get_data(
-        url=url,
-        method="GET",
         auth=auth,
-        parent_class=parent_class,
-        debug_api=debug_api,
+        url=url,
+        method='GET',
         num_stacks_to_drop=debug_num_stacks_to_drop,
     )
+    if res.status != 200:
+        res.is_sucess = False
+        return res.response
 
-# %% ../../nbs/routes/activity_log.ipynb 7
-@gd.route_function
+
+# %% ../../nbs/routes/activity_log.ipynb 8
+import domolibrary.client.DomoError as de
+
+# %% ../../nbs/routes/activity_log.ipynb 11
 async def search_activity_log(
     auth: dmda.DomoAuth,
     start_time: int,  # epoch time in milliseconds
@@ -44,44 +44,48 @@ async def search_activity_log(
     session: httpx.AsyncClient = None,
 ) -> rgd.ResponseGetData:
     """loops over activity log api to retrieve audit logs"""
-
-    is_close_session = False
-
-    if not session:
-        session = httpx.AsyncClient()
-        is_close_session = True
+    
+    if not session: 
+            session = httpx.AsyncClient()
+            is_close_session = True
 
     url = f"https://{auth.domo_instance}.domo.com/api/audit/v1/user-audits"
 
-    if object_type and object_type != "ACTIVITY_LOG":
-        url = f"{url}/objectTypes/{object_type}"
+    if object_type and object_type != 'ACTIVITY_LOG':
+            url = f"{url}/objectTypes/{object_type}"
 
     fixed_params = {"end": end_time, "start": start_time}
 
     offset_params = {
-        "offset": "offset",
-        "limit": "limit",
-    }
+            "offset": "offset",
+            "limit": "limit",
+        }
 
-    def arr_fn(res) -> list[dict]:
-        return res.response
+    def arr_fn(res) -> list[dict]: 
+            return res.response
 
-    res = await gd.looper(
-        auth=auth,
-        method="GET",
-        url=url,
-        arr_fn=arr_fn,
-        fixed_params=fixed_params,
-        offset_params=offset_params,
-        session=session,
-        maximum=maximum,
-        debug_loop=debug_loop,
-        debug_api=debug_api,
-        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
-        parent_class=parent_class,
+    res = await gd.looper(   
+            auth=auth,
+            method="GET",
+            url=url,
+            arr_fn=arr_fn,
+            fixed_params=fixed_params,
+            offset_params=offset_params,
+            session=session,
+            maximum=maximum,
+            debug_loop=debug_loop,
+            debug_api=debug_api,
     )
+    if res.status != 200:
+            res.is_sucess = False
+            raise Search_Activity_Log_Error( 
+                   domo_instance=dmda.DomoAuth, 
+                   status=res.status, 
+                   message=res.response,
+                   entity_id="entity_id"
+        )
 
-    if is_close_session:
-        await session.aclose()
+    if is_close_session: 
+            await session.aclose()
 
     return res
