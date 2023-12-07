@@ -31,6 +31,7 @@ website:
           - classes/50_DomoCertification.ipynb
           - classes/50_DomoDatacenter.ipynb
           - classes/50_DomoDataflow.ipynb
+          - classes/50_DomoDataflow_Execution.ipynb
           - classes/50_DomoDataset.ipynb
           - classes/50_DomoGrant.ipynb
           - classes/50_DomoGroup.ipynb
