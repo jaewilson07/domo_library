@@ -33,3 +33,5 @@ jobs:
           DOMO_DOJO_USER_ID: ${{secrets.DOMO_DOJO_USER_ID}}
           DOMO_DOJO_ACCESS_TOKEN: ${{ secrets.DOMO_DOJO_ACCESS_TOKEN }}    
           DOJO_DATASET_ID: ${{ secrets.DOJO_DATASET_ID}}
+          ALPHA_ACCESS_TOKEN: ${{secrets.ALPHA_ACCESS_TOKEN}}
+
