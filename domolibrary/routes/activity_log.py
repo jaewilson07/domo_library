@@ -31,6 +31,7 @@ async def get_activity_log_object_types(auth: dmda.DomoAuth, parent_class :str=N
 import domolibrary.client.DomoError as de
 
 # %% ../../nbs/routes/activity_log.ipynb 11
+@gd.route_function
 async def search_activity_log(
     auth: dmda.DomoAuth,
     start_time: int,  # epoch time in milliseconds

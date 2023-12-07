@@ -12,7 +12,19 @@ import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 
+
 # %% ../../nbs/routes/card.ipynb 3
+class CardSearch_NotFoundError(de.DomoError):
+    def __init__(self, card_id,
+                 domo_instance, 
+                 function_name,status,
+                  message = None,
+                 ):
+        super().__init__(status=status,
+                         message=f"card {card_id} not found", domo_instance=domo_instance, function_name=function_name)
+
+
+# %% ../../nbs/routes/card.ipynb 4
 class CardSearch_NotFoundError(de.DomoError):
     def __init__(
         self,
@@ -31,7 +43,7 @@ class CardSearch_NotFoundError(de.DomoError):
             parent_class=parent_class,
         )
 
-# %% ../../nbs/routes/card.ipynb 4
+# %% ../../nbs/routes/card.ipynb 5
 @gd.route_function
 async def get_kpi_definition(
     auth: dmda.DomoAuth,
@@ -66,7 +78,7 @@ async def get_kpi_definition(
 
     return res
 
-# %% ../../nbs/routes/card.ipynb 7
+# %% ../../nbs/routes/card.ipynb 8
 @gd.route_function
 async def get_card_metadata(
     auth: dmda.DomoAuth,
@@ -103,7 +115,7 @@ async def get_card_metadata(
 
     return res
 
-# %% ../../nbs/routes/card.ipynb 10
+# %% ../../nbs/routes/card.ipynb 11
 def generate_body_search_cards_admin_summary(
     page_ids: [str] = None,
     #  searchPages: bool = True,
@@ -131,7 +143,7 @@ def generate_body_search_cards_admin_summary(
 
     return body
 
-# %% ../../nbs/routes/card.ipynb 11
+# %% ../../nbs/routes/card.ipynb 12
 @gd.route_function
 async def search_cards_admin_summary(
     auth: dmda.DomoAuth,
