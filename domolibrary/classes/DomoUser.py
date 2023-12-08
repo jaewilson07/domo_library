@@ -78,6 +78,8 @@ class DomoUser:
 
     custom_attributes: dict = field(default_factory=dict)
 
+    role : dict = None # DomoRole
+
     auth: Optional[dmda.DomoAuth] = field(repr=False, default=None)
 
     def __post_init__(self):
@@ -148,6 +150,7 @@ async def get_by_id(
     will throw an error if no user returned with an option to suppress_no_results_error
     """
 
+    import domolibrary.classes.DomoRole as dmr
     res = await user_routes.get_by_id(
         auth=auth,
         user_id=user_id,
@@ -163,7 +166,14 @@ async def get_by_id(
     if not res.is_success:
         return None
 
-    return cls._from_search_json(user_obj=res.response, auth=auth)
+    domo_user = cls._from_search_json(user_obj=res.response, auth=auth)
+
+    domo_role = await dmr.DomoRole.get_by_id(role_id = domo_user.role_id, auth = auth)
+    
+    domo_user.role = domo_role
+
+    return domo_user
+    
 
 
 # %% ../../nbs/classes/50_DomoUser.ipynb 13
