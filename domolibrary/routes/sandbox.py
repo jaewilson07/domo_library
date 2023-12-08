@@ -48,7 +48,7 @@ class Sandbox_ToggleSameInstancePromotion_Error(de.DomoError):
 
 @gd.route_function
 async def toggle_allow_same_instance_promotion(
-    is_allow_self_promotion: bool,
+    is_enabled: bool,
     auth: dmda.DomoAuth,
     session: httpx.AsyncClient = None,
     debug_num_stacks_to_drop: int = 1,
@@ -57,7 +57,7 @@ async def toggle_allow_same_instance_promotion(
 ):
     url = f"https://{auth.domo_instance}.domo.com/api/version/v1/settings"
 
-    body = {"allowSelfPromotion": is_allow_self_promotion}
+    body = {"allowSelfPromotion": is_enabled}
 
     res = await gd.get_data(
         auth=auth,
