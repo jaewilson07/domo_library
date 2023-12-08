@@ -38,8 +38,8 @@ class DomoInstanceConfig:
 
     auth: dmda.DomoAuth
     allowlist: list[str] = field(default_factory=list)
-    
-    is_sandbox_self_instance_promotion_enabled: bool = field(default = None)
+
+    is_sandbox_self_instance_promotion_enabled: bool = field(default=None)
     is_user_invite_notification_enabled: bool = field(default=None)
     is_invite_social_users_enabled: bool = field(default=None)
 
@@ -49,63 +49,67 @@ class DomoInstanceConfig:
 @patch_to(DomoInstanceConfig)
 async def get_sandbox_is_same_instance_promotion_enabled(
     self: DomoInstanceConfig,
-    auth: dmda.DomoAuth,
+    auth: dmda.DomoAuth = None,
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
-    debug_num_stacks_to_drop = 2
+    debug_num_stacks_to_drop=2,
 ):
+    auth = auth or self.auth
 
     res = await sandbox_routes.get_is_allow_same_instance_promotion_enabled(
         auth=auth or self.auth,
         session=session,
         debug_api=debug_api,
-        debug_num_stacks_to_drop = debug_num_stacks_to_drop,
-        parent_class = self.__class__.__name__
+        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+        parent_class=self.__class__.__name__,
     )
 
-    self.is_sandbox_self_instance_promotion_enabled = bool(res.response["allowSelfPromotion"])
+    self.is_sandbox_self_instance_promotion_enabled = bool(
+        res.response["allowSelfPromotion"]
+    )
 
     if return_raw:
         return res
 
-    return {"is_self_promotion_enabled": self.is_sandbox_self_instance_promotion_enabled}
-
+    return {
+        "is_self_promotion_enabled": self.is_sandbox_self_instance_promotion_enabled
+    }
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 9
 @patch_to(DomoInstanceConfig)
 async def toggle_sandbox_allow_same_instance_promotion(
     self: DomoInstanceConfig,
     auth: dmda.DomoAuth,
-    is_allow_self_promotion : bool,
+    is_enabled: bool,
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
-    debug_num_stacks_to_drop = 2
+    debug_num_stacks_to_drop=2,
 ):
-
     res = await sandbox_routes.toggle_allow_same_instance_promotion(
         auth=auth or self.auth,
         session=session,
-        is_allow_self_promotion =is_allow_self_promotion,        
+        is_enabled=is_enabled,
         debug_api=debug_api,
-        debug_num_stacks_to_drop = debug_num_stacks_to_drop,
-        parent_class = self.__class__.__name__
+        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+        parent_class=self.__class__.__name__,
     )
 
-    self.is_sandbox_self_instance_promotion_enabled = bool(res.response["allowSelfPromotion"])
+    self.is_sandbox_self_instance_promotion_enabled = bool(
+        res.response["allowSelfPromotion"]
+    )
 
     if return_raw:
         return res
 
-    return {"is_self_promotion_enabled": self.is_sandbox_self_instance_promotion_enabled}
-
+    return await self.get_sandbox_is_same_instance_promotion_enabled()
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 12
 @patch_to(DomoInstanceConfig)
 async def get_is_user_invite_notification_enabled(
     self: DomoInstanceConfig,
-    auth: dmda.DomoAuth,
+    auth: dmda.DomoAuth = None,
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
@@ -114,6 +118,8 @@ async def get_is_user_invite_notification_enabled(
     Admin > Company Settings > Admin Notifications
     Toggles whether user recieves 'You've been Domo'ed email
     """
+
+    auth = auth or self.auth
 
     res = await instance_config_routes.get_is_user_invite_notifications_enabled(
         auth=auth or self.auth,
@@ -126,11 +132,13 @@ async def get_is_user_invite_notification_enabled(
     if return_raw:
         return res
 
-    return self.is_user_invite_notification_enabled
+    return {
+        "is_user_invite_notification_enabled": self.is_user_invite_notification_enabled
+    }
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 15
 @patch_to(DomoInstanceConfig)
-async def toggle_is_user_invite_enabled(
+async def toggle_is_user_invite_notification_enabled(
     self: DomoInstanceConfig,
     auth: dmda.DomoFullAuth,
     is_enabled: bool,
@@ -171,13 +179,14 @@ async def toggle_is_user_invite_enabled(
 @patch_to(DomoInstanceConfig)
 async def get_is_invite_social_users_enabled(
     self: DomoInstanceConfig,
-    auth: dmda.DomoFullAuth,
+    auth: dmda.DomoFullAuth = None,
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
 ):
     import domolibrary.classes.DomoBootstrap as dmbp
 
+    auth = auth or self.auth
     bs = dmbp.DomoBootstrap(auth=auth)
     customer_id = await bs.get_customer_id()
 
@@ -193,19 +202,21 @@ async def get_is_invite_social_users_enabled(
     if return_raw:
         return res
 
-    return res.response["enabled"]
+    return {"is_invite_social_users_enabled": res.response["enabled"]}
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 22
 @patch_to(DomoInstanceConfig)
-async def toggle_social_users(
+async def toggle_is_invite_social_users_enabled(
     self: DomoInstanceConfig,
-    auth: dmda.DomoFullAuth,
     is_enabled: bool,
+    auth: dmda.DomoFullAuth = None,
     debug_api: bool = False,
     debug_prn: bool = True,
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
 ):
+    auth = auth or self.auth
+
     is_invite_social_users_enabled = await self.get_is_invite_social_users_enabled(
         auth=auth
     )
@@ -222,7 +233,7 @@ async def toggle_social_users(
             f"{'enabling' if is_enabled else 'disabling'} invite social users {auth.domo_instance}"
         )
 
-    res = await instance_config_routes.toggle_social_users(
+    res = await instance_config_routes.toggle_is_social_users_enabled(
         auth=auth or self.auth,
         is_enabled=is_enabled,
         session=session,
