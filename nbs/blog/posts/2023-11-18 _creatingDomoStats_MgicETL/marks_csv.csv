@@ -6,1897 +6,235 @@
 4,227,DDX_Landing Page_QA,SelectValues
 5,227,DDX_Landing Page_QA,ExpressionEvaluator
 6,227,DDX_Landing Page_QA,PublishToVault
-7,21,MetaData | Stage 5 | Log Tables,LoadFromVault
-8,21,MetaData | Stage 5 | Log Tables,Filter
-9,21,MetaData | Stage 5 | Log Tables,Filter
-10,21,MetaData | Stage 5 | Log Tables,SetValueField
-11,21,MetaData | Stage 5 | Log Tables,UnionAll
-12,21,MetaData | Stage 5 | Log Tables,Constant
-13,21,MetaData | Stage 5 | Log Tables,SetValueField
-14,21,MetaData | Stage 5 | Log Tables,Metadata
-15,21,MetaData | Stage 5 | Log Tables,SplitColumnAction
-16,21,MetaData | Stage 5 | Log Tables,SplitColumnAction
-17,21,MetaData | Stage 5 | Log Tables,ExpressionEvaluator
-18,21,MetaData | Stage 5 | Log Tables,Metadata
-19,21,MetaData | Stage 5 | Log Tables,LoadFromVault
-20,21,MetaData | Stage 5 | Log Tables,MergeJoin
-21,21,MetaData | Stage 5 | Log Tables,ReplaceString
-22,21,MetaData | Stage 5 | Log Tables,LoadFromVault
-23,21,MetaData | Stage 5 | Log Tables,SelectValues
-24,21,MetaData | Stage 5 | Log Tables,MergeJoin
-25,21,MetaData | Stage 5 | Log Tables,SelectValues
-26,21,MetaData | Stage 5 | Log Tables,PublishToVault
-27,21,MetaData | Stage 5 | Log Tables,Filter
-28,21,MetaData | Stage 5 | Log Tables,LoadFromVault
-29,21,MetaData | Stage 5 | Log Tables,GroupBy
-30,21,MetaData | Stage 5 | Log Tables,SelectValues
-31,21,MetaData | Stage 5 | Log Tables,MergeJoin
-32,21,MetaData | Stage 5 | Log Tables,Filter
-33,21,MetaData | Stage 5 | Log Tables,LoadFromVault
-34,21,MetaData | Stage 5 | Log Tables,GroupBy
-35,21,MetaData | Stage 5 | Log Tables,SelectValues
-36,21,MetaData | Stage 5 | Log Tables,MergeJoin
-37,21,MetaData | Stage 5 | Log Tables,Filter
-38,21,MetaData | Stage 5 | Log Tables,LoadFromVault
-39,21,MetaData | Stage 5 | Log Tables,GroupBy
-40,21,MetaData | Stage 5 | Log Tables,SelectValues
-41,21,MetaData | Stage 5 | Log Tables,MergeJoin
-42,21,MetaData | Stage 5 | Log Tables,Filter
-43,21,MetaData | Stage 5 | Log Tables,LoadFromVault
-44,21,MetaData | Stage 5 | Log Tables,GroupBy
-45,21,MetaData | Stage 5 | Log Tables,SelectValues
-46,21,MetaData | Stage 5 | Log Tables,MergeJoin
-47,21,MetaData | Stage 5 | Log Tables,Filter
-48,21,MetaData | Stage 5 | Log Tables,Constant
-49,21,MetaData | Stage 5 | Log Tables,UnionAll
-50,21,MetaData | Stage 5 | Log Tables,Filter
-51,21,MetaData | Stage 5 | Log Tables,SelectValues
-52,21,MetaData | Stage 5 | Log Tables,MergeJoin
-53,21,MetaData | Stage 5 | Log Tables,SetValueField
-54,21,MetaData | Stage 5 | Log Tables,Filter
-55,21,MetaData | Stage 5 | Log Tables,SelectValues
-56,21,MetaData | Stage 5 | Log Tables,MergeJoin
-57,21,MetaData | Stage 5 | Log Tables,SetValueField
-58,21,MetaData | Stage 5 | Log Tables,Filter
-59,21,MetaData | Stage 5 | Log Tables,SelectValues
-60,21,MetaData | Stage 5 | Log Tables,MergeJoin
-61,21,MetaData | Stage 5 | Log Tables,SetValueField
-62,21,MetaData | Stage 5 | Log Tables,Filter
-63,21,MetaData | Stage 5 | Log Tables,SelectValues
-64,21,MetaData | Stage 5 | Log Tables,MergeJoin
-65,21,MetaData | Stage 5 | Log Tables,SetValueField
-66,21,MetaData | Stage 5 | Log Tables,LoadFromVault
-67,21,MetaData | Stage 5 | Log Tables,Unique
-68,21,MetaData | Stage 5 | Log Tables,DateCalculator
-69,21,MetaData | Stage 5 | Log Tables,NumericCalculator
-70,21,MetaData | Stage 5 | Log Tables,Constant
-71,21,MetaData | Stage 5 | Log Tables,SetValueField
-72,21,MetaData | Stage 5 | Log Tables,Metadata
-73,21,MetaData | Stage 5 | Log Tables,SelectValues
-74,21,MetaData | Stage 5 | Log Tables,MergeJoin
-75,21,MetaData | Stage 5 | Log Tables,Filter
-76,21,MetaData | Stage 5 | Log Tables,SetValueField
-77,21,MetaData | Stage 5 | Log Tables,Filter
-78,21,MetaData | Stage 5 | Log Tables,UnionAll
-79,21,MetaData | Stage 5 | Log Tables,SplitColumnAction
-80,21,MetaData | Stage 5 | Log Tables,SplitColumnAction
-81,21,MetaData | Stage 5 | Log Tables,Filter
+7,9,DOMO Covid Datasets,LoadFromVault
+8,9,DOMO Covid Datasets,LoadFromVault
+9,9,DOMO Covid Datasets,ValueMapper
+10,9,DOMO Covid Datasets,DateCalculator
+11,9,DOMO Covid Datasets,NumericCalculator
+12,9,DOMO Covid Datasets,NumericCalculator
+13,9,DOMO Covid Datasets,SelectValues
+14,9,DOMO Covid Datasets,PublishToVault
+15,9,DOMO Covid Datasets,SelectValues
+16,9,DOMO Covid Datasets,NormalizeAll
+17,9,DOMO Covid Datasets,PublishToVault
+18,9,DOMO Covid Datasets,GroupBy
+19,9,DOMO Covid Datasets,WindowAction
+20,9,DOMO Covid Datasets,WindowAction
+21,9,DOMO Covid Datasets,WindowAction
+22,9,DOMO Covid Datasets,SelectValues
+23,9,DOMO Covid Datasets,Filter
+24,9,DOMO Covid Datasets,GroupBy
+25,9,DOMO Covid Datasets,WindowAction
+26,9,DOMO Covid Datasets,WindowAction
+27,9,DOMO Covid Datasets,WindowAction
+28,9,DOMO Covid Datasets,SelectValues
+29,9,DOMO Covid Datasets,DateCalculator
+30,9,DOMO Covid Datasets,NumericCalculator
+31,9,DOMO Covid Datasets,NumericCalculator
+32,9,DOMO Covid Datasets,MergeJoin
+33,9,DOMO Covid Datasets,MergeJoin
+34,9,DOMO Covid Datasets,SelectValues
+35,9,DOMO Covid Datasets,PublishToVault
+36,9,DOMO Covid Datasets,LoadFromVault
+37,9,DOMO Covid Datasets,ValueMapper
+38,9,DOMO Covid Datasets,ValueMapper
+39,9,DOMO Covid Datasets,ValueMapper
+40,9,DOMO Covid Datasets,ValueMapper
+41,9,DOMO Covid Datasets,NumericCalculator
+42,9,DOMO Covid Datasets,NumericCalculator
+43,9,DOMO Covid Datasets,DateCalculator
+44,9,DOMO Covid Datasets,ValueMapper
+45,9,DOMO Covid Datasets,ConcatFields
+46,9,DOMO Covid Datasets,GroupBy
+47,9,DOMO Covid Datasets,WindowAction
+48,9,DOMO Covid Datasets,WindowAction
+49,9,DOMO Covid Datasets,WindowAction
+50,9,DOMO Covid Datasets,ConcatFields
+51,9,DOMO Covid Datasets,MergeJoin
+52,9,DOMO Covid Datasets,SelectValues
+53,9,DOMO Covid Datasets,PublishToVault
+54,340,Demo Active Employees,LoadFromVault
+55,340,Demo Active Employees,SelectValues
+56,340,Demo Active Employees,LoadFromVault
+57,340,Demo Active Employees,Filter
+58,340,Demo Active Employees,SelectValues
+59,340,Demo Active Employees,Constant
+60,340,Demo Active Employees,Constant
+61,340,Demo Active Employees,MergeJoin
+62,340,Demo Active Employees,Filter
+63,340,Demo Active Employees,SelectValues
+64,340,Demo Active Employees,PublishToVault
+65,345,MONIT_Dataflow_Tiles_Exploded_ranked,LoadFromVault
+66,345,MONIT_Dataflow_Tiles_Exploded_ranked,WindowAction
+67,345,MONIT_Dataflow_Tiles_Exploded_ranked,PublishToVault
+68,330,CC Combined Data Flow,LoadFromVault
+69,330,CC Combined Data Flow,LoadFromVault
+70,330,CC Combined Data Flow,Metadata
+71,330,CC Combined Data Flow,UnionAll
+72,330,CC Combined Data Flow,PublishToVault
+73,18,DOMO Covid Additional Metrics Data - Period over Period,LoadFromVault
+74,18,DOMO Covid Additional Metrics Data - Period over Period,LoadFromVault
+75,18,DOMO Covid Additional Metrics Data - Period over Period,MergeJoin
+76,18,DOMO Covid Additional Metrics Data - Period over Period,PublishToVault
+77,21,MetaData | Stage 5 | Log Tables,LoadFromVault
+78,21,MetaData | Stage 5 | Log Tables,Filter
+79,21,MetaData | Stage 5 | Log Tables,Filter
+80,21,MetaData | Stage 5 | Log Tables,SetValueField
+81,21,MetaData | Stage 5 | Log Tables,UnionAll
 82,21,MetaData | Stage 5 | Log Tables,Constant
-83,21,MetaData | Stage 5 | Log Tables,Filter
-84,21,MetaData | Stage 5 | Log Tables,Constant
-85,21,MetaData | Stage 5 | Log Tables,UnionAll
-86,21,MetaData | Stage 5 | Log Tables,SelectValues
-87,21,MetaData | Stage 5 | Log Tables,LoadFromVault
+83,21,MetaData | Stage 5 | Log Tables,SetValueField
+84,21,MetaData | Stage 5 | Log Tables,Metadata
+85,21,MetaData | Stage 5 | Log Tables,SplitColumnAction
+86,21,MetaData | Stage 5 | Log Tables,SplitColumnAction
+87,21,MetaData | Stage 5 | Log Tables,ExpressionEvaluator
 88,21,MetaData | Stage 5 | Log Tables,Metadata
-89,21,MetaData | Stage 5 | Log Tables,DateCalculator
-90,21,MetaData | Stage 5 | Log Tables,NumericCalculator
-91,21,MetaData | Stage 5 | Log Tables,Constant
-92,21,MetaData | Stage 5 | Log Tables,SetValueField
-93,21,MetaData | Stage 5 | Log Tables,Metadata
-94,21,MetaData | Stage 5 | Log Tables,SelectValues
-95,21,MetaData | Stage 5 | Log Tables,MergeJoin
-96,21,MetaData | Stage 5 | Log Tables,MergeJoin
-97,21,MetaData | Stage 5 | Log Tables,SplitColumnAction
-98,21,MetaData | Stage 5 | Log Tables,SplitColumnAction
-99,21,MetaData | Stage 5 | Log Tables,Filter
-100,21,MetaData | Stage 5 | Log Tables,Constant
-101,21,MetaData | Stage 5 | Log Tables,Filter
-102,21,MetaData | Stage 5 | Log Tables,Constant
-103,21,MetaData | Stage 5 | Log Tables,UnionAll
-104,21,MetaData | Stage 5 | Log Tables,Filter
-105,21,MetaData | Stage 5 | Log Tables,GroupBy
-106,21,MetaData | Stage 5 | Log Tables,DateCalculator
-107,21,MetaData | Stage 5 | Log Tables,Metadata
-108,21,MetaData | Stage 5 | Log Tables,NumericCalculator
-109,21,MetaData | Stage 5 | Log Tables,SplitColumnAction
-110,21,MetaData | Stage 5 | Log Tables,SplitColumnAction
-111,21,MetaData | Stage 5 | Log Tables,SelectValues
-112,21,MetaData | Stage 5 | Log Tables,PublishToVault
-113,21,MetaData | Stage 5 | Log Tables,UnionAll
-114,21,MetaData | Stage 5 | Log Tables,Filter
-115,21,MetaData | Stage 5 | Log Tables,Filter
-116,21,MetaData | Stage 5 | Log Tables,ReplaceString
+89,21,MetaData | Stage 5 | Log Tables,LoadFromVault
+90,21,MetaData | Stage 5 | Log Tables,MergeJoin
+91,21,MetaData | Stage 5 | Log Tables,ReplaceString
+92,21,MetaData | Stage 5 | Log Tables,LoadFromVault
+93,21,MetaData | Stage 5 | Log Tables,SelectValues
+94,21,MetaData | Stage 5 | Log Tables,MergeJoin
+95,21,MetaData | Stage 5 | Log Tables,SelectValues
+96,21,MetaData | Stage 5 | Log Tables,PublishToVault
+97,21,MetaData | Stage 5 | Log Tables,Filter
+98,21,MetaData | Stage 5 | Log Tables,LoadFromVault
+99,21,MetaData | Stage 5 | Log Tables,GroupBy
+100,21,MetaData | Stage 5 | Log Tables,SelectValues
+101,21,MetaData | Stage 5 | Log Tables,MergeJoin
+102,21,MetaData | Stage 5 | Log Tables,Filter
+103,21,MetaData | Stage 5 | Log Tables,LoadFromVault
+104,21,MetaData | Stage 5 | Log Tables,GroupBy
+105,21,MetaData | Stage 5 | Log Tables,SelectValues
+106,21,MetaData | Stage 5 | Log Tables,MergeJoin
+107,21,MetaData | Stage 5 | Log Tables,Filter
+108,21,MetaData | Stage 5 | Log Tables,LoadFromVault
+109,21,MetaData | Stage 5 | Log Tables,GroupBy
+110,21,MetaData | Stage 5 | Log Tables,SelectValues
+111,21,MetaData | Stage 5 | Log Tables,MergeJoin
+112,21,MetaData | Stage 5 | Log Tables,Filter
+113,21,MetaData | Stage 5 | Log Tables,LoadFromVault
+114,21,MetaData | Stage 5 | Log Tables,GroupBy
+115,21,MetaData | Stage 5 | Log Tables,SelectValues
+116,21,MetaData | Stage 5 | Log Tables,MergeJoin
 117,21,MetaData | Stage 5 | Log Tables,Filter
-118,21,MetaData | Stage 5 | Log Tables,SetValueField
+118,21,MetaData | Stage 5 | Log Tables,Constant
 119,21,MetaData | Stage 5 | Log Tables,UnionAll
 120,21,MetaData | Stage 5 | Log Tables,Filter
-121,21,MetaData | Stage 5 | Log Tables,Constant
-122,21,MetaData | Stage 5 | Log Tables,Filter
-123,21,MetaData | Stage 5 | Log Tables,Constant
-124,21,MetaData | Stage 5 | Log Tables,UnionAll
+121,21,MetaData | Stage 5 | Log Tables,SelectValues
+122,21,MetaData | Stage 5 | Log Tables,MergeJoin
+123,21,MetaData | Stage 5 | Log Tables,SetValueField
+124,21,MetaData | Stage 5 | Log Tables,Filter
 125,21,MetaData | Stage 5 | Log Tables,SelectValues
-126,21,MetaData | Stage 5 | Log Tables,PublishToVault
-127,21,MetaData | Stage 5 | Log Tables,LoadFromVault
-128,21,MetaData | Stage 5 | Log Tables,Constant
-129,21,MetaData | Stage 5 | Log Tables,Constant
-130,21,MetaData | Stage 5 | Log Tables,SelectValues
-131,21,MetaData | Stage 5 | Log Tables,SelectValues
-132,21,MetaData | Stage 5 | Log Tables,UnionAll
-133,21,MetaData | Stage 5 | Log Tables,PublishToVault
-134,21,MetaData | Stage 5 | Log Tables,GroupBy
-135,21,MetaData | Stage 5 | Log Tables,Constant
-136,21,MetaData | Stage 5 | Log Tables,SelectValues
-137,21,MetaData | Stage 5 | Log Tables,MergeJoin
-138,21,MetaData | Stage 5 | Log Tables,SelectValues
-139,21,MetaData | Stage 5 | Log Tables,PublishToVault
-140,21,MetaData | Stage 5 | Log Tables,ConcatFields
-141,21,MetaData | Stage 5 | Log Tables,ConcatFields
-142,21,MetaData | Stage 5 | Log Tables,SelectValues
-143,21,MetaData | Stage 5 | Log Tables,MergeJoin
-144,21,MetaData | Stage 5 | Log Tables,GroupBy
-145,21,MetaData | Stage 5 | Log Tables,Constant
-146,21,MetaData | Stage 5 | Log Tables,SelectValues
-147,21,MetaData | Stage 5 | Log Tables,MergeJoin
-148,21,MetaData | Stage 5 | Log Tables,ReplaceString
-149,21,MetaData | Stage 5 | Log Tables,SelectValues
-150,21,MetaData | Stage 5 | Log Tables,PublishToVault
-151,131,BeastModesGovernance_01_AccumulateHistory,LoadFromVault
-152,131,BeastModesGovernance_01_AccumulateHistory,ExpressionEvaluator
-153,131,BeastModesGovernance_01_AccumulateHistory,PublishToVault
-154,37,EX01_FuzzyMatch_Master,LoadFromVault
-155,37,EX01_FuzzyMatch_Master,LoadFromVault
-156,37,EX01_FuzzyMatch_Master,Unique
-157,37,EX01_FuzzyMatch_Master,SelectValues
-158,37,EX01_FuzzyMatch_Master,Unique
-159,37,EX01_FuzzyMatch_Master,SelectValues
-160,37,EX01_FuzzyMatch_Master,PythonEngineAction
-161,37,EX01_FuzzyMatch_Master,PublishToVault
-162,185,DDX_Landing Page_DEV,LoadFromVault
-163,185,DDX_Landing Page_DEV,WindowAction
-164,185,DDX_Landing Page_DEV,ExpressionEvaluator
-165,185,DDX_Landing Page_DEV,Metadata
-166,185,DDX_Landing Page_DEV,SelectValues
-167,185,DDX_Landing Page_DEV,ExpressionEvaluator
-168,185,DDX_Landing Page_DEV,PublishToVault
-169,38,EX01_FuzzyMatch_Master_RECURSIVE,LoadFromVault
-170,38,EX01_FuzzyMatch_Master_RECURSIVE,LoadFromVault
-171,38,EX01_FuzzyMatch_Master_RECURSIVE,Unique
-172,38,EX01_FuzzyMatch_Master_RECURSIVE,LoadFromVault
-173,38,EX01_FuzzyMatch_Master_RECURSIVE,GroupBy
-174,38,EX01_FuzzyMatch_Master_RECURSIVE,MergeJoin
-175,38,EX01_FuzzyMatch_Master_RECURSIVE,Filter
-176,38,EX01_FuzzyMatch_Master_RECURSIVE,SelectValues
-177,38,EX01_FuzzyMatch_Master_RECURSIVE,Unique
-178,38,EX01_FuzzyMatch_Master_RECURSIVE,SelectValues
-179,38,EX01_FuzzyMatch_Master_RECURSIVE,PythonEngineAction
-180,38,EX01_FuzzyMatch_Master_RECURSIVE,WindowAction
-181,38,EX01_FuzzyMatch_Master_RECURSIVE,Filter
-182,38,EX01_FuzzyMatch_Master_RECURSIVE,UnionAll
-183,38,EX01_FuzzyMatch_Master_RECURSIVE,WindowAction
-184,38,EX01_FuzzyMatch_Master_RECURSIVE,Filter
-185,38,EX01_FuzzyMatch_Master_RECURSIVE,Metadata
-186,38,EX01_FuzzyMatch_Master_RECURSIVE,PublishToVault
-187,226,DDX_Landing Page_DEV,LoadFromVault
-188,226,DDX_Landing Page_DEV,WindowAction
-189,226,DDX_Landing Page_DEV,ExpressionEvaluator
-190,226,DDX_Landing Page_DEV,Metadata
-191,226,DDX_Landing Page_DEV,SelectValues
-192,226,DDX_Landing Page_DEV,ExpressionEvaluator
-193,226,DDX_Landing Page_DEV,PublishToVault
-194,124,Recursive+Partition_Demo,LoadFromVault
-195,124,Recursive+Partition_Demo,Filter
-196,124,Recursive+Partition_Demo,PublishToVault
-197,46,AW_delete,LoadFromVault
-198,46,AW_delete,ValueMapper
-199,46,AW_delete,PublishToVault
-200,81,Hash Email Hash Test,LoadFromVault
-201,81,Hash Email Hash Test,SelectValues
-202,81,Hash Email Hash Test,ExpressionEvaluator
-203,81,Hash Email Hash Test,PublishToVault
-204,75,Calendar Dates With Offsets - Magic ETL,LoadFromVault
-205,75,Calendar Dates With Offsets - Magic ETL,Constant
-206,75,Calendar Dates With Offsets - Magic ETL,DateCalculator
-207,75,Calendar Dates With Offsets - Magic ETL,Constant
-208,75,Calendar Dates With Offsets - Magic ETL,DateCalculator
-209,75,Calendar Dates With Offsets - Magic ETL,Constant
-210,75,Calendar Dates With Offsets - Magic ETL,DateCalculator
-211,75,Calendar Dates With Offsets - Magic ETL,Constant
-212,75,Calendar Dates With Offsets - Magic ETL,DateCalculator
-213,75,Calendar Dates With Offsets - Magic ETL,Constant
-214,75,Calendar Dates With Offsets - Magic ETL,DateCalculator
-215,75,Calendar Dates With Offsets - Magic ETL,Constant
-216,75,Calendar Dates With Offsets - Magic ETL,DateCalculator
-217,75,Calendar Dates With Offsets - Magic ETL,UnionAll
-218,75,Calendar Dates With Offsets - Magic ETL,SelectValues
-219,75,Calendar Dates With Offsets - Magic ETL,PublishToVault
-220,120,AT AT Formula Testing,LoadFromVault
-221,120,AT AT Formula Testing,ExpressionEvaluator
-222,120,AT AT Formula Testing,PublishToVault
-223,150,gbrown with Downtime,LoadFromVault
-224,150,gbrown with Downtime,DateCalculator
-225,150,gbrown with Downtime,Constant
-226,150,gbrown with Downtime,NumericCalculator
-227,150,gbrown with Downtime,Filter
-228,150,gbrown with Downtime,Filter
-229,150,gbrown with Downtime,Filter
-230,150,gbrown with Downtime,ExpressionEvaluator
-231,150,gbrown with Downtime,ExpressionEvaluator
-232,150,gbrown with Downtime,ExpressionEvaluator
-233,150,gbrown with Downtime,SelectValues
-234,150,gbrown with Downtime,SelectValues
-235,150,gbrown with Downtime,SelectValues
-236,150,gbrown with Downtime,UnionAll
-237,150,gbrown with Downtime,PublishToVault
-238,42,user046467 v2 with calculations,LoadFromVault
-239,42,user046467 v2 with calculations,WindowAction
-240,42,user046467 v2 with calculations,ExpressionEvaluator
-241,42,user046467 v2 with calculations,PublishToVault
-242,156,ap1999 rolling StdDev,LoadFromVault
-243,156,ap1999 rolling StdDev,SelectValues
-244,156,ap1999 rolling StdDev,Constant
-245,156,ap1999 rolling StdDev,Constant
-246,156,ap1999 rolling StdDev,MergeJoin
-247,156,ap1999 rolling StdDev,Filter
-248,156,ap1999 rolling StdDev,GroupBy
-249,156,ap1999 rolling StdDev,PublishToVault
-250,56,Formula Example for Robyn,LoadFromVault
-251,56,Formula Example for Robyn,ExpressionEvaluator
-252,56,Formula Example for Robyn,PublishToVault
-253,61,gov_datasetEfficiency,LoadFromVault
-254,61,gov_datasetEfficiency,SelectValues
-255,61,gov_datasetEfficiency,Constant
-256,61,gov_datasetEfficiency,LoadFromVault
-257,61,gov_datasetEfficiency,SelectValues
-258,61,gov_datasetEfficiency,Unique
-259,61,gov_datasetEfficiency,Constant
-260,61,gov_datasetEfficiency,LoadFromVault
-261,61,gov_datasetEfficiency,SelectValues
-262,61,gov_datasetEfficiency,Filter
-263,61,gov_datasetEfficiency,Filter
-264,61,gov_datasetEfficiency,SelectValues
-265,61,gov_datasetEfficiency,Filter
-266,61,gov_datasetEfficiency,SelectValues
-267,61,gov_datasetEfficiency,MergeJoin
-268,61,gov_datasetEfficiency,Filter
-269,61,gov_datasetEfficiency,ExpressionEvaluator
-270,61,gov_datasetEfficiency,UnionAll
-271,61,gov_datasetEfficiency,Constant
-272,61,gov_datasetEfficiency,LoadFromVault
-273,61,gov_datasetEfficiency,SelectValues
-274,61,gov_datasetEfficiency,Filter
-275,61,gov_datasetEfficiency,Filter
-276,61,gov_datasetEfficiency,MergeJoin
-277,61,gov_datasetEfficiency,Constant
-278,61,gov_datasetEfficiency,Filter
-279,61,gov_datasetEfficiency,SelectValues
-280,61,gov_datasetEfficiency,MergeJoin
-281,61,gov_datasetEfficiency,Constant
-282,61,gov_datasetEfficiency,UnionAll
-283,61,gov_datasetEfficiency,PublishToVault
-284,9,DOMO Covid Datasets,LoadFromVault
-285,9,DOMO Covid Datasets,LoadFromVault
-286,9,DOMO Covid Datasets,ValueMapper
-287,9,DOMO Covid Datasets,DateCalculator
-288,9,DOMO Covid Datasets,NumericCalculator
-289,9,DOMO Covid Datasets,NumericCalculator
-290,9,DOMO Covid Datasets,SelectValues
-291,9,DOMO Covid Datasets,PublishToVault
-292,9,DOMO Covid Datasets,SelectValues
-293,9,DOMO Covid Datasets,NormalizeAll
-294,9,DOMO Covid Datasets,PublishToVault
-295,9,DOMO Covid Datasets,GroupBy
-296,9,DOMO Covid Datasets,WindowAction
-297,9,DOMO Covid Datasets,WindowAction
-298,9,DOMO Covid Datasets,WindowAction
-299,9,DOMO Covid Datasets,SelectValues
-300,9,DOMO Covid Datasets,Filter
-301,9,DOMO Covid Datasets,GroupBy
-302,9,DOMO Covid Datasets,WindowAction
-303,9,DOMO Covid Datasets,WindowAction
-304,9,DOMO Covid Datasets,WindowAction
-305,9,DOMO Covid Datasets,SelectValues
-306,9,DOMO Covid Datasets,DateCalculator
-307,9,DOMO Covid Datasets,NumericCalculator
-308,9,DOMO Covid Datasets,NumericCalculator
-309,9,DOMO Covid Datasets,MergeJoin
-310,9,DOMO Covid Datasets,MergeJoin
-311,9,DOMO Covid Datasets,SelectValues
-312,9,DOMO Covid Datasets,PublishToVault
-313,9,DOMO Covid Datasets,LoadFromVault
-314,9,DOMO Covid Datasets,ValueMapper
-315,9,DOMO Covid Datasets,ValueMapper
-316,9,DOMO Covid Datasets,ValueMapper
-317,9,DOMO Covid Datasets,ValueMapper
-318,9,DOMO Covid Datasets,NumericCalculator
-319,9,DOMO Covid Datasets,NumericCalculator
-320,9,DOMO Covid Datasets,DateCalculator
-321,9,DOMO Covid Datasets,ValueMapper
-322,9,DOMO Covid Datasets,ConcatFields
-323,9,DOMO Covid Datasets,GroupBy
-324,9,DOMO Covid Datasets,WindowAction
-325,9,DOMO Covid Datasets,WindowAction
-326,9,DOMO Covid Datasets,WindowAction
-327,9,DOMO Covid Datasets,ConcatFields
-328,9,DOMO Covid Datasets,MergeJoin
-329,9,DOMO Covid Datasets,SelectValues
-330,9,DOMO Covid Datasets,PublishToVault
-331,23,Simple Sample Set_Rolling Averages,LoadFromVault
-332,23,Simple Sample Set_Rolling Averages,Constant
-333,23,Simple Sample Set_Rolling Averages,SetValueField
-334,23,Simple Sample Set_Rolling Averages,Metadata
-335,23,Simple Sample Set_Rolling Averages,GroupBy
-336,23,Simple Sample Set_Rolling Averages,LoadFromVault
-337,23,Simple Sample Set_Rolling Averages,SelectValues
-338,23,Simple Sample Set_Rolling Averages,Constant
-339,23,Simple Sample Set_Rolling Averages,MergeJoin
-340,23,Simple Sample Set_Rolling Averages,Filter
-341,23,Simple Sample Set_Rolling Averages,ConcatFields
-342,23,Simple Sample Set_Rolling Averages,ConcatFields
-343,23,Simple Sample Set_Rolling Averages,GroupBy
-344,23,Simple Sample Set_Rolling Averages,MergeJoin
-345,23,Simple Sample Set_Rolling Averages,ConcatFields
-346,23,Simple Sample Set_Rolling Averages,MergeJoin
-347,23,Simple Sample Set_Rolling Averages,GroupBy
-348,23,Simple Sample Set_Rolling Averages,WindowAction
-349,23,Simple Sample Set_Rolling Averages,ConcatFields
-350,23,Simple Sample Set_Rolling Averages,MergeJoin
-351,23,Simple Sample Set_Rolling Averages,PublishToVault
-352,23,Simple Sample Set_Rolling Averages,Filter
-353,23,Simple Sample Set_Rolling Averages,PublishToVault
-354,53,ONYX_AvgOfAnAvg_DASH,LoadFromVault
-355,53,ONYX_AvgOfAnAvg_DASH,ExpressionEvaluator
-356,53,ONYX_AvgOfAnAvg_DASH,GroupBy
-357,53,ONYX_AvgOfAnAvg_DASH,ExpressionEvaluator
-358,53,ONYX_AvgOfAnAvg_DASH,GroupBy
-359,53,ONYX_AvgOfAnAvg_DASH,ExpressionEvaluator
-360,53,ONYX_AvgOfAnAvg_DASH,UnionAll
-361,53,ONYX_AvgOfAnAvg_DASH,PublishToVault
-362,40,test_upsert,LoadFromVault
-363,40,test_upsert,Unique
-364,40,test_upsert,WindowAction
-365,40,test_upsert,PublishToVault
-366,69,Copy of gov_datasets_INT,LoadFromVault
-367,69,Copy of gov_datasets_INT,ExpressionEvaluator
-368,69,Copy of gov_datasets_INT,PublishToVault
-369,76,Running Total for Ayy Count,LoadFromVault
-370,76,Running Total for Ayy Count,Constant
-371,76,Running Total for Ayy Count,Filter
-372,76,Running Total for Ayy Count,Metadata
-373,76,Running Total for Ayy Count,DateCalculator
-374,76,Running Total for Ayy Count,TextFormatting
-375,76,Running Total for Ayy Count,WindowAction
-376,76,Running Total for Ayy Count,PublishToVault
-377,80,mhouston ETL,LoadFromVault
-378,80,mhouston ETL,Denormaliser
-379,80,mhouston ETL,ExpressionEvaluator
-380,80,mhouston ETL,PublishToVault
-381,119,New ETL Transform,LoadFromVault
-382,119,New ETL Transform,MLInferenceAction
-383,119,New ETL Transform,PublishToVault
-384,119,New ETL Transform,SelectValues
-385,119,New ETL Transform,MLInferenceAction
-386,119,New ETL Transform,PublishToVault
-387,112,Time Zone Test,LoadFromVault
-388,112,Time Zone Test,ExpressionEvaluator
-389,112,Time Zone Test,DateCalculator
-390,112,Time Zone Test,ExpressionEvaluator
-391,112,Time Zone Test,PublishToVault
-392,30,copy of super simple sample,LoadFromVault
-393,30,copy of super simple sample,ExpressionEvaluator
-394,30,copy of super simple sample,PublishToVault
-395,55,DM | Forecast Training,LoadFromVault
-396,55,DM | Forecast Training,DateCalculator
-397,55,DM | Forecast Training,UserDefinedAction
-398,55,DM | Forecast Training,PublishToVault
-399,114,Append Dataflow - CLI (FAST),LoadFromVault
-400,114,Append Dataflow - CLI (FAST),PublishToVault
-401,71,Employment Status,LoadFromVault
-402,71,Employment Status,SelectValues
-403,71,Employment Status,ExpressionEvaluator
-404,71,Employment Status,LoadFromVault
-405,71,Employment Status,ExpressionEvaluator
-406,71,Employment Status,Constant
-407,71,Employment Status,GroupBy
-408,71,Employment Status,MergeJoin
-409,71,Employment Status,Filter
-410,71,Employment Status,ExpressionEvaluator
-411,71,Employment Status,SelectValues
-412,71,Employment Status,PublishToVault
-413,96,Course Builder Demo,LoadFromVault
-414,96,Course Builder Demo,LoadFromVault
-415,96,Course Builder Demo,SelectValues
-416,96,Course Builder Demo,ExpressionEvaluator
-417,96,Course Builder Demo,Filter
-418,96,Course Builder Demo,GroupBy
-419,96,Course Builder Demo,Metadata
-420,96,Course Builder Demo,MergeJoin
-421,96,Course Builder Demo,ExpressionEvaluator
-422,96,Course Builder Demo,LoadFromVault
-423,96,Course Builder Demo,Filter
-424,96,Course Builder Demo,SelectValues
-425,96,Course Builder Demo,MergeJoin
-426,96,Course Builder Demo,PublishToVault
-427,96,Course Builder Demo,ExpressionEvaluator
-428,96,Course Builder Demo,SelectValues
-429,96,Course Builder Demo,GroupBy
-430,96,Course Builder Demo,MergeJoin
-431,96,Course Builder Demo,Filter
-432,96,Course Builder Demo,MergeJoin
-433,96,Course Builder Demo,MergeJoin
-434,96,Course Builder Demo,PublishToVault
-435,96,Course Builder Demo,Filter
-436,96,Course Builder Demo,ExpressionEvaluator
-437,96,Course Builder Demo,SelectValues
-438,96,Course Builder Demo,Filter
-439,96,Course Builder Demo,ExpressionEvaluator
-440,96,Course Builder Demo,SelectValues
-441,96,Course Builder Demo,Filter
-442,96,Course Builder Demo,ExpressionEvaluator
-443,96,Course Builder Demo,SelectValues
-444,96,Course Builder Demo,MergeJoin
-445,96,Course Builder Demo,ExpressionEvaluator
-446,96,Course Builder Demo,Metadata
-447,96,Course Builder Demo,Filter
-448,96,Course Builder Demo,ExpressionEvaluator
-449,96,Course Builder Demo,SelectValues
-450,96,Course Builder Demo,MergeJoin
-451,96,Course Builder Demo,ExpressionEvaluator
-452,96,Course Builder Demo,Metadata
-453,96,Course Builder Demo,MergeJoin
-454,96,Course Builder Demo,ExpressionEvaluator
-455,96,Course Builder Demo,Metadata
-456,96,Course Builder Demo,MergeJoin
-457,96,Course Builder Demo,ExpressionEvaluator
-458,96,Course Builder Demo,SelectValues
-459,96,Course Builder Demo,ExpressionEvaluator
-460,96,Course Builder Demo,Unique
-461,96,Course Builder Demo,PublishToVault
-462,96,Course Builder Demo,PublishToVault
-463,96,Course Builder Demo,LoadFromVault
-464,96,Course Builder Demo,SelectValues
-465,96,Course Builder Demo,Unique
-466,96,Course Builder Demo,MergeJoin
-467,96,Course Builder Demo,Filter
-468,96,Course Builder Demo,ExpressionEvaluator
-469,96,Course Builder Demo,SelectValues
-470,96,Course Builder Demo,GroupBy
-471,96,Course Builder Demo,MergeJoin
-472,96,Course Builder Demo,Filter
-473,96,Course Builder Demo,Unique
-474,96,Course Builder Demo,GroupBy
-475,96,Course Builder Demo,MergeJoin
-476,96,Course Builder Demo,Filter
-477,96,Course Builder Demo,Metadata
-478,96,Course Builder Demo,PublishToVault
-479,96,Course Builder Demo,Filter
-480,96,Course Builder Demo,ExpressionEvaluator
-481,96,Course Builder Demo,SelectValues
-482,96,Course Builder Demo,Unique
-483,96,Course Builder Demo,PublishToVault
-484,102,JW_fcst,LoadFromVault
-485,102,JW_fcst,GroupBy
-486,102,JW_fcst,UserDefinedAction
-487,102,JW_fcst,ExpressionEvaluator
-488,102,JW_fcst,Filter
-489,102,JW_fcst,PublishToVault
-490,102,JW_fcst,GroupBy
-491,102,JW_fcst,Filter
-492,102,JW_fcst,UserDefinedAction
-493,102,JW_fcst,Filter
-494,102,JW_fcst,UserDefinedAction
-495,102,JW_fcst,ExpressionEvaluator
-496,102,JW_fcst,ExpressionEvaluator
-497,102,JW_fcst,UnionAll
-498,102,JW_fcst,PublishToVault
-499,102,JW_fcst,GroupBy
-500,102,JW_fcst,ExpressionEvaluator
-501,102,JW_fcst,Filter
-502,102,JW_fcst,Filter
-503,102,JW_fcst,UserDefinedAction
-504,102,JW_fcst,Filter
-505,102,JW_fcst,ExpressionEvaluator
-506,102,JW_fcst,Filter
-507,102,JW_fcst,Filter
-508,102,JW_fcst,UserDefinedAction
-509,102,JW_fcst,UserDefinedAction
-510,102,JW_fcst,Filter
-511,102,JW_fcst,UserDefinedAction
-512,102,JW_fcst,ExpressionEvaluator
-513,102,JW_fcst,Filter
-514,102,JW_fcst,Filter
-515,102,JW_fcst,UserDefinedAction
-516,102,JW_fcst,Filter
-517,102,JW_fcst,UserDefinedAction
-518,102,JW_fcst,ExpressionEvaluator
-519,102,JW_fcst,ExpressionEvaluator
-520,102,JW_fcst,ExpressionEvaluator
-521,102,JW_fcst,ExpressionEvaluator
-522,102,JW_fcst,Filter
-523,102,JW_fcst,Filter
-524,102,JW_fcst,UserDefinedAction
-525,102,JW_fcst,ExpressionEvaluator
-526,102,JW_fcst,UnionAll
-527,102,JW_fcst,SelectValues
-528,102,JW_fcst,ExpressionEvaluator
-529,102,JW_fcst,ExpressionEvaluator
-530,102,JW_fcst,ExpressionEvaluator
-531,102,JW_fcst,ExpressionEvaluator
-532,102,JW_fcst,Filter
-533,102,JW_fcst,UserDefinedAction
-534,102,JW_fcst,ExpressionEvaluator
-535,102,JW_fcst,UnionAll
-536,102,JW_fcst,ExpressionEvaluator
-537,102,JW_fcst,UnionAll
-538,102,JW_fcst,SelectValues
-539,102,JW_fcst,Filter
-540,102,JW_fcst,MergeJoin
-541,102,JW_fcst,WindowAction
-542,102,JW_fcst,ExpressionEvaluator
-543,102,JW_fcst,UnionAll
-544,102,JW_fcst,PublishToVault
-545,102,JW_fcst,GroupBy
-546,102,JW_fcst,ExpressionEvaluator
-547,102,JW_fcst,SelectValues
-548,102,JW_fcst,Filter
-549,102,JW_fcst,UserDefinedAction
-550,102,JW_fcst,SelectValues
-551,102,JW_fcst,Filter
-552,102,JW_fcst,MergeJoin
-553,102,JW_fcst,ExpressionEvaluator
-554,102,JW_fcst,Metadata
-555,102,JW_fcst,UnionAll
-556,102,JW_fcst,PublishToVault
-557,77,Governance_Dynamic Governance_DEV,LoadFromVault
-558,77,Governance_Dynamic Governance_DEV,LoadFromVault
-559,77,Governance_Dynamic Governance_DEV,SelectValues
-560,77,Governance_Dynamic Governance_DEV,LoadFromVault
-561,77,Governance_Dynamic Governance_DEV,SelectValues
-562,77,Governance_Dynamic Governance_DEV,MergeJoin
-563,77,Governance_Dynamic Governance_DEV,MergeJoin
-564,77,Governance_Dynamic Governance_DEV,LoadFromVault
-565,77,Governance_Dynamic Governance_DEV,SelectValues
-566,77,Governance_Dynamic Governance_DEV,MergeJoin
-567,77,Governance_Dynamic Governance_DEV,LoadFromVault
-568,77,Governance_Dynamic Governance_DEV,SelectValues
-569,77,Governance_Dynamic Governance_DEV,MergeJoin
-570,77,Governance_Dynamic Governance_DEV,PublishToVault
-571,308,New ETL Transform,LoadFromVault
-572,308,New ETL Transform,ExpressionEvaluator
-573,308,New ETL Transform,WindowAction
-574,308,New ETL Transform,Unique
-575,308,New ETL Transform,GroupBy
-576,308,New ETL Transform,PublishToVault
-577,340,Demo Active Employees,LoadFromVault
-578,340,Demo Active Employees,SelectValues
-579,340,Demo Active Employees,LoadFromVault
-580,340,Demo Active Employees,Filter
-581,340,Demo Active Employees,SelectValues
-582,340,Demo Active Employees,Constant
-583,340,Demo Active Employees,Constant
-584,340,Demo Active Employees,MergeJoin
-585,340,Demo Active Employees,Filter
-586,340,Demo Active Employees,SelectValues
-587,340,Demo Active Employees,PublishToVault
-588,188,Dates with Random Numbers Append Timestamp,LoadFromVault
-589,188,Dates with Random Numbers Append Timestamp,ExpressionEvaluator
-590,188,Dates with Random Numbers Append Timestamp,PublishToVault
-591,20,Super Simple Sample Set_with Manual Updates,LoadFromVault
-592,20,Super Simple Sample Set_with Manual Updates,LoadFromVault
-593,20,Super Simple Sample Set_with Manual Updates,GroupBy
-594,20,Super Simple Sample Set_with Manual Updates,GroupBy
-595,20,Super Simple Sample Set_with Manual Updates,MergeJoin
-596,20,Super Simple Sample Set_with Manual Updates,Filter
-597,20,Super Simple Sample Set_with Manual Updates,MergeJoin
-598,20,Super Simple Sample Set_with Manual Updates,Filter
-599,20,Super Simple Sample Set_with Manual Updates,MergeJoin
-600,20,Super Simple Sample Set_with Manual Updates,UnionAll
-601,20,Super Simple Sample Set_with Manual Updates,PublishToVault
-602,27,JW_Simple Sample Set_Rolling Averages,LoadFromVault
-603,27,JW_Simple Sample Set_Rolling Averages,ExpressionEvaluator
-604,27,JW_Simple Sample Set_Rolling Averages,LoadFromVault
-605,27,JW_Simple Sample Set_Rolling Averages,MergeJoin
-606,27,JW_Simple Sample Set_Rolling Averages,ExpressionEvaluator
-607,27,JW_Simple Sample Set_Rolling Averages,PublishToVault
-608,27,JW_Simple Sample Set_Rolling Averages,SelectValues
-609,27,JW_Simple Sample Set_Rolling Averages,Filter
-610,27,JW_Simple Sample Set_Rolling Averages,WindowAction
-611,48,DW Calendar Demo,LoadFromVault
-612,48,DW Calendar Demo,LoadFromVault
-613,48,DW Calendar Demo,Filter
-614,48,DW Calendar Demo,ExpressionEvaluator
-615,48,DW Calendar Demo,MergeJoin
-616,48,DW Calendar Demo,ExpressionEvaluator
-617,48,DW Calendar Demo,Filter
-618,48,DW Calendar Demo,UnionAll
-619,48,DW Calendar Demo,Metadata
-620,48,DW Calendar Demo,PublishToVault
-621,48,DW Calendar Demo,LoadFromVault
-622,48,DW Calendar Demo,ExpressionEvaluator
-623,48,DW Calendar Demo,MergeJoin
-624,48,DW Calendar Demo,ExpressionEvaluator
-625,48,DW Calendar Demo,PublishToVault
-626,58,New ETL Transform,LoadFromVault
-627,58,New ETL Transform,SelectValues
-628,58,New ETL Transform,Filter
-629,58,New ETL Transform,SelectValues
-630,58,New ETL Transform,SelectValues
-631,58,New ETL Transform,SelectValues
-632,58,New ETL Transform,UnionAll
-633,58,New ETL Transform,WindowAction
-634,58,New ETL Transform,PublishToVault
-635,62,gov_datasets_INT,LoadFromVault
-636,62,gov_datasets_INT,ExpressionEvaluator
-637,62,gov_datasets_INT,PublishToVault
-638,95,dojoChapman,LoadFromVault
-639,95,dojoChapman,LoadFromVault
-640,95,dojoChapman,ExpressionEvaluator
-641,95,dojoChapman,Metadata
-642,95,dojoChapman,SelectValues
-643,95,dojoChapman,SelectValues
-644,95,dojoChapman,MergeJoin
-645,95,dojoChapman,ExpressionEvaluator
-646,95,dojoChapman,SelectValues
-647,95,dojoChapman,MergeJoin
-648,95,dojoChapman,WindowAction
-649,95,dojoChapman,ExpressionEvaluator
-650,95,dojoChapman,PublishToVault
-651,101,jw_address_ranked,LoadFromVault
-652,101,jw_address_ranked,WindowAction
-653,101,jw_address_ranked,PublishToVault
-654,125,old school recursive_without partition,LoadFromVault
-655,125,old school recursive_without partition,Filter
-656,125,old school recursive_without partition,LoadFromVault
-657,125,old school recursive_without partition,UnionAll
-658,125,old school recursive_without partition,PublishToVault
-659,28,Contribution Effort - user052846,LoadFromVault
-660,28,Contribution Effort - user052846,WindowAction
-661,28,Contribution Effort - user052846,WindowAction
-662,28,Contribution Effort - user052846,Constant
-663,28,Contribution Effort - user052846,Constant
-664,28,Contribution Effort - user052846,GroupBy
-665,28,Contribution Effort - user052846,GroupBy
-666,28,Contribution Effort - user052846,MergeJoin
-667,28,Contribution Effort - user052846,NumericCalculator
-668,28,Contribution Effort - user052846,MergeJoin
-669,28,Contribution Effort - user052846,NumericCalculator
-670,28,Contribution Effort - user052846,MergeJoin
-671,28,Contribution Effort - user052846,PublishToVault
-672,132,BeastModesGovernance_02_ChangeReport,LoadFromVault
-673,132,BeastModesGovernance_02_ChangeReport,WindowAction
-674,132,BeastModesGovernance_02_ChangeReport,SelectValues
-675,132,BeastModesGovernance_02_ChangeReport,ExpressionEvaluator
-676,132,BeastModesGovernance_02_ChangeReport,PublishToVault
-677,161,New ETL Transform,LoadFromVault
-678,161,New ETL Transform,MLInferenceAction
-679,161,New ETL Transform,PublishToVault
-680,11,MetaData_Stage 3_Cards and Pages,LoadFromVault
-681,11,MetaData_Stage 3_Cards and Pages,LoadFromVault
-682,11,MetaData_Stage 3_Cards and Pages,Metadata
-683,11,MetaData_Stage 3_Cards and Pages,SelectValues
-684,11,MetaData_Stage 3_Cards and Pages,MergeJoin
-685,11,MetaData_Stage 3_Cards and Pages,LoadFromVault
-686,11,MetaData_Stage 3_Cards and Pages,LoadFromVault
-687,11,MetaData_Stage 3_Cards and Pages,SelectValues
-688,11,MetaData_Stage 3_Cards and Pages,GroupBy
-689,11,MetaData_Stage 3_Cards and Pages,GroupBy
-690,11,MetaData_Stage 3_Cards and Pages,PublishToVault
-691,11,MetaData_Stage 3_Cards and Pages,PublishToVault
-692,11,MetaData_Stage 3_Cards and Pages,PublishToVault
-693,107,BVK | User Group Meetings,LoadFromVault
-694,107,BVK | User Group Meetings,Filter
-695,107,BVK | User Group Meetings,PublishToVault
-696,186,Ranked Page Views by User Access,LoadFromVault
-697,186,Ranked Page Views by User Access,GroupBy
-698,186,Ranked Page Views by User Access,LoadFromVault
-699,186,Ranked Page Views by User Access,Filter
-700,186,Ranked Page Views by User Access,SelectValues
-701,186,Ranked Page Views by User Access,Constant
-702,186,Ranked Page Views by User Access,LoadFromVault
-703,186,Ranked Page Views by User Access,SelectValues
-704,186,Ranked Page Views by User Access,Filter
-705,186,Ranked Page Views by User Access,SelectValues
-706,186,Ranked Page Views by User Access,MergeJoin
-707,186,Ranked Page Views by User Access,SelectValues
-708,186,Ranked Page Views by User Access,UnionAll
-709,186,Ranked Page Views by User Access,Unique
-710,186,Ranked Page Views by User Access,MergeJoin
-711,186,Ranked Page Views by User Access,WindowAction
-712,186,Ranked Page Views by User Access,LoadFromVault
-713,186,Ranked Page Views by User Access,SelectValues
-714,186,Ranked Page Views by User Access,MergeJoin
-715,186,Ranked Page Views by User Access,PublishToVault
-716,22,MetaData | Stage 1 | People-Project-Buzz-PDP,LoadFromVault
-717,22,MetaData | Stage 1 | People-Project-Buzz-PDP,LoadFromVault
-718,22,MetaData | Stage 1 | People-Project-Buzz-PDP,LoadFromVault
-719,22,MetaData | Stage 1 | People-Project-Buzz-PDP,LoadFromVault
-720,22,MetaData | Stage 1 | People-Project-Buzz-PDP,LoadFromVault
-721,22,MetaData | Stage 1 | People-Project-Buzz-PDP,LoadFromVault
-722,22,MetaData | Stage 1 | People-Project-Buzz-PDP,Constant
-723,22,MetaData | Stage 1 | People-Project-Buzz-PDP,Constant
-724,22,MetaData | Stage 1 | People-Project-Buzz-PDP,ConcatFields
-725,22,MetaData | Stage 1 | People-Project-Buzz-PDP,GroupBy
-726,22,MetaData | Stage 1 | People-Project-Buzz-PDP,SelectValues
-727,22,MetaData | Stage 1 | People-Project-Buzz-PDP,MergeJoin
-728,22,MetaData | Stage 1 | People-Project-Buzz-PDP,Filter
-729,22,MetaData | Stage 1 | People-Project-Buzz-PDP,Filter
-730,22,MetaData | Stage 1 | People-Project-Buzz-PDP,SetValueField
-731,22,MetaData | Stage 1 | People-Project-Buzz-PDP,ValueMapper
-732,22,MetaData | Stage 1 | People-Project-Buzz-PDP,UnionAll
-733,22,MetaData | Stage 1 | People-Project-Buzz-PDP,SplitColumnAction
-734,22,MetaData | Stage 1 | People-Project-Buzz-PDP,DateCalculator
-735,22,MetaData | Stage 1 | People-Project-Buzz-PDP,ReplaceString
-736,22,MetaData | Stage 1 | People-Project-Buzz-PDP,ValueMapper
-737,22,MetaData | Stage 1 | People-Project-Buzz-PDP,SelectValues
-738,22,MetaData | Stage 1 | People-Project-Buzz-PDP,Constant
-739,22,MetaData | Stage 1 | People-Project-Buzz-PDP,PublishToVault
-740,22,MetaData | Stage 1 | People-Project-Buzz-PDP,Constant
-741,22,MetaData | Stage 1 | People-Project-Buzz-PDP,PublishToVault
-742,22,MetaData | Stage 1 | People-Project-Buzz-PDP,Constant
-743,22,MetaData | Stage 1 | People-Project-Buzz-PDP,PublishToVault
-744,22,MetaData | Stage 1 | People-Project-Buzz-PDP,Constant
-745,22,MetaData | Stage 1 | People-Project-Buzz-PDP,PublishToVault
-746,22,MetaData | Stage 1 | People-Project-Buzz-PDP,LoadFromVault
-747,22,MetaData | Stage 1 | People-Project-Buzz-PDP,LoadFromVault
-748,22,MetaData | Stage 1 | People-Project-Buzz-PDP,Constant
-749,22,MetaData | Stage 1 | People-Project-Buzz-PDP,SetValueField
-750,22,MetaData | Stage 1 | People-Project-Buzz-PDP,Metadata
-751,22,MetaData | Stage 1 | People-Project-Buzz-PDP,DateCalculator
-752,22,MetaData | Stage 1 | People-Project-Buzz-PDP,SelectValues
-753,22,MetaData | Stage 1 | People-Project-Buzz-PDP,SelectValues
-754,22,MetaData | Stage 1 | People-Project-Buzz-PDP,MergeJoin
-755,22,MetaData | Stage 1 | People-Project-Buzz-PDP,SelectValues
-756,22,MetaData | Stage 1 | People-Project-Buzz-PDP,MergeJoin
-757,22,MetaData | Stage 1 | People-Project-Buzz-PDP,Constant
-758,22,MetaData | Stage 1 | People-Project-Buzz-PDP,Constant
-759,22,MetaData | Stage 1 | People-Project-Buzz-PDP,Constant
-760,22,MetaData | Stage 1 | People-Project-Buzz-PDP,PublishToVault
-761,22,MetaData | Stage 1 | People-Project-Buzz-PDP,PublishToVault
-762,22,MetaData | Stage 1 | People-Project-Buzz-PDP,PublishToVault
-763,39,Sim Data ML Inference,LoadFromVault
-764,39,Sim Data ML Inference,MLInferenceAction
-765,39,Sim Data ML Inference,PublishToVault
-766,63,major domo recert_CombindedSalesData_ST,LoadFromVault
-767,63,major domo recert_CombindedSalesData_ST,LoadFromVault
-768,63,major domo recert_CombindedSalesData_ST,LoadFromVault
-769,63,major domo recert_CombindedSalesData_ST,SelectValues
-770,63,major domo recert_CombindedSalesData_ST,SelectValues
-771,63,major domo recert_CombindedSalesData_ST,SelectValues
-772,63,major domo recert_CombindedSalesData_ST,UnionAll
-773,63,major domo recert_CombindedSalesData_ST,PublishToVault
-774,65,major domo recert_DomainVisits_ST,LoadFromVault
-775,65,major domo recert_DomainVisits_ST,Constant
-776,65,major domo recert_DomainVisits_ST,SetValueField
-777,65,major domo recert_DomainVisits_ST,ReplaceString
-778,65,major domo recert_DomainVisits_ST,PublishToVault
-779,67,jbroby - stacked,LoadFromVault
-780,67,jbroby - stacked,LoadFromVault
-781,67,jbroby - stacked,SelectValues
-782,67,jbroby - stacked,Normalizer
-783,67,jbroby - stacked,Normalizer
-784,67,jbroby - stacked,ConcatFields
-785,67,jbroby - stacked,SelectValues
-786,67,jbroby - stacked,UnionAll
-787,67,jbroby - stacked,PublishToVault
-788,79,CTBH running 30,LoadFromVault
-789,79,CTBH running 30,SelectValues
-790,79,CTBH running 30,WindowAction
-791,79,CTBH running 30,DateCalculator
-792,79,CTBH running 30,ExpressionEvaluator
-793,79,CTBH running 30,WindowAction
-794,79,CTBH running 30,ExpressionEvaluator
-795,79,CTBH running 30,WindowAction
-796,79,CTBH running 30,ExpressionEvaluator
-797,79,CTBH running 30,WindowAction
-798,79,CTBH running 30,SelectValues
-799,79,CTBH running 30,PublishToVault
-800,45,AJ | Aggregated Sales ETL,LoadFromVault
-801,45,AJ | Aggregated Sales ETL,DateCalculator
-802,45,AJ | Aggregated Sales ETL,GroupBy
-803,45,AJ | Aggregated Sales ETL,Metadata
-804,45,AJ | Aggregated Sales ETL,LoadFromVault
-805,45,AJ | Aggregated Sales ETL,UnionAll
-806,45,AJ | Aggregated Sales ETL,PublishToVault
-807,45,AJ | Aggregated Sales ETL,PublishToVault
-808,82,New ETL Transform,LoadFromVault
-809,82,New ETL Transform,GroupBy
-810,82,New ETL Transform,WindowAction
-811,82,New ETL Transform,ExpressionEvaluator
-812,82,New ETL Transform,MergeJoin
-813,82,New ETL Transform,ExpressionEvaluator
-814,82,New ETL Transform,Metadata
-815,82,New ETL Transform,PublishToVault
-816,92,[Alerts Demo June 22] Pipeline Validation,LoadFromVault
-817,92,[Alerts Demo June 22] Pipeline Validation,LoadFromVault
-818,92,[Alerts Demo June 22] Pipeline Validation,ExpressionEvaluator
-819,92,[Alerts Demo June 22] Pipeline Validation,ExpressionEvaluator
-820,92,[Alerts Demo June 22] Pipeline Validation,GroupBy
-821,92,[Alerts Demo June 22] Pipeline Validation,GroupBy
-822,92,[Alerts Demo June 22] Pipeline Validation,SelectValues
-823,92,[Alerts Demo June 22] Pipeline Validation,MergeJoin
-824,92,[Alerts Demo June 22] Pipeline Validation,ExpressionEvaluator
-825,92,[Alerts Demo June 22] Pipeline Validation,Filter
-826,92,[Alerts Demo June 22] Pipeline Validation,Constant
-827,92,[Alerts Demo June 22] Pipeline Validation,PublishToVault
-828,92,[Alerts Demo June 22] Pipeline Validation,Metadata
-829,92,[Alerts Demo June 22] Pipeline Validation,SelectValues
-830,92,[Alerts Demo June 22] Pipeline Validation,LoadFromVault
-831,92,[Alerts Demo June 22] Pipeline Validation,Filter
-832,92,[Alerts Demo June 22] Pipeline Validation,MergeJoin
-833,92,[Alerts Demo June 22] Pipeline Validation,Filter
-834,92,[Alerts Demo June 22] Pipeline Validation,SelectValues
-835,92,[Alerts Demo June 22] Pipeline Validation,MergeJoin
-836,92,[Alerts Demo June 22] Pipeline Validation,ExpressionEvaluator
-837,92,[Alerts Demo June 22] Pipeline Validation,SelectValues
-838,92,[Alerts Demo June 22] Pipeline Validation,Filter
-839,92,[Alerts Demo June 22] Pipeline Validation,SelectValues
-840,92,[Alerts Demo June 22] Pipeline Validation,UnionAll
-841,92,[Alerts Demo June 22] Pipeline Validation,PublishToVault
-842,98,Dojo Goodeman ETL,LoadFromVault
-843,98,Dojo Goodeman ETL,WindowAction
-844,98,Dojo Goodeman ETL,ExpressionEvaluator
-845,98,Dojo Goodeman ETL,PublishToVault
-846,106,Visual Vocabulary | Pris Lam | Survey ETL,LoadFromVault
-847,106,Visual Vocabulary | Pris Lam | Survey ETL,GroupBy
-848,106,Visual Vocabulary | Pris Lam | Survey ETL,MergeJoin
-849,106,Visual Vocabulary | Pris Lam | Survey ETL,ExpressionEvaluator
-850,106,Visual Vocabulary | Pris Lam | Survey ETL,PublishToVault
-851,103,Sales  by Store - ETL | Aditya Jain | TBD,LoadFromVault
-852,103,Sales  by Store - ETL | Aditya Jain | TBD,LoadFromVault
-853,103,Sales  by Store - ETL | Aditya Jain | TBD,Metadata
-854,103,Sales  by Store - ETL | Aditya Jain | TBD,Metadata
-855,103,Sales  by Store - ETL | Aditya Jain | TBD,MergeJoin
-856,103,Sales  by Store - ETL | Aditya Jain | TBD,SelectValues
-857,103,Sales  by Store - ETL | Aditya Jain | TBD,ExpressionEvaluator
-858,103,Sales  by Store - ETL | Aditya Jain | TBD,Filter
-859,103,Sales  by Store - ETL | Aditya Jain | TBD,PublishToVault
-860,103,Sales  by Store - ETL | Aditya Jain | TBD,PublishToVault
-861,113,Traditional Recursive Dataflow (SLOW),LoadFromVault
-862,113,Traditional Recursive Dataflow (SLOW),LoadFromVault
-863,113,Traditional Recursive Dataflow (SLOW),UnionAll
-864,113,Traditional Recursive Dataflow (SLOW),Constant
-865,113,Traditional Recursive Dataflow (SLOW),PublishToVault
-866,59,all rows - card builder sample,LoadFromVault
-867,59,all rows - card builder sample,Constant
-868,59,all rows - card builder sample,PublishToVault
-869,115,Test,LoadFromVault
-870,115,Test,PublishToVault
-871,136,Super Simple Sample_Inventory Log ETL,LoadFromVault
-872,136,Super Simple Sample_Inventory Log ETL,LoadFromVault
-873,136,Super Simple Sample_Inventory Log ETL,GroupBy
-874,136,Super Simple Sample_Inventory Log ETL,GroupBy
-875,136,Super Simple Sample_Inventory Log ETL,MergeJoin
-876,136,Super Simple Sample_Inventory Log ETL,PublishToVault
-877,164,TST-partition_simple,LoadFromVault
-878,164,TST-partition_simple,PublishToVault
-879,162,New ETL Transform,LoadFromVault
-880,162,New ETL Transform,GroupBy
-881,162,New ETL Transform,UserDefinedAction
-882,162,New ETL Transform,PublishToVault
-883,162,New ETL Transform,GroupBy
-884,162,New ETL Transform,ExpressionEvaluator
-885,162,New ETL Transform,Filter
-886,162,New ETL Transform,UserDefinedAction
-887,162,New ETL Transform,Filter
-888,162,New ETL Transform,SelectValues
-889,162,New ETL Transform,MergeJoin
-890,162,New ETL Transform,ExpressionEvaluator
-891,162,New ETL Transform,Metadata
-892,162,New ETL Transform,PublishToVault
-893,162,New ETL Transform,GroupBy
-894,162,New ETL Transform,UserDefinedAction
-895,162,New ETL Transform,PublishToVault
-896,162,New ETL Transform,GroupBy
-897,162,New ETL Transform,ExpressionEvaluator
-898,162,New ETL Transform,Filter
-899,162,New ETL Transform,UserDefinedAction
-900,162,New ETL Transform,Filter
-901,162,New ETL Transform,SelectValues
-902,162,New ETL Transform,MergeJoin
-903,162,New ETL Transform,ExpressionEvaluator
-904,162,New ETL Transform,Metadata
-905,162,New ETL Transform,PublishToVault
-906,162,New ETL Transform,GroupBy
-907,162,New ETL Transform,ExpressionEvaluator
-908,162,New ETL Transform,Filter
-909,162,New ETL Transform,UserDefinedAction
-910,162,New ETL Transform,Filter
-911,162,New ETL Transform,SelectValues
-912,162,New ETL Transform,MergeJoin
-913,162,New ETL Transform,ExpressionEvaluator
-914,162,New ETL Transform,Metadata
-915,162,New ETL Transform,PublishToVault
-916,162,New ETL Transform,GroupBy
-917,162,New ETL Transform,ExpressionEvaluator
-918,162,New ETL Transform,UserDefinedAction
-919,162,New ETL Transform,PublishToVault
-920,191,Estimated Shipping Costs - CLEAN,LoadFromVault
-921,191,Estimated Shipping Costs - CLEAN,ExpressionEvaluator
-922,191,Estimated Shipping Costs - CLEAN,Metadata
-923,191,Estimated Shipping Costs - CLEAN,PublishToVault
-924,266,Magic_Orders,LoadFromVault
-925,266,Magic_Orders,LoadFromVault
-926,266,Magic_Orders,LoadFromVault
-927,266,Magic_Orders,SelectValues
-928,266,Magic_Orders,SelectValues
-929,266,Magic_Orders,SelectValues
-930,266,Magic_Orders,UnionAll
-931,266,Magic_Orders,PublishToVault
-932,269,New ETL Transform,LoadFromVault
-933,269,New ETL Transform,LoadFromVault
-934,269,New ETL Transform,LoadFromVault
-935,269,New ETL Transform,SelectValues
-936,269,New ETL Transform,SelectValues
-937,269,New ETL Transform,SelectValues
-938,269,New ETL Transform,UnionAll
-939,269,New ETL Transform,PublishToVault
-940,270,Forecast Sales CC,LoadFromVault
-941,270,Forecast Sales CC,Normalizer
-942,270,Forecast Sales CC,DateCalculator
-943,270,Forecast Sales CC,Constant
-944,270,Forecast Sales CC,ConcatFields
-945,270,Forecast Sales CC,ValueMapper
-946,270,Forecast Sales CC,LoadFromVault
-947,270,Forecast Sales CC,LoadFromVault
-948,270,Forecast Sales CC,LoadFromVault
-949,270,Forecast Sales CC,UnionAll
-950,270,Forecast Sales CC,DateCalculator
-951,270,Forecast Sales CC,Constant
-952,270,Forecast Sales CC,ConcatFields
-953,270,Forecast Sales CC,ValueMapper
-954,270,Forecast Sales CC,Filter
-955,270,Forecast Sales CC,GroupBy
-956,270,Forecast Sales CC,MergeJoin
-957,270,Forecast Sales CC,SelectValues
-958,270,Forecast Sales CC,PublishToVault
-959,284,Forecast Sales All Time CC,LoadFromVault
-960,284,Forecast Sales All Time CC,SelectValues
-961,284,Forecast Sales All Time CC,Unique
-962,284,Forecast Sales All Time CC,LoadFromVault
-963,284,Forecast Sales All Time CC,MergeJoin
-964,284,Forecast Sales All Time CC,Filter
-965,284,Forecast Sales All Time CC,SelectValues
-966,284,Forecast Sales All Time CC,UnionAll
-967,284,Forecast Sales All Time CC,PublishToVault
-968,313,BAC| Test ETL Vocation ML,LoadFromVault
-969,313,BAC| Test ETL Vocation ML,MLInferenceAction
-970,313,BAC| Test ETL Vocation ML,PublishToVault
-971,324,Forecast Sales All Time - HV,LoadFromVault
-972,324,Forecast Sales All Time - HV,LoadFromVault
-973,324,Forecast Sales All Time - HV,SelectValues
-974,324,Forecast Sales All Time - HV,Unique
-975,324,Forecast Sales All Time - HV,MergeJoin
-976,324,Forecast Sales All Time - HV,Filter
-977,324,Forecast Sales All Time - HV,SelectValues
-978,324,Forecast Sales All Time - HV,UnionAll
-979,324,Forecast Sales All Time - HV,PublishToVault
-980,287,BAC | ETL NPO Regions with US State Population,LoadFromVault
-981,287,BAC | ETL NPO Regions with US State Population,LoadFromVault
-982,287,BAC | ETL NPO Regions with US State Population,SelectValues
-983,287,BAC | ETL NPO Regions with US State Population,Unique
-984,287,BAC | ETL NPO Regions with US State Population,Metadata
-985,287,BAC | ETL NPO Regions with US State Population,MergeJoin
-986,287,BAC | ETL NPO Regions with US State Population,PublishToVault
-987,192,DCO | Outdoor Retail Order Actuals with Calculated Shipping Costs,LoadFromVault
-988,192,DCO | Outdoor Retail Order Actuals with Calculated Shipping Costs,LoadFromVault
-989,192,DCO | Outdoor Retail Order Actuals with Calculated Shipping Costs,ExpressionEvaluator
-990,192,DCO | Outdoor Retail Order Actuals with Calculated Shipping Costs,SelectValues
-991,192,DCO | Outdoor Retail Order Actuals with Calculated Shipping Costs,Denormaliser
-992,192,DCO | Outdoor Retail Order Actuals with Calculated Shipping Costs,MergeJoin
-993,192,DCO | Outdoor Retail Order Actuals with Calculated Shipping Costs,ExpressionEvaluator
-994,192,DCO | Outdoor Retail Order Actuals with Calculated Shipping Costs,PublishToVault
-995,192,DCO | Outdoor Retail Order Actuals with Calculated Shipping Costs,SelectValues
-996,192,DCO | Outdoor Retail Order Actuals with Calculated Shipping Costs,GroupBy
-997,192,DCO | Outdoor Retail Order Actuals with Calculated Shipping Costs,SelectValues
-998,192,DCO | Outdoor Retail Order Actuals with Calculated Shipping Costs,PublishToVault
-999,292,HV Outdoor Retail Order Forecast + Actuals,LoadFromVault
-1000,292,HV Outdoor Retail Order Forecast + Actuals,LoadFromVault
-1001,292,HV Outdoor Retail Order Forecast + Actuals,Metadata
-1002,292,HV Outdoor Retail Order Forecast + Actuals,UnionAll
-1003,292,HV Outdoor Retail Order Forecast + Actuals,PublishToVault
-1004,299,BLM NPO Combined Dataset,LoadFromVault
-1005,299,BLM NPO Combined Dataset,LoadFromVault
-1006,299,BLM NPO Combined Dataset,SelectValues
-1007,299,BLM NPO Combined Dataset,SelectValues
-1008,299,BLM NPO Combined Dataset,UnionAll
-1009,299,BLM NPO Combined Dataset,PublishToVault
-1010,332,LM NPO Forecast + Actuals,LoadFromVault
-1011,332,LM NPO Forecast + Actuals,LoadFromVault
-1012,332,LM NPO Forecast + Actuals,Metadata
-1013,332,LM NPO Forecast + Actuals,UnionAll
-1014,332,LM NPO Forecast + Actuals,PublishToVault
-1015,318,VT NPO - Outdoor Retail Forecast + Actuals,LoadFromVault
-1016,318,VT NPO - Outdoor Retail Forecast + Actuals,LoadFromVault
-1017,318,VT NPO - Outdoor Retail Forecast + Actuals,Metadata
-1018,318,VT NPO - Outdoor Retail Forecast + Actuals,UnionAll
-1019,318,VT NPO - Outdoor Retail Forecast + Actuals,PublishToVault
-1020,333,AB | NPO Forecast + Actuals,LoadFromVault
-1021,333,AB | NPO Forecast + Actuals,LoadFromVault
-1022,333,AB | NPO Forecast + Actuals,Metadata
-1023,333,AB | NPO Forecast + Actuals,UnionAll
-1024,333,AB | NPO Forecast + Actuals,PublishToVault
-1025,276,New ETL Transform,LoadFromVault
-1026,276,New ETL Transform,LoadFromVault
-1027,276,New ETL Transform,SelectValues
-1028,276,New ETL Transform,SelectValues
-1029,276,New ETL Transform,UnionAll
-1030,276,New ETL Transform,PublishToVault
-1031,330,CC Combined Data Flow,LoadFromVault
-1032,330,CC Combined Data Flow,LoadFromVault
-1033,330,CC Combined Data Flow,Metadata
-1034,330,CC Combined Data Flow,UnionAll
-1035,330,CC Combined Data Flow,PublishToVault
-1036,282,New ETL Transform,LoadFromVault
-1037,282,New ETL Transform,LoadFromVault
-1038,282,New ETL Transform,SelectValues
-1039,282,New ETL Transform,SelectValues
-1040,282,New ETL Transform,UnionAll
-1041,282,New ETL Transform,PublishToVault
-1042,320,MBL - NPO - Outdoor Retail Forecast + Actuals,LoadFromVault
-1043,320,MBL - NPO - Outdoor Retail Forecast + Actuals,LoadFromVault
-1044,320,MBL - NPO - Outdoor Retail Forecast + Actuals,Metadata
-1045,320,MBL - NPO - Outdoor Retail Forecast + Actuals,UnionAll
-1046,320,MBL - NPO - Outdoor Retail Forecast + Actuals,PublishToVault
-1047,297,CY | NPO '23 | Combined Dataset,LoadFromVault
-1048,297,CY | NPO '23 | Combined Dataset,LoadFromVault
-1049,297,CY | NPO '23 | Combined Dataset,SelectValues
-1050,297,CY | NPO '23 | Combined Dataset,SelectValues
-1051,297,CY | NPO '23 | Combined Dataset,UnionAll
-1052,297,CY | NPO '23 | Combined Dataset,PublishToVault
-1053,331,BO_Combined_Dataflow,LoadFromVault
-1054,331,BO_Combined_Dataflow,LoadFromVault
-1055,331,BO_Combined_Dataflow,Metadata
-1056,331,BO_Combined_Dataflow,UnionAll
-1057,331,BO_Combined_Dataflow,PublishToVault
-1058,273,New ETL Transform,LoadFromVault
-1059,273,New ETL Transform,LoadFromVault
-1060,273,New ETL Transform,SelectValues
-1061,273,New ETL Transform,SelectValues
-1062,273,New ETL Transform,UnionAll
-1063,273,New ETL Transform,PublishToVault
-1064,265,TW NPO | Outdoor Retail Forecast + Actuals,LoadFromVault
-1065,265,TW NPO | Outdoor Retail Forecast + Actuals,LoadFromVault
-1066,265,TW NPO | Outdoor Retail Forecast + Actuals,SelectValues
-1067,265,TW NPO | Outdoor Retail Forecast + Actuals,SelectValues
-1068,265,TW NPO | Outdoor Retail Forecast + Actuals,UnionAll
-1069,265,TW NPO | Outdoor Retail Forecast + Actuals,PublishToVault
-1070,290,Outdoor Retail Orders Forecast + Actuals,LoadFromVault
-1071,290,Outdoor Retail Orders Forecast + Actuals,LoadFromVault
-1072,290,Outdoor Retail Orders Forecast + Actuals,Metadata
-1073,290,Outdoor Retail Orders Forecast + Actuals,UnionAll
-1074,290,Outdoor Retail Orders Forecast + Actuals,PublishToVault
-1075,336,JT| NPO forecast + actuals,LoadFromVault
-1076,336,JT| NPO forecast + actuals,LoadFromVault
-1077,336,JT| NPO forecast + actuals,Metadata
-1078,336,JT| NPO forecast + actuals,UnionAll
-1079,336,JT| NPO forecast + actuals,PublishToVault
-1080,325,NC New ETL Transform 11/9/23,LoadFromVault
-1081,325,NC New ETL Transform 11/9/23,LoadFromVault
-1082,325,NC New ETL Transform 11/9/23,Metadata
-1083,325,NC New ETL Transform 11/9/23,UnionAll
-1084,325,NC New ETL Transform 11/9/23,PublishToVault
-1085,335,KJ - Combined Datasets,LoadFromVault
-1086,335,KJ - Combined Datasets,LoadFromVault
-1087,335,KJ - Combined Datasets,Metadata
-1088,335,KJ - Combined Datasets,UnionAll
-1089,335,KJ - Combined Datasets,PublishToVault
-1090,334,BK | NPO Forecast + Actuals,LoadFromVault
-1091,334,BK | NPO Forecast + Actuals,LoadFromVault
-1092,334,BK | NPO Forecast + Actuals,Metadata
-1093,334,BK | NPO Forecast + Actuals,UnionAll
-1094,334,BK | NPO Forecast + Actuals,PublishToVault
-1095,334,BK | NPO Forecast + Actuals,GroupBy
-1096,334,BK | NPO Forecast + Actuals,PublishToVault
-1097,294,HV 2 |NPO | Outdoor Retail Forecast v/s Actuals,LoadFromVault
-1098,294,HV 2 |NPO | Outdoor Retail Forecast v/s Actuals,LoadFromVault
-1099,294,HV 2 |NPO | Outdoor Retail Forecast v/s Actuals,Metadata
-1100,294,HV 2 |NPO | Outdoor Retail Forecast v/s Actuals,UnionAll
-1101,294,HV 2 |NPO | Outdoor Retail Forecast v/s Actuals,PublishToVault
-1102,339,LL NPO Actuals + Forecast,LoadFromVault
-1103,339,LL NPO Actuals + Forecast,LoadFromVault
-1104,339,LL NPO Actuals + Forecast,Metadata
-1105,339,LL NPO Actuals + Forecast,UnionAll
-1106,339,LL NPO Actuals + Forecast,PublishToVault
-1107,18,DOMO Covid Additional Metrics Data - Period over Period,LoadFromVault
-1108,18,DOMO Covid Additional Metrics Data - Period over Period,LoadFromVault
-1109,18,DOMO Covid Additional Metrics Data - Period over Period,MergeJoin
-1110,18,DOMO Covid Additional Metrics Data - Period over Period,PublishToVault
-1111,221,ST |DCO | Forecast and Sales,LoadFromVault
-1112,221,ST |DCO | Forecast and Sales,LoadFromVault
-1113,221,ST |DCO | Forecast and Sales,Metadata
-1114,221,ST |DCO | Forecast and Sales,UnionAll
-1115,221,ST |DCO | Forecast and Sales,ExpressionEvaluator
-1116,221,ST |DCO | Forecast and Sales,PublishToVault
-1117,221,ST |DCO | Forecast and Sales,GroupBy
-1118,221,ST |DCO | Forecast and Sales,ExpressionEvaluator
-1119,221,ST |DCO | Forecast and Sales,Metadata
-1120,221,ST |DCO | Forecast and Sales,LoadFromVault
-1121,221,ST |DCO | Forecast and Sales,SelectValues
-1122,221,ST |DCO | Forecast and Sales,Denormaliser
-1123,221,ST |DCO | Forecast and Sales,MergeJoin
-1124,221,ST |DCO | Forecast and Sales,SelectValues
-1125,221,ST |DCO | Forecast and Sales,PublishToVault
-1126,221,ST |DCO | Forecast and Sales,LoadFromVault
-1127,221,ST |DCO | Forecast and Sales,Filter
-1128,221,ST |DCO | Forecast and Sales,SelectValues
-1129,221,ST |DCO | Forecast and Sales,Metadata
-1130,221,ST |DCO | Forecast and Sales,Constant
-1131,221,ST |DCO | Forecast and Sales,Constant
-1132,221,ST |DCO | Forecast and Sales,GroupBy
-1133,221,ST |DCO | Forecast and Sales,MergeJoin
-1134,221,ST |DCO | Forecast and Sales,GroupBy
-1135,221,ST |DCO | Forecast and Sales,MergeJoin
-1136,221,ST |DCO | Forecast and Sales,ExpressionEvaluator
-1137,221,ST |DCO | Forecast and Sales,WindowAction
-1138,221,ST |DCO | Forecast and Sales,PublishToVault
-1139,289,Sales and Goals Example - Regions Generation,LoadFromVault
-1140,289,Sales and Goals Example - Regions Generation,ExpressionEvaluator
-1141,289,Sales and Goals Example - Regions Generation,ExpressionEvaluator
-1142,289,Sales and Goals Example - Regions Generation,ExpressionEvaluator
-1143,289,Sales and Goals Example - Regions Generation,ExpressionEvaluator
-1144,289,Sales and Goals Example - Regions Generation,PublishToVault
-1145,289,Sales and Goals Example - Regions Generation,PublishToVault
-1146,289,Sales and Goals Example - Regions Generation,PublishToVault
-1147,289,Sales and Goals Example - Regions Generation,PublishToVault
-1148,74,sample_invoices_daily,LoadFromVault
-1149,74,sample_invoices_daily,ExpressionEvaluator
-1150,74,sample_invoices_daily,GroupBy
-1151,74,sample_invoices_daily,Filter
-1152,74,sample_invoices_daily,PublishToVault
-1153,309,Monroe Weather Data Cleanup,LoadFromVault
-1154,309,Monroe Weather Data Cleanup,Metadata
-1155,309,Monroe Weather Data Cleanup,ExpressionEvaluator
-1156,309,Monroe Weather Data Cleanup,Filter
-1157,309,Monroe Weather Data Cleanup,Filter
-1158,309,Monroe Weather Data Cleanup,WindowAction
-1159,309,Monroe Weather Data Cleanup,UnionAll
-1160,309,Monroe Weather Data Cleanup,PublishToVault
-1161,25,MetaData | Stage 3 | Pages and Cards,LoadFromVault
-1162,25,MetaData | Stage 3 | Pages and Cards,LoadFromVault
-1163,25,MetaData | Stage 3 | Pages and Cards,LoadFromVault
-1164,25,MetaData | Stage 3 | Pages and Cards,SelectValues
-1165,25,MetaData | Stage 3 | Pages and Cards,MergeJoin
-1166,25,MetaData | Stage 3 | Pages and Cards,Constant
-1167,25,MetaData | Stage 3 | Pages and Cards,Filter
-1168,25,MetaData | Stage 3 | Pages and Cards,SelectValues
-1169,25,MetaData | Stage 3 | Pages and Cards,SelectValues
-1170,25,MetaData | Stage 3 | Pages and Cards,GroupBy
-1171,25,MetaData | Stage 3 | Pages and Cards,PublishToVault
-1172,25,MetaData | Stage 3 | Pages and Cards,LoadFromVault
-1173,25,MetaData | Stage 3 | Pages and Cards,SelectValues
-1174,25,MetaData | Stage 3 | Pages and Cards,GroupBy
-1175,25,MetaData | Stage 3 | Pages and Cards,LoadFromVault
-1176,25,MetaData | Stage 3 | Pages and Cards,SelectValues
-1177,25,MetaData | Stage 3 | Pages and Cards,LoadFromVault
-1178,25,MetaData | Stage 3 | Pages and Cards,GroupBy
-1179,25,MetaData | Stage 3 | Pages and Cards,LoadFromVault
-1180,25,MetaData | Stage 3 | Pages and Cards,SelectValues
-1181,25,MetaData | Stage 3 | Pages and Cards,MergeJoin
-1182,25,MetaData | Stage 3 | Pages and Cards,SelectValues
-1183,25,MetaData | Stage 3 | Pages and Cards,MergeJoin
-1184,25,MetaData | Stage 3 | Pages and Cards,MergeJoin
-1185,25,MetaData | Stage 3 | Pages and Cards,MergeJoin
-1186,25,MetaData | Stage 3 | Pages and Cards,ReplaceString
-1187,25,MetaData | Stage 3 | Pages and Cards,SelectValues
-1188,25,MetaData | Stage 3 | Pages and Cards,Constant
-1189,25,MetaData | Stage 3 | Pages and Cards,PublishToVault
-1190,25,MetaData | Stage 3 | Pages and Cards,Constant
-1191,25,MetaData | Stage 3 | Pages and Cards,Constant
-1192,25,MetaData | Stage 3 | Pages and Cards,ConcatFields
-1193,25,MetaData | Stage 3 | Pages and Cards,SelectValues
-1194,25,MetaData | Stage 3 | Pages and Cards,Constant
-1195,25,MetaData | Stage 3 | Pages and Cards,PublishToVault
-1196,25,MetaData | Stage 3 | Pages and Cards,LoadFromVault
-1197,25,MetaData | Stage 3 | Pages and Cards,LoadFromVault
-1198,25,MetaData | Stage 3 | Pages and Cards,Metadata
-1199,25,MetaData | Stage 3 | Pages and Cards,SelectValues
-1200,25,MetaData | Stage 3 | Pages and Cards,MergeJoin
-1201,25,MetaData | Stage 3 | Pages and Cards,Filter
-1202,25,MetaData | Stage 3 | Pages and Cards,SetValueField
-1203,25,MetaData | Stage 3 | Pages and Cards,Filter
-1204,25,MetaData | Stage 3 | Pages and Cards,UnionAll
-1205,25,MetaData | Stage 3 | Pages and Cards,MergeJoin
-1206,25,MetaData | Stage 3 | Pages and Cards,Constant
-1207,25,MetaData | Stage 3 | Pages and Cards,Constant
-1208,25,MetaData | Stage 3 | Pages and Cards,ConcatFields
-1209,25,MetaData | Stage 3 | Pages and Cards,MergeJoin
-1210,25,MetaData | Stage 3 | Pages and Cards,SelectValues
-1211,25,MetaData | Stage 3 | Pages and Cards,ReplaceString
-1212,25,MetaData | Stage 3 | Pages and Cards,Constant
-1213,25,MetaData | Stage 3 | Pages and Cards,PublishToVault
-1214,33,Dataflow,LoadFromVault
-1215,33,Dataflow,LoadFromVault
-1216,33,Dataflow,MergeJoin
-1217,33,Dataflow,SelectValues
-1218,33,Dataflow,PublishToVault
-1219,57,contribution etl - leelo_dallas,LoadFromVault
-1220,57,contribution etl - leelo_dallas,Constant
-1221,57,contribution etl - leelo_dallas,WindowAction
-1222,57,contribution etl - leelo_dallas,GroupBy
-1223,57,contribution etl - leelo_dallas,MergeJoin
-1224,57,contribution etl - leelo_dallas,ExpressionEvaluator
-1225,57,contribution etl - leelo_dallas,SelectValues
-1226,57,contribution etl - leelo_dallas,PublishToVault
-1227,73,Salesforce Account Writeback - Elliott Leonard,LoadFromVault
-1228,73,Salesforce Account Writeback - Elliott Leonard,LoadFromVault
-1229,73,Salesforce Account Writeback - Elliott Leonard,LoadFromVault
-1230,73,Salesforce Account Writeback - Elliott Leonard,MergeJoin
-1231,73,Salesforce Account Writeback - Elliott Leonard,GroupBy
-1232,73,Salesforce Account Writeback - Elliott Leonard,GroupBy
-1233,73,Salesforce Account Writeback - Elliott Leonard,MergeJoin
-1234,73,Salesforce Account Writeback - Elliott Leonard,ExpressionEvaluator
-1235,73,Salesforce Account Writeback - Elliott Leonard,SelectValues
-1236,73,Salesforce Account Writeback - Elliott Leonard,PublishToVault
-1237,73,Salesforce Account Writeback - Elliott Leonard,PublishToWriteback
-1238,66,major domo recert_ForecastSalesAllTime,LoadFromVault
-1239,66,major domo recert_ForecastSalesAllTime,LoadFromVault
-1240,66,major domo recert_ForecastSalesAllTime,MergeJoin
-1241,66,major domo recert_ForecastSalesAllTime,Filter
-1242,66,major domo recert_ForecastSalesAllTime,UnionAll
-1243,66,major domo recert_ForecastSalesAllTime,SelectValues
-1244,66,major domo recert_ForecastSalesAllTime,PublishToVault
-1245,85,Working Hours Test,LoadFromVault
-1246,85,Working Hours Test,Constant
-1247,85,Working Hours Test,ExpressionEvaluator
-1248,85,Working Hours Test,PublishToVault
-1249,93,New ETL Transform,LoadFromVault
-1250,93,New ETL Transform,Filter
-1251,93,New ETL Transform,SelectValues
-1252,93,New ETL Transform,PublishToVault
-1253,99,dojo jrtomici etl,LoadFromVault
-1254,99,dojo jrtomici etl,ExpressionEvaluator
-1255,99,dojo jrtomici etl,WindowAction
-1256,99,dojo jrtomici etl,Filter
-1257,99,dojo jrtomici etl,SelectValues
-1258,99,dojo jrtomici etl,PublishToVault
-1259,31,WIP,LoadFromVault
-1260,31,WIP,LoadFromVault
-1261,31,WIP,LoadFromVault
-1262,31,WIP,LoadFromVault
-1263,31,WIP,LoadFromVault
-1264,31,WIP,LoadFromVault
-1265,31,WIP,MergeJoin
-1266,31,WIP,MergeJoin
-1267,31,WIP,MergeJoin
-1268,31,WIP,MergeJoin
-1269,31,WIP,MergeJoin
-1270,31,WIP,PublishToVault
-1271,187,PJG ETL,LoadFromVault
-1272,187,PJG ETL,NormalizeAll
-1273,187,PJG ETL,ExpressionEvaluator
-1274,187,PJG ETL,SelectValues
-1275,187,PJG ETL,Denormaliser
-1276,187,PJG ETL,ExpressionEvaluator
-1277,187,PJG ETL,PublishToVault
-1278,288,Stock Ticker ETL,LoadFromVault
-1279,288,Stock Ticker ETL,LoadFromVault
-1280,288,Stock Ticker ETL,LoadFromVault
-1281,288,Stock Ticker ETL,LoadFromVault
-1282,288,Stock Ticker ETL,LoadFromVault
-1283,288,Stock Ticker ETL,LoadFromVault
-1284,288,Stock Ticker ETL,LoadFromVault
-1285,288,Stock Ticker ETL,UnionAll
-1286,288,Stock Ticker ETL,Constant
-1287,288,Stock Ticker ETL,WindowAction
-1288,288,Stock Ticker ETL,SelectValues
-1289,288,Stock Ticker ETL,PublishToVault
-1290,315,Tobey Sales,LoadFromVault
-1291,315,Tobey Sales,Constant
-1292,315,Tobey Sales,PublishToVault
-1293,157,NPO| Exercise Datasets | RC,LoadFromVault
-1294,157,NPO| Exercise Datasets | RC,DateCalculator
-1295,157,NPO| Exercise Datasets | RC,Filter
-1296,157,NPO| Exercise Datasets | RC,Filter
-1297,157,NPO| Exercise Datasets | RC,SelectValues
-1298,157,NPO| Exercise Datasets | RC,SelectValues
-1299,157,NPO| Exercise Datasets | RC,PublishToVault
-1300,157,NPO| Exercise Datasets | RC,PublishToVault
-1301,322,Forecast Sales - HV,LoadFromVault
-1302,322,Forecast Sales - HV,Normalizer
-1303,322,Forecast Sales - HV,DateCalculator
-1304,322,Forecast Sales - HV,Constant
-1305,322,Forecast Sales - HV,ConcatFields
-1306,322,Forecast Sales - HV,ValueMapper
-1307,322,Forecast Sales - HV,LoadFromVault
-1308,322,Forecast Sales - HV,LoadFromVault
-1309,322,Forecast Sales - HV,LoadFromVault
-1310,322,Forecast Sales - HV,UnionAll
-1311,322,Forecast Sales - HV,DateCalculator
-1312,322,Forecast Sales - HV,Constant
-1313,322,Forecast Sales - HV,ConcatFields
-1314,322,Forecast Sales - HV,ValueMapper
-1315,322,Forecast Sales - HV,Filter
-1316,322,Forecast Sales - HV,GroupBy
-1317,322,Forecast Sales - HV,MergeJoin
-1318,322,Forecast Sales - HV,SelectValues
-1319,322,Forecast Sales - HV,PublishToVault
-1320,312,New ETL Transform,LoadFromVault
-1321,312,New ETL Transform,LoadFromVault
-1322,312,New ETL Transform,Metadata
-1323,312,New ETL Transform,UnionAll
-1324,312,New ETL Transform,PublishToVault
-1325,293,Outdoor Retail Orders,LoadFromVault
-1326,293,Outdoor Retail Orders,LoadFromVault
-1327,293,Outdoor Retail Orders,Metadata
-1328,293,Outdoor Retail Orders,UnionAll
-1329,293,Outdoor Retail Orders,PublishToVault
-1330,272,New ETL Transform,LoadFromVault
-1331,272,New ETL Transform,LoadFromVault
-1332,272,New ETL Transform,SelectValues
-1333,272,New ETL Transform,SelectValues
-1334,272,New ETL Transform,UnionAll
-1335,272,New ETL Transform,PublishToVault
-1336,291,BM_Outdoor retail orders forecast + actuals,LoadFromVault
-1337,291,BM_Outdoor retail orders forecast + actuals,LoadFromVault
-1338,291,BM_Outdoor retail orders forecast + actuals,Metadata
-1339,291,BM_Outdoor retail orders forecast + actuals,UnionAll
-1340,291,BM_Outdoor retail orders forecast + actuals,PublishToVault
-1341,327,VG NPO Forecast + Actuals,LoadFromVault
-1342,327,VG NPO Forecast + Actuals,LoadFromVault
-1343,327,VG NPO Forecast + Actuals,Metadata
-1344,327,VG NPO Forecast + Actuals,UnionAll
-1345,327,VG NPO Forecast + Actuals,PublishToVault
-1346,228,DCO | Outdoor Retail Forecast + Actuals | ML 6.21.2023,LoadFromVault
-1347,228,DCO | Outdoor Retail Forecast + Actuals | ML 6.21.2023,LoadFromVault
-1348,228,DCO | Outdoor Retail Forecast + Actuals | ML 6.21.2023,SelectValues
-1349,228,DCO | Outdoor Retail Forecast + Actuals | ML 6.21.2023,SelectValues
-1350,228,DCO | Outdoor Retail Forecast + Actuals | ML 6.21.2023,UnionAll
-1351,228,DCO | Outdoor Retail Forecast + Actuals | ML 6.21.2023,PublishToVault
-1352,240,TL | DCO August Combined,LoadFromVault
-1353,240,TL | DCO August Combined,LoadFromVault
-1354,240,TL | DCO August Combined,SelectValues
-1355,240,TL | DCO August Combined,SelectValues
-1356,240,TL | DCO August Combined,UnionAll
-1357,240,TL | DCO August Combined,PublishToVault
-1358,317,PF NPO - Outdoor Retail Forecast + Actuals,LoadFromVault
-1359,317,PF NPO - Outdoor Retail Forecast + Actuals,LoadFromVault
-1360,317,PF NPO - Outdoor Retail Forecast + Actuals,Metadata
-1361,317,PF NPO - Outdoor Retail Forecast + Actuals,UnionAll
-1362,317,PF NPO - Outdoor Retail Forecast + Actuals,PublishToVault
-1363,280,New ETL Transform,LoadFromVault
-1364,280,New ETL Transform,LoadFromVault
-1365,280,New ETL Transform,SelectValues
-1366,280,New ETL Transform,SelectValues
-1367,280,New ETL Transform,UnionAll
-1368,280,New ETL Transform,PublishToVault
-1369,261,JWJ NPO | Outdoor Retail Forecast + Actuals 10/9/2023,LoadFromVault
-1370,261,JWJ NPO | Outdoor Retail Forecast + Actuals 10/9/2023,LoadFromVault
-1371,261,JWJ NPO | Outdoor Retail Forecast + Actuals 10/9/2023,Metadata
-1372,261,JWJ NPO | Outdoor Retail Forecast + Actuals 10/9/2023,UnionAll
-1373,261,JWJ NPO | Outdoor Retail Forecast + Actuals 10/9/2023,PublishToVault
-1374,281,ETL| TG | NPO | Outdoor Retail Forecast + Actuals,LoadFromVault
-1375,281,ETL| TG | NPO | Outdoor Retail Forecast + Actuals,LoadFromVault
-1376,281,ETL| TG | NPO | Outdoor Retail Forecast + Actuals,SelectValues
-1377,281,ETL| TG | NPO | Outdoor Retail Forecast + Actuals,SelectValues
-1378,281,ETL| TG | NPO | Outdoor Retail Forecast + Actuals,UnionAll
-1379,281,ETL| TG | NPO | Outdoor Retail Forecast + Actuals,PublishToVault
-1380,274,New ETL Transform,LoadFromVault
-1381,274,New ETL Transform,LoadFromVault
-1382,274,New ETL Transform,SelectValues
-1383,274,New ETL Transform,SelectValues
-1384,274,New ETL Transform,UnionAll
-1385,274,New ETL Transform,PublishToVault
-1386,223,KK | DCO Combined DataSet,LoadFromVault
-1387,223,KK | DCO Combined DataSet,LoadFromVault
-1388,223,KK | DCO Combined DataSet,SelectValues
-1389,223,KK | DCO Combined DataSet,SelectValues
-1390,223,KK | DCO Combined DataSet,UnionAll
-1391,223,KK | DCO Combined DataSet,PublishToVault
-1392,316,JWJ NPO | Outdoor Retail Forecast + Actuals 11/8/2023,LoadFromVault
-1393,316,JWJ NPO | Outdoor Retail Forecast + Actuals 11/8/2023,LoadFromVault
-1394,316,JWJ NPO | Outdoor Retail Forecast + Actuals 11/8/2023,Metadata
-1395,316,JWJ NPO | Outdoor Retail Forecast + Actuals 11/8/2023,UnionAll
-1396,316,JWJ NPO | Outdoor Retail Forecast + Actuals 11/8/2023,PublishToVault
-1397,116,[Community L&L 2023-01-19] Mock Sales with Calendar,LoadFromVault
-1398,116,[Community L&L 2023-01-19] Mock Sales with Calendar,LoadFromVault
-1399,116,[Community L&L 2023-01-19] Mock Sales with Calendar,SelectValues
-1400,116,[Community L&L 2023-01-19] Mock Sales with Calendar,Filter
-1401,116,[Community L&L 2023-01-19] Mock Sales with Calendar,WindowAction
-1402,116,[Community L&L 2023-01-19] Mock Sales with Calendar,WindowAction
-1403,116,[Community L&L 2023-01-19] Mock Sales with Calendar,WindowAction
-1404,116,[Community L&L 2023-01-19] Mock Sales with Calendar,ExpressionEvaluator
-1405,116,[Community L&L 2023-01-19] Mock Sales with Calendar,Filter
-1406,116,[Community L&L 2023-01-19] Mock Sales with Calendar,MergeJoin
-1407,116,[Community L&L 2023-01-19] Mock Sales with Calendar,ExpressionEvaluator
-1408,116,[Community L&L 2023-01-19] Mock Sales with Calendar,SelectValues
-1409,116,[Community L&L 2023-01-19] Mock Sales with Calendar,MergeJoin
-1410,116,[Community L&L 2023-01-19] Mock Sales with Calendar,PublishToVault
-1411,135,Events Coming Soon,LoadFromVault
-1412,135,Events Coming Soon,LoadFromVault
-1413,135,Events Coming Soon,MergeJoin
-1414,135,Events Coming Soon,ExpressionEvaluator
-1415,135,Events Coming Soon,Filter
-1416,135,Events Coming Soon,SelectValues
-1417,135,Events Coming Soon,PublishToVault
-1418,26,MetaData | Stage 4 | Beast Modes,LoadFromVault
-1419,26,MetaData | Stage 4 | Beast Modes,LoadFromVault
-1420,26,MetaData | Stage 4 | Beast Modes,LoadFromVault
-1421,26,MetaData | Stage 4 | Beast Modes,SelectValues
-1422,26,MetaData | Stage 4 | Beast Modes,GroupBy
-1423,26,MetaData | Stage 4 | Beast Modes,SelectValues
-1424,26,MetaData | Stage 4 | Beast Modes,ConcatFields
-1425,26,MetaData | Stage 4 | Beast Modes,GroupBy
-1426,26,MetaData | Stage 4 | Beast Modes,ValueMapper
-1427,26,MetaData | Stage 4 | Beast Modes,GroupBy
-1428,26,MetaData | Stage 4 | Beast Modes,GroupBy
-1429,26,MetaData | Stage 4 | Beast Modes,MergeJoin
-1430,26,MetaData | Stage 4 | Beast Modes,GroupBy
-1431,26,MetaData | Stage 4 | Beast Modes,MergeJoin
-1432,26,MetaData | Stage 4 | Beast Modes,MergeJoin
-1433,26,MetaData | Stage 4 | Beast Modes,LoadFromVault
-1434,26,MetaData | Stage 4 | Beast Modes,Filter
-1435,26,MetaData | Stage 4 | Beast Modes,SelectValues
-1436,26,MetaData | Stage 4 | Beast Modes,WindowAction
-1437,26,MetaData | Stage 4 | Beast Modes,GroupBy
-1438,26,MetaData | Stage 4 | Beast Modes,SelectValues
-1439,26,MetaData | Stage 4 | Beast Modes,LoadFromVault
-1440,26,MetaData | Stage 4 | Beast Modes,GroupBy
-1441,26,MetaData | Stage 4 | Beast Modes,SelectValues
-1442,26,MetaData | Stage 4 | Beast Modes,MergeJoin
-1443,26,MetaData | Stage 4 | Beast Modes,MergeJoin
-1444,26,MetaData | Stage 4 | Beast Modes,LoadFromVault
-1445,26,MetaData | Stage 4 | Beast Modes,Filter
-1446,26,MetaData | Stage 4 | Beast Modes,ConcatFields
-1447,26,MetaData | Stage 4 | Beast Modes,GroupBy
-1448,26,MetaData | Stage 4 | Beast Modes,GroupBy
-1449,26,MetaData | Stage 4 | Beast Modes,Constant
-1450,26,MetaData | Stage 4 | Beast Modes,Constant
-1451,26,MetaData | Stage 4 | Beast Modes,Constant
-1452,26,MetaData | Stage 4 | Beast Modes,Constant
-1453,26,MetaData | Stage 4 | Beast Modes,ConcatFields
-1454,26,MetaData | Stage 4 | Beast Modes,SelectValues
-1455,26,MetaData | Stage 4 | Beast Modes,ConcatFields
-1456,26,MetaData | Stage 4 | Beast Modes,GroupBy
-1457,26,MetaData | Stage 4 | Beast Modes,MergeJoin
-1458,26,MetaData | Stage 4 | Beast Modes,MergeJoin
-1459,26,MetaData | Stage 4 | Beast Modes,MergeJoin
-1460,26,MetaData | Stage 4 | Beast Modes,ConcatFields
-1461,26,MetaData | Stage 4 | Beast Modes,MergeJoin
-1462,26,MetaData | Stage 4 | Beast Modes,Filter
-1463,26,MetaData | Stage 4 | Beast Modes,Filter
-1464,26,MetaData | Stage 4 | Beast Modes,ReplaceString
-1465,26,MetaData | Stage 4 | Beast Modes,Filter
-1466,26,MetaData | Stage 4 | Beast Modes,ReplaceString
-1467,26,MetaData | Stage 4 | Beast Modes,Filter
-1468,26,MetaData | Stage 4 | Beast Modes,ReplaceString
-1469,26,MetaData | Stage 4 | Beast Modes,UnionAll
-1470,26,MetaData | Stage 4 | Beast Modes,SelectValues
-1471,26,MetaData | Stage 4 | Beast Modes,Constant
-1472,26,MetaData | Stage 4 | Beast Modes,PublishToVault
-1473,36,AutoML Sales Opportunities Prediction,LoadFromVault
-1474,36,AutoML Sales Opportunities Prediction,MLInferenceAction
-1475,36,AutoML Sales Opportunities Prediction,PublishToVault
-1476,35,Sim Data AutoML Prep,LoadFromVault
-1477,35,Sim Data AutoML Prep,Unique
-1478,35,Sim Data AutoML Prep,Filter
-1479,35,Sim Data AutoML Prep,SelectValues
-1480,35,Sim Data AutoML Prep,SelectValues
-1481,35,Sim Data AutoML Prep,PublishToVault
-1482,35,Sim Data AutoML Prep,PublishToVault
-1483,43,ad promo prep,LoadFromVault
-1484,43,ad promo prep,ExpressionEvaluator
-1485,43,ad promo prep,Filter
-1486,43,ad promo prep,GroupBy
-1487,43,ad promo prep,ExpressionEvaluator
-1488,43,ad promo prep,MergeJoin
-1489,43,ad promo prep,PublishToVault
-1490,43,ad promo prep,PublishToVault
-1491,43,ad promo prep,Filter
-1492,43,ad promo prep,PublishToVault
-1493,50,Customer Balance Summary,LoadFromVault
-1494,50,Customer Balance Summary,SelectValues
-1495,50,Customer Balance Summary,WindowAction
-1496,50,Customer Balance Summary,Filter
-1497,50,Customer Balance Summary,SelectValues
-1498,50,Customer Balance Summary,PublishToVault
-1499,64,major domo recert_ForecastSales_ST,LoadFromVault
-1500,64,major domo recert_ForecastSales_ST,Normalizer
-1501,64,major domo recert_ForecastSales_ST,DateCalculator
-1502,64,major domo recert_ForecastSales_ST,Constant
-1503,64,major domo recert_ForecastSales_ST,ConcatFields
-1504,64,major domo recert_ForecastSales_ST,Metadata
-1505,64,major domo recert_ForecastSales_ST,LoadFromVault
-1506,64,major domo recert_ForecastSales_ST,LoadFromVault
-1507,64,major domo recert_ForecastSales_ST,LoadFromVault
-1508,64,major domo recert_ForecastSales_ST,UnionAll
-1509,64,major domo recert_ForecastSales_ST,DateCalculator
-1510,64,major domo recert_ForecastSales_ST,Constant
-1511,64,major domo recert_ForecastSales_ST,ConcatFields
-1512,64,major domo recert_ForecastSales_ST,Metadata
-1513,64,major domo recert_ForecastSales_ST,Filter
-1514,64,major domo recert_ForecastSales_ST,GroupBy
-1515,64,major domo recert_ForecastSales_ST,MergeJoin
-1516,64,major domo recert_ForecastSales_ST,SelectValues
-1517,64,major domo recert_ForecastSales_ST,PublishToVault
-1518,83,Working Hours Example,LoadFromVault
-1519,83,Working Hours Example,Constant
-1520,83,Working Hours Example,ExpressionEvaluator
-1521,94,New ETL Transform,LoadFromVault
-1522,94,New ETL Transform,ExpressionEvaluator
-1523,94,New ETL Transform,PublishToVault
-1524,97,Dojo - WorldWarHulk ETL,LoadFromVault
-1525,97,Dojo - WorldWarHulk ETL,LoadFromVault
-1526,97,Dojo - WorldWarHulk ETL,SelectValues
-1527,97,Dojo - WorldWarHulk ETL,ExpressionEvaluator
-1528,97,Dojo - WorldWarHulk ETL,Normalizer
-1529,97,Dojo - WorldWarHulk ETL,MergeJoin
-1530,97,Dojo - WorldWarHulk ETL,SelectValues
-1531,97,Dojo - WorldWarHulk ETL,PublishToVault
-1532,100,ETL @datamatt,LoadFromVault
-1533,100,ETL @datamatt,LoadFromVault
-1534,100,ETL @datamatt,Constant
-1535,100,ETL @datamatt,Constant
-1536,100,ETL @datamatt,SelectValues
-1537,100,ETL @datamatt,GroupBy
-1538,100,ETL @datamatt,MergeJoin
-1539,100,ETL @datamatt,Filter
-1540,100,ETL @datamatt,MergeJoin
-1541,100,ETL @datamatt,Filter
-1542,100,ETL @datamatt,ExpressionEvaluator
-1543,100,ETL @datamatt,SelectValues
-1544,100,ETL @datamatt,PublishToVault
-1545,127,@Zel ETL,LoadFromVault
-1546,127,@Zel ETL,Filter
-1547,127,@Zel ETL,GroupBy
-1548,127,@Zel ETL,Constant
-1549,127,@Zel ETL,MergeJoin
-1550,127,@Zel ETL,ExpressionEvaluator
-1551,127,@Zel ETL,PublishToVault
-1552,29,Crytpo Usecase,LoadFromVault
-1553,29,Crytpo Usecase,LoadFromVault
-1554,29,Crytpo Usecase,LoadFromVault
-1555,29,Crytpo Usecase,ExpressionEvaluator
-1556,29,Crytpo Usecase,MergeJoin
-1557,29,Crytpo Usecase,ExpressionEvaluator
-1558,29,Crytpo Usecase,WindowAction
-1559,29,Crytpo Usecase,Metadata
-1560,29,Crytpo Usecase,Metadata
-1561,29,Crytpo Usecase,MergeJoin
-1562,29,Crytpo Usecase,LoadFromVault
-1563,29,Crytpo Usecase,LoadFromVault
-1564,29,Crytpo Usecase,LoadFromVault
-1565,29,Crytpo Usecase,LoadFromVault
-1566,29,Crytpo Usecase,LoadFromVault
-1567,29,Crytpo Usecase,LoadFromVault
-1568,29,Crytpo Usecase,LoadFromVault
-1569,29,Crytpo Usecase,LoadFromVault
-1570,29,Crytpo Usecase,LoadFromVault
-1571,29,Crytpo Usecase,UnionAll
-1572,29,Crytpo Usecase,MergeJoin
-1573,29,Crytpo Usecase,WindowAction
-1574,29,Crytpo Usecase,WindowAction
-1575,29,Crytpo Usecase,Constant
-1576,29,Crytpo Usecase,Metadata
-1577,29,Crytpo Usecase,Constant
-1578,29,Crytpo Usecase,LoadFromVault
-1579,29,Crytpo Usecase,Unique
-1580,29,Crytpo Usecase,Filter
-1581,29,Crytpo Usecase,Metadata
-1582,29,Crytpo Usecase,Filter
-1583,29,Crytpo Usecase,Metadata
-1584,29,Crytpo Usecase,ExpressionEvaluator
-1585,29,Crytpo Usecase,Metadata
-1586,29,Crytpo Usecase,ExpressionEvaluator
-1587,29,Crytpo Usecase,Metadata
-1588,29,Crytpo Usecase,UnionAll
-1589,29,Crytpo Usecase,Constant
-1590,29,Crytpo Usecase,MergeJoin
-1591,29,Crytpo Usecase,UnionAll
-1592,29,Crytpo Usecase,GroupBy
-1593,29,Crytpo Usecase,MergeJoin
-1594,29,Crytpo Usecase,PublishToVault
-1595,121,Alert Effectiveness,LoadFromVault
-1596,121,Alert Effectiveness,LoadFromVault
-1597,121,Alert Effectiveness,LoadFromVault
-1598,121,Alert Effectiveness,GroupBy
-1599,121,Alert Effectiveness,MergeJoin
-1600,121,Alert Effectiveness,GroupBy
-1601,121,Alert Effectiveness,GroupBy
-1602,121,Alert Effectiveness,MergeJoin
-1603,121,Alert Effectiveness,PublishToVault
-1604,72,User Segmentation Example,LoadFromVault
-1605,72,User Segmentation Example,ExpressionEvaluator
-1606,72,User Segmentation Example,GroupBy
-1607,72,User Segmentation Example,PublishToVault
-1608,129,GR_DS_OP ETL,LoadFromVault
-1609,129,GR_DS_OP ETL,LoadFromVault
-1610,129,GR_DS_OP ETL,GroupBy
-1611,129,GR_DS_OP ETL,MergeJoin
-1612,129,GR_DS_OP ETL,ExpressionEvaluator
-1613,129,GR_DS_OP ETL,PublishToVault
-1614,151,IL Robert,LoadFromVault
-1615,151,IL Robert,WindowAction
-1616,151,IL Robert,PythonEngineAction
-1617,151,IL Robert,Metadata
-1618,151,IL Robert,PublishToVault
-1619,108,Datasets_lineage,LoadFromVault
-1620,108,Datasets_lineage,LoadFromVault
-1621,108,Datasets_lineage,SelectValues
-1622,108,Datasets_lineage,SelectValues
-1623,108,Datasets_lineage,Filter
-1624,108,Datasets_lineage,SelectValues
-1625,108,Datasets_lineage,ExpressionEvaluator
-1626,108,Datasets_lineage,Unique
-1627,108,Datasets_lineage,UnionAll
-1628,108,Datasets_lineage,PythonEngineAction
-1629,108,Datasets_lineage,PublishToVault
-1630,8,MetaData_Stage 1_People-Project-Buzz-PDP,LoadFromVault
-1631,8,MetaData_Stage 1_People-Project-Buzz-PDP,LoadFromVault
-1632,8,MetaData_Stage 1_People-Project-Buzz-PDP,Constant
-1633,8,MetaData_Stage 1_People-Project-Buzz-PDP,Constant
-1634,8,MetaData_Stage 1_People-Project-Buzz-PDP,PublishToVault
-1635,8,MetaData_Stage 1_People-Project-Buzz-PDP,PublishToVault
-1636,8,MetaData_Stage 1_People-Project-Buzz-PDP,LoadFromVault
-1637,8,MetaData_Stage 1_People-Project-Buzz-PDP,Constant
-1638,8,MetaData_Stage 1_People-Project-Buzz-PDP,Constant
-1639,8,MetaData_Stage 1_People-Project-Buzz-PDP,ConcatFields
-1640,8,MetaData_Stage 1_People-Project-Buzz-PDP,LoadFromVault
-1641,8,MetaData_Stage 1_People-Project-Buzz-PDP,GroupBy
-1642,8,MetaData_Stage 1_People-Project-Buzz-PDP,SelectValues
-1643,8,MetaData_Stage 1_People-Project-Buzz-PDP,MergeJoin
-1644,8,MetaData_Stage 1_People-Project-Buzz-PDP,Filter
-1645,8,MetaData_Stage 1_People-Project-Buzz-PDP,SetValueField
-1646,8,MetaData_Stage 1_People-Project-Buzz-PDP,ValueMapper
-1647,8,MetaData_Stage 1_People-Project-Buzz-PDP,Filter
-1648,8,MetaData_Stage 1_People-Project-Buzz-PDP,UnionAll
-1649,8,MetaData_Stage 1_People-Project-Buzz-PDP,SplitColumnAction
-1650,8,MetaData_Stage 1_People-Project-Buzz-PDP,DateCalculator
-1651,8,MetaData_Stage 1_People-Project-Buzz-PDP,ReplaceString
-1652,8,MetaData_Stage 1_People-Project-Buzz-PDP,ValueMapper
-1653,8,MetaData_Stage 1_People-Project-Buzz-PDP,SelectValues
-1654,8,MetaData_Stage 1_People-Project-Buzz-PDP,Constant
-1655,8,MetaData_Stage 1_People-Project-Buzz-PDP,PublishToVault
-1656,8,MetaData_Stage 1_People-Project-Buzz-PDP,LoadFromVault
-1657,8,MetaData_Stage 1_People-Project-Buzz-PDP,Constant
-1658,8,MetaData_Stage 1_People-Project-Buzz-PDP,PublishToVault
-1659,8,MetaData_Stage 1_People-Project-Buzz-PDP,LoadFromVault
-1660,8,MetaData_Stage 1_People-Project-Buzz-PDP,LoadFromVault
-1661,8,MetaData_Stage 1_People-Project-Buzz-PDP,SelectValues
-1662,8,MetaData_Stage 1_People-Project-Buzz-PDP,SelectValues
-1663,8,MetaData_Stage 1_People-Project-Buzz-PDP,MergeJoin
-1664,8,MetaData_Stage 1_People-Project-Buzz-PDP,Filter
-1665,8,MetaData_Stage 1_People-Project-Buzz-PDP,SelectValues
-1666,8,MetaData_Stage 1_People-Project-Buzz-PDP,Constant
-1667,8,MetaData_Stage 1_People-Project-Buzz-PDP,UnionAll
-1668,8,MetaData_Stage 1_People-Project-Buzz-PDP,Constant
-1669,8,MetaData_Stage 1_People-Project-Buzz-PDP,PublishToVault
-1670,8,MetaData_Stage 1_People-Project-Buzz-PDP,LoadFromVault
-1671,8,MetaData_Stage 1_People-Project-Buzz-PDP,LoadFromVault
-1672,8,MetaData_Stage 1_People-Project-Buzz-PDP,LoadFromVault
-1673,8,MetaData_Stage 1_People-Project-Buzz-PDP,Constant
-1674,8,MetaData_Stage 1_People-Project-Buzz-PDP,SetValueField
-1675,8,MetaData_Stage 1_People-Project-Buzz-PDP,Metadata
-1676,8,MetaData_Stage 1_People-Project-Buzz-PDP,DateCalculator
-1677,8,MetaData_Stage 1_People-Project-Buzz-PDP,SelectValues
-1678,8,MetaData_Stage 1_People-Project-Buzz-PDP,SelectValues
-1679,8,MetaData_Stage 1_People-Project-Buzz-PDP,MergeJoin
-1680,8,MetaData_Stage 1_People-Project-Buzz-PDP,SelectValues
-1681,8,MetaData_Stage 1_People-Project-Buzz-PDP,MergeJoin
-1682,8,MetaData_Stage 1_People-Project-Buzz-PDP,Constant
-1683,8,MetaData_Stage 1_People-Project-Buzz-PDP,PublishToVault
-1684,8,MetaData_Stage 1_People-Project-Buzz-PDP,Constant
-1685,8,MetaData_Stage 1_People-Project-Buzz-PDP,PublishToVault
-1686,8,MetaData_Stage 1_People-Project-Buzz-PDP,Constant
-1687,8,MetaData_Stage 1_People-Project-Buzz-PDP,PublishToVault
-1688,268,Forecast Sales All Time AA,LoadFromVault
-1689,268,Forecast Sales All Time AA,LoadFromVault
-1690,268,Forecast Sales All Time AA,SelectValues
-1691,268,Forecast Sales All Time AA,Unique
-1692,268,Forecast Sales All Time AA,MergeJoin
-1693,268,Forecast Sales All Time AA,Filter
-1694,268,Forecast Sales All Time AA,SelectValues
-1695,268,Forecast Sales All Time AA,UnionAll
-1696,268,Forecast Sales All Time AA,PublishToVault
-1697,271,DEV_Magic ETL ERROR Example,LoadFromVault
-1698,271,DEV_Magic ETL ERROR Example,ExpressionEvaluator
-1699,271,DEV_Magic ETL ERROR Example,PublishToVault
-1700,310,BAC | Vocation ML ETL,LoadFromVault
-1701,310,BAC | Vocation ML ETL,MLInferenceAction
-1702,310,BAC | Vocation ML ETL,PublishToVault
-1703,311,BAC | ETL Build Vocation Training Set,LoadFromVault
-1704,311,BAC | ETL Build Vocation Training Set,ExpressionEvaluator
-1705,311,BAC | ETL Build Vocation Training Set,GroupBy
-1706,311,BAC | ETL Build Vocation Training Set,Filter
-1707,311,BAC | ETL Build Vocation Training Set,SelectValues
-1708,311,BAC | ETL Build Vocation Training Set,PublishToVault
-1709,321,Combined Sales Data - HV,LoadFromVault
-1710,321,Combined Sales Data - HV,LoadFromVault
-1711,321,Combined Sales Data - HV,LoadFromVault
-1712,321,Combined Sales Data - HV,SelectValues
-1713,321,Combined Sales Data - HV,SelectValues
-1714,321,Combined Sales Data - HV,SelectValues
-1715,321,Combined Sales Data - HV,UnionAll
-1716,321,Combined Sales Data - HV,PublishToVault
-1717,323,New ETL Transform,LoadFromVault
-1718,323,New ETL Transform,Constant
-1719,323,New ETL Transform,ValueMapper
-1720,295,Outdoor Retail Orders Forecast + Actuals,LoadFromVault
-1721,295,Outdoor Retail Orders Forecast + Actuals,LoadFromVault
-1722,295,Outdoor Retail Orders Forecast + Actuals,Metadata
-1723,295,Outdoor Retail Orders Forecast + Actuals,UnionAll
-1724,295,Outdoor Retail Orders Forecast + Actuals,PublishToVault
-1725,255,SS ETL DCO Actuals Forecast,LoadFromVault
-1726,255,SS ETL DCO Actuals Forecast,LoadFromVault
-1727,255,SS ETL DCO Actuals Forecast,SelectValues
-1728,255,SS ETL DCO Actuals Forecast,SelectValues
-1729,255,SS ETL DCO Actuals Forecast,UnionAll
-1730,255,SS ETL DCO Actuals Forecast,PublishToVault
-1731,278,New ETL Transform,LoadFromVault
-1732,278,New ETL Transform,LoadFromVault
-1733,278,New ETL Transform,SelectValues
-1734,278,New ETL Transform,SelectValues
-1735,278,New ETL Transform,UnionAll
-1736,278,New ETL Transform,PublishToVault
-1737,314,MJ |NPO 23| Combined Dataset,LoadFromVault
-1738,314,MJ |NPO 23| Combined Dataset,LoadFromVault
-1739,314,MJ |NPO 23| Combined Dataset,SelectValues
-1740,314,MJ |NPO 23| Combined Dataset,SelectValues
-1741,314,MJ |NPO 23| Combined Dataset,UnionAll
-1742,314,MJ |NPO 23| Combined Dataset,PublishToVault
-1743,326,CB _ Combined _ dataflow ,LoadFromVault
-1744,326,CB _ Combined _ dataflow ,LoadFromVault
-1745,326,CB _ Combined _ dataflow ,Metadata
-1746,326,CB _ Combined _ dataflow ,UnionAll
-1747,326,CB _ Combined _ dataflow ,PublishToVault
-1748,275,New ETL Transform,LoadFromVault
-1749,275,New ETL Transform,LoadFromVault
-1750,275,New ETL Transform,SelectValues
-1751,275,New ETL Transform,SelectValues
-1752,275,New ETL Transform,UnionAll
-1753,275,New ETL Transform,PublishToVault
-1754,279,BAC | ETL Retail Product Forecast Union,LoadFromVault
-1755,279,BAC | ETL Retail Product Forecast Union,LoadFromVault
-1756,279,BAC | ETL Retail Product Forecast Union,Metadata
-1757,279,BAC | ETL Retail Product Forecast Union,UnionAll
-1758,279,BAC | ETL Retail Product Forecast Union,PublishToVault
-1759,298,JPS | MPO 23 | Combined Dataset,LoadFromVault
-1760,298,JPS | MPO 23 | Combined Dataset,LoadFromVault
-1761,298,JPS | MPO 23 | Combined Dataset,SelectValues
-1762,298,JPS | MPO 23 | Combined Dataset,SelectValues
-1763,298,JPS | MPO 23 | Combined Dataset,UnionAll
-1764,298,JPS | MPO 23 | Combined Dataset,PublishToVault
-1765,277,New ETL Transform,LoadFromVault
-1766,277,New ETL Transform,LoadFromVault
-1767,277,New ETL Transform,SelectValues
-1768,277,New ETL Transform,SelectValues
-1769,277,New ETL Transform,UnionAll
-1770,277,New ETL Transform,PublishToVault
-1771,296,CB| NPO 23| Combined Dataset,LoadFromVault
-1772,296,CB| NPO 23| Combined Dataset,LoadFromVault
-1773,296,CB| NPO 23| Combined Dataset,SelectValues
-1774,296,CB| NPO 23| Combined Dataset,SelectValues
-1775,296,CB| NPO 23| Combined Dataset,UnionAll
-1776,296,CB| NPO 23| Combined Dataset,PublishToVault
-1777,305,JTP | NPO | Combined Dataset,LoadFromVault
-1778,305,JTP | NPO | Combined Dataset,LoadFromVault
-1779,305,JTP | NPO | Combined Dataset,SelectValues
-1780,305,JTP | NPO | Combined Dataset,SelectValues
-1781,305,JTP | NPO | Combined Dataset,UnionAll
-1782,305,JTP | NPO | Combined Dataset,PublishToVault
-1783,328,DGS | NPO Forecast + Actuals,LoadFromVault
-1784,328,DGS | NPO Forecast + Actuals,LoadFromVault
-1785,328,DGS | NPO Forecast + Actuals,Metadata
-1786,328,DGS | NPO Forecast + Actuals,UnionAll
-1787,328,DGS | NPO Forecast + Actuals,PublishToVault
-1788,338,MW NPO | Outdoor Retail Forecast + Actuals,LoadFromVault
-1789,338,MW NPO | Outdoor Retail Forecast + Actuals,LoadFromVault
-1790,338,MW NPO | Outdoor Retail Forecast + Actuals,SelectValues
-1791,338,MW NPO | Outdoor Retail Forecast + Actuals,SelectValues
-1792,338,MW NPO | Outdoor Retail Forecast + Actuals,UnionAll
-1793,338,MW NPO | Outdoor Retail Forecast + Actuals,PublishToVault
-1794,300,TH | NPO 23 | Combine Dataset,LoadFromVault
-1795,300,TH | NPO 23 | Combine Dataset,LoadFromVault
-1796,300,TH | NPO 23 | Combine Dataset,SelectValues
-1797,300,TH | NPO 23 | Combine Dataset,SelectValues
-1798,300,TH | NPO 23 | Combine Dataset,UnionAll
-1799,300,TH | NPO 23 | Combine Dataset,PublishToVault
-1800,201,New ETL Transform,LoadFromVault
-1801,201,New ETL Transform,LoadFromVault
-1802,201,New ETL Transform,SelectValues
-1803,201,New ETL Transform,SelectValues
-1804,201,New ETL Transform,UnionAll
-1805,201,New ETL Transform,PublishToVault
-1806,319,MD + NPO - Outdoor Retail FCST + Actuals,LoadFromVault
-1807,319,MD + NPO - Outdoor Retail FCST + Actuals,LoadFromVault
-1808,319,MD + NPO - Outdoor Retail FCST + Actuals,Metadata
-1809,319,MD + NPO - Outdoor Retail FCST + Actuals,UnionAll
-1810,319,MD + NPO - Outdoor Retail FCST + Actuals,PublishToVault
-1811,329,ADW NPO Forecast + Actuals,LoadFromVault
-1812,329,ADW NPO Forecast + Actuals,LoadFromVault
-1813,329,ADW NPO Forecast + Actuals,Metadata
-1814,329,ADW NPO Forecast + Actuals,UnionAll
-1815,329,ADW NPO Forecast + Actuals,PublishToVault
-1816,128,[Meeting Alerts Demo] Rock Climbing Club Alerts,LoadFromVault
-1817,128,[Meeting Alerts Demo] Rock Climbing Club Alerts,LoadFromVault
-1818,128,[Meeting Alerts Demo] Rock Climbing Club Alerts,MergeJoin
-1819,128,[Meeting Alerts Demo] Rock Climbing Club Alerts,ExpressionEvaluator
-1820,128,[Meeting Alerts Demo] Rock Climbing Club Alerts,Filter
-1821,128,[Meeting Alerts Demo] Rock Climbing Club Alerts,SelectValues
-1822,128,[Meeting Alerts Demo] Rock Climbing Club Alerts,LoadFromVault
-1823,128,[Meeting Alerts Demo] Rock Climbing Club Alerts,MergeJoin
-1824,128,[Meeting Alerts Demo] Rock Climbing Club Alerts,Filter
-1825,128,[Meeting Alerts Demo] Rock Climbing Club Alerts,ExpressionEvaluator
-1826,128,[Meeting Alerts Demo] Rock Climbing Club Alerts,UnionAll
-1827,128,[Meeting Alerts Demo] Rock Climbing Club Alerts,PublishToVault
-1828,24,MetaData | Stage 2 |Datasets and Dataflows,LoadFromVault
-1829,24,MetaData | Stage 2 |Datasets and Dataflows,SelectValues
-1830,24,MetaData | Stage 2 |Datasets and Dataflows,LoadFromVault
-1831,24,MetaData | Stage 2 |Datasets and Dataflows,LoadFromVault
-1832,24,MetaData | Stage 2 |Datasets and Dataflows,LoadFromVault
-1833,24,MetaData | Stage 2 |Datasets and Dataflows,GroupBy
-1834,24,MetaData | Stage 2 |Datasets and Dataflows,MergeJoin
-1835,24,MetaData | Stage 2 |Datasets and Dataflows,ValueMapper
-1836,24,MetaData | Stage 2 |Datasets and Dataflows,MergeJoin
-1837,24,MetaData | Stage 2 |Datasets and Dataflows,Filter
-1838,24,MetaData | Stage 2 |Datasets and Dataflows,SetValueField
-1839,24,MetaData | Stage 2 |Datasets and Dataflows,Filter
-1840,24,MetaData | Stage 2 |Datasets and Dataflows,UnionAll
-1841,24,MetaData | Stage 2 |Datasets and Dataflows,SelectValues
-1842,24,MetaData | Stage 2 |Datasets and Dataflows,LoadFromVault
-1843,24,MetaData | Stage 2 |Datasets and Dataflows,ValueMapper
-1844,24,MetaData | Stage 2 |Datasets and Dataflows,SelectValues
-1845,24,MetaData | Stage 2 |Datasets and Dataflows,MergeJoin
-1846,24,MetaData | Stage 2 |Datasets and Dataflows,MergeJoin
-1847,24,MetaData | Stage 2 |Datasets and Dataflows,GroupBy
-1848,24,MetaData | Stage 2 |Datasets and Dataflows,Constant
-1849,24,MetaData | Stage 2 |Datasets and Dataflows,PublishToVault
-1850,24,MetaData | Stage 2 |Datasets and Dataflows,MergeJoin
-1851,24,MetaData | Stage 2 |Datasets and Dataflows,MergeJoin
-1852,24,MetaData | Stage 2 |Datasets and Dataflows,GroupBy
-1853,24,MetaData | Stage 2 |Datasets and Dataflows,SelectValues
-1854,24,MetaData | Stage 2 |Datasets and Dataflows,Filter
-1855,24,MetaData | Stage 2 |Datasets and Dataflows,Constant
-1856,24,MetaData | Stage 2 |Datasets and Dataflows,GroupBy
-1857,24,MetaData | Stage 2 |Datasets and Dataflows,SelectValues
-1858,24,MetaData | Stage 2 |Datasets and Dataflows,Constant
-1859,24,MetaData | Stage 2 |Datasets and Dataflows,Constant
-1860,24,MetaData | Stage 2 |Datasets and Dataflows,ConcatFields
-1861,24,MetaData | Stage 2 |Datasets and Dataflows,SelectValues
-1862,24,MetaData | Stage 2 |Datasets and Dataflows,MergeJoin
-1863,24,MetaData | Stage 2 |Datasets and Dataflows,GroupBy
-1864,24,MetaData | Stage 2 |Datasets and Dataflows,Metadata
-1865,24,MetaData | Stage 2 |Datasets and Dataflows,ReplaceString
-1866,24,MetaData | Stage 2 |Datasets and Dataflows,Metadata
-1867,24,MetaData | Stage 2 |Datasets and Dataflows,ConcatFields
-1868,24,MetaData | Stage 2 |Datasets and Dataflows,MergeJoin
-1869,24,MetaData | Stage 2 |Datasets and Dataflows,ReplaceString
-1870,24,MetaData | Stage 2 |Datasets and Dataflows,Filter
-1871,24,MetaData | Stage 2 |Datasets and Dataflows,Constant
-1872,24,MetaData | Stage 2 |Datasets and Dataflows,GroupBy
-1873,24,MetaData | Stage 2 |Datasets and Dataflows,SelectValues
-1874,24,MetaData | Stage 2 |Datasets and Dataflows,MergeJoin
-1875,24,MetaData | Stage 2 |Datasets and Dataflows,ReplaceString
-1876,24,MetaData | Stage 2 |Datasets and Dataflows,Constant
-1877,24,MetaData | Stage 2 |Datasets and Dataflows,PublishToVault
-1878,24,MetaData | Stage 2 |Datasets and Dataflows,GroupBy
-1879,24,MetaData | Stage 2 |Datasets and Dataflows,MergeJoin
-1880,24,MetaData | Stage 2 |Datasets and Dataflows,Filter
-1881,24,MetaData | Stage 2 |Datasets and Dataflows,SetValueField
-1882,24,MetaData | Stage 2 |Datasets and Dataflows,Filter
-1883,24,MetaData | Stage 2 |Datasets and Dataflows,UnionAll
-1884,24,MetaData | Stage 2 |Datasets and Dataflows,ValueMapper
-1885,24,MetaData | Stage 2 |Datasets and Dataflows,Constant
-1886,24,MetaData | Stage 2 |Datasets and Dataflows,PublishToVault
-1887,24,MetaData | Stage 2 |Datasets and Dataflows,LoadFromVault
-1888,24,MetaData | Stage 2 |Datasets and Dataflows,LoadFromVault
-1889,24,MetaData | Stage 2 |Datasets and Dataflows,GroupBy
-1890,24,MetaData | Stage 2 |Datasets and Dataflows,SelectValues
-1891,24,MetaData | Stage 2 |Datasets and Dataflows,Metadata
-1892,24,MetaData | Stage 2 |Datasets and Dataflows,MergeJoin
-1893,24,MetaData | Stage 2 |Datasets and Dataflows,Constant
-1894,24,MetaData | Stage 2 |Datasets and Dataflows,Constant
-1895,24,MetaData | Stage 2 |Datasets and Dataflows,ConcatFields
-1896,24,MetaData | Stage 2 |Datasets and Dataflows,GroupBy
-1897,24,MetaData | Stage 2 |Datasets and Dataflows,MergeJoin
-1898,24,MetaData | Stage 2 |Datasets and Dataflows,SelectValues
-1899,24,MetaData | Stage 2 |Datasets and Dataflows,Constant
-1900,24,MetaData | Stage 2 |Datasets and Dataflows,PublishToVault
+126,21,MetaData | Stage 5 | Log Tables,MergeJoin
+127,21,MetaData | Stage 5 | Log Tables,SetValueField
+128,21,MetaData | Stage 5 | Log Tables,Filter
+129,21,MetaData | Stage 5 | Log Tables,SelectValues
+130,21,MetaData | Stage 5 | Log Tables,MergeJoin
+131,21,MetaData | Stage 5 | Log Tables,SetValueField
+132,21,MetaData | Stage 5 | Log Tables,Filter
+133,21,MetaData | Stage 5 | Log Tables,SelectValues
+134,21,MetaData | Stage 5 | Log Tables,MergeJoin
+135,21,MetaData | Stage 5 | Log Tables,SetValueField
+136,21,MetaData | Stage 5 | Log Tables,LoadFromVault
+137,21,MetaData | Stage 5 | Log Tables,Unique
+138,21,MetaData | Stage 5 | Log Tables,DateCalculator
+139,21,MetaData | Stage 5 | Log Tables,NumericCalculator
+140,21,MetaData | Stage 5 | Log Tables,Constant
+141,21,MetaData | Stage 5 | Log Tables,SetValueField
+142,21,MetaData | Stage 5 | Log Tables,Metadata
+143,21,MetaData | Stage 5 | Log Tables,SelectValues
+144,21,MetaData | Stage 5 | Log Tables,MergeJoin
+145,21,MetaData | Stage 5 | Log Tables,Filter
+146,21,MetaData | Stage 5 | Log Tables,SetValueField
+147,21,MetaData | Stage 5 | Log Tables,Filter
+148,21,MetaData | Stage 5 | Log Tables,UnionAll
+149,21,MetaData | Stage 5 | Log Tables,SplitColumnAction
+150,21,MetaData | Stage 5 | Log Tables,SplitColumnAction
+151,21,MetaData | Stage 5 | Log Tables,Filter
+152,21,MetaData | Stage 5 | Log Tables,Constant
+153,21,MetaData | Stage 5 | Log Tables,Filter
+154,21,MetaData | Stage 5 | Log Tables,Constant
+155,21,MetaData | Stage 5 | Log Tables,UnionAll
+156,21,MetaData | Stage 5 | Log Tables,SelectValues
+157,21,MetaData | Stage 5 | Log Tables,LoadFromVault
+158,21,MetaData | Stage 5 | Log Tables,Metadata
+159,21,MetaData | Stage 5 | Log Tables,DateCalculator
+160,21,MetaData | Stage 5 | Log Tables,NumericCalculator
+161,21,MetaData | Stage 5 | Log Tables,Constant
+162,21,MetaData | Stage 5 | Log Tables,SetValueField
+163,21,MetaData | Stage 5 | Log Tables,Metadata
+164,21,MetaData | Stage 5 | Log Tables,SelectValues
+165,21,MetaData | Stage 5 | Log Tables,MergeJoin
+166,21,MetaData | Stage 5 | Log Tables,MergeJoin
+167,21,MetaData | Stage 5 | Log Tables,SplitColumnAction
+168,21,MetaData | Stage 5 | Log Tables,SplitColumnAction
+169,21,MetaData | Stage 5 | Log Tables,Filter
+170,21,MetaData | Stage 5 | Log Tables,Constant
+171,21,MetaData | Stage 5 | Log Tables,Filter
+172,21,MetaData | Stage 5 | Log Tables,Constant
+173,21,MetaData | Stage 5 | Log Tables,UnionAll
+174,21,MetaData | Stage 5 | Log Tables,Filter
+175,21,MetaData | Stage 5 | Log Tables,GroupBy
+176,21,MetaData | Stage 5 | Log Tables,DateCalculator
+177,21,MetaData | Stage 5 | Log Tables,Metadata
+178,21,MetaData | Stage 5 | Log Tables,NumericCalculator
+179,21,MetaData | Stage 5 | Log Tables,SplitColumnAction
+180,21,MetaData | Stage 5 | Log Tables,SplitColumnAction
+181,21,MetaData | Stage 5 | Log Tables,SelectValues
+182,21,MetaData | Stage 5 | Log Tables,PublishToVault
+183,21,MetaData | Stage 5 | Log Tables,UnionAll
+184,21,MetaData | Stage 5 | Log Tables,Filter
+185,21,MetaData | Stage 5 | Log Tables,Filter
+186,21,MetaData | Stage 5 | Log Tables,ReplaceString
+187,21,MetaData | Stage 5 | Log Tables,Filter
+188,21,MetaData | Stage 5 | Log Tables,SetValueField
+189,21,MetaData | Stage 5 | Log Tables,UnionAll
+190,21,MetaData | Stage 5 | Log Tables,Filter
+191,21,MetaData | Stage 5 | Log Tables,Constant
+192,21,MetaData | Stage 5 | Log Tables,Filter
+193,21,MetaData | Stage 5 | Log Tables,Constant
+194,21,MetaData | Stage 5 | Log Tables,UnionAll
+195,21,MetaData | Stage 5 | Log Tables,SelectValues
+196,21,MetaData | Stage 5 | Log Tables,PublishToVault
+197,21,MetaData | Stage 5 | Log Tables,LoadFromVault
+198,21,MetaData | Stage 5 | Log Tables,Constant
+199,21,MetaData | Stage 5 | Log Tables,Constant
+200,21,MetaData | Stage 5 | Log Tables,SelectValues
+201,21,MetaData | Stage 5 | Log Tables,SelectValues
+202,21,MetaData | Stage 5 | Log Tables,UnionAll
+203,21,MetaData | Stage 5 | Log Tables,PublishToVault
+204,21,MetaData | Stage 5 | Log Tables,GroupBy
+205,21,MetaData | Stage 5 | Log Tables,Constant
+206,21,MetaData | Stage 5 | Log Tables,SelectValues
+207,21,MetaData | Stage 5 | Log Tables,MergeJoin
+208,21,MetaData | Stage 5 | Log Tables,SelectValues
+209,21,MetaData | Stage 5 | Log Tables,PublishToVault
+210,21,MetaData | Stage 5 | Log Tables,ConcatFields
+211,21,MetaData | Stage 5 | Log Tables,ConcatFields
+212,21,MetaData | Stage 5 | Log Tables,SelectValues
+213,21,MetaData | Stage 5 | Log Tables,MergeJoin
+214,21,MetaData | Stage 5 | Log Tables,GroupBy
+215,21,MetaData | Stage 5 | Log Tables,Constant
+216,21,MetaData | Stage 5 | Log Tables,SelectValues
+217,21,MetaData | Stage 5 | Log Tables,MergeJoin
+218,21,MetaData | Stage 5 | Log Tables,ReplaceString
+219,21,MetaData | Stage 5 | Log Tables,SelectValues
+220,21,MetaData | Stage 5 | Log Tables,PublishToVault
+221,131,BeastModesGovernance_01_AccumulateHistory,LoadFromVault
+222,131,BeastModesGovernance_01_AccumulateHistory,ExpressionEvaluator
+223,131,BeastModesGovernance_01_AccumulateHistory,PublishToVault
+224,37,EX01_FuzzyMatch_Master,LoadFromVault
+225,37,EX01_FuzzyMatch_Master,LoadFromVault
+226,37,EX01_FuzzyMatch_Master,Unique
+227,37,EX01_FuzzyMatch_Master,SelectValues
+228,37,EX01_FuzzyMatch_Master,Unique
+229,37,EX01_FuzzyMatch_Master,SelectValues
+230,37,EX01_FuzzyMatch_Master,PythonEngineAction
+231,37,EX01_FuzzyMatch_Master,PublishToVault
+232,185,DDX_Landing Page_DEV,LoadFromVault
+233,185,DDX_Landing Page_DEV,WindowAction
+234,185,DDX_Landing Page_DEV,ExpressionEvaluator
+235,185,DDX_Landing Page_DEV,Metadata
+236,185,DDX_Landing Page_DEV,SelectValues
+237,185,DDX_Landing Page_DEV,ExpressionEvaluator
+238,185,DDX_Landing Page_DEV,PublishToVault
