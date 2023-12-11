@@ -233,14 +233,14 @@ async def create_group(
     debug_api: bool = False,
     debug_num_stacks_to_drop: int = 1,
     parent_class: str = None,
+    return_raw: bool = False
 ) -> rgd.ResponseGetData:
     # body : {"name": "GROUP_NAME", "type": "open", "description": ""}
 
     body = generate_body_create_group(
         group_name=group_name, group_type=group_type, description=description
     )
-
-    url = f"https://{auth.domo_instance}.domo.com/api/content/v2/groups/"
+    url = f"https://{auth.domo_instance}.domo.com/api/content/v2/groups"
 
     res = await gd.get_data(
         auth=auth,
@@ -252,6 +252,10 @@ async def create_group(
         parent_class=parent_class,
         num_stacks_to_drop=debug_num_stacks_to_drop,
     )
+
+    if return_raw:
+        return res
+
 
     if not res.is_success:
         try:
@@ -318,12 +322,15 @@ async def update_group(
     return res
 
 # %% ../../nbs/routes/group.ipynb 26
+@gd.route_function
 async def get_group_owners(
     auth: dmda.DomoAuth,
     group_id: str,
     return_raw: bool = False,
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
+    parent_class : str = None,
+    debug_num_stacks_to_drop = 1,
 ) -> rgd.ResponseGetData:
 
     # url = f"https://{auth.domo_instance}.domo.com/api/content/v2/groups/access"
@@ -337,6 +344,8 @@ async def get_group_owners(
         method="POST",
         debug_api=debug_api,
         session=session,
+        parent_class = parent_class,
+        num_stacks_to_drop = debug_num_stacks_to_drop
     )
 
     if return_raw:
@@ -348,12 +357,15 @@ async def get_group_owners(
 
 
 # %% ../../nbs/routes/group.ipynb 29
+@gd.route_function
 async def get_group_membership(
     auth: dmda.DomoAuth,
     group_id: str,
     return_raw: bool = False,
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
+    parent_class : str = None,
+    debug_num_stacks_to_drop : int = 1
 ) -> rgd.ResponseGetData:
 
     # url = f"https://{auth.domo_instance}.domo.com/api/content/v2/groups/access"
@@ -365,6 +377,8 @@ async def get_group_membership(
         method="GET",
         debug_api=debug_api,
         session=session,
+        parent_class = parent_class,
+        num_stacks_to_drop = debug_num_stacks_to_drop
     )
 
     if return_raw:
