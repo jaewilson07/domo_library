@@ -6,6 +6,7 @@ __all__ = ['CreateUser_MissingRole', 'DownloadAvatar_NoAvatarKey', 'DomoUser', '
 # %% ../../nbs/classes/50_DomoUser.ipynb 2
 from domolibrary.routes.user import (
     UserProperty,
+    
     UserProperty_Type,
     GetUser_Error,
     SearchUser_NoResults,
@@ -145,8 +146,8 @@ async def get_role(
 ):
     import domolibrary.classes.DomoRole as dmr
     self.role = await dmr.DomoRole.get_by_id(
-        role_id=domo_user.role_id,
-        auth=auth,
+        role_id=self.role_id,
+        auth=self.auth,
         debug_api=debug_api,
         debug_num_stacks_to_drop=debug_num_stacks_to_drop,
         session=session,
