@@ -5,6 +5,7 @@ from __future__ import annotations
 
 from enum import Enum
 from dataclasses import dataclass
+from typing import List
 
 import datetime as dt
 import domolibrary.utils.DictDot as util_dd

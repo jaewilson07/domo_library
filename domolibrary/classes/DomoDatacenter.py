@@ -90,7 +90,7 @@ async def search_datasets(
     if return_raw or len(json_list) == 0:
         return json_list
 
-    return await ce.gather_with_concurrency( n = 60,
+    return await ce.gather_with_concurrency( n = 20,
         *[
             dmds.DomoDataset.get_from_id(
                 dataset_id=json_obj.get("databaseId"),
