@@ -146,7 +146,7 @@ async def get_actions(self : DomoDataflow_History_Execution,
 # %% ../../nbs/classes/50_DomoDataflow_History.ipynb 13
 @dataclass
 class DomoDataflow_History:
-    auth : dmda.DomoAuth
+    auth : dmda.DomoAuth = field(repr = False)
     dataflow_id : int = field(repr = False)
 
     dataflow : None = field(repr = False, default = None)

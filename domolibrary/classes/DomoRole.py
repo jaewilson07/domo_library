@@ -80,15 +80,21 @@ async def get_by_id(
     session: httpx.AsyncClient = None,
     debug_api: bool = False,
     debug_num_stacks_to_drop: int = 1,
-    return_raw: bool = False
+    return_raw: bool = False,
 ):
-    res = await role_routes.get_role_by_id(role_id = role_id, auth = auth, debug_api = debug_api , debug_num_stacks_to_drop = debug_num_stacks_to_drop)
-    
+    res = await role_routes.get_role_by_id(
+        role_id=role_id,
+        auth=auth,
+        debug_api=debug_api,
+        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+        session=session,
+        parent_class=cls.__name__,
+    )
+
     if return_raw:
         return res.response
 
-    return cls._from_json(res.response , auth = auth)
-    
+    return cls._from_json(res.response, auth=auth)
 
 # %% ../../nbs/classes/50_DomoRole.ipynb 8
 @patch_to(DomoRole)
@@ -103,7 +109,11 @@ async def get_grants(
     auth = auth or self.auth
     role_id = role_id or self.id
     res = await role_routes.get_role_grants(
-        auth=auth, role_id=role_id, debug_api=debug_api, session=session
+        auth=auth,
+        role_id=role_id,
+        debug_api=debug_api,
+        session=session,
+        parent_class=self.__class__.__name__,
     )
 
     if return_raw:
@@ -130,6 +140,8 @@ async def set_grants(
     role_id: str = None,
     auth: dmda.DomoAuth = None,
     debug_api: bool = False,
+    debug_num_stacks_to_drop: bool = 2,
+    session: httpx.AsyncClient = None,
 ):
     auth = auth or self.auth
     role_id = role_id or self.id
@@ -157,12 +169,15 @@ async def set_grants(
         role_id=role_id,
         role_grant_ls=[domo_grant.id for domo_grant in domo_grants],
         debug_api=debug_api,
+        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+        session=session,
+        parent_class=self.__class__.__name__,
     )
 
     # validate grants
     await asyncio.sleep(2)
 
-    all_grants = await self.get_grants(auth=auth, debug_api=debug_api)
+    all_grants = await self.get_grants(auth=auth, debug_api=debug_api, session=session)
 
     missing_grants = [grant.id for grant in domo_grants if grant not in all_grants]
 
@@ -225,7 +240,7 @@ async def add_user(
     role_id = role_id or self.id
     auth = auth or self.auth
 
-    res = await role_routes.role_membership_add_users(
+    await role_routes.role_membership_add_users(
         auth=auth,
         role_id=role_id,
         user_list=[user.id],
@@ -335,8 +350,6 @@ async def get_roles(
     if return_raw:
         return res
 
-    role_ls = res.response
-
     default_role_res = await role_routes.get_default_role(
         auth=auth, session=session, debug_api=debug_api
     )
@@ -373,7 +386,12 @@ async def search_role(
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
 ):
-    all_roles = await DomoRoles.get_roles(auth=auth)
+    all_roles = await DomoRoles.get_roles(
+        auth=auth, debug_api=debug_api, session=session, return_raw=return_raw
+    )
+
+    if return_raw:
+        return all_roles
 
     if role_name:
         domo_role = next((role for role in all_roles if role.name == role_name), None)
@@ -453,6 +471,8 @@ async def upsert_role(
     debug_prn: bool = False,
     session: httpx.AsyncClient = None,
 ):
+    domo_role = None
+    
     try:
         domo_role = await DomoRoles.search_role(
             role_name=name,
@@ -468,7 +488,7 @@ async def upsert_role(
 
     except SearchRole_NotFound as e:
         if debug_prn:
-            print(f"No role match -- creating new role in {auth.domo_instance}")
+            print(f"No role match -- creating new role in {auth.domo_instance} - {e}")
 
         domo_role = await DomoRoles.create_role(
             auth=auth,
@@ -478,12 +498,12 @@ async def upsert_role(
             session=session,
         )
 
-    finally:
-        if grant_ls:
-            grant_ls = domo_role._valid_grant_ls(grant_ls)
-            await domo_role.set_grants(grant_ls=grant_ls)
 
-        return domo_role
+    if grant_ls:
+        grant_ls = domo_role._valid_grant_ls(grant_ls)
+        await domo_role.set_grants(grant_ls=grant_ls)
+
+    return domo_role
 
 # %% ../../nbs/classes/50_DomoRole.ipynb 50
 @patch_to(DomoRole)

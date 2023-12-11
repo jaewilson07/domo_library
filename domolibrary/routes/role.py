@@ -22,6 +22,7 @@ class Role_NotRetrieved(de.DomoError):
         status,
         message,
         role_id=None,
+        parent_class = None
     ):
         super().__init__(
             domo_instance=domo_instance,
@@ -29,6 +30,7 @@ class Role_NotRetrieved(de.DomoError):
             function_name=function_name,
             status=status,
             message=message,
+            parent_class = parent_class
         )
 
 
@@ -41,6 +43,7 @@ class Role_CRUD_Error(de.DomoError):
         status,
         message,
         role_id=None,
+        parent_class = None
     ):
         super().__init__(
             domo_instance=domo_instance,
@@ -48,6 +51,7 @@ class Role_CRUD_Error(de.DomoError):
             function_name=function_name,
             status=status,
             message=message,
+            parent_class = parent_class
         )
 
 # %% ../../nbs/routes/role.ipynb 5
