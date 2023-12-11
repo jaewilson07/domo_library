@@ -19,29 +19,44 @@ import domolibrary.client.DomoError as de
 # %% ../../nbs/routes/group.ipynb 4
 class SearchGroups_Error(de.DomoError):
     def __init__(
-        self, status, message, domo_instance, function_name="search_groups_by_name"
+        self,
+        status,
+        message,
+        domo_instance,
+        function_name="search_groups_by_name",
+        parent_class: str = None,
     ):
         super().__init__(
             function_name=function_name,
             status=status,
             message=message,
             domo_instance=domo_instance,
+            parent_class=parent_class,
         )
 
 
+@gd.route_function
 async def search_groups_by_name(
     auth: dmda.DomoAuth,
     search_name: str,
     is_exact_match: bool = True,
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
+    debug_num_stacks_to_drop=1,
+    parent_class: str = None,
 ) -> rgd.ResponseGetData:
     """uses /content/v2/groups/grouplist api -- includes user details"""
 
     url = f"https://{auth.domo_instance}.domo.com/api/content/v2/groups/grouplist?ascending=true&search={search_name}&sort=name "
 
     res = await gd.get_data(
-        auth=auth, url=url, method="GET", debug_api=debug_api, session=session
+        auth=auth,
+        url=url,
+        method="GET",
+        debug_api=debug_api,
+        session=session,
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
     )
     if not is_exact_match:
         return res
@@ -56,17 +71,22 @@ async def search_groups_by_name(
             status=res.status,
             message=f"There is no exact match for {search_name}",
             domo_instance=auth.domo_instance,
+            parent_class=parent_class,
+            function_name=res.traceback_details.function_name,
         )
     res.response = match_group
 
     return res
 
 # %% ../../nbs/routes/group.ipynb 7
+@gd.route_function
 async def get_all_groups(
     auth: dmda.DomoAuth, 
     session: httpx.AsyncClient = None,
     debug_api: bool = False, 
-    debug_loop : bool = False
+    debug_loop : bool = False,
+    debug_num_stacks_to_drop : int = 1,
+    parent_class :str = None
 ) -> rgd.ResponseGetData:
     """uses /content/v2/groups/grouplist api -- includes user details"""
 
@@ -89,17 +109,22 @@ async def get_all_groups(
         auth=auth, 
         session=session,
         debug_loop =debug_loop,
-        debug_api = debug_api
+        debug_api = debug_api,
+        parent_class = parent_class,
+        debug_num_stacks_to_drop = debug_num_stacks_to_drop
     )
 
     return res
 
 # %% ../../nbs/routes/group.ipynb 10
+@gd.route_function
 async def get_group_by_id(
     auth: dmda.DomoAuth,
     group_id: str,
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
+    parent_class : str = None,
+    debug_num_stacks_to_drop : int = 1
 ) -> rgd.ResponseGetData:
 
     """uses /content/v2/groups/ api -- does not return details"""
@@ -107,7 +132,9 @@ async def get_group_by_id(
     url = f"https://{auth.domo_instance}.domo.com/api/content/v2/groups/{group_id}"
 
     res = await gd.get_data(
-        auth=auth, url=url, method="GET", debug_api=debug_api, session=session
+        auth=auth, url=url, method="GET", debug_api=debug_api, session=session,
+        parent_class = parent_class,
+        num_stacks_to_drop = debug_num_stacks_to_drop
     )
 
     if res.status == 404 and res.response == "Not Found":
@@ -121,23 +148,43 @@ async def get_group_by_id(
     return res
 
 # %% ../../nbs/routes/group.ipynb 12
-async def toggle_system_group_visibility(auth,
-                                         is_hide_system_groups: bool, 
-                                         debug_api: bool = False):
-
+@gd.route_function
+async def toggle_system_group_visibility(
+    auth,
+    is_hide_system_groups: bool,
+    debug_api: bool = False,
+    debug_num_stacks_to_drop=1,
+    parent_class: str = None,
+    session: httpx.AsyncClient = None,
+):
     print(
-        f"toggling group visiblity in {auth.domo_instance} { 'hiding system groups' if is_hide_system_groups else 'show system groups'}")
+        f"toggling group visiblity in {auth.domo_instance} { 'hiding system groups' if is_hide_system_groups else 'show system groups'}"
+    )
 
-    url = f'https://{auth.domo_instance}.domo.com/api/content/v2/groups/setVisibility'
+    url = f"https://{auth.domo_instance}.domo.com/api/content/v2/groups/setVisibility"
 
-    await gd.get_data(url=url,
-                      method='POST', auth=auth,
-                      body={"type": "system", "hidden": is_hide_system_groups})
+    await gd.get_data(
+        url=url,
+        method="POST",
+        auth=auth,
+        body={"type": "system", "hidden": is_hide_system_groups},
+        debug_api=debug_api,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
+        session=session,
+        parent_class=parent_class,
+    )
 
-    url = f'https://{auth.domo_instance}.domo.com/api/customer/v1/properties/groups.system.enabled'
-    
-    return await gd.get_data(url=url, auth=auth, method='GET')
+    url = f"https://{auth.domo_instance}.domo.com/api/customer/v1/properties/groups.system.enabled"
 
+    return await gd.get_data(
+        url=url,
+        auth=auth,
+        method="GET",
+        debug_api=debug_api,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
+        session=session,
+        parent_class=parent_class,
+    )
 
 # %% ../../nbs/routes/group.ipynb 16
 class GroupType_Enum(Enum):
@@ -159,22 +206,33 @@ def generate_body_create_group(
 
 # %% ../../nbs/routes/group.ipynb 19
 class CreateGroup_Error(de.DomoError):
-    def __init__(self, status, message, domo_instance, function_name="create_group"):
+    def __init__(
+        self,
+        status,
+        message,
+        domo_instance,
+        function_name="create_group",
+        parent_class: str = None,
+    ):
         super().__init__(
             function_name=function_name,
             status=status,
             message=message,
             domo_instance=domo_instance,
+            parent_class=parent_class,
         )
 
 
+@gd.route_function
 async def create_group(
     auth: dmda.DomoAuth,
     group_name: str,
     group_type: str = "open",
     description: str = "",
-    debug_api: bool = False,
     session: httpx.AsyncClient = None,
+    debug_api: bool = False,
+    debug_num_stacks_to_drop: int = 1,
+    parent_class: str = None,
 ) -> rgd.ResponseGetData:
     # body : {"name": "GROUP_NAME", "type": "open", "description": ""}
 
@@ -191,31 +249,38 @@ async def create_group(
         body=body,
         debug_api=debug_api,
         session=session,
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
     if not res.is_success:
-        group_exists = await search_groups_by_name(
-            auth=auth, search_name=group_name, is_exact_match=True
-        )
-        if group_exists.is_success:
-            raise CreateGroup_Error(
-                status=res.status,
-                message=f"{group_name} already exists. Choose a different group_name",
-                domo_instance=auth.domo_instance,
-                function_name="create_group",
+        try:
+            group_exists = await search_groups_by_name(
+                auth=auth, search_name=group_name, is_exact_match=True
             )
 
-    if not res.is_success:
-        raise CreateGroup_Error(
-            status=res.status,
-            message=res.response,
-            domo_instance=auth.domo_instance,
-            function_name="create_group",
-        )
+            if group_exists.is_success:
+                raise CreateGroup_Error(
+                    status=res.status,
+                    message=f"{group_name} already exists. Choose a different group_name",
+                    function_name=res.traceback_details.function_name,
+                    parent_class=parent_class,
+                    domo_instance = auth.domo_instance
+                )
+
+        except SearchGroups_Error as e:
+            raise CreateGroup_Error(
+                status=res.status,
+                message=res.response,
+                domo_instance=auth.domo_instance,
+                function_name=res.traceback_details.function_name,
+                parent_class=parent_class,
+            )
 
     return res
 
 # %% ../../nbs/routes/group.ipynb 22
+@gd.route_function
 async def update_group(
     auth: dmda.DomoAuth,
     group_id: int,
@@ -224,6 +289,8 @@ async def update_group(
     description: str = None,
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
+    debug_num_stacks_to_drop=  1,
+    parent_class: str = None
 ) -> rgd.ResponseGetData:
 
     body = [
@@ -244,6 +311,8 @@ async def update_group(
         body=body,
         debug_api=debug_api,
         session=session,
+        parent_class = parent_class,
+        num_stacks_to_drop = debug_num_stacks_to_drop
     )
 
     return res
@@ -346,6 +415,7 @@ def generate_body_update_group_membership(group_id: str,
 
 
 # %% ../../nbs/routes/group.ipynb 35
+gd.route_function
 async def update_group_membership(
     auth: dmda.DomoAuth,
     group_id: str,
@@ -355,6 +425,8 @@ async def update_group_membership(
     remove_owner_arr: list[dict] = None,
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
+    parent_class:str = None,
+    debug_num_stacks_to_drop : int = 1,
 ) -> rgd.ResponseGetData:
 
     """
@@ -384,6 +456,9 @@ async def update_group_membership(
         body=body,
         debug_api=debug_api,
         session=session,
+        num_stacks_to_drop = debug_num_stacks_to_drop,
+        parent_class = parent_class,
+
     )
 
     return res
