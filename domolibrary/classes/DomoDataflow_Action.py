@@ -8,9 +8,12 @@ from dataclasses import dataclass
 
 import datetime as dt
 import domolibrary.utils.DictDot as util_dd
+import domolibrary.utils.convert as ct
+
+from nbdev.showdoc import  patch_to
 
 # %% auto 0
-__all__ = ['DomoDataflow_Action_Type', 'DomoDataflow_Action', 'DomoDataflow_ActionResult']
+__all__ = ['DomoDataflow_Action_Type', 'DomoAction', 'DomoDataflow_Action', 'DomoDataflow_ActionResult']
 
 # %% ../../nbs/classes/50_DomoDataflow_Action.ipynb 4
 class DomoDataflow_Action_Type(Enum):
@@ -18,17 +21,19 @@ class DomoDataflow_Action_Type(Enum):
     PublishToVault = "PublishToVault"
     GenerateTableAction = "GenerateTableAction"
 
+@dataclass 
+class DomoAction:
+    id: str
+    type: str = None
+    name: str = None
 
 @dataclass
-class DomoDataflow_Action:
-    id: str
-
-    type: str = None
-    depends_on : str = None
-    name: str = None
-    
+class DomoDataflow_Action(DomoAction):
     datasource_id: str  = None
     sql: str = None
+
+    depends_on : List[str] = None
+    parent_actions : List[dict] = None
 
 
     @classmethod
@@ -53,22 +58,44 @@ class DomoDataflow_Action:
 
 
 
-# %% ../../nbs/classes/50_DomoDataflow_Action.ipynb 7
+# %% ../../nbs/classes/50_DomoDataflow_Action.ipynb 5
+@patch_to(DomoDataflow_Action)
+def get_parents(self: DomoDataflow_Action, domo_actions: List[DomoDataflow_Action]):
+    if self.depends_on and len(self.depends_on) > 0:
+        self.parent_actions = [
+            parent_action
+            for depends_id in self.depends_on
+            for parent_action in domo_actions
+            if parent_action.id == depends_id
+        ]
+    
+    if self.parent_actions:
+        [parent.get_parents(domo_actions ) for parent in self.parent_actions if parent.depends_on]
+            
+
+    return self.parent_actions
+
+# %% ../../nbs/classes/50_DomoDataflow_Action.ipynb 8
 @dataclass
-class DomoDataflow_ActionResult(DomoDataflow_Action):
+class DomoDataflow_ActionResult(DomoAction):
     is_success : bool = None
     rows_processed : int = None
     begin_time : dt.datetime = None
     end_time : dt.datetime = None
+    duration_in_sec : int  = None
 
+    def __post_init__(self):
+        if self.begin_time and self.end_time:
+            self.duration_in_sec =  (self.end_time - self.begin_time).total_seconds()
+            
     @classmethod
     def _from_json(cls, obj: dict):
         return  cls(
             id=obj.get('actionId'),
             type = obj.get('type'),
             is_success = obj.get('wasSuccessful'),
-            begin_time = obj.get('beginTime', None),
-            end_time = obj.get('endTime', None),
+            begin_time = ct.convert_epoch_millisecond_to_datetime(obj.get('beginTime', None)),
+            end_time = ct.convert_epoch_millisecond_to_datetime(obj.get('endTime', None)),
             rows_processed =  obj.get('rowsProcessed', None),
         )
 
