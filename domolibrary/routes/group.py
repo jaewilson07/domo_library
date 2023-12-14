@@ -2,21 +2,21 @@
 
 # %% auto 0
 __all__ = ['SearchGroups_Error', 'search_groups_by_name', 'get_all_groups', 'get_group_by_id', 'toggle_system_group_visibility',
-           'GroupType_Enum', 'generate_body_create_group', 'CreateGroup_Error', 'create_group', 'update_group',
-           'get_group_owners', 'get_group_membership', 'generate_body_update_group_membership',
+           'Group_CRUD_Error', 'GroupType_Enum', 'generate_body_create_group', 'create_group', 'update_group',
+           'delete_groups', 'get_group_owners', 'get_group_membership', 'generate_body_update_group_membership',
            'update_group_membership']
 
 # %% ../../nbs/routes/group.ipynb 2
 import httpx
 from enum import Enum
-from typing import Union
+from typing import Union, List
 
 import domolibrary.client.get_data as gd
 import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 
-# %% ../../nbs/routes/group.ipynb 4
+# %% ../../nbs/routes/group.ipynb 5
 class SearchGroups_Error(de.DomoError):
     def __init__(
         self,
@@ -78,7 +78,7 @@ async def search_groups_by_name(
 
     return res
 
-# %% ../../nbs/routes/group.ipynb 7
+# %% ../../nbs/routes/group.ipynb 8
 @gd.route_function
 async def get_all_groups(
     auth: dmda.DomoAuth, 
@@ -116,7 +116,7 @@ async def get_all_groups(
 
     return res
 
-# %% ../../nbs/routes/group.ipynb 10
+# %% ../../nbs/routes/group.ipynb 11
 @gd.route_function
 async def get_group_by_id(
     auth: dmda.DomoAuth,
@@ -147,7 +147,7 @@ async def get_group_by_id(
 
     return res
 
-# %% ../../nbs/routes/group.ipynb 12
+# %% ../../nbs/routes/group.ipynb 13
 @gd.route_function
 async def toggle_system_group_visibility(
     auth,
@@ -186,7 +186,24 @@ async def toggle_system_group_visibility(
         parent_class=parent_class,
     )
 
-# %% ../../nbs/routes/group.ipynb 16
+# %% ../../nbs/routes/group.ipynb 17
+class Group_CRUD_Error(de.DomoError):
+    def __init__(
+        self,
+        status,
+        message,
+        domo_instance,
+        function_name="create_group",
+        parent_class: str = None,
+    ):
+        super().__init__(
+            function_name=function_name,
+            status=status,
+            message=message,
+            domo_instance=domo_instance,
+            parent_class=parent_class,
+        )
+
 class GroupType_Enum(Enum):
     OPEN = "open"
     ADHOC = "adHoc"
@@ -204,25 +221,7 @@ def generate_body_create_group(
 
     return body
 
-# %% ../../nbs/routes/group.ipynb 19
-class CreateGroup_Error(de.DomoError):
-    def __init__(
-        self,
-        status,
-        message,
-        domo_instance,
-        function_name="create_group",
-        parent_class: str = None,
-    ):
-        super().__init__(
-            function_name=function_name,
-            status=status,
-            message=message,
-            domo_instance=domo_instance,
-            parent_class=parent_class,
-        )
-
-
+# %% ../../nbs/routes/group.ipynb 20
 @gd.route_function
 async def create_group(
     auth: dmda.DomoAuth,
@@ -264,7 +263,7 @@ async def create_group(
             )
 
             if group_exists.is_success:
-                raise CreateGroup_Error(
+                raise Group_CRUD_Error(
                     status=res.status,
                     message=f"{group_name} already exists. Choose a different group_name",
                     function_name=res.traceback_details.function_name,
@@ -273,7 +272,7 @@ async def create_group(
                 )
 
         except SearchGroups_Error as e:
-            raise CreateGroup_Error(
+            raise Group_CRUD_Error(
                 status=res.status,
                 message=res.response,
                 domo_instance=auth.domo_instance,
@@ -283,7 +282,7 @@ async def create_group(
 
     return res
 
-# %% ../../nbs/routes/group.ipynb 22
+# %% ../../nbs/routes/group.ipynb 23
 @gd.route_function
 async def update_group(
     auth: dmda.DomoAuth,
@@ -323,6 +322,49 @@ async def update_group(
 
 # %% ../../nbs/routes/group.ipynb 26
 @gd.route_function
+async def delete_groups(
+    auth: dmda.DomoAuth,
+    group_ids: List[str], # list of group_ids
+    session: httpx.AsyncClient = None,
+    debug_api: bool = False,
+    debug_num_stacks_to_drop: int = 1,
+    parent_class: str = None,
+    return_raw: bool = False
+) -> rgd.ResponseGetData:
+
+    group_ids = group_ids if isinstance(group_ids , list) else [str(group_ids)]
+    
+    url = f"https://{auth.domo_instance}.domo.com/api/content/v2/groups"
+
+    res = await gd.get_data(
+        auth=auth,
+        url=url,
+        method="DELETE",
+        body = group_ids ,
+        debug_api=debug_api,
+        session=session,
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
+    )
+
+    if return_raw:
+        return res
+
+
+    if not res.is_success:
+        raise Group_CRUD_Error(
+                    status=res.status,
+                    message=f"failed to delete {', '.join(group_ids)}",
+                    function_name=res.traceback_details.function_name,
+                    parent_class=parent_class,
+                    domo_instance = auth.domo_instance
+                )
+    
+    res.response = f"deleted {', '.join(group_ids)} from {auth.domo_instance}"
+    return res
+
+# %% ../../nbs/routes/group.ipynb 30
+@gd.route_function
 async def get_group_owners(
     auth: dmda.DomoAuth,
     group_id: str,
@@ -356,7 +398,7 @@ async def get_group_owners(
 
 
 
-# %% ../../nbs/routes/group.ipynb 29
+# %% ../../nbs/routes/group.ipynb 33
 @gd.route_function
 async def get_group_membership(
     auth: dmda.DomoAuth,
@@ -387,7 +429,7 @@ async def get_group_membership(
     res.response = res.response.get('groupUserList')
     return res
 
-# %% ../../nbs/routes/group.ipynb 33
+# %% ../../nbs/routes/group.ipynb 37
 def generate_body_update_group_membership_entity(user_id: Union[str, int],
                                                  user_type: str  # USER or GROUP
                                                  ):
@@ -397,7 +439,7 @@ def generate_body_update_group_membership_entity(user_id: Union[str, int],
         return {"type": "GROUP", "id": int(user_id)}
 
 
-# %% ../../nbs/routes/group.ipynb 34
+# %% ../../nbs/routes/group.ipynb 38
 def generate_body_update_group_membership(group_id: str,
                                           add_member_arr: list[str] = None,
                                           remove_member_arr: list[str] = None,
@@ -428,7 +470,7 @@ def generate_body_update_group_membership(group_id: str,
     return [body]
 
 
-# %% ../../nbs/routes/group.ipynb 35
+# %% ../../nbs/routes/group.ipynb 39
 gd.route_function
 async def update_group_membership(
     auth: dmda.DomoAuth,

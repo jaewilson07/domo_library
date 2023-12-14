@@ -12,7 +12,7 @@ import time
 import httpx
 import aiohttp
 import asyncio
-
+import json
 
 from pprint import pprint
 
@@ -202,14 +202,26 @@ async def get_data(
             if isinstance(body, dict) or isinstance(body, list):
                 if debug_api:
                     print("get_data: sending json")
-                res = await getattr(session, method.lower())(
-                    url=url,
-                    headers=headers,
-                    json=body,
-                    params=params,
-                    follow_redirects=is_follow_redirects,
-                    timeout=timeout,
-                )
+
+                if method.lower() == "delete":
+                    res = httpx.request(
+                        method="DELETE",
+                        url=url,
+                        headers=headers,
+                        content=json.dumps(body),
+                        params=params,
+                        follow_redirects=is_follow_redirects,
+                        timeout=timeout,
+                    )
+                else:
+                    res = await getattr(session, method.lower())(
+                        url=url,
+                        headers=headers,
+                        json=body,
+                        params=params,
+                        follow_redirects=is_follow_redirects,
+                        timeout=timeout,
+                    )
 
             elif body:
                 if debug_api:
