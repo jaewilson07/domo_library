@@ -296,28 +296,46 @@ async def update_group(
     parent_class: str = None
 ) -> rgd.ResponseGetData:
 
-    body = [
-        {
-            "groupId": int(group_id),
-            "name": group_name,
-            "type": group_type,
-            "description": description,
-        }
-    ]
+    s = {"groupId": int(group_id)}
+    
+    if group_name: s.update({"name": group_name})
+    
+    if group_type: s.update({"type": group_type})
+    
+    if description: s.update({"description": description})
 
-    url = f"https://{auth.domo_instance}.domo.com/api/content/v2/groups/"
-
+    url = f"https://{auth.domo_instance}.domo.com/api/content/v2/groups"
+    
     res = await gd.get_data(
         auth=auth,
         url=url,
         method="PUT",
-        body=body,
+        body=[s],
         debug_api=debug_api,
         session=session,
         parent_class = parent_class,
         num_stacks_to_drop = debug_num_stacks_to_drop
     )
+    
+    if group_name and res.status == 400:
+        raise Group_CRUD_Error(
+                status=res.status,
+                message="are you trying to create an account with a duplicate name?",
+                domo_instance=auth.domo_instance,
+                function_name=res.traceback_details.function_name,
+                parent_class=parent_class,
+            )
 
+    if not res.is_success:
+        raise Group_CRUD_Error(
+                status=res.status,
+                message=res.response,
+                domo_instance=auth.domo_instance,
+                function_name=res.traceback_details.function_name,
+                parent_class=parent_class,
+            )
+
+    res.response = f"updated {group_id} from {auth.domo_instance}"
     return res
 
 # %% ../../nbs/routes/group.ipynb 26
