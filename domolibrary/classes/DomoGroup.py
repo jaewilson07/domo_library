@@ -26,11 +26,11 @@ import domolibrary.routes.group as group_routes
 import domolibrary.classes.DomoUser as dmu
 
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 3
+# %% ../../nbs/classes/50_DomoGroup.ipynb 4
 from ..routes.group import GroupType_Enum, SearchGroups_Error
 
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 5
+# %% ../../nbs/classes/50_DomoGroup.ipynb 6
 class UpdateGroupMembership(de.DomoError):
     def __init__(self, member_name, group_name, domo_instance):
         super().__init__(domo_instance=domo_instance,
@@ -139,7 +139,7 @@ class GroupMembership:
         # set
 
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 7
+# %% ../../nbs/classes/50_DomoGroup.ipynb 8
 @patch_to(GroupMembership)
 async def get_owners(
     self: GroupMembership,
@@ -175,7 +175,7 @@ async def get_owners(
     # return domo_users
 
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 8
+# %% ../../nbs/classes/50_DomoGroup.ipynb 9
 @patch_to(GroupMembership)
 async def get_members(
     self: GroupMembership,
@@ -205,7 +205,7 @@ async def get_members(
     return self.group.members_ls
 
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 10
+# %% ../../nbs/classes/50_DomoGroup.ipynb 11
 @patch_to(GroupMembership)
 async def add_members(
     self: GroupMembership,
@@ -272,7 +272,7 @@ async def set_members(
     return await self.get_members()
 
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 11
+# %% ../../nbs/classes/50_DomoGroup.ipynb 12
 @patch_to(GroupMembership)
 async def add_owners(
     self: GroupMembership,
@@ -339,7 +339,7 @@ async def set_owners(
     return await self.get_owners()
 
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 13
+# %% ../../nbs/classes/50_DomoGroup.ipynb 14
 @dataclass
 class DomoGroup:
     auth: dmda.DomoAuth = field(repr=False, default=None)
@@ -406,7 +406,7 @@ class DomoGroup:
 
         return domo_groups
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 15
+# %% ../../nbs/classes/50_DomoGroup.ipynb 16
 @patch_to(DomoGroup, cls_method=True)
 async def get_by_id(
     cls,
@@ -433,7 +433,7 @@ async def get_by_id(
     return dg
 
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 18
+# %% ../../nbs/classes/50_DomoGroup.ipynb 19
 @patch_to(DomoGroup, cls_method=True)
 async def search_by_name(
     cls,
@@ -462,7 +462,7 @@ async def search_by_name(
 
     return cls._from_group_json(auth=auth, json_obj=res.response)
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 40
+# %% ../../nbs/classes/50_DomoGroup.ipynb 41
 class DomoGroups:
     def __init__(self):
         pass
@@ -475,7 +475,7 @@ class DomoGroups:
             for json_obj in json_list
         ]
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 42
+# %% ../../nbs/classes/50_DomoGroup.ipynb 43
 @patch_to(DomoGroups, cls_method=True)
 async def get_all_groups(
     cls: DomoGroups,
@@ -497,7 +497,7 @@ async def get_all_groups(
         return []
 
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 46
+# %% ../../nbs/classes/50_DomoGroup.ipynb 47
 @patch_to(DomoGroups, cls_method=True)
 async def toggle_system_group_visibility(cls: DomoGroups,auth: dmda.DomoAuth,
                                          is_hide_system_groups: bool,
@@ -508,7 +508,7 @@ async def toggle_system_group_visibility(cls: DomoGroups,auth: dmda.DomoAuth,
                                                 debug_api=debug_api)
 
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 50
+# %% ../../nbs/classes/50_DomoGroup.ipynb 51
 @patch_to(GroupMembership)
 async def add_owner_manage_groups_role(self : GroupMembership):
     
@@ -520,7 +520,7 @@ async def add_owner_manage_groups_role(self : GroupMembership):
 
     await DomoGroups.toggle_system_group_visibility(auth = self.group.auth, is_hide_system_groups=True)
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 52
+# %% ../../nbs/classes/50_DomoGroup.ipynb 53
 @patch_to(DomoGroup, cls_method=True)
 async def create_from_name(
     cls: DomoGroup,
@@ -549,7 +549,7 @@ async def create_from_name(
     return domo_group
 
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 56
+# %% ../../nbs/classes/50_DomoGroup.ipynb 57
 @patch_to(DomoGroup)
 async def update_metadata(
     self: DomoGroup,
@@ -585,7 +585,7 @@ async def update_metadata(
 
     return self
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 61
+# %% ../../nbs/classes/50_DomoGroup.ipynb 62
 @patch_to(DomoGroup, cls_method=True)
 async def upsert(
     cls: DomoGroup,
@@ -624,3 +624,25 @@ async def upsert(
                 debug_api=debug_api, session=session)
 
         return e
+
+# %% ../../nbs/classes/50_DomoGroup.ipynb 66
+@patch_to(DomoGroup )
+async def delete(
+    self: DomoGroup,
+    debug_api: bool = False,
+    debug_num_stacks_to_drop = 2,
+    session: httpx.AsyncClient = None,
+):
+
+    res = await group_routes.delete_groups(
+            auth=self.auth,
+            group_ids = [str(self.id)],
+            debug_api =debug_api,
+            debug_num_stacks_to_drop = debug_num_stacks_to_drop,
+            parent_class = self.__class__.__name__,
+            session=session)
+
+    res.parent_class = self.__class__.__name__
+
+    return res
+    
