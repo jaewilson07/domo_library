@@ -609,6 +609,7 @@ async def upsert(
         )
 
     except group_routes.SearchGroups_Error as e:
+        
         return await DomoGroup.create_from_name(
             auth=auth,
             group_name=group_name,
