@@ -591,37 +591,32 @@ async def upsert(
     cls: DomoGroup,
     auth: dmda.DomoAuth,
     group_name: str,
-    group_type: str = None, # if create_group, use routes.class.GroupType_Enum
+    group_type: str = None,  # if create_group, use routes.class.GroupType_Enum
     description: str = None,
     debug_api: bool = False,
     debug_prn: bool = False,
     session: httpx.AsyncClient = None,
 ):
+    domo_group = None
 
     try:
-        res = await group_routes.search_groups_by_name(
-            auth=auth,
-            search_name=group_name,
-            debug_api=debug_api,
-            is_exact_match=True,
-            session=session,
+        domo_group = await DomoGroup.search_by_name(
+            auth=auth, group_name=group_name, is_exact_match=True, session=session
         )
 
-        domo_group = cls._from_group_json(auth=auth, json_obj=res.response)
-        
         return await domo_group.update_metadata(
-            group_type = group_type,
-            description = description,
-            debug_api = debug_api)
+            group_type=group_type, description=description, debug_api=debug_api
+        )
 
     except group_routes.SearchGroups_Error as e:
-        
         return await DomoGroup.create_from_name(
-                auth=auth, 
-                group_name=group_name, 
-                group_type = group_type,
-                description = description,
-                debug_api=debug_api, session=session)
+            auth=auth,
+            group_name=group_name,
+            group_type=group_type,
+            description=description,
+            debug_api=debug_api,
+            session=session,
+        )
 
         return e
 
