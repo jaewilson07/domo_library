@@ -4,8 +4,6 @@
 __all__ = ['API_Response', 'STREAM_FILE_PATH', 'BlockedByVPN', 'ResponseGetData', 'find_ip']
 
 # %% ../../nbs/client/99_ResponseGetData.ipynb 2
-# pylint: disable=no-member
-
 import re
 from bs4 import BeautifulSoup
 
@@ -19,7 +17,8 @@ import requests
 import httpx
 import aiohttp
 
-from fastcore.utils import patch_to
+from nbdev.showdoc import patch_to
+
 import domolibrary.client.DomoError as de
 import domolibrary.client.Logger as dl
 

@@ -12,7 +12,7 @@ import json
 import httpx
 import pandas as pd
 
-from fastcore.basics import patch_to
+from nbdev.showdoc import patch_to
 
 from dataclasses import dataclass, field
 from enum import Enum, auto

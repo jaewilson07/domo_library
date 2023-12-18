@@ -15,7 +15,7 @@ import httpx
 
 import uuid
 
-from fastcore.basics import patch_to
+from nbdev.showdoc import patch_to
 
 import domolibrary.utils.DictDot as util_dd
 import domolibrary.client.DomoAuth as dmda

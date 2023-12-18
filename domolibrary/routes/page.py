@@ -6,7 +6,6 @@ __all__ = ['PageRetrieval_byId_Error', 'get_page_by_id', 'get_page_definition', 
 
 # %% ../../nbs/routes/page.ipynb 2
 import httpx
-from nbdev import show_doc
 
 import domolibrary.client.get_data as gd
 import domolibrary.client.ResponseGetData as rgd
@@ -14,7 +13,7 @@ import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 
 
-# %% ../../nbs/routes/page.ipynb 4
+# %% ../../nbs/routes/page.ipynb 5
 class PageRetrieval_byId_Error(de.DomoError):
     def __init__(
         self,
@@ -33,7 +32,7 @@ class PageRetrieval_byId_Error(de.DomoError):
             domo_instance = domo_instance
         )
 
-# %% ../../nbs/routes/page.ipynb 7
+# %% ../../nbs/routes/page.ipynb 8
 async def get_page_by_id(
     auth: dmda.DomoAuth,
     page_id: str,
@@ -77,7 +76,7 @@ async def get_page_by_id(
 
     return res
 
-# %% ../../nbs/routes/page.ipynb 11
+# %% ../../nbs/routes/page.ipynb 12
 async def get_page_definition(
     auth: dmda.DomoAuth,
     page_id: int,
@@ -120,7 +119,7 @@ async def get_page_definition(
 
     return res
 
-# %% ../../nbs/routes/page.ipynb 15
+# %% ../../nbs/routes/page.ipynb 16
 async def get_page_access_test(
     auth,
     page_id,
@@ -144,7 +143,7 @@ async def get_page_access_test(
 
     return res
 
-# %% ../../nbs/routes/page.ipynb 18
+# %% ../../nbs/routes/page.ipynb 19
 async def get_page_access_list(
     auth,
     page_id,
@@ -189,7 +188,7 @@ async def get_page_access_list(
 
     return res
 
-# %% ../../nbs/routes/page.ipynb 21
+# %% ../../nbs/routes/page.ipynb 22
 async def get_pages_adminsummary(
     auth: dmda.DomoAuth,
     debug_loop: bool = False,
@@ -227,7 +226,7 @@ async def get_pages_adminsummary(
     return res
 
 
-# %% ../../nbs/routes/page.ipynb 23
+# %% ../../nbs/routes/page.ipynb 24
 async def update_page_layout(
     auth: dmda.DomoAuth, layout_id: str, body: dict, debug_api: bool = False
 ):
@@ -280,7 +279,7 @@ async def delete_writelock(
     return res
 
 
-# %% ../../nbs/routes/page.ipynb 24
+# %% ../../nbs/routes/page.ipynb 25
 async def add_page_owner(auth: dmda.DomoAuth,
                         page_id_ls : [],
                         group_id_ls: [],

@@ -4,8 +4,7 @@
 __all__ = []
 
 # %% ../../nbs/classes/50_DomoPage_Content.ipynb 2
-from nbdev import show_doc
-from fastcore.basics import patch_to
+from nbdev.showdoc import patch_to
 from dataclasses import dataclass, field
 
 import asyncio
@@ -18,7 +17,7 @@ import domolibrary.routes.page as page_routes
 import domolibrary.utils.DictDot as util_dd
 import domolibrary.utils.chunk_execution as ce
 
-# %% ../../nbs/classes/50_DomoPage_Content.ipynb 5
+# %% ../../nbs/classes/50_DomoPage_Content.ipynb 6
 @dataclass
 class PageLayoutTemplate:
     content_key: int
@@ -55,7 +54,7 @@ class PageLayoutTemplate:
             "virtualAppendix": self.virtual_appendix,
         }
 
-# %% ../../nbs/classes/50_DomoPage_Content.ipynb 6
+# %% ../../nbs/classes/50_DomoPage_Content.ipynb 7
 @dataclass
 class PageLayoutBackground:
     id: int
@@ -116,7 +115,7 @@ class PageLayoutBackground:
             "src": self.src,
         }
 
-# %% ../../nbs/classes/50_DomoPage_Content.ipynb 8
+# %% ../../nbs/classes/50_DomoPage_Content.ipynb 9
 @dataclass
 class PageLayoutContent:
     accept_date_filter: bool
@@ -201,7 +200,7 @@ class PageLayoutContent:
             body["background"] = self.background.get_body()
         return body
 
-# %% ../../nbs/classes/50_DomoPage_Content.ipynb 9
+# %% ../../nbs/classes/50_DomoPage_Content.ipynb 10
 @dataclass
 class PageLayoutStandard:
     aspect_ratio: float
@@ -229,7 +228,7 @@ class PageLayoutStandard:
                     obj.template.append(dc)
         return obj
 
-# %% ../../nbs/classes/50_DomoPage_Content.ipynb 11
+# %% ../../nbs/classes/50_DomoPage_Content.ipynb 12
 @dataclass
 class PageLayoutCompact:
     aspect_ratio: float
@@ -256,7 +255,7 @@ class PageLayoutCompact:
                     obj.template.append(dc)
         return obj
 
-# %% ../../nbs/classes/50_DomoPage_Content.ipynb 13
+# %% ../../nbs/classes/50_DomoPage_Content.ipynb 14
 @dataclass
 class PageLayout:
     id: str

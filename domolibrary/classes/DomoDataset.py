@@ -5,7 +5,7 @@ __all__ = ['DatasetSchema_Types', 'DomoDataset_Schema_Column', 'DomoDataset_Sche
            'DomoDataset_Tags', 'DomoDataset', 'QueryExecutionError', 'DomoDataset_DeleteDataset_Error',
            'DomoDataset_CreateDataset_Error']
 
-# %% ../../nbs/classes/50_DomoDataset.ipynb 4
+# %% ../../nbs/classes/50_DomoDataset.ipynb 3
 import json
 import io
 
@@ -17,7 +17,7 @@ from dataclasses import dataclass, field
 from typing import List, Optional
 from enum import Enum
 
-from fastcore.basics import patch_to
+from nbdev.showdoc import patch_to
 
 import domolibrary.utils.DictDot as util_dd
 import domolibrary.utils.chunk_execution as ce

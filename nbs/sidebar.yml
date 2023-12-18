@@ -17,6 +17,7 @@ website:
                 href: blog/posts/2023-01-24_Domo_Onboarding/index.qmd
               - section: 2023-11-18 _creatingDomoStats_MgicETL
                 contents:
+                  - blog/posts/2023-11-18 _creatingDomoStats_MgicETL/index_v2_with_history.ipynb
                   - blog/posts/2023-11-18 _creatingDomoStats_MgicETL/without_domolibrary.ipynb
                 href: blog/posts/2023-11-18 _creatingDomoStats_MgicETL/index.ipynb
         href: blog/index.qmd
@@ -31,7 +32,8 @@ website:
           - classes/50_DomoCertification.ipynb
           - classes/50_DomoDatacenter.ipynb
           - classes/50_DomoDataflow.ipynb
-          - classes/50_DomoDataflow_Execution.ipynb
+          - classes/50_DomoDataflow_Action.ipynb
+          - classes/50_DomoDataflow_History.ipynb
           - classes/50_DomoDataset.ipynb
           - classes/50_DomoGrant.ipynb
           - classes/50_DomoGroup.ipynb
@@ -64,6 +66,9 @@ website:
         contents:
           - section: posts
             contents:
+              - section: 2023-012-18_DeleteDuplicateAccounts
+                contents: []
+                href: projects/posts/2023-012-18_DeleteDuplicateAccounts/index.ipynb
               - section: 2023-02-02_DojoFeatures
                 contents: []
                 href: projects/posts/2023-02-02_DojoFeatures/index.ipynb

@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['custom_query', 'StreamConfig', 'DomoStream']
 
-# %% ../../nbs/classes/50_DomoStream.ipynb 4
+# %% ../../nbs/classes/50_DomoStream.ipynb 3
 from enum import Enum
 from dataclasses import dataclass, field
 from typing import List, Optional
@@ -17,7 +17,7 @@ import re
 
 import httpx
 
-from fastcore.basics import patch_to
+from nbdev.showdoc import patch_to
 
 import domolibrary.utils.convert as cd
 import domolibrary.utils.DictDot as util_dd

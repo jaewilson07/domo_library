@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 import httpx
 import asyncio
 
-from fastcore.basics import patch_to
+from nbdev.showdoc import patch_to
 
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de

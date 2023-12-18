@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 
 import asyncio
 import httpx
-from fastcore.basics import patch_to
+from nbdev.showdoc import patch_to
 
 import domolibrary.utils.DictDot as util_dd
 import domolibrary.utils.chunk_execution as ce

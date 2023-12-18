@@ -11,7 +11,7 @@ from enum import Enum
 
 import httpx
 
-from fastcore.basics import patch_to
+from nbdev.showdoc import patch_to
 
 import domolibrary.utils.chunk_execution as ce
 

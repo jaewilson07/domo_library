@@ -4,11 +4,7 @@
 __all__ = ['DomoPage', 'DomoPages', 'Page_NoAccess']
 
 # %% ../../nbs/classes/50_DomoPage.ipynb 2
-from ..routes.page import PageRetrieval_byId_Error
-
-# %% ../../nbs/classes/50_DomoPage.ipynb 3
-from nbdev import show_doc
-from fastcore.basics import patch_to
+from nbdev.showdoc import patch_to
 from dataclasses import dataclass, field
 
 import asyncio
@@ -23,7 +19,10 @@ import domolibrary.routes.page as page_routes
 import domolibrary.utils.DictDot as util_dd
 import domolibrary.utils.chunk_execution as ce
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 5
+# %% ../../nbs/classes/50_DomoPage.ipynb 3
+from ..routes.page import PageRetrieval_byId_Error
+
+# %% ../../nbs/classes/50_DomoPage.ipynb 6
 @dataclass(
     # frozen = True
 )
@@ -96,7 +95,7 @@ class DomoPage:
 
         return res
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 6
+# %% ../../nbs/classes/50_DomoPage.ipynb 7
 @patch_to(DomoPage, cls_method=True)
 async def _from_adminsummary(cls, page_obj, auth: dmda.DomoAuth):
     import domolibrary.classes.DomoCard as dmc
@@ -127,7 +126,7 @@ async def _from_adminsummary(cls, page_obj, auth: dmda.DomoAuth):
 
     return pg
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 7
+# %% ../../nbs/classes/50_DomoPage.ipynb 8
 @patch_to(DomoPage, cls_method=True)
 async def _from_bootstrap(cls: DomoPage, page_obj, auth: dmda.DomoAuth = None):
     dd = page_obj
@@ -153,7 +152,7 @@ async def _from_bootstrap(cls: DomoPage, page_obj, auth: dmda.DomoAuth = None):
 
     return pg
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 9
+# %% ../../nbs/classes/50_DomoPage.ipynb 10
 @dataclass
 class DomoPages:
     @classmethod
@@ -195,7 +194,7 @@ class DomoPages:
             if is_close_session:
                 await session.aclose()
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 13
+# %% ../../nbs/classes/50_DomoPage.ipynb 14
 @patch_to(DomoPage, cls_method=True)
 async def _from_content_stacks_v3(cls: DomoPage, page_obj, auth: dmda.DomoAuth = None):
     # import domolibrary.classes.DomoCard as dc
@@ -362,7 +361,7 @@ def flatten_children(self: DomoPage, path=None, hierarchy=0, results=None):
 
     return results
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 21
+# %% ../../nbs/classes/50_DomoPage.ipynb 22
 class Page_NoAccess(de.DomoError):
     def __init__(self, page_id, page_title, domo_instance, function_name, parent_class):
         super().__init__(
@@ -372,7 +371,7 @@ class Page_NoAccess(de.DomoError):
             message=f'authenticated user doesn\'t have access to {page_id} - "{page_title}" contact owners to share access',
         )
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 22
+# %% ../../nbs/classes/50_DomoPage.ipynb 23
 @patch_to(DomoPage)
 async def test_page_access(
     self: DomoPage,
@@ -406,7 +405,7 @@ async def test_page_access(
 
     return res
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 26
+# %% ../../nbs/classes/50_DomoPage.ipynb 27
 @patch_to(DomoPage)
 async def get_accesslist(
     self,
@@ -533,7 +532,7 @@ async def get_accesslist(
         "domo_groups": domo_groups,
     }
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 29
+# %% ../../nbs/classes/50_DomoPage.ipynb 30
 @patch_to(DomoPage)
 async def share(
     self: DomoPage,
@@ -564,7 +563,7 @@ async def share(
 
     return res
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 32
+# %% ../../nbs/classes/50_DomoPage.ipynb 33
 @patch_to(DomoPage, cls_method=True)
 async def get_cards(
     cls,
@@ -627,7 +626,7 @@ async def get_datasets(
         ],
     )
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 35
+# %% ../../nbs/classes/50_DomoPage.ipynb 36
 from datetime import datetime
 from domolibrary.utils import convert
 
@@ -664,7 +663,7 @@ async def update_layout(
 
     return True
 
-# %% ../../nbs/classes/50_DomoPage.ipynb 38
+# %% ../../nbs/classes/50_DomoPage.ipynb 39
 @patch_to(DomoPage, cls_method=True)
 async def add_page_owner(
     cls,

@@ -10,7 +10,7 @@ from typing import List, Union
 import httpx
 import asyncio
 
-from fastcore.basics import patch_to
+from nbdev.showdoc import patch_to
 
 
 import domolibrary.utils.chunk_execution as ce
@@ -25,16 +25,16 @@ import domolibrary.routes.group as group_routes
 
 import domolibrary.classes.DomoUser as dmu
 
-
 # %% ../../nbs/classes/50_DomoGroup.ipynb 4
 from ..routes.group import GroupType_Enum, SearchGroups_Error
-
 
 # %% ../../nbs/classes/50_DomoGroup.ipynb 6
 class UpdateGroupMembership(de.DomoError):
     def __init__(self, member_name, group_name, domo_instance):
-        super().__init__(domo_instance=domo_instance,
-                         message=f"unable to add {member_name} to {group_name}")
+        super().__init__(
+            domo_instance=domo_instance,
+            message=f"unable to add {member_name} to {group_name}",
+        )
 
 
 class GroupMembership:
@@ -62,41 +62,52 @@ class GroupMembership:
         self._current_owner_ls = []
 
     def _add_to_list(self, member, list_to_update, debug_prn: bool = False):
-
         import domolibrary.classes.DomoUser as dmu
 
-        match_obj = next((user_obj for user_obj in list_to_update if user_obj.get(
-            'id') == member.id), None)
+        match_obj = next(
+            (
+                user_obj
+                for user_obj in list_to_update
+                if user_obj.get("id") == member.id
+            ),
+            None,
+        )
         if match_obj:
             print(f"➡️ {member}  of type {type(member).__name__} already in ls")
             return list_to_update
 
         if debug_prn:
             print(
-                f"➡️ adding {member.id}  of type {type(member).__name__} to {self.group.name}")
+                f"➡️ adding {member.id}  of type {type(member).__name__} to {self.group.name}"
+            )
 
         if isinstance(member, dmu.DomoUser):
-            list_to_update.append({'id': str(member.id), 'type': 'USER'})
+            list_to_update.append({"id": str(member.id), "type": "USER"})
 
             return list_to_update
 
         if isinstance(member, DomoGroup):
-            list_to_update.append({'id': str(member.id), 'type': 'GROUP'})
+            list_to_update.append({"id": str(member.id), "type": "GROUP"})
 
             return list_to_update
 
-        member_name = getattr(member, 'name', None) or getattr(
-            member, 'display_name', None) or "name not provided"
+        member_name = (
+            getattr(member, "name", None)
+            or getattr(member, "display_name", None)
+            or "name not provided"
+        )
 
-        raise UpdateGroupMembership(domo_instance=self.group.auth.domo_instance,
-                                    group_name=self.group.name,
-                                    member_name=member_name)
+        raise UpdateGroupMembership(
+            domo_instance=self.group.auth.domo_instance,
+            group_name=self.group.name,
+            member_name=member_name,
+        )
 
     def _add_member(self, member, debug_prn: bool = False):
         return self._add_to_list(member, self._add_member_ls, debug_prn)
 
     def _remove_member(self, member, debug_prn: bool = False):
-        if type(member).__name__ == 'DomoGroup' and member.type == 'system':
+        if type(member).__name__ == "DomoGroup" and member.type == "system":
             if debug_prn:
                 print(f"remove_owner - skipping {member.name} type is {member.type}")
             return
@@ -106,11 +117,11 @@ class GroupMembership:
         return self._add_to_list(member, self._add_owner_ls, debug_prn)
 
     def _remove_owner(self, member, debug_prn: bool = False):
-        if type(member).__name__ == 'DomoGroup' and member.type == 'system':
+        if type(member).__name__ == "DomoGroup" and member.type == "system":
             if debug_prn:
                 print(f"remove_owner - skipping {member.name} type is {member.type}")
             return
-            
+
         return self._add_to_list(member, self._remove_owner_ls, debug_prn)
 
     def _reset_obj(self):
@@ -120,24 +131,26 @@ class GroupMembership:
         self._add_owner_ls = []
         self._remove_owner_ls = []
 
-    async def _update_group_access(self,
-                                   debug_api: bool = False, session: httpx.AsyncClient = None,
-                                   ):
-
-        res = await group_routes.update_group_membership(auth=self.group.auth,
-                                                         group_id=self.group.id,
-                                                         add_member_arr=self._add_member_ls,
-                                                         remove_member_arr=self._remove_member_ls,
-                                                         add_owner_arr=self._add_owner_ls,
-                                                         remove_owner_arr=self._remove_owner_ls,
-                                                         debug_api=debug_api,
-                                                         session=session)
+    async def _update_group_access(
+        self,
+        debug_api: bool = False,
+        session: httpx.AsyncClient = None,
+    ):
+        res = await group_routes.update_group_membership(
+            auth=self.group.auth,
+            group_id=self.group.id,
+            add_member_arr=self._add_member_ls,
+            remove_member_arr=self._remove_member_ls,
+            add_owner_arr=self._add_owner_ls,
+            remove_owner_arr=self._remove_owner_ls,
+            debug_api=debug_api,
+            session=session,
+        )
         self._reset_obj()
 
         # add
         # remove
         # set
-
 
 # %% ../../nbs/classes/50_DomoGroup.ipynb 8
 @patch_to(GroupMembership)
@@ -154,26 +167,35 @@ async def get_owners(
 
     self._current_owner_ls = []
 
-    res = await group_routes.get_group_owners(group_id=self.group.id, auth=self.group.auth)
+    res = await group_routes.get_group_owners(
+        group_id=self.group.id, auth=self.group.auth
+    )
     if return_raw:
         return res
-    
-    group_ids = [obj.get('id') for obj in res.response if obj.get('type') == 'GROUP']
+
+    group_ids = [obj.get("id") for obj in res.response if obj.get("type") == "GROUP"]
     if group_ids:
-        domo_groups = await ce.gather_with_concurrency(n = 60, * [DomoGroup.get_by_id(group_id=group_id, auth=auth) for group_id in group_ids])
+        domo_groups = await ce.gather_with_concurrency(
+            n=60,
+            *[
+                DomoGroup.get_by_id(group_id=group_id, auth=auth)
+                for group_id in group_ids
+            ]
+        )
         self._current_owner_ls += domo_groups
-    
-    user_ids = [obj.get('id') for obj in res.response if obj.get('type') == 'USER']
+
+    user_ids = [obj.get("id") for obj in res.response if obj.get("type") == "USER"]
     if user_ids:
-        domo_users = await dmu.DomoUsers.by_id(user_ids=user_ids, auth=auth, only_allow_one = False)
+        domo_users = await dmu.DomoUsers.by_id(
+            user_ids=user_ids, auth=auth, only_allow_one=False
+        )
         self._current_owner_ls += domo_users
-        
+
     self.group.owner_id_ls = group_ids + user_ids
-    self.group.owner_ls = self._current_owner_ls 
+    self.group.owner_ls = self._current_owner_ls
 
     return self._current_owner_ls
     # return domo_users
-
 
 # %% ../../nbs/classes/50_DomoGroup.ipynb 9
 @patch_to(GroupMembership)
@@ -190,13 +212,17 @@ async def get_members(
 
     self._current_member_ls = []
 
-    res = await group_routes.get_group_membership(group_id=self.group.id, auth=self.group.auth)
+    res = await group_routes.get_group_membership(
+        group_id=self.group.id, auth=self.group.auth
+    )
     if return_raw:
         return res
-    
-    user_ids = [obj.get('userId') for obj in res.response ]
+
+    user_ids = [obj.get("userId") for obj in res.response]
     if user_ids:
-        domo_users = await dmu.DomoUsers.by_id(user_ids=user_ids, auth=auth, only_allow_one = False)
+        domo_users = await dmu.DomoUsers.by_id(
+            user_ids=user_ids, auth=auth, only_allow_one=False
+        )
         self._current_member_ls += domo_users
 
     self.group.members_id_ls = user_ids
@@ -204,14 +230,13 @@ async def get_members(
 
     return self.group.members_ls
 
-
 # %% ../../nbs/classes/50_DomoGroup.ipynb 11
 @patch_to(GroupMembership)
 async def add_members(
     self: GroupMembership,
     add_user_ls: list[dmu.DomoUser],
     return_raw: bool = False,
-    debug_api: bool = False, 
+    debug_api: bool = False,
     debug_prn: bool = False,
     session: httpx.AsyncClient = None,
 ):
@@ -232,7 +257,9 @@ async def remove_members(
     self: GroupMembership,
     remove_user_ls: list[dmu.DomoUser],
     return_raw: bool = False,
-    debug_api: bool = False, debug_prn: bool = False, session: httpx.AsyncClient = None,
+    debug_api: bool = False,
+    debug_prn: bool = False,
+    session: httpx.AsyncClient = None,
 ):
     self._reset_obj()
 
@@ -251,26 +278,30 @@ async def set_members(
     self: GroupMembership,
     user_ls: list[dmu.DomoUser],
     return_raw: bool = False,
-    debug_api: bool = False, debug_prn:bool = False ,session: httpx.AsyncClient = None,
+    debug_api: bool = False,
+    debug_prn: bool = False,
+    session: httpx.AsyncClient = None,
 ):
     self._reset_obj()
 
     domo_users = await self.get_members()
 
     if debug_prn:
-        print({'domo_users': domo_users, 'user_ls': user_ls})
+        print({"domo_users": domo_users, "user_ls": user_ls})
 
     [self._add_member(domo_user, debug_prn) for domo_user in user_ls]
-    [self._remove_member(domo_user, debug_prn) for domo_user in domo_users if domo_user not in user_ls]
+    [
+        self._remove_member(domo_user, debug_prn)
+        for domo_user in domo_users
+        if domo_user not in user_ls
+    ]
 
-
-    res= await self._update_group_access(debug_api=debug_api, session=session)
+    res = await self._update_group_access(debug_api=debug_api, session=session)
 
     if return_raw:
         return res
 
     return await self.get_members()
-
 
 # %% ../../nbs/classes/50_DomoGroup.ipynb 12
 @patch_to(GroupMembership)
@@ -299,7 +330,9 @@ async def remove_owners(
     self: GroupMembership,
     remove_owner_ls,
     return_raw: bool = False,
-    debug_api: bool = False, debug_prn: bool = False, session: httpx.AsyncClient = None,
+    debug_api: bool = False,
+    debug_prn: bool = False,
+    session: httpx.AsyncClient = None,
 ):
     self._reset_obj()
 
@@ -318,18 +351,23 @@ async def set_owners(
     self: GroupMembership,
     owner_ls,
     return_raw: bool = False,
-    debug_api: bool = False, debug_prn: bool = False, session: httpx.AsyncClient = None,
+    debug_api: bool = False,
+    debug_prn: bool = False,
+    session: httpx.AsyncClient = None,
 ):
     self._reset_obj()
 
     domo_users = await self.get_owners()
 
     if debug_prn:
-        print({'domo_users': domo_users, 'user_ls': owner_ls})
+        print({"domo_users": domo_users, "user_ls": owner_ls})
 
     [self._add_owner(domo_user, debug_prn) for domo_user in owner_ls]
-    [self._remove_owner(domo_user, debug_prn)
-     for domo_user in domo_users if domo_user not in owner_ls]
+    [
+        self._remove_owner(domo_user, debug_prn)
+        for domo_user in domo_users
+        if domo_user not in owner_ls
+    ]
 
     res = await self._update_group_access(debug_api=debug_api, session=session)
 
@@ -337,7 +375,6 @@ async def set_owners(
         return res
 
     return await self.get_owners()
-
 
 # %% ../../nbs/classes/50_DomoGroup.ipynb 14
 @dataclass
@@ -349,11 +386,11 @@ class DomoGroup:
     description: str = None
     members_id_ls: list[str] = field(repr=False, default_factory=list)
     owner_id_ls: list[str] = field(repr=False, default_factory=list)
-    
-    members_ls: list[dict] = field(repr=False, default_factory=list)
-    owner_ls : list[dict]= field(repr = False, default_factory = list)
 
-    custom_attributes : dict = field(default_factory = dict)
+    members_ls: list[dict] = field(repr=False, default_factory=list)
+    owner_ls: list[dict] = field(repr=False, default_factory=list)
+
+    custom_attributes: dict = field(default_factory=dict)
 
     def __post_init__(self):
         # self.domo_instance = self.domo_instance or auth.domo_instance
@@ -389,13 +426,11 @@ class DomoGroup:
             name=dd.name,
             description=dd.description,
             type=dd.groupType,
-            owner_ls = dd.owners,
-            owner_id_ls = [owner.id for owner in dd.owners],
-            
+            owner_ls=dd.owners,
+            owner_id_ls=[owner.id for owner in dd.owners],
             members_ls=dd.groupMembers,
-            members_id_ls= [member.id for member in dd.members]
+            members_id_ls=[member.id for member in dd.members],
         )
-
 
     @staticmethod
     def _groups_to_domo_group(json_list, auth: dmda.DomoAuth) -> List[dict]:
@@ -416,7 +451,6 @@ async def get_by_id(
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
 ):
-
     res = await group_routes.get_group_by_id(
         auth=auth, group_id=group_id, debug_api=debug_api, session=session
     )
@@ -432,7 +466,6 @@ async def get_by_id(
     # await dg.Membership.get_members() # disabled because causes recursion
     return dg
 
-
 # %% ../../nbs/classes/50_DomoGroup.ipynb 19
 @patch_to(DomoGroup, cls_method=True)
 async def search_by_name(
@@ -445,7 +478,6 @@ async def search_by_name(
     debug_prn: bool = False,
     session: httpx.AsyncClient = None,
 ):
-    
     res = await group_routes.search_groups_by_name(
         auth=auth,
         search_name=group_name,
@@ -469,7 +501,6 @@ class DomoGroups:
 
     @staticmethod
     def _groups_to_domo_group(json_list, auth: dmda.DomoAuth):
-
         return [
             DomoGroup._from_group_json(auth=auth, json_obj=json_obj)
             for json_obj in json_list
@@ -483,7 +514,6 @@ async def get_all_groups(
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
 ):
-
     res = await group_routes.get_all_groups(
         auth=auth, debug_api=debug_api, session=session
     )
@@ -496,29 +526,34 @@ async def get_all_groups(
     else:
         return []
 
-
 # %% ../../nbs/classes/50_DomoGroup.ipynb 47
 @patch_to(DomoGroups, cls_method=True)
-async def toggle_system_group_visibility(cls: DomoGroups,auth: dmda.DomoAuth,
-                                         is_hide_system_groups: bool,
-                                         debug_api: bool = False):
-
-    return await group_routes.toggle_system_group_visibility(auth=auth,
-                                                is_hide_system_groups=is_hide_system_groups,
-                                                debug_api=debug_api)
-
+async def toggle_system_group_visibility(
+    cls: DomoGroups,
+    auth: dmda.DomoAuth,
+    is_hide_system_groups: bool,
+    debug_api: bool = False,
+):
+    return await group_routes.toggle_system_group_visibility(
+        auth=auth, is_hide_system_groups=is_hide_system_groups, debug_api=debug_api
+    )
 
 # %% ../../nbs/classes/50_DomoGroup.ipynb 51
 @patch_to(GroupMembership)
-async def add_owner_manage_groups_role(self : GroupMembership):
-    
-    await DomoGroups.toggle_system_group_visibility(auth = self.group.auth, is_hide_system_groups=False)
-    
-    grant_group = await DomoGroup.search_by_name(auth =self.group.auth , group_name = 'Grant: Manage all groups')
-       
-    await self.add_owners(add_owner_ls = [grant_group])
+async def add_owner_manage_groups_role(self: GroupMembership):
+    await DomoGroups.toggle_system_group_visibility(
+        auth=self.group.auth, is_hide_system_groups=False
+    )
 
-    await DomoGroups.toggle_system_group_visibility(auth = self.group.auth, is_hide_system_groups=True)
+    grant_group = await DomoGroup.search_by_name(
+        auth=self.group.auth, group_name="Grant: Manage all groups"
+    )
+
+    await self.add_owners(add_owner_ls=[grant_group])
+
+    await DomoGroups.toggle_system_group_visibility(
+        auth=self.group.auth, is_hide_system_groups=True
+    )
 
 # %% ../../nbs/classes/50_DomoGroup.ipynb 53
 @patch_to(DomoGroup, cls_method=True)
@@ -532,7 +567,6 @@ async def create_from_name(
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
 ):
-
     res = await group_routes.create_group(
         auth=auth,
         group_name=group_name,
@@ -541,20 +575,17 @@ async def create_from_name(
         debug_api=debug_api,
     )
 
-    
     domo_group = cls._from_group_json(auth=auth, json_obj=res.response)
 
     await domo_group.Membership.add_owner_manage_groups_role()
 
     return domo_group
 
-
 # %% ../../nbs/classes/50_DomoGroup.ipynb 57
 @patch_to(DomoGroup)
 async def update_metadata(
     self: DomoGroup,
     auth: dmda.DomoAuth = None,
-
     group_name: str = None,
     group_type: str = None,  # use GroupType_Enum
     description: str = None,
@@ -563,21 +594,21 @@ async def update_metadata(
     session: httpx.AsyncClient = None,
 ):
     auth = auth or self.auth
-    
+
     res = await group_routes.update_group(
         auth=auth,
-        group_id = self.id,
-        group_name = group_name,
-        group_type = group_type,
-        description = description,
-        debug_api = debug_api,
-        session = session)
+        group_id=self.id,
+        group_name=group_name,
+        group_type=group_type,
+        description=description,
+        debug_api=debug_api,
+        session=session,
+    )
 
     if return_raw:
         return res
-    
-    updated_group = await DomoGroup.get_by_id(auth = auth, group_id = self.id )
-    
+
+    updated_group = await DomoGroup.get_by_id(auth=auth, group_id=self.id)
 
     self.name = updated_group.name or self.name
     self.description = updated_group.description or self.description
@@ -609,7 +640,6 @@ async def upsert(
         )
 
     except group_routes.SearchGroups_Error as e:
-        
         return await DomoGroup.create_from_name(
             auth=auth,
             group_name=group_name,
@@ -622,23 +652,22 @@ async def upsert(
         return e
 
 # %% ../../nbs/classes/50_DomoGroup.ipynb 66
-@patch_to(DomoGroup )
+@patch_to(DomoGroup)
 async def delete(
     self: DomoGroup,
     debug_api: bool = False,
-    debug_num_stacks_to_drop = 2,
+    debug_num_stacks_to_drop=2,
     session: httpx.AsyncClient = None,
 ):
-
     res = await group_routes.delete_groups(
-            auth=self.auth,
-            group_ids = [str(self.id)],
-            debug_api =debug_api,
-            debug_num_stacks_to_drop = debug_num_stacks_to_drop,
-            parent_class = self.__class__.__name__,
-            session=session)
+        auth=self.auth,
+        group_ids=[str(self.id)],
+        debug_api=debug_api,
+        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+        parent_class=self.__class__.__name__,
+        session=session,
+    )
 
     res.parent_class = self.__class__.__name__
 
     return res
-    

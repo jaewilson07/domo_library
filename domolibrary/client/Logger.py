@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['TracebackDetails', 'get_traceback', 'Logger']
 
-# %% ../../nbs/client/95_Logger.ipynb 3
+# %% ../../nbs/client/95_Logger.ipynb 2
 import datetime as dt
 
 from typing import Optional, List
@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 
 import traceback
 
-from fastcore.basics import patch_to
+from nbdev.showdoc import patch_to
 
 
 # %% ../../nbs/client/95_Logger.ipynb 5

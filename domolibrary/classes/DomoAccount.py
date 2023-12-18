@@ -13,7 +13,7 @@ import re
 
 import httpx
 
-from fastcore.basics import patch_to
+from nbdev.showdoc import patch_to
 
 import domolibrary.utils.convert as cd
 import domolibrary.utils.DictDot as util_dd

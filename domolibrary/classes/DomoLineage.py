@@ -8,7 +8,7 @@ import httpx
 import asyncio
 from enum import Enum
 import re
-from fastcore.basics import patch_to
+from nbdev.showdoc import patch_to
 
 from dataclasses import dataclass, field
 

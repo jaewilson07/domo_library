@@ -5,7 +5,7 @@ __all__ = ['DomoGrant', 'DomoGrants']
 
 # %% ../../nbs/classes/50_DomoGrant.ipynb 2
 from dataclasses import dataclass, field
-from fastcore.basics import patch_to
+from nbdev.showdoc import patch_to
 import httpx
 
 import domolibrary.client.DomoAuth as dmda

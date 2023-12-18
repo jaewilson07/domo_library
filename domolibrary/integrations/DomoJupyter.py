@@ -18,7 +18,7 @@ import time
 import json
 
 
-from fastcore.basics import patch_to
+from nbdev.showdoc import patch_to
 
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.Logger as lc
@@ -26,7 +26,7 @@ import domolibrary.classes.DomoDataset as dmds
 import domolibrary.utils.chunk_execution as ce
 
 
-# %% ../../nbs/integrations/DomoJupyter.ipynb 4
+# %% ../../nbs/integrations/DomoJupyter.ipynb 5
 class GetJupyter_ErrorRetrievingAccount(Exception):
     def __init__(self, account_name):
         self.message = f"failure to retrieve DomoDomoJupyter Account {account_name}"
@@ -88,7 +88,7 @@ def get_jupyter_account(
 
     return account_properties, obj
 
-# %% ../../nbs/integrations/DomoJupyter.ipynb 5
+# %% ../../nbs/integrations/DomoJupyter.ipynb 6
 class NoConfigCompanyError(Exception):
     def __init__(self, sql, domo_instance):
         message = f'SQL "{sql}" returned no results in {domo_instance}'
@@ -155,7 +155,7 @@ class GetInstanceConfig:
 
         return config_df
 
-# %% ../../nbs/integrations/DomoJupyter.ipynb 8
+# %% ../../nbs/integrations/DomoJupyter.ipynb 9
 class InvalidAccountTypeError(Exception):
     """raised when account type is not expected type"""
 
@@ -211,7 +211,7 @@ class DomoJupyterAccount_InstanceAuth:
 
         return clean_str
 
-# %% ../../nbs/integrations/DomoJupyter.ipynb 10
+# %% ../../nbs/integrations/DomoJupyter.ipynb 11
 async def is_v2(instance_auth: dmda.DomoFullAuth):
     """wrapper for the domo boostrap.is_group_ownership_beta function to return a binary for if the instance has the group ownership beta enabled"""
 
@@ -266,7 +266,7 @@ async def process_row(
     
     return instance
 
-# %% ../../nbs/integrations/DomoJupyter.ipynb 13
+# %% ../../nbs/integrations/DomoJupyter.ipynb 14
 class GetDomains_Query_AuthMatch_Error(Exception):
     """raise if SQL query fails to return column named 'auth_match_col'"""
 
@@ -328,7 +328,7 @@ async def get_domains_with_instance_auth(
 
     return pd.DataFrame(config_ls)
 
-# %% ../../nbs/integrations/DomoJupyter.ipynb 16
+# %% ../../nbs/integrations/DomoJupyter.ipynb 17
 class InvalidAccountNameError(Exception):
     """raised when account name does not follow format string"""
 
@@ -381,7 +381,7 @@ def get_domo_instance_auth_account(
         domo_instance=domo_instance or creds.get("DOMO_INSTANCE"),
     )
 
-# %% ../../nbs/integrations/DomoJupyter.ipynb 18
+# %% ../../nbs/integrations/DomoJupyter.ipynb 19
 class GenerateAuth_InvalidDomoInstanceList(Exception):
     def __init__(self):
         message = "provide a list of domo_instances"

@@ -12,7 +12,7 @@ import domolibrary.client.get_data as gd
 import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
 
-# %% ../../nbs/routes/bootstrap.ipynb 5
+# %% ../../nbs/routes/bootstrap.ipynb 4
 from ..client.DomoAuth import InvalidAuthTypeError
 
 # %% ../../nbs/routes/bootstrap.ipynb 7

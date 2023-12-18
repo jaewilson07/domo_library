@@ -10,7 +10,7 @@ from ..routes.instance_config import UpdateSSO_Error
 import httpx
 import datetime as dt
 import asyncio
-from fastcore.basics import patch_to
+from nbdev.showdoc import patch_to
 import sys
 import pandas as pd
 
