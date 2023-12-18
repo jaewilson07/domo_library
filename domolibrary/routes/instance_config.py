@@ -5,7 +5,8 @@ __all__ = ['get_is_invite_social_users_enabled', 'ToggleSocialUsers_Error', 'tog
            'ToggleUserInvite_Error', 'toggle_is_user_invite_enabled', 'get_is_user_invite_notifications_enabled',
            'get_sso_config', 'generate_sso_body', 'UpdateSSO_Error', 'update_sso_config', 'get_allowlist',
            'Allowlist_UnableToUpdate', 'set_allowlist', 'set_authorized_domains', 'GetDomains_NotFound',
-           'get_authorized_domains']
+           'get_authorized_domains', 'set_authorized_custom_app_domains', 'GetAppDomains_NotFound',
+           'get_authorized_custom_app_domains']
 
 # %% ../../nbs/routes/instance_config.ipynb 2
 import httpx
@@ -457,6 +458,85 @@ async def get_authorized_domains(
 
         if not res_test.is_success:
             raise GetDomains_NotFound(
+                domo_instance=auth.domo_instance,
+                status=res.status,
+                message=res.response,
+            )
+
+        if res_test.is_success:
+            res.status = 200
+            res.is_success = True
+            res.response = []
+
+        return res
+
+    res.response = [domain.strip() for domain in res.response.get("value").split(",")]
+    return res
+
+# %% ../../nbs/routes/instance_config.ipynb 41
+@gd.route_function
+async def set_authorized_custom_app_domains(
+    auth: dmda.DomoAuth,
+    authorized_custom_app_domain_ls: [str],
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+    parent_class = None,
+    debug_num_stacks_to_drop = 1
+):
+    url = f"https://{auth.domo_instance}.domo.com/api/content/v1/customer-states/authorized-app-domains"
+
+
+    body = {"name": "authorized-app-domains",
+            "value": ",".join(authorized_custom_app_domain_ls)}
+
+    res = await gd.get_data(
+        auth=auth,
+        url=url,
+        method="PUT",
+        body=body,
+        debug_api=debug_api,
+        session=session,
+        parent_class = parent_class,
+        num_stacks_to_drop = debug_num_stacks_to_drop
+    )
+
+    return res
+
+# %% ../../nbs/routes/instance_config.ipynb 42
+class GetAppDomains_NotFound(de.DomoError):
+    def __init__(self, status, message, domo_instance):
+        super().__init__(status=status, message=message, domo_instance=domo_instance)
+
+@gd.route_function
+async def get_authorized_custom_app_domains(
+    auth: dmda.DomoAuth,
+    return_raw: bool = False,
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+    parent_class = None,
+    debug_num_stacks_to_drop =1
+):
+    url = f"https://{auth.domo_instance}.domo.com/api/content/v1/customer-states/authorized-app-domains"
+
+    res = await gd.get_data(
+        auth=auth,
+        url=url,
+        method="GET",
+        debug_api=debug_api,
+        session=session,
+        parent_class = parent_class,
+        num_stacks_to_drop = debug_num_stacks_to_drop
+    )
+
+    if return_raw:
+        return res
+
+    # domo raises a 404 error even if the success is valid but there are no approved domains
+    if res.status == 404 and res.response == "Not Found":
+        res_test = await user_routes.get_all_users(auth=auth)
+
+        if not res_test.is_success:
+            raise GetAppDomains_NotFound(
                 domo_instance=auth.domo_instance,
                 status=res.status,
                 message=res.response,
