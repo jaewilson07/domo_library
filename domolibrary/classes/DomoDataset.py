@@ -32,7 +32,8 @@ import domolibrary.classes.DomoCertification as dmdc
 
 
 # %% ../../nbs/classes/50_DomoDataset.ipynb 5
-from ..routes.dataset import ShareDataset_AccessLevelEnum
+from ..routes.dataset import ShareDataset_AccessLevelEnum, DatasetNotFoundError, QueryRequestError, ShareDataset_Error,UploadDataError
+
 
 
 # %% ../../nbs/classes/50_DomoDataset.ipynb 7
