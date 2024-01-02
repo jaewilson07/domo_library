@@ -10,7 +10,7 @@ from ..routes.instance_config import UpdateSSO_Error
 import httpx
 import datetime as dt
 import asyncio
-from nbdev.showdoc import patch_to
+from fastcore.basics import patch_to
 import sys
 import pandas as pd
 
@@ -681,7 +681,82 @@ async def upsert_authorized_domains(
         session=session,
     )
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 61
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 62
+@patch_to(DomoInstanceConfig)
+async def get_authorized_custom_app_domains(
+    self: DomoInstanceConfig,
+    auth: dmda.DomoAuth = None,
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+    return_raw: bool = False,
+):
+    auth = auth or self.auth
+
+    res = await instance_config_routes.get_authorized_custom_app_domains(
+        auth=auth, debug_api=debug_api, session=session, return_raw=return_raw
+    )
+
+    if return_raw:
+        return res
+
+    return res.response
+
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 66
+@patch_to(DomoInstanceConfig, cls_method=True)
+async def set_authorized_custom_app_domains(
+    cls: DomoInstanceConfig,
+    auth: dmda.DomoAuth,
+    authorized_domains: list[str],
+    debug_prn: bool = False,
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+):
+    if debug_prn:
+        print(f'🌡️ setting authorized domain with {",".join(authorized_domains)}')
+
+    res = await instance_config_routes.set_authorized_custom_app_domains(
+        auth=auth,
+        authorized_custom_app_domain_ls=authorized_domains,
+        debug_api=debug_api,
+        session=session,
+    )
+
+    if res.status == 200 or res.status == 204:
+        dmdic = DomoInstanceConfig(auth=auth)
+        res.response = {
+            "authorized_domains": await dmdic.get_authorized_custom_app_domains(
+                debug_api=debug_api
+            ),
+            "status": 200,
+        }
+
+    return res
+
+
+@patch_to(DomoInstanceConfig, cls_method=True)
+async def upsert_authorized_custom_app_domains(
+    cls: DomoInstanceConfig,
+    auth: dmda.DomoAuth,
+    authorized_domains: list[str],
+    debug_prn: bool = False,
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+):
+    existing_domains = await cls.get_authorized_custom_app_domains(auth=auth, debug_api=debug_api)
+
+    authorized_domains += existing_domains
+
+    if debug_prn:
+        print(f'🌡️ upsertting authorized domain to {",".join(authorized_domains)}')
+
+    return await cls.set_authorized_custom_app_domains(
+        auth=auth,
+        authorized_custom_app_domain_ls=authorized_domains,
+        debug_api=debug_api,
+        session=session,
+    )
+
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 68
 @patch_to(DomoInstanceConfig, cls_method=True)
 async def get_applications(
     cls,
@@ -709,7 +784,7 @@ async def get_applications(
 
     return [dmapp.DomoApplication._from_json(job) for job in res.response]
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 64
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 71
 @patch_to(DomoInstanceConfig)
 async def generate_applications_report(
     self,
