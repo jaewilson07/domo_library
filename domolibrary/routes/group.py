@@ -290,6 +290,7 @@ async def update_group(
     group_name: str = None,
     group_type: str = None,
     description: str = None,
+    additional_params : dict = None,
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
     debug_num_stacks_to_drop=  1,
@@ -303,6 +304,10 @@ async def update_group(
     if group_type: s.update({"type": group_type})
     
     if description: s.update({"description": description})
+
+    if additional_params and isinstance(additional_params, dict):
+        s.update({**additional_params})
+        pass
 
     url = f"https://{auth.domo_instance}.domo.com/api/content/v2/groups"
     
@@ -338,7 +343,7 @@ async def update_group(
     res.response = f"updated {group_id} from {auth.domo_instance}"
     return res
 
-# %% ../../nbs/routes/group.ipynb 26
+# %% ../../nbs/routes/group.ipynb 27
 @gd.route_function
 async def delete_groups(
     auth: dmda.DomoAuth,
@@ -381,7 +386,7 @@ async def delete_groups(
     res.response = f"deleted {', '.join(group_ids)} from {auth.domo_instance}"
     return res
 
-# %% ../../nbs/routes/group.ipynb 30
+# %% ../../nbs/routes/group.ipynb 31
 @gd.route_function
 async def get_group_owners(
     auth: dmda.DomoAuth,
@@ -416,7 +421,7 @@ async def get_group_owners(
 
 
 
-# %% ../../nbs/routes/group.ipynb 33
+# %% ../../nbs/routes/group.ipynb 34
 @gd.route_function
 async def get_group_membership(
     auth: dmda.DomoAuth,
@@ -447,7 +452,7 @@ async def get_group_membership(
     res.response = res.response.get('groupUserList')
     return res
 
-# %% ../../nbs/routes/group.ipynb 37
+# %% ../../nbs/routes/group.ipynb 38
 def generate_body_update_group_membership_entity(user_id: Union[str, int],
                                                  user_type: str  # USER or GROUP
                                                  ):
@@ -457,7 +462,7 @@ def generate_body_update_group_membership_entity(user_id: Union[str, int],
         return {"type": "GROUP", "id": int(user_id)}
 
 
-# %% ../../nbs/routes/group.ipynb 38
+# %% ../../nbs/routes/group.ipynb 39
 def generate_body_update_group_membership(group_id: str,
                                           add_member_arr: list[str] = None,
                                           remove_member_arr: list[str] = None,
@@ -488,7 +493,7 @@ def generate_body_update_group_membership(group_id: str,
     return [body]
 
 
-# %% ../../nbs/routes/group.ipynb 39
+# %% ../../nbs/routes/group.ipynb 40
 gd.route_function
 async def update_group_membership(
     auth: dmda.DomoAuth,
