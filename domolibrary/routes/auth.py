@@ -155,7 +155,11 @@ async def get_full_auth(
         res, traceback_details=traceback_details, parent_class=parent_class
     )
 
-    if res.is_success and isinstance(res.response , dict) and res.response.get("reason", None):
+    if (
+        res.is_success
+        and isinstance(res.response, dict)
+        and res.response.get("reason", None)
+    ):
         if res.response.get("reason") == "INVALID_CREDENTIALS":
             res.is_success = False
             raise InvalidCredentialsError(
@@ -165,14 +169,17 @@ async def get_full_auth(
                 message=res.response["reason"],
                 domo_instance=domo_instance,
             )
-        if isinstance(res.response, dict) and res.response.get("reason") == "ACCOUNT_LOCKED":
+        if (
+            isinstance(res.response, dict)
+            and res.response.get("reason") == "ACCOUNT_LOCKED"
+        ):
             res.is_success = False
             raise AccountLockedError(
                 function_name=res.traceback_details.function_name,
                 parent_class=parent_class,
                 status=res.status,
                 message=str(res.response.get("reason")),
-                domo_instance = domo_instance,
+                domo_instance=domo_instance,
             )
 
         if res.response == {} or res.response == "":  # no access token
@@ -181,7 +188,7 @@ async def get_full_auth(
                 function_name=res.traceback_details.function_name,
                 parent_class=parent_class,
                 status=res.status,
-                domo_instance= domo_instance,
+                domo_instance=domo_instance,
             )
 
     if res.status == 403 and res.response == "Forbidden":
@@ -194,7 +201,9 @@ async def get_full_auth(
             domo_instance=domo_instance,
         )
 
-    if not res.is_success or not ( isinstance(res.response, dict) and res.response.get('sessionToken')):
+    if not res.is_success or not (
+        isinstance(res.response, dict) and res.response.get("sessionToken")
+    ):
         raise InvalidCredentialsError(
             function_name=res.traceback_details.function_name,
             parent_class=parent_class,
@@ -204,7 +213,6 @@ async def get_full_auth(
         )
 
     return res
-
 
 # %% ../../nbs/routes/auth.ipynb 15
 async def get_developer_auth(
@@ -238,9 +246,7 @@ async def get_developer_auth(
         await session.aclose()
 
     res = rgd.ResponseGetData._from_httpx_response(
-        res, 
-        traceback_details=traceback_details,
-        parent_class=parent_class
+        res, traceback_details=traceback_details, parent_class=parent_class
     )
 
     if res.status == 401 and res.response == "Unauthorized":
@@ -253,16 +259,15 @@ async def get_developer_auth(
 
     return res
 
-
 # %% ../../nbs/routes/auth.ipynb 19
 async def who_am_i(
     auth_header: dict,
     domo_instance: str,  # <domo_instance>.domo.com
     session: httpx.AsyncClient = None,
-    parent_class :str = None,
-    debug_num_stacks_to_drop = 0,
+    parent_class: str = None,
+    debug_num_stacks_to_drop=0,
     debug_api: bool = False,
-    return_raw: bool = False
+    return_raw: bool = False,
 ):
     """
     will attempt to validate against the 'me' API.
@@ -284,24 +289,25 @@ async def who_am_i(
 
     if is_close_session:
         await session.aclose()
-    
+
     if return_raw:
         return res
-    
-    traceback_details = lg.get_traceback(num_stacks_to_drop= debug_num_stacks_to_drop)
 
-    res = rgd.ResponseGetData._from_httpx_response(res, traceback_details= traceback_details, parent_class= parent_class)
+    traceback_details = lg.get_traceback(num_stacks_to_drop=debug_num_stacks_to_drop)
+
+    res = rgd.ResponseGetData._from_httpx_response(
+        res, traceback_details=traceback_details, parent_class=parent_class
+    )
 
     if res.status == 401 and res.response == "Unauthorized":
         res.is_sucess = False
 
         raise InvalidCredentialsError(
-            function_name = res.traceback_details.function_name,
-            parent_class = parent_class,
+            function_name=res.traceback_details.function_name,
+            parent_class=parent_class,
             status=res.status,
             message=res.response,
             domo_instance=domo_instance,
         )
 
     return res
-

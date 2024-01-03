@@ -83,14 +83,14 @@ async def get_customer_id(
     auth: dmda.DomoFullAuth = None,
     debug_api: bool = False,
     debug_num_stacks_to_drop=3,
-    return_raw: bool = False
+    return_raw: bool = False,
 ):
     res = await bootstrap_routes.get_bootstrap_customerid(
         auth=auth or self.auth,
         debug_api=debug_api,
         debug_num_stacks_to_drop=debug_num_stacks_to_drop,
-        return_raw = return_raw,
-        parent_class = self.__class__.__name__
+        return_raw=return_raw,
+        parent_class=self.__class__.__name__,
     )
 
     if return_raw:
@@ -168,7 +168,7 @@ async def get_features(
 # %% ../../nbs/classes/50_DomoBootstrap.ipynb 18
 @patch_to(DomoBootstrap)
 async def is_feature_accountsv2_enabled(
-    self :DomoBootstrap,
+    self: DomoBootstrap,
     auth: dmda.DomoAuth = None,
     debug_api: bool = False,
     return_raw: bool = False,

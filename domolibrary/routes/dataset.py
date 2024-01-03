@@ -24,18 +24,45 @@ import domolibrary.client.DomoError as de
 
 # %% ../../nbs/routes/dataset.ipynb 5
 class DatasetNotFoundError(de.DomoError):
-    def __init__(self, dataset_id, domo_instance, status=None, parent_class = None, function_name = None):
+    def __init__(
+        self,
+        dataset_id,
+        domo_instance,
+        status=None,
+        parent_class=None,
+        function_name=None,
+    ):
         message = f"dataset - {dataset_id} not found"
 
-        super().__init__(message, status=status, domo_instance=domo_instance, function_name = function_name, parent_class = parent_class)
-        
+        super().__init__(
+            message,
+            status=status,
+            domo_instance=domo_instance,
+            function_name=function_name,
+            parent_class=parent_class,
+        )
 
 # %% ../../nbs/routes/dataset.ipynb 6
 class QueryRequestError(de.DomoError):
-    def __init__(self, dataset_id, domo_instance, sql, status=None, message="", parent_class = None, function_name = None):
+    def __init__(
+        self,
+        dataset_id,
+        domo_instance,
+        sql,
+        status=None,
+        message="",
+        parent_class=None,
+        function_name=None,
+    ):
         message = f"dataset - {dataset_id} received a bad request {message}.  Check your SQL \n {sql}"
 
-        super().__init__(message, status=status, domo_instance=domo_instance, parent_class = parent_class, function_name = function_name)
+        super().__init__(
+            message,
+            status=status,
+            domo_instance=domo_instance,
+            parent_class=parent_class,
+            function_name=function_name,
+        )
 
 
 # typically do not use
@@ -75,8 +102,8 @@ async def query_dataset_private(
     debug_api: bool = False,
     debug_loop: bool = False,
     timeout: int = 10,
-    parent_class = None,
-    debug_num_stacks_to_drop = 1
+    parent_class=None,
+    debug_num_stacks_to_drop=1,
 ):
     """execute SQL queries against private APIs, requires DomoFullAuth or DomoTokenAuth"""
 
@@ -90,7 +117,7 @@ async def query_dataset_private(
     # def body_fn(skip, limit):
     #     return {"sql": f"{sql} limit {limit} offset {skip}"}
 
-    def body_fn(skip, limit, body = None):
+    def body_fn(skip, limit, body=None):
         body = {"sql": f"{sql} limit {limit} offset {skip}"}
 
         if filter_pdp_policy_id_ls:
@@ -134,14 +161,17 @@ async def query_dataset_private(
         debug_loop=debug_loop,
         loop_until_end=loop_until_end,
         timeout=timeout,
-        parent_class = parent_class,
-        debug_num_stacks_to_drop = debug_num_stacks_to_drop
+        parent_class=parent_class,
+        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
     if res.status == 404 and res.response == "Not Found":
         raise DatasetNotFoundError(
-            dataset_id=dataset_id, domo_instance=auth.domo_instance, status=res.status,
-            parent_class = parent_class, function_name = res.traceback_details.function_name
+            dataset_id=dataset_id,
+            domo_instance=auth.domo_instance,
+            status=res.status,
+            parent_class=parent_class,
+            function_name=res.traceback_details.function_name,
         )
 
     if res.status == 400 and res.response == "Bad Request":
@@ -150,7 +180,8 @@ async def query_dataset_private(
             domo_instance=auth.domo_instance,
             sql=sql,
             status=res.status,
-            parent_class = parent_class, function_name = res.traceback_details.function_name
+            parent_class=parent_class,
+            function_name=res.traceback_details.function_name,
         )
 
     if not res.is_success:
@@ -160,7 +191,8 @@ async def query_dataset_private(
             sql=sql,
             message=res.response,
             status=res.status,
-            parent_class = parent_class, function_name = res.traceback_details.function_name
+            parent_class=parent_class,
+            function_name=res.traceback_details.function_name,
         )
 
     return res
@@ -201,18 +233,24 @@ async def get_dataset_by_id(
 
 # %% ../../nbs/routes/dataset.ipynb 12
 async def get_schema(
-    auth: dmda.DomoAuth, 
-    dataset_id: str, 
+    auth: dmda.DomoAuth,
+    dataset_id: str,
     debug_api: bool = False,
-    debug_num_stacks_to_drop = 1,
-    parent_class = None,
+    debug_num_stacks_to_drop=1,
+    parent_class=None,
 ) -> rgd.ResponseGetData:
     """retrieve the schema for a dataset"""
 
     url = f"https://{auth.domo_instance}.domo.com/api/query/v1/datasources/{dataset_id}/schema/indexed?includeHidden=false"
 
-    return await gd.get_data(auth=auth, url=url, method="GET", debug_api=debug_api, parent_class = parent_class, num_stacks_to_drop = debug_num_stacks_to_drop)
-
+    return await gd.get_data(
+        auth=auth,
+        url=url,
+        method="GET",
+        debug_api=debug_api,
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
+    )
 
 # %% ../../nbs/routes/dataset.ipynb 15
 async def alter_schema(
@@ -245,8 +283,8 @@ async def set_dataset_tags(
     debug_api: bool = False,
     session: Optional[httpx.AsyncClient] = None,
     return_raw: bool = False,
-    parent_class :str = None,
-    debug_num_stacks_to_drop :int = 1
+    parent_class: str = None,
+    debug_num_stacks_to_drop: int = 1,
 ):
     """REPLACE tags on this dataset with a new list"""
 
@@ -260,8 +298,8 @@ async def set_dataset_tags(
         body=tag_ls,
         session=session,
         return_raw=return_raw,
-        parent_class = parent_class,
-        num_stacks_to_drop = debug_num_stacks_to_drop
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
     if return_raw:
@@ -510,7 +548,6 @@ async def index_dataset(
         debug_api=debug_api,
     )
 
-
 # %% ../../nbs/routes/dataset.ipynb 28
 async def index_status(
     auth: dmda.DomoAuth,
@@ -526,7 +563,6 @@ async def index_status(
     return await gd.get_data(
         auth=auth, method="GET", url=url, session=session, debug_api=debug_api
     )
-
 
 # %% ../../nbs/routes/dataset.ipynb 30
 def generate_list_partitions_body(limit=100, offset=0):
@@ -665,7 +701,6 @@ async def delete(
         auth=auth, method="DELETE", url=url, session=session, debug_api=debug_api
     )
 
-
 # %% ../../nbs/routes/dataset.ipynb 38
 class ShareDataset_AccessLevelEnum(Enum):
     CO_OWNER = "CO_OWNER"
@@ -688,10 +723,24 @@ def generate_share_dataset_payload(
 
 # %% ../../nbs/routes/dataset.ipynb 39
 class ShareDataset_Error(de.DomoError):
-    def __init__(self, dataset_id, status, response, domo_instance, parent_class = None, function_name = None):
+    def __init__(
+        self,
+        dataset_id,
+        status,
+        response,
+        domo_instance,
+        parent_class=None,
+        function_name=None,
+    ):
         message = f"error sharing dataset {dataset_id} - {response}"
 
-        super().__init__(status=status, domo_instance=domo_instance, message=message, parent_class = parent_class, function_name =function_name)
+        super().__init__(
+            status=status,
+            domo_instance=domo_instance,
+            message=message,
+            parent_class=parent_class,
+            function_name=function_name,
+        )
 
 
 async def share_dataset(
@@ -700,8 +749,8 @@ async def share_dataset(
     body: dict,
     session: httpx.AsyncClient = None,
     debug_api=False,
-    parent_class = None,
-    debug_num_stacks_to_drop = 1
+    parent_class=None,
+    debug_num_stacks_to_drop=1,
 ):
     url = f"https://{auth.domo_instance}.domo.com/api/data/v3/datasources/{dataset_id}/share"
 
@@ -712,8 +761,8 @@ async def share_dataset(
         body=body,
         session=session,
         debug_api=debug_api,
-        parent_class = parent_class,
-        num_stacks_to_drop = debug_num_stacks_to_drop
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
     if not res.is_success:

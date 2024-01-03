@@ -27,14 +27,18 @@ class TrelloList(Base):
     @classmethod
     def _create_list_from_board(cls, auth: ta.TrelloAuth, json_obj: dict):
         dd = DictDot(json_obj)
-        tlist = cls(id=dd.id or None,
-                    board_id=dd.idBoard or None,
-                    auth=auth,
-                    name=dd.name or None,
-                    url=dd.url or None)
+        tlist = cls(
+            id=dd.id or None,
+            board_id=dd.idBoard or None,
+            auth=auth,
+            name=dd.name or None,
+            url=dd.url or None,
+        )
         return tlist
 
-    async def get_props(self, list_id: str = None, auth: ta.TrelloAuth = None, debug: bool = False):
+    async def get_props(
+        self, list_id: str = None, auth: ta.TrelloAuth = None, debug: bool = False
+    ):
         """Fetch all attributes for this list"""
 
         auth = auth or self.auth
@@ -46,11 +50,11 @@ class TrelloList(Base):
         if res.status == 200:
             json_obj = res.response
 
-            self.id = json_obj['id']
-            self.name = json_obj['name']
-            self.closed = json_obj['closed']
-            self.board_id = json_obj['idBoard']
-            self.pos = json_obj['pos']
-            self.subscribed = json_obj.get('subscribed', False)
+            self.id = json_obj["id"]
+            self.name = json_obj["name"]
+            self.closed = json_obj["closed"]
+            self.board_id = json_obj["idBoard"]
+            self.pos = json_obj["pos"]
+            self.subscribed = json_obj.get("subscribed", False)
 
             return json_obj

@@ -12,8 +12,8 @@ import domolibrary.utils.DictDot as util_dd
 
 
 class DomoCertificationState(Enum):
-    CERTIFIED = 'certified'
-    PENDING = 'PENDING'
+    CERTIFIED = "certified"
+    PENDING = "PENDING"
 
 
 @dataclass
@@ -26,10 +26,9 @@ class DomoCertification:
     @classmethod
     def _from_json(cls, obj):
         dd = util_dd.DictDot(obj) if isinstance(obj, dict) else obj
-        return cls(certification_state=DomoCertificationState[dd.state].value or dd.state,
-                   last_updated=cd.convert_epoch_millisecond_to_datetime(
-                       dd.lastUpdated),
-                   certification_type=dd.processType,
-                   certification_name=dd.processName
-                   )
-
+        return cls(
+            certification_state=DomoCertificationState[dd.state].value or dd.state,
+            last_updated=cd.convert_epoch_millisecond_to_datetime(dd.lastUpdated),
+            certification_type=dd.processType,
+            certification_name=dd.processName,
+        )

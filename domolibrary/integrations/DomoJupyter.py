@@ -25,7 +25,6 @@ import domolibrary.client.Logger as lc
 import domolibrary.classes.DomoDataset as dmds
 import domolibrary.utils.chunk_execution as ce
 
-
 # %% ../../nbs/integrations/DomoJupyter.ipynb 5
 class GetJupyter_ErrorRetrievingAccount(Exception):
     def __init__(self, account_name):
@@ -140,7 +139,7 @@ class GetInstanceConfig:
             loop_until_end=True,
             debug_num_stacks_to_drop=debug_num_stacks_to_drop,
             parent_class=self.__class__.__name__,
-            is_return_dataframe = False
+            is_return_dataframe=False,
         )
         if len(config_df) == 0:
             raise NoConfigCompanyError(sql, domo_instance=config_auth.domo_instance)
@@ -229,7 +228,7 @@ async def process_row(
     config_enum=None,
     debug_api: bool = False,
     debug_prn: bool = False,
-    logger = None
+    logger=None,
 ):
     # convert DomoJupyterAccount_InstanceAuth obj to
     if isinstance(instance_creds, DomoJupyterAccount_InstanceAuth):
@@ -239,14 +238,17 @@ async def process_row(
 
     try:
         await instance_creds.get_auth_token(debug_api=debug_api)
-        instance.update(
-            {"is_valid": 1}
-        )
+        instance.update({"is_valid": 1})
 
         if isinstance(instance_creds, dmda.DomoFullAuth):
             instance.update({"is_v2": await is_v2(instance_auth=instance_creds)})
 
-    except (dmda.InvalidCredentialsError, dmda.AccountLockedError, dmda.InvalidInstanceError, dmda.NoAccessTokenReturned ) as e:
+    except (
+        dmda.InvalidCredentialsError,
+        dmda.AccountLockedError,
+        dmda.InvalidInstanceError,
+        dmda.NoAccessTokenReturned,
+    ) as e:
         if debug_prn:
             print(e)
         logger.log_error(str(e))
@@ -263,7 +265,7 @@ async def process_row(
         config_creds = config_creds.generate_auth(domo_instance=domo_instance)
 
     instance.update({"config_auth": config_creds})
-    
+
     return instance
 
 # %% ../../nbs/integrations/DomoJupyter.ipynb 14
@@ -290,7 +292,9 @@ async def get_domains_with_instance_auth(
     debug_log: bool = False,
     debug_prn: bool = False,
     logger: lc.Logger = None,  # pass in Logger class
-) -> pd.DataFrame:  # returns a dataframe with domo_instance, instance_auth, and binary column is_valid
+) -> (
+    pd.DataFrame
+):  # returns a dataframe with domo_instance, instance_auth, and binary column is_valid
     """uses a sql query to retrieve a list of domo_instances and map authentication object to each instance"""
 
     if not logger:
@@ -311,20 +315,27 @@ async def get_domains_with_instance_auth(
         message = f"Query failed to return a column 'auth_match_col' sql = {config_sql} in {config_auth.domo_instance}"
         raise GetDomains_Query_AuthMatch_Error(message)
 
-    config_ls = await ce.gather_with_concurrency(*[
-        process_row(
-            instance=instance,
-            domo_instance = instance['domo_instance'],
-            instance_creds=auth_enum[instance['auth_match_col']].value
-            if instance['auth_match_col'] in auth_enum._member_names_
-            else default_auth,
-            config_enum=auth_enum if "config_1" in auth_enum._member_names_ else None,
-            debug_api = debug_api,
-            debug_prn = debug_prn,
-            logger= logger
-        )
-        for instance in config_ls
-    ], n = 10)
+    config_ls = await ce.gather_with_concurrency(
+        *[
+            process_row(
+                instance=instance,
+                domo_instance=instance["domo_instance"],
+                instance_creds=(
+                    auth_enum[instance["auth_match_col"]].value
+                    if instance["auth_match_col"] in auth_enum._member_names_
+                    else default_auth
+                ),
+                config_enum=(
+                    auth_enum if "config_1" in auth_enum._member_names_ else None
+                ),
+                debug_api=debug_api,
+                debug_prn=debug_prn,
+                logger=logger,
+            )
+            for instance in config_ls
+        ],
+        n=10,
+    )
 
     return pd.DataFrame(config_ls)
 
@@ -420,7 +431,6 @@ def generate_auth_ls(
     self: DomoJupyterAccount_InstanceAuth,
     domo_instance_ls: list[str] = None,  # list of domo_instances
 ) -> list[dmda.DomoAuth]:  # list of domo auth objects
-
     """for every domo_instance in domo_instance_ls generates an DomoAuth object"""
 
     # reset internal lists

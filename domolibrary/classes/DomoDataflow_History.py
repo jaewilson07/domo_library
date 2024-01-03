@@ -17,8 +17,6 @@ import domolibrary.utils.chunk_execution as ce
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.routes.dataflow as dataflow_routes
 
-
-
 # %% auto 0
 __all__ = ['DomoDataflow_History_Execution', 'DomoDataflow_History']
 
@@ -45,15 +43,17 @@ class DomoDataflow_History_Execution:
     telemetry: dict
     execution_stats: dict
 
-    action_results : List[DomoDataflow_ActionResult] = None
+    action_results: List[DomoDataflow_ActionResult] = None
 
     @classmethod
     def _from_json(cls, de_obj, auth: dmda.DomoAuth):
-        
-        action_results = None
-        if de_obj.get('actionResults'):
-            action_results = [DomoDataflow_ActionResult._from_json(action_obj) for action_obj in de_obj.get('actionResults')]
 
+        action_results = None
+        if de_obj.get("actionResults"):
+            action_results = [
+                DomoDataflow_ActionResult._from_json(action_obj)
+                for action_obj in de_obj.get("actionResults")
+            ]
 
         return cls(
             auth=auth,
@@ -61,7 +61,9 @@ class DomoDataflow_History_Execution:
             dataflow_id=de_obj["onboardFlowId"],
             dataflow_execution_id=de_obj["dapDataFlowExecutionId"],
             dataflow_version=de_obj.get("dataFlowVersion"),
-            begin_time=ct.convert_epoch_millisecond_to_datetime(de_obj.get("beginTime")),
+            begin_time=ct.convert_epoch_millisecond_to_datetime(
+                de_obj.get("beginTime")
+            ),
             end_time=ct.convert_epoch_millisecond_to_datetime(de_obj.get("endTime")),
             last_updated=ct.convert_epoch_millisecond_to_datetime(
                 de_obj["lastUpdated"]
@@ -78,80 +80,83 @@ class DomoDataflow_History_Execution:
                 "mean_download_rate_kbps": de_obj.get("meanDownloadRateKbps", 0),
                 "total_rows_written": de_obj.get("totalRowsWritten", 0),
             },
-            action_results = action_results
+            action_results=action_results,
         )
 
 # %% ../../nbs/classes/50_DomoDataflow_History.ipynb 7
-@patch_to(DomoDataflow_History_Execution, cls_method = True)
-async def get_by_id(cls, 
+@patch_to(DomoDataflow_History_Execution, cls_method=True)
+async def get_by_id(
+    cls,
     auth: dmda.DomoAuth,
     dataflow_id: int,
-    execution_id : int,
+    execution_id: int,
     debug_api: bool = False,
     debug_num_stacks_to_drop=1,
     session: httpx.AsyncClient = None,
-    return_raw: bool = False):
+    return_raw: bool = False,
+):
 
     """retrieves details about a dataflow execution including actions"""
 
     res = await dataflow_routes.get_dataflow_execution_by_id(
-        auth = auth,
-        dataflow_id = dataflow_id,
-        execution_id = execution_id,
-        debug_api = debug_api,
-        debug_num_stacks_to_drop = debug_num_stacks_to_drop,
-        parent_class = cls.__name__,
-        session = session
+        auth=auth,
+        dataflow_id=dataflow_id,
+        execution_id=execution_id,
+        debug_api=debug_api,
+        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+        parent_class=cls.__name__,
+        session=session,
     )
 
     if return_raw:
         return res
-        
-    return cls._from_json(auth = auth, de_obj = res.response)
-    
+
+    return cls._from_json(auth=auth, de_obj=res.response)
 
 # %% ../../nbs/classes/50_DomoDataflow_History.ipynb 11
 @patch_to(DomoDataflow_History_Execution)
-async def get_actions(self : DomoDataflow_History_Execution, 
+async def get_actions(
+    self: DomoDataflow_History_Execution,
     debug_api: bool = False,
     debug_num_stacks_to_drop=1,
     session: httpx.AsyncClient = None,
-    return_raw: bool = False):
+    return_raw: bool = False,
+):
 
     """retrieves details execution action results"""
 
-
     res = await dataflow_routes.get_dataflow_execution_by_id(
-        auth = self.auth,
-        dataflow_id = self.dataflow_id,
-        execution_id = self.id,
-        debug_api = debug_api,
-        debug_num_stacks_to_drop = debug_num_stacks_to_drop,
-        parent_class = self.__class__.__name__,
-        session = session
+        auth=self.auth,
+        dataflow_id=self.dataflow_id,
+        execution_id=self.id,
+        debug_api=debug_api,
+        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+        parent_class=self.__class__.__name__,
+        session=session,
     )
 
     if return_raw:
         return res
 
-    action_results = res.response.get('actionResults')
+    action_results = res.response.get("actionResults")
     if action_results:
-        action_results = [DomoDataflow_ActionResult._from_json(action_obj) for action_obj in action_results]
-    
+        action_results = [
+            DomoDataflow_ActionResult._from_json(action_obj)
+            for action_obj in action_results
+        ]
+
     self.action_results = action_results
     return self.action_results
-
-    
 
 # %% ../../nbs/classes/50_DomoDataflow_History.ipynb 13
 @dataclass
 class DomoDataflow_History:
-    auth : dmda.DomoAuth = field(repr = False)
-    dataflow_id : int = field(repr = False)
+    auth: dmda.DomoAuth = field(repr=False)
+    dataflow_id: int = field(repr=False)
 
-    dataflow : None = field(repr = False, default = None)
-    
-    execution_history : List[DomoDataflow_History_Execution] = None
+    dataflow: None = field(repr=False, default=None)
+
+    execution_history: List[DomoDataflow_History_Execution] = None
 
 # %% ../../nbs/classes/50_DomoDataflow_History.ipynb 15
 @patch_to(DomoDataflow_History)
@@ -182,10 +187,13 @@ async def get_execution_history(
         return res
 
     execution_history = [
-        DomoDataflow_History_Execution._from_json(df_obj, auth) for df_obj in res.response
+        DomoDataflow_History_Execution._from_json(df_obj, auth)
+        for df_obj in res.response
     ]
 
-    await ce.gather_with_concurrency( *[domo_execution.get_actions() for domo_execution in execution_history], n = 20)
+    await ce.gather_with_concurrency(
+        *[domo_execution.get_actions() for domo_execution in execution_history], n=20
+    )
 
     self.execution_history = execution_history
 

@@ -133,7 +133,6 @@ class DomoAccount_Config_DomoAccessToken(DomoAccount_Config):
             "password": self.password,
         }
 
-
 # %% ../../nbs/classes/50_DomoAccount_Config.ipynb 10
 @dataclass
 class DomoAccount_Config_Governance(DomoAccount_Config):
@@ -150,7 +149,6 @@ class DomoAccount_Config_Governance(DomoAccount_Config):
 
     def to_json(self):
         return {"apikey": self.access_token, "customer": self.domo_instance}
-
 
 # %% ../../nbs/classes/50_DomoAccount_Config.ipynb 12
 @dataclass
@@ -185,7 +183,6 @@ class DomoAccount_Config_AmazonS3(DomoAccount_Config):
             "region": self.region,
         }
 
-
 # %% ../../nbs/classes/50_DomoAccount_Config.ipynb 13
 @dataclass
 class DomoAccount_Config_AmazonS3Advanced(DomoAccount_Config):
@@ -219,7 +216,6 @@ class DomoAccount_Config_AmazonS3Advanced(DomoAccount_Config):
             "region": self.region,
         }
 
-
 # %% ../../nbs/classes/50_DomoAccount_Config.ipynb 14
 @dataclass
 class DomoAccount_Config_AwsAthena(DomoAccount_Config):
@@ -252,7 +248,6 @@ class DomoAccount_Config_AwsAthena(DomoAccount_Config):
             "workgroup": self.workgroup,
         }
 
-
 # %% ../../nbs/classes/50_DomoAccount_Config.ipynb 15
 @dataclass
 class DomoAccount_Config_HighBandwidthConnector(DomoAccount_Config):
@@ -284,14 +279,14 @@ class DomoAccount_Config_HighBandwidthConnector(DomoAccount_Config):
             "region": self.region,
         }
 
-
 # %% ../../nbs/classes/50_DomoAccount_Config.ipynb 19
 @dataclass
 class DomoAccount_Config_Snowflake(DomoAccount_Config):
     """this connector is not enabled by default contact your CSM / AE"""
+
     account: str
     username: str
-    password: str =field(repr = False)
+    password: str = field(repr=False)
     role: str = None
 
     data_provider_type = "snowflake"
@@ -308,22 +303,25 @@ class DomoAccount_Config_Snowflake(DomoAccount_Config):
         )
 
     def to_json(self):
-        return {"account": self.account, "username": self.username,
-         "password": self.password, "role": self.role}
-
+        return {
+            "account": self.account,
+            "username": self.username,
+            "password": self.password,
+            "role": self.role,
+        }
 
 # %% ../../nbs/classes/50_DomoAccount_Config.ipynb 21
 @dataclass
 class DomoAccount_Config_SnowflakeUnload_V2(DomoAccount_Config):
     """this connector is not enabled by default contact your CSM / AE"""
+
     account: str
     username: str
-    password: str = field(repr = False)
-
+    password: str = field(repr=False)
 
     access_key: str
     secret_key: str = field(repr=False)
-    region :str
+    region: str
     bucket: str
 
     role: str = None
@@ -355,8 +353,8 @@ class DomoAccount_Config_SnowflakeUnload_V2(DomoAccount_Config):
             "accessKey": self.access_key,
             "secretKey": self.secret_key,
             "bucket": self.bucket,
-            "region": self.region}
-
+            "region": self.region,
+        }
 
 # %% ../../nbs/classes/50_DomoAccount_Config.ipynb 23
 class AccountConfig(Enum):

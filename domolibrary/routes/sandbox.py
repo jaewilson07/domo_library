@@ -23,14 +23,15 @@ async def get_is_allow_same_instance_promotion_enabled(
 ):
     url = f"https://{auth.domo_instance}.domo.com/api/version/v1/settings"
 
-    res = await gd.get_data(auth=auth,
-                         method='GET',
-                         url=url,
-                         session=session,
-                         debug_api=debug_api,
-                         num_stacks_to_drop = debug_num_stacks_to_drop,
-                         parent_class = parent_class
-                         )
+    res = await gd.get_data(
+        auth=auth,
+        method="GET",
+        url=url,
+        session=session,
+        debug_api=debug_api,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
+        parent_class=parent_class,
+    )
 
     return res
 
@@ -66,7 +67,7 @@ async def toggle_allow_same_instance_promotion(
         body=body,
         session=session,
         debug_api=debug_api,
-        num_stacks_to_drop = debug_num_stacks_to_drop
+        num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
     if not res.is_success:
@@ -82,15 +83,16 @@ async def toggle_allow_same_instance_promotion(
 
 # %% ../../nbs/routes/sandbox.ipynb 7
 @gd.route_function
-async def get_shared_repos(auth: dmda.DomoAuth, 
-                           session: httpx.AsyncClient = None,
-                           parent_class :str = None,
-                           debug_api: bool = False,
-                           debug_num_stacks_to_drop : bool = False
-                           ) -> rgd.ResponseGetData:
+async def get_shared_repos(
+    auth: dmda.DomoAuth,
+    session: httpx.AsyncClient = None,
+    parent_class: str = None,
+    debug_api: bool = False,
+    debug_num_stacks_to_drop: bool = False,
+) -> rgd.ResponseGetData:
 
     url = f"https://{auth.domo_instance}.domo.com/api/version/v1/repositories/search"
-    
+
     body = {
         "query": {
             "offset": 0,
@@ -98,43 +100,43 @@ async def get_shared_repos(auth: dmda.DomoAuth,
             "fieldSearchMap": {},
             "sort": "lastCommit",
             "order": "desc",
-            "filters": {
-                "userId": None
-            },
-            "dateFilters": {}
+            "filters": {"userId": None},
+            "dateFilters": {},
         },
-        "shared": False
+        "shared": False,
     }
 
-    res = await gd.get_data(auth=auth,
-                         method='POST',
-                         url=url,
-                         body=body,
-                         session=session,
-                         debug_api=debug_api,
-                         parent_class = parent_class,
-                         num_stacks_to_drop = debug_num_stacks_to_drop
-                         )
+    res = await gd.get_data(
+        auth=auth,
+        method="POST",
+        url=url,
+        body=body,
+        session=session,
+        debug_api=debug_api,
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
+    )
 
     return res
 
 # %% ../../nbs/routes/sandbox.ipynb 10
 @gd.route_function
-async def get_repo_from_id(auth: dmda.DomoFullAuth,
-                           repository_id: str,
-                           debug_api: bool = False,
-                           debug_num_stacks_to_drop : int = 1,
-                           parent_class :str = None,
-                           session: httpx.AsyncClient = None
-                           ) -> rgd.ResponseGetData:
+async def get_repo_from_id(
+    auth: dmda.DomoFullAuth,
+    repository_id: str,
+    debug_api: bool = False,
+    debug_num_stacks_to_drop: int = 1,
+    parent_class: str = None,
+    session: httpx.AsyncClient = None,
+) -> rgd.ResponseGetData:
 
     url = f"https://{auth.domo_instance}.domo.com/api/version/v1/repositories/{repository_id}"
 
-    return await gd.get_data(auth=auth,
-                          method='GET',
-                          url=url,
-                          parent_class = parent_class,
-                          debug_api=debug_api,
-                          num_stacks_to_drop = debug_num_stacks_to_drop
-                          )
-
+    return await gd.get_data(
+        auth=auth,
+        method="GET",
+        url=url,
+        parent_class=parent_class,
+        debug_api=debug_api,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
+    )

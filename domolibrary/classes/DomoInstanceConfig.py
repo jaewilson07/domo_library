@@ -742,7 +742,9 @@ async def upsert_authorized_custom_app_domains(
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
 ):
-    existing_domains = await cls.get_authorized_custom_app_domains(auth=auth, debug_api=debug_api)
+    existing_domains = await cls.get_authorized_custom_app_domains(
+        auth=auth, debug_api=debug_api
+    )
 
     authorized_domains += existing_domains
 

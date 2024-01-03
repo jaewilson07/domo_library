@@ -472,7 +472,7 @@ async def upsert_role(
     session: httpx.AsyncClient = None,
 ):
     domo_role = None
-    
+
     try:
         domo_role = await DomoRoles.search_role(
             role_name=name,
@@ -497,7 +497,6 @@ async def upsert_role(
             debug_api=debug_api,
             session=session,
         )
-
 
     if grant_ls:
         grant_ls = domo_role._valid_grant_ls(grant_ls)

@@ -21,7 +21,6 @@ import domolibrary.client.DomoError as de
 
 import domolibrary.utils.chunk_execution as ce
 
-
 # %% ../../nbs/routes/user.ipynb 4
 class User_CrudError(de.DomoError):
     def __init__(
@@ -78,10 +77,12 @@ class ResetPassword_PasswordUsed(de.DomoError):
 
 class SearchUser_NoResults(de.DomoError):
     def __init__(
-        self, domo_instance, 
-        search_criteria=None, 
-        function_name=None, parent_class=None,
-        status = None
+        self,
+        domo_instance,
+        search_criteria=None,
+        function_name=None,
+        parent_class=None,
+        status=None,
     ):
         search_str = f"- {search_criteria}" if search_criteria else ""
 
@@ -90,7 +91,7 @@ class SearchUser_NoResults(de.DomoError):
             function_name=function_name,
             parent_class=parent_class,
             domo_instance=domo_instance,
-            status = status
+            status=status,
         )
 
 
@@ -111,7 +112,6 @@ class DownloadAvatar_Error(de.DomoError):
             parent_class=parent_class,
             function_name=function_name,
         )
-
 
 # %% ../../nbs/routes/user.ipynb 6
 async def get_all_users(
@@ -186,7 +186,7 @@ async def get_by_id(
     if return_raw:
         return res_v2, res_v3
 
-    if res_v2.status == 200 and res_v2.response == '':
+    if res_v2.status == 200 and res_v2.response == "":
         raise SearchUser_NoResults(
             search_criteria=f"user_id {user_id} not found",
             domo_instance=auth.domo_instance,
@@ -204,7 +204,7 @@ async def get_by_id(
             parent_class=parent_class,
         )
 
-    if res_v3.status == '404' and res_v3.response == 'Not Found':
+    if res_v3.status == "404" and res_v3.response == "Not Found":
         raise SearchUser_NoResults(
             domo_instance=auth.domo_instance,
             status=res_v3.status,
@@ -212,7 +212,9 @@ async def get_by_id(
             function_name=f"{res_v3.traceback_details.function_name}-v3_url",
             parent_class=parent_class,
         )
-    if (not res_v3.status == '404' and not res_v3.response == 'Not Found') and not res_v3.is_success:
+    if (
+        not res_v3.status == "404" and not res_v3.response == "Not Found"
+    ) and not res_v3.is_success:
         raise GetUser_Error(
             domo_instance=auth.domo_instance,
             status=res_v3.status,
@@ -224,7 +226,6 @@ async def get_by_id(
     res_v2.response.update({"roleId": res_v3.response.get("roleId")})
 
     return res_v2
-
 
 # %% ../../nbs/routes/user.ipynb 15
 def process_v1_search_users(
@@ -253,53 +254,45 @@ def process_v1_search_users(
 async def search_users(
     auth: dmda.DomoAuth,
     body: dict,
-    
     loop_until_end: bool = True,  # retrieve all available rows
     limit=200,  # maximum rows to return per request.  refers to PAGINATION
     maximum=100,  # equivalent to the LIMIT or TOP clause in SQL, the number of rows to return total
-  
     suppress_no_results_error: bool = False,
     debug_api: bool = False,
     return_raw: bool = False,
     debug_loop: bool = False,
     debug_num_stacks_to_drop=1,
     parent_class=None,
-    session: httpx.AsyncClient = None
-
+    session: httpx.AsyncClient = None,
 ) -> rgd.ResponseGetData:
     url = f"https://{auth.domo_instance}.domo.com/api/identity/v1/users/search"
 
-    offset_params = { "offset" : 'offset', 'limit' : 'limit'}
+    offset_params = {"offset": "offset", "limit": "limit"}
 
     def body_fn(skip, limit, body):
-        return {**body, "limit": limit,  "offset": skip}
+        return {**body, "limit": limit, "offset": skip}
 
     def arr_fn(res: rgd.ResponseGetData):
-        return res.response.get('users')
+        return res.response.get("users")
 
     res = await gd.looper(
         auth=auth,
         method="POST",
         url=url,
         maximum=maximum,
-        
         limit=limit,
-        offset_params = offset_params,
-        offset_params_in_body = True,
+        offset_params=offset_params,
+        offset_params_in_body=True,
         loop_until_end=loop_until_end,
-        
         arr_fn=arr_fn,
         body_fn=body_fn,
-        body = body,
-        
+        body=body,
         debug_api=debug_api,
-
         debug_loop=debug_loop,
         debug_num_stacks_to_drop=debug_num_stacks_to_drop,
         parent_class=parent_class,
         session=session,
     )
-
 
     if return_raw:
         return res
@@ -323,7 +316,6 @@ async def search_users(
     res.response = process_v1_search_users(res.response)
 
     return res
-
 
 # %% ../../nbs/routes/user.ipynb 17
 async def search_users_by_id(
@@ -369,12 +361,10 @@ async def search_users_by_id(
     )
 
     res = res_ls[-1]
- 
-    res.response = [ row for ls in [ _.response for _ in res_ls] for row in ls ]
+
+    res.response = [row for ls in [_.response for _ in res_ls] for row in ls]
 
     return res
-
-
 
 # %% ../../nbs/routes/user.ipynb 18
 async def search_users_by_email(
@@ -425,7 +415,7 @@ async def search_users_by_email(
 
     res = res_ls[-1]
 
-    res.response = [ row for ls in [ _.response for _ in res_ls] for row in ls ]
+    res.response = [row for ls in [_.response for _ in res_ls] for row in ls]
     return res
 
 # %% ../../nbs/routes/user.ipynb 22
@@ -456,7 +446,6 @@ async def search_virtual_user_by_subscriber_instance(
         num_stacks_to_drop=debug_num_stacks_to_drop,
         parent_class=parent_class,
     )
-
 
 # %% ../../nbs/routes/user.ipynb 26
 async def create_user(
@@ -508,7 +497,6 @@ async def create_user(
 
     res.is_success = True
     return res
-
 
 # %% ../../nbs/routes/user.ipynb 29
 async def set_user_landing_page(
@@ -580,7 +568,6 @@ async def reset_password(
 
     return res
 
-
 # %% ../../nbs/routes/user.ipynb 33
 async def request_password_reset(
     domo_instance: str,
@@ -622,9 +609,7 @@ class UserProperty:
     property_type: UserProperty_Type
     values: str
 
-    def __init__(self,
-                 property_type: UserProperty_Type,
-                 values: list):
+    def __init__(self, property_type: UserProperty_Type, values: list):
         self.property_type = property_type
         self.values = self._value_to_list(values)
 
@@ -638,13 +623,11 @@ class UserProperty:
             "values": self._value_to_list(self.values),
         }
 
-
 # %% ../../nbs/routes/user.ipynb 37
 def generate_patch_user_property_body(user_property_ls: [UserProperty]):
     return {
         "attributes": [user_property.to_json() for user_property in user_property_ls]
     }
-
 
 # %% ../../nbs/routes/user.ipynb 40
 async def update_user(

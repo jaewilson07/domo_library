@@ -12,7 +12,6 @@ import domolibrary.client.DomoAuth as dmda
 import domolibrary.utils.DictDot as util_dd
 import domolibrary.routes.grant as grant_routes
 
-
 # %% ../../nbs/classes/50_DomoGrant.ipynb 3
 @dataclass
 class DomoGrant:
@@ -32,7 +31,6 @@ class DomoGrant:
 
         return self.id == other.id
 
-
     @classmethod
     def _from_json(cls, obj):
 
@@ -40,31 +38,32 @@ class DomoGrant:
         if not isinstance(dd, util_dd.DictDot):
             dd = util_dd.DictDot(obj)
 
-        return cls(id=dd.authority,
-                   display_group=dd.authorityUIGroup,
-                   depends_on_ls=dd.dependsOnAuthorities,
-                   title=dd.title,
-                   description=dd.description,
-                   role_membership_ls=[str(role) for role in dd.roleIds])
-
+        return cls(
+            id=dd.authority,
+            display_group=dd.authorityUIGroup,
+            depends_on_ls=dd.dependsOnAuthorities,
+            title=dd.title,
+            description=dd.description,
+            role_membership_ls=[str(role) for role in dd.roleIds],
+        )
 
 # %% ../../nbs/classes/50_DomoGrant.ipynb 4
 @dataclass
 class DomoGrants:
     pass
 
-
-
 # %% ../../nbs/classes/50_DomoGrant.ipynb 5
 @patch_to(DomoGrants, cls_method=True)
-async def get_grants(cls: DomoGrants,
-                     auth: dmda.DomoAuth,
-                     session: httpx.AsyncClient = None, debug_api: bool = False, return_raw: bool = False,
-                     ):
-    res = await grant_routes.get_grants(auth=auth, debug_api = debug_api, session = session)
+async def get_grants(
+    cls: DomoGrants,
+    auth: dmda.DomoAuth,
+    session: httpx.AsyncClient = None,
+    debug_api: bool = False,
+    return_raw: bool = False,
+):
+    res = await grant_routes.get_grants(auth=auth, debug_api=debug_api, session=session)
 
-    if return_raw or not res.is_success: 
+    if return_raw or not res.is_success:
         return res
-    
-    return [DomoGrant._from_json(row) for index, row in enumerate(res.response)]
 
+    return [DomoGrant._from_json(row) for index, row in enumerate(res.response)]

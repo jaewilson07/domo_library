@@ -81,37 +81,33 @@ async def search_groups_by_name(
 # %% ../../nbs/routes/group.ipynb 8
 @gd.route_function
 async def get_all_groups(
-    auth: dmda.DomoAuth, 
+    auth: dmda.DomoAuth,
     session: httpx.AsyncClient = None,
-    debug_api: bool = False, 
-    debug_loop : bool = False,
-    debug_num_stacks_to_drop : int = 1,
-    parent_class :str = None
+    debug_api: bool = False,
+    debug_loop: bool = False,
+    debug_num_stacks_to_drop: int = 1,
+    parent_class: str = None,
 ) -> rgd.ResponseGetData:
     """uses /content/v2/groups/grouplist api -- includes user details"""
 
     url = f"https://{auth.domo_instance}.domo.com/api/content/v2/groups/grouplist"
 
-
     def arr_fn(res):
         return res.response
 
     res = await gd.looper(
-        offset_params ={ 
-            'offset' : 'offset',
-            'limit': 'limit'
-        },
-
-        arr_fn = arr_fn,
-        loop_until_end = True,
-        limit = 30,
-        url=url, method="GET", 
-        auth=auth, 
+        offset_params={"offset": "offset", "limit": "limit"},
+        arr_fn=arr_fn,
+        loop_until_end=True,
+        limit=30,
+        url=url,
+        method="GET",
+        auth=auth,
         session=session,
-        debug_loop =debug_loop,
-        debug_api = debug_api,
-        parent_class = parent_class,
-        debug_num_stacks_to_drop = debug_num_stacks_to_drop
+        debug_loop=debug_loop,
+        debug_api=debug_api,
+        parent_class=parent_class,
+        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
     return res
@@ -123,8 +119,8 @@ async def get_group_by_id(
     group_id: str,
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
-    parent_class : str = None,
-    debug_num_stacks_to_drop : int = 1
+    parent_class: str = None,
+    debug_num_stacks_to_drop: int = 1,
 ) -> rgd.ResponseGetData:
 
     """uses /content/v2/groups/ api -- does not return details"""
@@ -132,9 +128,13 @@ async def get_group_by_id(
     url = f"https://{auth.domo_instance}.domo.com/api/content/v2/groups/{group_id}"
 
     res = await gd.get_data(
-        auth=auth, url=url, method="GET", debug_api=debug_api, session=session,
-        parent_class = parent_class,
-        num_stacks_to_drop = debug_num_stacks_to_drop
+        auth=auth,
+        url=url,
+        method="GET",
+        debug_api=debug_api,
+        session=session,
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
     if res.status == 404 and res.response == "Not Found":
@@ -204,6 +204,7 @@ class Group_CRUD_Error(de.DomoError):
             parent_class=parent_class,
         )
 
+
 class GroupType_Enum(Enum):
     OPEN = "open"
     ADHOC = "adHoc"
@@ -232,7 +233,7 @@ async def create_group(
     debug_api: bool = False,
     debug_num_stacks_to_drop: int = 1,
     parent_class: str = None,
-    return_raw: bool = False
+    return_raw: bool = False,
 ) -> rgd.ResponseGetData:
     # body : {"name": "GROUP_NAME", "type": "open", "description": ""}
 
@@ -255,7 +256,6 @@ async def create_group(
     if return_raw:
         return res
 
-
     if not res.is_success:
         try:
             group_exists = await search_groups_by_name(
@@ -268,7 +268,7 @@ async def create_group(
                     message=f"{group_name} already exists. Choose a different group_name",
                     function_name=res.traceback_details.function_name,
                     parent_class=parent_class,
-                    domo_instance = auth.domo_instance
+                    domo_instance=auth.domo_instance,
                 )
 
         except SearchGroups_Error as e:
@@ -290,27 +290,30 @@ async def update_group(
     group_name: str = None,
     group_type: str = None,
     description: str = None,
-    additional_params : dict = None,
+    additional_params: dict = None,
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
-    debug_num_stacks_to_drop=  1,
-    parent_class: str = None
+    debug_num_stacks_to_drop=1,
+    parent_class: str = None,
 ) -> rgd.ResponseGetData:
 
     s = {"groupId": int(group_id)}
-    
-    if group_name: s.update({"name": group_name})
-    
-    if group_type: s.update({"type": group_type})
-    
-    if description: s.update({"description": description})
+
+    if group_name:
+        s.update({"name": group_name})
+
+    if group_type:
+        s.update({"type": group_type})
+
+    if description:
+        s.update({"description": description})
 
     if additional_params and isinstance(additional_params, dict):
         s.update({**additional_params})
         pass
 
     url = f"https://{auth.domo_instance}.domo.com/api/content/v2/groups"
-    
+
     res = await gd.get_data(
         auth=auth,
         url=url,
@@ -318,27 +321,27 @@ async def update_group(
         body=[s],
         debug_api=debug_api,
         session=session,
-        parent_class = parent_class,
-        num_stacks_to_drop = debug_num_stacks_to_drop
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
     )
-    
+
     if group_name and res.status == 400:
         raise Group_CRUD_Error(
-                status=res.status,
-                message="are you trying to create an account with a duplicate name?",
-                domo_instance=auth.domo_instance,
-                function_name=res.traceback_details.function_name,
-                parent_class=parent_class,
-            )
+            status=res.status,
+            message="are you trying to create an account with a duplicate name?",
+            domo_instance=auth.domo_instance,
+            function_name=res.traceback_details.function_name,
+            parent_class=parent_class,
+        )
 
     if not res.is_success:
         raise Group_CRUD_Error(
-                status=res.status,
-                message=res.response,
-                domo_instance=auth.domo_instance,
-                function_name=res.traceback_details.function_name,
-                parent_class=parent_class,
-            )
+            status=res.status,
+            message=res.response,
+            domo_instance=auth.domo_instance,
+            function_name=res.traceback_details.function_name,
+            parent_class=parent_class,
+        )
 
     res.response = f"updated {group_id} from {auth.domo_instance}"
     return res
@@ -347,23 +350,23 @@ async def update_group(
 @gd.route_function
 async def delete_groups(
     auth: dmda.DomoAuth,
-    group_ids: List[str], # list of group_ids
+    group_ids: List[str],  # list of group_ids
     session: httpx.AsyncClient = None,
     debug_api: bool = False,
     debug_num_stacks_to_drop: int = 1,
     parent_class: str = None,
-    return_raw: bool = False
+    return_raw: bool = False,
 ) -> rgd.ResponseGetData:
 
-    group_ids = group_ids if isinstance(group_ids , list) else [str(group_ids)]
-    
+    group_ids = group_ids if isinstance(group_ids, list) else [str(group_ids)]
+
     url = f"https://{auth.domo_instance}.domo.com/api/content/v2/groups"
 
     res = await gd.get_data(
         auth=auth,
         url=url,
         method="DELETE",
-        body = group_ids ,
+        body=group_ids,
         debug_api=debug_api,
         session=session,
         parent_class=parent_class,
@@ -373,16 +376,15 @@ async def delete_groups(
     if return_raw:
         return res
 
-
     if not res.is_success:
         raise Group_CRUD_Error(
-                    status=res.status,
-                    message=f"failed to delete {', '.join(group_ids)}",
-                    function_name=res.traceback_details.function_name,
-                    parent_class=parent_class,
-                    domo_instance = auth.domo_instance
-                )
-    
+            status=res.status,
+            message=f"failed to delete {', '.join(group_ids)}",
+            function_name=res.traceback_details.function_name,
+            parent_class=parent_class,
+            domo_instance=auth.domo_instance,
+        )
+
     res.response = f"deleted {', '.join(group_ids)} from {auth.domo_instance}"
     return res
 
@@ -394,32 +396,30 @@ async def get_group_owners(
     return_raw: bool = False,
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
-    parent_class : str = None,
-    debug_num_stacks_to_drop = 1,
+    parent_class: str = None,
+    debug_num_stacks_to_drop=1,
 ) -> rgd.ResponseGetData:
 
     # url = f"https://{auth.domo_instance}.domo.com/api/content/v2/groups/access"
     # url = f"https://{auth.domo_instance}.domo.com/api/content/v2/groups/users?group={group_id}"
-    url = f'https://{auth.domo_instance}.domo.com/api/content/v2/groups/permissions?checkOwnership=true&includeUsers=false'
+    url = f"https://{auth.domo_instance}.domo.com/api/content/v2/groups/permissions?checkOwnership=true&includeUsers=false"
 
     res = await gd.get_data(
         auth=auth,
         url=url,
-        body = [str(group_id)],
+        body=[str(group_id)],
         method="POST",
         debug_api=debug_api,
         session=session,
-        parent_class = parent_class,
-        num_stacks_to_drop = debug_num_stacks_to_drop
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
     if return_raw:
         return res
 
-    res.response = res.response[0].get('permissions').get('owners')
+    res.response = res.response[0].get("permissions").get("owners")
     return res
-
-
 
 # %% ../../nbs/routes/group.ipynb 34
 @gd.route_function
@@ -429,8 +429,8 @@ async def get_group_membership(
     return_raw: bool = False,
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
-    parent_class : str = None,
-    debug_num_stacks_to_drop : int = 1
+    parent_class: str = None,
+    debug_num_stacks_to_drop: int = 1,
 ) -> rgd.ResponseGetData:
 
     # url = f"https://{auth.domo_instance}.domo.com/api/content/v2/groups/access"
@@ -442,59 +442,92 @@ async def get_group_membership(
         method="GET",
         debug_api=debug_api,
         session=session,
-        parent_class = parent_class,
-        num_stacks_to_drop = debug_num_stacks_to_drop
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
     if return_raw:
         return res
 
-    res.response = res.response.get('groupUserList')
+    res.response = res.response.get("groupUserList")
     return res
 
 # %% ../../nbs/routes/group.ipynb 38
-def generate_body_update_group_membership_entity(user_id: Union[str, int],
-                                                 user_type: str  # USER or GROUP
-                                                 ):
-    if user_type == 'USER':
+def generate_body_update_group_membership_entity(
+    user_id: Union[str, int], user_type: str  # USER or GROUP
+):
+    if user_type == "USER":
         return {"type": "USER", "id": str(user_id)}
-    elif user_type == 'GROUP':
+    elif user_type == "GROUP":
         return {"type": "GROUP", "id": int(user_id)}
 
-
 # %% ../../nbs/routes/group.ipynb 39
-def generate_body_update_group_membership(group_id: str,
-                                          add_member_arr: list[str] = None,
-                                          remove_member_arr: list[str] = None,
-
-                                          add_owner_arr: list[str] = None,
-                                          remove_owner_arr: list[str] = None) -> list[dict]:
+def generate_body_update_group_membership(
+    group_id: str,
+    add_member_arr: list[str] = None,
+    remove_member_arr: list[str] = None,
+    add_owner_arr: list[str] = None,
+    remove_owner_arr: list[str] = None,
+) -> list[dict]:
     """
     each member or owner obj should be an object of shape {"type", "id"}
     """
 
     body = {"groupId": int(group_id)}
 
-    if add_owner_arr and len(add_owner_arr) > 0 :
-        body.update({"addOwners": [generate_body_update_group_membership_entity(
-            user_id=obj.get('id'), user_type=obj.get('type')) for obj in add_owner_arr]})
+    if add_owner_arr and len(add_owner_arr) > 0:
+        body.update(
+            {
+                "addOwners": [
+                    generate_body_update_group_membership_entity(
+                        user_id=obj.get("id"), user_type=obj.get("type")
+                    )
+                    for obj in add_owner_arr
+                ]
+            }
+        )
 
     if remove_owner_arr and len(remove_owner_arr) > 0:
-        body.update({"removeOwners": [generate_body_update_group_membership_entity(
-            user_id=obj.get('id'), user_type=obj.get('type')) for obj in remove_owner_arr]})
+        body.update(
+            {
+                "removeOwners": [
+                    generate_body_update_group_membership_entity(
+                        user_id=obj.get("id"), user_type=obj.get("type")
+                    )
+                    for obj in remove_owner_arr
+                ]
+            }
+        )
 
     if remove_member_arr and len(remove_member_arr) > 0:
-        body.update({"removeMembers": [
-                    generate_body_update_group_membership_entity(user_id=obj.get('id'), user_type=obj.get('type')) for obj in remove_member_arr]})
+        body.update(
+            {
+                "removeMembers": [
+                    generate_body_update_group_membership_entity(
+                        user_id=obj.get("id"), user_type=obj.get("type")
+                    )
+                    for obj in remove_member_arr
+                ]
+            }
+        )
     if add_member_arr and len(add_member_arr) > 0:
         body.update(
-            {"addMembers": [generate_body_update_group_membership_entity(user_id=obj.get('id'), user_type=obj.get('type')) for obj in add_member_arr]})
+            {
+                "addMembers": [
+                    generate_body_update_group_membership_entity(
+                        user_id=obj.get("id"), user_type=obj.get("type")
+                    )
+                    for obj in add_member_arr
+                ]
+            }
+        )
 
     return [body]
 
-
 # %% ../../nbs/routes/group.ipynb 40
 gd.route_function
+
+
 async def update_group_membership(
     auth: dmda.DomoAuth,
     group_id: str,
@@ -504,19 +537,21 @@ async def update_group_membership(
     remove_owner_arr: list[dict] = None,
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
-    parent_class:str = None,
-    debug_num_stacks_to_drop : int = 1,
+    parent_class: str = None,
+    debug_num_stacks_to_drop: int = 1,
 ) -> rgd.ResponseGetData:
 
     """
     each member or owner obj should be an object of shape {"type", "id"}
     """
 
-    body = generate_body_update_group_membership(group_id = group_id,
-                                                 add_member_arr = add_member_arr,
-                                                 remove_member_arr= remove_member_arr,
-                                                 add_owner_arr = add_owner_arr,
-                                                 remove_owner_arr = remove_owner_arr)
+    body = generate_body_update_group_membership(
+        group_id=group_id,
+        add_member_arr=add_member_arr,
+        remove_member_arr=remove_member_arr,
+        add_owner_arr=add_owner_arr,
+        remove_owner_arr=remove_owner_arr,
+    )
 
     # body = [{
     #     "groupId":"GROUP_ID",
@@ -535,10 +570,8 @@ async def update_group_membership(
         body=body,
         debug_api=debug_api,
         session=session,
-        num_stacks_to_drop = debug_num_stacks_to_drop,
-        parent_class = parent_class,
-
+        num_stacks_to_drop=debug_num_stacks_to_drop,
+        parent_class=parent_class,
     )
 
     return res
-

@@ -18,11 +18,10 @@ import domolibrary.utils.chunk_execution as ce
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.classes.DomoDataset as dmds
 import domolibrary.classes.DomoAccount as dma
-import domolibrary.classes.DomoCard as dmc 
+import domolibrary.classes.DomoCard as dmc
 
 import domolibrary.routes.datacenter as datacenter_routes
 import domolibrary.routes.card as card_routes
-
 
 # %% ../../nbs/classes/50_DomoDatacenter.ipynb 4
 @dataclass
@@ -90,7 +89,8 @@ async def search_datasets(
     if return_raw or len(json_list) == 0:
         return json_list
 
-    return await ce.gather_with_concurrency( n = 20,
+    return await ce.gather_with_concurrency(
+        n=20,
         *[
             dmds.DomoDataset.get_from_id(
                 dataset_id=json_obj.get("databaseId"),
@@ -115,8 +115,9 @@ async def get_accounts(
     session: httpx.AsyncClient = None,
 ) -> list[dma.DomoAccount]:
     """search Domo Datacenter account api.
-Note: at the time of this writing 7/18/2023, the datacenter api does not support searching accounts by name"""
-    
+    Note: at the time of this writing 7/18/2023, the datacenter api does not support searching accounts by name
+    """
+
     json_list = await cls.search_datacenter(
         auth=auth,
         maximum=maximum,
@@ -131,28 +132,27 @@ Note: at the time of this writing 7/18/2023, the datacenter api does not support
         return json_list
 
     domo_account_ls = [
-            dma.DomoAccount._from_json(
-                json_obj,
-                auth=auth ) for json_obj in json_list
-        ]
-    
+        dma.DomoAccount._from_json(json_obj, auth=auth) for json_obj in json_list
+    ]
+
     return domo_account_ls
 
 # %% ../../nbs/classes/50_DomoDatacenter.ipynb 16
 class LineageTypes_Enum(Enum):
-    DomoDataset = 'DATA_SOURCE'
-    DomoDataflow = 'DATAFLOW'
+    DomoDataset = "DATA_SOURCE"
+    DomoDataflow = "DATAFLOW"
 
 
 @patch_to(DomoDatacenter, cls_method=True)
 async def get_lineage_upstream(
     cls,
     auth: dmda.DomoAuth,
-    domo_entity, # DomoDataset or DomoDataflow
+    domo_entity,  # DomoDataset or DomoDataflow
     return_raw: bool = False,
     session: httpx.AsyncClient = None,
     debug_api: bool = False,
-    debug_prn: bool = False):
+    debug_prn: bool = False,
+):
 
     import domolibrary.classes.DomoDataset as dmds
     import domolibrary.classes.DomoDataflow as dmdf
@@ -161,10 +161,9 @@ async def get_lineage_upstream(
         session = httpx.AsyncClient()
         is_close_session = True
 
-
     res = await datacenter_routes.get_lineage_upstream(
         auth=auth,
-        entity_type= LineageTypes_Enum[domo_entity.__class__.__name__].value,
+        entity_type=LineageTypes_Enum[domo_entity.__class__.__name__].value,
         entity_id=domo_entity.id,
         session=session,
         debug_api=debug_api,
@@ -180,22 +179,22 @@ async def get_lineage_upstream(
     for key, item in obj.items():
         if item.get("type") == "DATA_SOURCE":
             domo_obj.append(
-                await dmds.DomoDataset.get_from_id(auth=auth, dataset_id=item.get("id"), session= session)
+                await dmds.DomoDataset.get_from_id(
+                    auth=auth, dataset_id=item.get("id"), session=session
+                )
             )
 
         if item.get("type") == "DATAFLOW":
             # print(item.get('id'))
             domo_obj.append(
                 await dmdf.DomoDataflow.get_from_id(
-                    auth=auth, dataflow_id=item.get("id"), session = session
-                    
+                    auth=auth, dataflow_id=item.get("id"), session=session
                 )
             )
             pass
 
     await session.aclose()
     return domo_obj
-    
 
 # %% ../../nbs/classes/50_DomoDatacenter.ipynb 18
 @patch_to(DomoDatacenter, cls_method=True)
@@ -225,7 +224,8 @@ async def search_cards(
     if return_raw or len(json_list) == 0:
         return json_list
 
-    return await ce.gather_with_concurrency( n = 60,
+    return await ce.gather_with_concurrency(
+        n=60,
         *[
             dmc.DomoCard.get_by_id(
                 card_id=json_obj.get("databaseId"),
@@ -245,7 +245,6 @@ async def get_cards_admin_summary(
     page_ids: [str] = None,
     card_search_text: str = None,
     page_search_text: str = None,
-
     maximum: int = None,  # maximum number of results to return
     # can accept one value or a list of values
     return_raw: bool = False,
@@ -255,28 +254,28 @@ async def get_cards_admin_summary(
 ) -> list[dmc.DomoCard]:
     """search Domo Datacenter card api."""
 
-    search_body = card_routes.generate_body_search_cards_admin_summary(page_ids = page_ids,
-                                             card_search_text = card_search_text,
-                                             page_search_text = page_search_text)
+    search_body = card_routes.generate_body_search_cards_admin_summary(
+        page_ids=page_ids,
+        card_search_text=card_search_text,
+        page_search_text=page_search_text,
+    )
 
     res = await card_routes.search_cards_admin_summary(
         auth=auth,
-        body = search_body,
+        body=search_body,
         maximum=maximum,
         debug_api=debug_api,
         debug_loop=debug_loop,
         session=session,
-        wait_sleep = 5
+        wait_sleep=5,
     )
 
     if return_raw or len(res.response) == 0:
         return res
 
-    domo_account_ls = await ce.gather_with_concurrency(n=60,*[
-            dmc.DomoCard._from_json(
-                json_obj,
-                auth=auth ) for json_obj in res.response
-        ])
+    domo_account_ls = await ce.gather_with_concurrency(
+        n=60,
+        *[dmc.DomoCard._from_json(json_obj, auth=auth) for json_obj in res.response]
+    )
 
     return domo_account_ls
-

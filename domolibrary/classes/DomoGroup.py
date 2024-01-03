@@ -4,7 +4,7 @@
 __all__ = ['UpdateGroupMembership', 'GroupMembership', 'DomoGroup', 'DomoGroups']
 
 # %% ../../nbs/classes/50_DomoGroup.ipynb 2
-from ..routes.group import SearchGroups_Error,Group_CRUD_Error
+from ..routes.group import SearchGroups_Error, Group_CRUD_Error
 
 # %% ../../nbs/classes/50_DomoGroup.ipynb 3
 from dataclasses import dataclass, field
@@ -592,7 +592,7 @@ async def update_metadata(
     group_name: str = None,
     group_type: str = None,  # use GroupType_Enum
     description: str = None,
-    additional_params : dict = None,
+    additional_params: dict = None,
     debug_api: bool = False,
     return_raw: bool = False,
     session: httpx.AsyncClient = None,
@@ -606,7 +606,7 @@ async def update_metadata(
             group_name=group_name,
             group_type=group_type,
             description=description,
-            additional_params= additional_params,
+            additional_params=additional_params,
             debug_api=debug_api,
             session=session,
         )
@@ -619,20 +619,19 @@ async def update_metadata(
         self.name = updated_group.name or self.name
         self.description = updated_group.description or self.description
         self.type = updated_group.type or self.type
-    
-    except Group_CRUD_Error as e:   
+
+    except Group_CRUD_Error as e:
         if group_type != self.type:
             raise Group_CRUD_Error(
-                status = 400,
-                message= f"probably cannot change group_type to '{group_type}' from current type '{self.type}' consider passing `addtional_parameters`",
+                status=400,
+                message=f"probably cannot change group_type to '{group_type}' from current type '{self.type}' consider passing `addtional_parameters`",
                 domo_instance=auth.domo_instance,
-                function_name='update_group',
-                parent_class= self.__class__.__name__,
+                function_name="update_group",
+                parent_class=self.__class__.__name__,
             )
-        
+
         else:
             raise e
-
 
     return self
 
