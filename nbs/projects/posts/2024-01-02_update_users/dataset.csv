@@ -1,0 +1,18 @@
+﻿email,Role,FranchiseID,StoreID,EmpID,ManagerID
+CEO1@fz.com,CEO,0,0,1,1
+Owner2@fz.com,Owner,1,2,2,1
+Restaurant Manager3@fz.com,Restaurant Manager,1,24,3,2
+Restaurant Manager4@fz.com,Restaurant Manager,1,7,4,2
+Restaurant Manager5@fz.com,Restaurant Manager,1,11,5,2
+Restaurant Manager6@fz.com,Restaurant Manager,1,8,6,2
+Owner7@fz.com,Owner,2,,7,1
+Restaurant Manager8@fz.com,Restaurant Manager,2,35,8,7
+Restaurant Manager9@fz.com,Restaurant Manager,2,9,9,7
+Restaurant Manager10@fz.com,Restaurant Manager,2,4,10,7
+Restaurant Manager11@fz.com,Restaurant Manager,2,27,11,7
+Owner12@fz.com,Owner,3,,12,1
+Restaurant Manager13@fz.com,Restaurant Manager,3,50,13,12
+Restaurant Manager14@fz.com,Restaurant Manager,3,64,14,12
+Restaurant Manager15@fz.com,Restaurant Manager,3,29,15,12
+Restaurant Manager16@fz.com,Restaurant Manager,3,22,16,12
+Restaurant Manager17@fz.com,Restaurant Manager,3,18,17,12
