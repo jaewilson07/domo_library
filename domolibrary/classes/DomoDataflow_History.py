@@ -18,11 +18,10 @@ import domolibrary.client.DomoAuth as dmda
 import domolibrary.routes.dataflow as dataflow_routes
 
 # %% auto 0
-__all__ = ["DomoDataflow_History_Execution", "DomoDataflow_History"]
+__all__ = ['DomoDataflow_History_Execution', 'DomoDataflow_History']
 
 # %% ../../nbs/classes/50_DomoDataflow_History.ipynb 3
 from .DomoDataflow_Action import DomoDataflow_ActionResult
-
 
 # %% ../../nbs/classes/50_DomoDataflow_History.ipynb 6
 @dataclass
@@ -84,7 +83,6 @@ class DomoDataflow_History_Execution:
             action_results=action_results,
         )
 
-
 # %% ../../nbs/classes/50_DomoDataflow_History.ipynb 7
 @patch_to(DomoDataflow_History_Execution, cls_method=True)
 async def get_by_id(
@@ -114,7 +112,6 @@ async def get_by_id(
         return res
 
     return cls._from_json(auth=auth, de_obj=res.response)
-
 
 # %% ../../nbs/classes/50_DomoDataflow_History.ipynb 11
 @patch_to(DomoDataflow_History_Execution)
@@ -151,7 +148,6 @@ async def get_actions(
     self.action_results = action_results
     return self.action_results
 
-
 # %% ../../nbs/classes/50_DomoDataflow_History.ipynb 13
 @dataclass
 class DomoDataflow_History:
@@ -161,7 +157,6 @@ class DomoDataflow_History:
     dataflow: None = field(repr=False, default=None)
 
     execution_history: List[DomoDataflow_History_Execution] = None
-
 
 # %% ../../nbs/classes/50_DomoDataflow_History.ipynb 15
 @patch_to(DomoDataflow_History)

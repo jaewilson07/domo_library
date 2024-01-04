@@ -14,13 +14,7 @@ import domolibrary.utils.convert as ct
 from nbdev.showdoc import patch_to
 
 # %% auto 0
-__all__ = [
-    "DomoDataflow_Action_Type",
-    "DomoAction",
-    "DomoDataflow_Action",
-    "DomoDataflow_ActionResult",
-]
-
+__all__ = ['DomoDataflow_Action_Type', 'DomoAction', 'DomoDataflow_Action', 'DomoDataflow_ActionResult']
 
 # %% ../../nbs/classes/50_DomoDataflow_Action.ipynb 4
 class DomoDataflow_Action_Type(Enum):
@@ -63,7 +57,6 @@ class DomoDataflow_Action(DomoAction):
             sql=dd.selectStatement or dd.query,
         )
 
-
 # %% ../../nbs/classes/50_DomoDataflow_Action.ipynb 5
 @patch_to(DomoDataflow_Action)
 def get_parents(self: DomoDataflow_Action, domo_actions: List[DomoDataflow_Action]):
@@ -83,7 +76,6 @@ def get_parents(self: DomoDataflow_Action, domo_actions: List[DomoDataflow_Actio
         ]
 
     return self.parent_actions
-
 
 # %% ../../nbs/classes/50_DomoDataflow_Action.ipynb 8
 @dataclass
