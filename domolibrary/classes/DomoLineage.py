@@ -112,7 +112,8 @@ async def _get_page_card_ids(self: DomoLineage):
     if not self.parent.content_page_id_ls or len(self.parent.content_page_id_ls) == 0:
         return None
 
-    page_card_ls = await ce.gather_with_concurrency( n = 60,
+    page_card_ls = await ce.gather_with_concurrency(
+        n=60,
         *[
             dmpg.DomoPage.get_cards(page_id=page_id, auth=self.parent.auth)
             for page_id in self.parent.content_page_id_ls
@@ -135,7 +136,7 @@ async def _get_page_card_ids(self: DomoLineage):
 
 # %% ../../nbs/classes/50_DomoLineage.ipynb 8
 @patch_to(DomoLineage)
-def _get_content_list_ls(self : DomoLineage, regex_pattern_ls=None):
+def _get_content_list_ls(self: DomoLineage, regex_pattern_ls=None):
     regex_pattern_ls = regex_pattern_ls or [".*_id_ls$", "^content_.*"]
 
     content_list_ls = [
@@ -167,6 +168,7 @@ def _get_content_list_ls(self : DomoLineage, regex_pattern_ls=None):
         )
     return result
 
+
 @patch_to(DomoLineage)
 def _reset_lineage_and_sync_parent(self):
 
@@ -174,22 +176,22 @@ def _reset_lineage_and_sync_parent(self):
 
     for content_obj in content_list:
 
-        parent_content = getattr(self.parent, content_obj.get('list_name'))
+        parent_content = getattr(self.parent, content_obj.get("list_name"))
 
         lineage_content_name = f"{content_obj.get('entity_name')}_id_ls"
 
-        setattr(self,
-                lineage_content_name,
-                parent_content
-                )
+        setattr(self, lineage_content_name, parent_content)
     return self
 
+
 @patch_to(DomoLineage)
-async def get(self: DomoLineage,
-              debug_prn: bool = False, 
-              debug_api: bool = False,
-              auth: dmda.DomoAuth = None,
-              session=httpx.AsyncClient):
+async def get(
+    self: DomoLineage,
+    debug_prn: bool = False,
+    debug_api: bool = False,
+    auth: dmda.DomoAuth = None,
+    session=httpx.AsyncClient,
+):
 
     auth = auth or self.parent.auth
 
@@ -197,6 +199,7 @@ async def get(self: DomoLineage,
 
     if self.page_id_ls:
         await self._get_page_card_ids()
+
 
 #     if self.card_id_ls and len(self.card_id_ls) > 0:
 #         if debug_prn:
@@ -226,17 +229,19 @@ async def get(self: DomoLineage,
 # %% ../../nbs/classes/50_DomoLineage.ipynb 10
 @patch_to(DomoLineage)
 def _flatten_lineage(self):
-    attribute_ls = _get_content_list_ls(self, ['.*_id_ls$'])
+    attribute_ls = _get_content_list_ls(self, [".*_id_ls$"])
 
     output_ls = []
 
     for attribute in attribute_ls:
-        ls_name = attribute.get('list_name')
-        entity_name = attribute.get('entity_name')
+        ls_name = attribute.get("list_name")
+        entity_name = attribute.get("entity_name")
         entity_type = dmdc.DomoEntity[entity_name.upper()].value
 
-        row_ls = [{'entity_type': entity_type,
-                   'entity_id': row} for row in getattr(self, ls_name)]
+        row_ls = [
+            {"entity_type": entity_type, "entity_id": row}
+            for row in getattr(self, ls_name)
+        ]
         output_ls += row_ls
 
     return output_ls

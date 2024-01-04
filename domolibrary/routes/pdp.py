@@ -39,24 +39,24 @@ async def get_pdp_policies(
     auth: dmda.DomoAuth,
     dataset_id: str,
     debug_api: bool = False,
-    include_all_rows: bool = True
+    include_all_rows: bool = True,
 ) -> rgd.ResponseGetData:
     url = f"http://{auth.domo_instance}.domo.com/api/query/v1/data-control/{dataset_id}/filter-groups/"
 
     if include_all_rows:
-        url+="?options=load_associations,load_filters,include_open_policy"
-        
+        url += "?options=load_associations,load_filters,include_open_policy"
+
     if debug_api:
         print(url)
 
     res = await gd.get_data(
-        auth=auth, 
-        url=url, 
-        method="GET", 
-        debug_api=debug_api, 
+        auth=auth,
+        url=url,
+        method="GET",
+        debug_api=debug_api,
         # headers= {'accept': 'application/json'},
         # params = {'options':'load_associations,load_filters,include_open_policy'},
-        is_follow_redirects=True
+        is_follow_redirects=True,
     )
 
     if len(res.response) == 0 or not res.is_success:
@@ -71,37 +71,53 @@ async def get_pdp_policies(
 
 # %% ../../nbs/routes/pdp.ipynb 7
 class SearchPDP_Error(de.DomoError):
-    def __init__(self, status, message, domo_instance, function_name = "search_pdp_by_name"):
-        super().__init__(function_name = function_name, status = status, message = message , domo_instance = domo_instance)
-        
+    def __init__(
+        self, status, message, domo_instance, function_name="search_pdp_by_name"
+    ):
+        super().__init__(
+            function_name=function_name,
+            status=status,
+            message=message,
+            domo_instance=domo_instance,
+        )
+
+
 def search_pdp_policies_by_name(
-        # used to return pdp policy info, search by name
-        search_name: str,
-        result_list: list[dict], # this is the res.response from get_pdp_policies -- should be list of dict
-        is_exact_match: bool = True
-        ):
-    
+    # used to return pdp policy info, search by name
+    search_name: str,
+    result_list: list[
+        dict
+    ],  # this is the res.response from get_pdp_policies -- should be list of dict
+    is_exact_match: bool = True,
+):
+
     if is_exact_match:
-        policy_search = next((policy for policy in result_list if policy['name'] == search_name), None)
-        #print(policy_search)   
-         
+        policy_search = next(
+            (policy for policy in result_list if policy["name"] == search_name), None
+        )
+        # print(policy_search)
+
         if not policy_search:
             raise SearchPDP_Error(
-                status='',
+                status="",
                 message=f'There is no policy named "{search_name}"',
-                domo_instance=''
-            )  
-          
+                domo_instance="",
+            )
+
         return policy_search
     else:
-        policy_search = [policy for policy in result_list if search_name.lower() in policy['name'].lower()]
+        policy_search = [
+            policy
+            for policy in result_list
+            if search_name.lower() in policy["name"].lower()
+        ]
         if not policy_search:
             raise SearchPDP_Error(
-                status='',
+                status="",
                 message=f'There is no policy name containing "{search_name}"',
-                domo_instance=''
-            )  
-        
+                domo_instance="",
+            )
+
         return policy_search
 
 # %% ../../nbs/routes/pdp.ipynb 11
@@ -145,7 +161,6 @@ def generate_policy_body(
     if not isinstance(parameters_ls, list):
         parameters_ls = [parameters_ls]
 
-
     body = {
         "name": policy_name,
         "dataSourceId": dataset_id,
@@ -163,8 +178,14 @@ def generate_policy_body(
 
 # %% ../../nbs/routes/pdp.ipynb 15
 class CreatePolicy_Error(de.DomoError):
-    def __init__(self, status, message, domo_instance, function_name = "create_policy"):
-        super().__init__(function_name = function_name, status = status, message = message , domo_instance = domo_instance)
+    def __init__(self, status, message, domo_instance, function_name="create_policy"):
+        super().__init__(
+            function_name=function_name,
+            status=status,
+            message=message,
+            domo_instance=domo_instance,
+        )
+
 
 async def create_policy(
     auth: dmda.DomoAuth,
@@ -179,9 +200,9 @@ async def create_policy(
 
     if debug_api:
         print(url)
-    
+
     if override_same_name:
-        print(f'Creating policy...')
+        print(f"Creating policy...")
         res = await gd.get_data(
             auth=auth,
             url=url,
@@ -191,30 +212,34 @@ async def create_policy(
             session=session,
         )
     else:
-        existing_policies = await get_pdp_policies(auth=auth, dataset_id=dataset_id) 
-        
+        existing_policies = await get_pdp_policies(auth=auth, dataset_id=dataset_id)
+
         if existing_policies.is_success:
             try:
-                policy_exists = search_pdp_policies_by_name(search_name=body.get('name'), result_list=existing_policies.response, is_exact_match=True)
+                policy_exists = search_pdp_policies_by_name(
+                    search_name=body.get("name"),
+                    result_list=existing_policies.response,
+                    is_exact_match=True,
+                )
             except:
                 policy_exists = False
-            
+
             if policy_exists:
                 raise CreatePolicy_Error(
-                    status='',
-                    message= f'Policy name already exists--avoid creating pdp policies with the same name..To override, rerun and set "override_same_name=True"',
+                    status="",
+                    message=f'Policy name already exists--avoid creating pdp policies with the same name..To override, rerun and set "override_same_name=True"',
                     domo_instance=auth.domo_instance,
                 )
             else:
-                print(f'Creating policy...')
+                print(f"Creating policy...")
                 res = await gd.get_data(
-                auth=auth,
-                url=url,
-                method="POST",
-                body=body,
-                debug_api=debug_api,
-                session=session,
-            )
+                    auth=auth,
+                    url=url,
+                    method="POST",
+                    body=body,
+                    debug_api=debug_api,
+                    session=session,
+                )
 
     return res
 
@@ -270,21 +295,24 @@ async def delete_policy(
 
 # %% ../../nbs/routes/pdp.ipynb 28
 async def toggle_pdp(
-        auth: dmda.DomoAuth,
-        dataset_id: str,
-        is_enable: bool = True,
-        debug_api: bool = False,
-        session: httpx.AsyncClient = None
-    )-> rgd.ResponseGetData:
+    auth: dmda.DomoAuth,
+    dataset_id: str,
+    is_enable: bool = True,
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+) -> rgd.ResponseGetData:
 
-    url = f"https://{auth.domo_instance}.domo.com/api/query/v1/data-control/{dataset_id}"
+    url = (
+        f"https://{auth.domo_instance}.domo.com/api/query/v1/data-control/{dataset_id}"
+    )
 
     if debug_api:
         print(url)
 
-    body = {"enabled": is_enable,
-            "external": False  # not sure what this parameter does
-            }
+    body = {
+        "enabled": is_enable,
+        "external": False,  # not sure what this parameter does
+    }
 
     res = await gd.get_data(
         auth=auth,
@@ -296,4 +324,3 @@ async def toggle_pdp(
     )
 
     return res
-

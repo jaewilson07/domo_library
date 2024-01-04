@@ -17,58 +17,62 @@ class DomoError(Exception):
         status: Optional[int] = None,  # API request status
         message: str = "error",  # <domo_instance>.domo.com
         domo_instance: Optional[str] = None,
-        parent_class : str = None,
-        is_exception_not_error: bool = False
+        parent_class: str = None,
+        is_exception_not_error: bool = False,
     ):
         function_str = ""
 
-
         if function_name:
             function_str = f"{function_name} || "
-        
+
         if parent_class and function_name:
             function_str = f"{parent_class}.{function_str}"
         if parent_class and not function_name:
             function_str = f"{parent_class} || "
         function_str = f"function: {function_str}"
-        
+
         entity_str = f"{entity_id} || " if entity_id else ""
         instance_str = f" at {domo_instance}" if domo_instance else ""
         status_str = f"status {status} || " if status else ""
-        prefix = '🛑 ' if not is_exception_not_error else '⚠️ '
+        prefix = "🛑 " if not is_exception_not_error else "⚠️ "
 
         self.message = f"{prefix} {self.__class__.__name__} {prefix}- {function_str}{entity_str}{status_str}{message}{instance_str}"
         super().__init__(self.message)
 
-
 # %% ../../nbs/client/DomoError.ipynb 6
 class AuthNotProvidedError(DomoError):
-    def __init__(self,
-                 entity_id,
-                 function_name,
-                 message="valid Auth object not provided",
-                 status = None,
-                 domo_instance=None
-                 ):
+    def __init__(
+        self,
+        entity_id,
+        function_name,
+        message="valid Auth object not provided",
+        status=None,
+        domo_instance=None,
+    ):
 
-        super().__init__(entity_id=entity_id, function_name=function_name,
-                         status=status, 
-                         message=message, 
-                         domo_instance=domo_instance)
-
+        super().__init__(
+            entity_id=entity_id,
+            function_name=function_name,
+            status=status,
+            message=message,
+            domo_instance=domo_instance,
+        )
 
 # %% ../../nbs/client/DomoError.ipynb 7
 class DatasetNotProvidedError(DomoError):
-    def __init__(self,
-                 function_name,
-                 message="dataset_id not provided", 
-                 domo_instance=None,
-                 entity_id = None,
-                 status=None,
-                 ):
+    def __init__(
+        self,
+        function_name,
+        message="dataset_id not provided",
+        domo_instance=None,
+        entity_id=None,
+        status=None,
+    ):
 
-        super().__init__(entity_id=entity_id, function_name=function_name,
-                         status=status,
-                         message=message,
-                         domo_instance=domo_instance)
-
+        super().__init__(
+            entity_id=entity_id,
+            function_name=function_name,
+            status=status,
+            message=message,
+            domo_instance=domo_instance,
+        )

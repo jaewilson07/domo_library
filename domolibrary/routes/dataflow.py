@@ -11,8 +11,6 @@ import domolibrary.client.get_data as gd
 import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
 
-
-
 # %% ../../nbs/routes/dataflow.ipynb 4
 @gd.route_function
 async def get_dataflow_by_id(
@@ -48,7 +46,7 @@ async def get_dataflow_versions(
     debug_api: bool = False,
 ):
 
-    url = f'https://{auth.domo_instance}.domo.com/api/dataprocessing/v1/dataflows/{dataflow_id}/versions'
+    url = f"https://{auth.domo_instance}.domo.com/api/dataprocessing/v1/dataflows/{dataflow_id}/versions"
 
     res = await gd.get_data(
         auth=auth,
@@ -66,7 +64,7 @@ async def get_dataflow_versions(
 @gd.route_function
 async def get_dataflow_by_id_and_version(
     dataflow_id: int,
-    version_id : int,
+    version_id: int,
     auth: dmda.DomoAuth,
     parent_class: str = None,
     session: httpx.AsyncClient = None,
@@ -74,7 +72,7 @@ async def get_dataflow_by_id_and_version(
     debug_api: bool = False,
 ):
 
-    url = f'https://{auth.domo_instance}.domo.com/api/dataprocessing/v2/dataflows/{dataflow_id}/versions/{version_id}'
+    url = f"https://{auth.domo_instance}.domo.com/api/dataprocessing/v2/dataflows/{dataflow_id}/versions/{version_id}"
 
     res = await gd.get_data(
         auth=auth,

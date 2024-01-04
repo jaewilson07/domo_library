@@ -86,11 +86,16 @@ class DomoActivityLog:
     @staticmethod
     def _process_activity_log_row(row):
 
-        if row.get('time'):
+        if row.get("time"):
             row.update(
-                {'time_dt': convert.convert_epoch_millisecond_to_datetime(row.get('time'))})
+                {
+                    "time_dt": convert.convert_epoch_millisecond_to_datetime(
+                        row.get("time")
+                    )
+                }
+            )
 
-            row.update({'date': row.get("time_dt").date()})
+            row.update({"date": row.get("time_dt").date()})
 
         return row
 
@@ -108,10 +113,8 @@ class DomoActivityLog:
     ):
         """queries the activity log"""
 
-        start_time_epoch = convert.convert_datetime_to_epoch_millisecond(
-            start_time)
-        end_time_epoch = convert.convert_datetime_to_epoch_millisecond(
-            end_time)
+        start_time_epoch = convert.convert_datetime_to_epoch_millisecond(start_time)
+        end_time_epoch = convert.convert_datetime_to_epoch_millisecond(end_time)
 
         res_activity_log = await activity_log_routes.search_activity_log(
             auth=auth,
@@ -121,11 +124,12 @@ class DomoActivityLog:
             object_type=object_type.value,
             session=session,
             debug_api=debug_api,
-            debug_loop=debug_loop
+            debug_loop=debug_loop,
         )
 
         if res_activity_log.is_success:
-            return [cls._process_activity_log_row(row) for row in res_activity_log.response]
+            return [
+                cls._process_activity_log_row(row) for row in res_activity_log.response
+            ]
 
         return None
-

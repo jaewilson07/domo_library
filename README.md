@@ -67,7 +67,10 @@ auth objects.
 import os
 import domolibrary.client.DomoAuth as dmda
 
-token_auth = dmda.DomoTokenAuth( domo_instance = 'domo-community', domo_access_token = os.environ['DOMO_DOJO_ACCESS_TOKEN'])
+token_auth = dmda.DomoTokenAuth(
+    domo_instance="domo-community",
+    domo_access_token=os.environ["DOMO_DOJO_ACCESS_TOKEN"],
+)
 ```
 
 ### Option 1: class based programming
@@ -142,7 +145,9 @@ function.
 ``` python
 import domolibrary.routes.dataset as dataset_routes
 
-ds_res = await dataset_routes.get_dataset_by_id( auth = token_auth, dataset_id = os.environ['DOJO_DATASET_ID'])
+ds_res = await dataset_routes.get_dataset_by_id(
+    auth=token_auth, dataset_id=os.environ["DOJO_DATASET_ID"]
+)
 ds_res
 ```
 
@@ -161,7 +166,11 @@ does not include a descriptive response (ex,
 artificially alter the response in the function.)
 
 ``` python
-[(prop, type(getattr(ds_res , prop))) for prop in dir(ds_res) if not prop.startswith('_')]
+[
+    (prop, type(getattr(ds_res, prop)))
+    for prop in dir(ds_res)
+    if not prop.startswith("_")
+]
 ```
 
     [('auth', domolibrary.client.DomoAuth.DomoTokenAuth),

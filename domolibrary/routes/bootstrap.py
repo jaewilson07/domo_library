@@ -84,7 +84,9 @@ async def get_bootstrap_customerid(
     return_raw: bool = False,  # pass True to return the raw API response
     debug_num_stacks_to_drop=2,  # number frames to drop off the stacktrace.  retrieved from `res.traceback_details`
     parent_class: str = None,  # Optional parent class that calls the route function
-) -> rgd.ResponseGetData:  # the response contains the string representation of the customer_id
+) -> (
+    rgd.ResponseGetData
+):  # the response contains the string representation of the customer_id
     """retrieves the domo_instance customer id"""
 
     res = await get_bootstrap(
@@ -143,7 +145,7 @@ async def get_bootstrap_features_is_accountsv2_enabled(
         debug_api=debug_api,
         debug_num_stacks_to_drop=debug_num_stacks_to_drop,
         parent_class=parent_class,
-        return_raw = False
+        return_raw=False,
     )
 
     if return_raw:
@@ -153,12 +155,12 @@ async def get_bootstrap_features_is_accountsv2_enabled(
         (
             domo_feature
             for domo_feature in res.response
-            if domo_feature.get('name') == "accounts-v2"
+            if domo_feature.get("name") == "accounts-v2"
         ),
         None,
     )
 
-    res.response = True if  match_accounts_v2 else False
+    res.response = True if match_accounts_v2 else False
     return res
 
 # %% ../../nbs/routes/bootstrap.ipynb 28

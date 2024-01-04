@@ -25,13 +25,15 @@ import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 import domolibrary.client.Logger as lg
 
+import domolibrary.classes.DomoInstanceConfig_UserAttribute as dicua
+
 import domolibrary.routes.instance_config as instance_config_routes
 import domolibrary.routes.bootstrap as bootstrap_routes
 import domolibrary.routes.sandbox as sandbox_routes
 import domolibrary.routes.publish as publish_routes
 import domolibrary.routes.application as application_routes
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 4
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 5
 @dataclass
 class DomoInstanceConfig:
     """utility class that absorbs many of the domo instance configuration methods"""
@@ -45,7 +47,12 @@ class DomoInstanceConfig:
 
     sso_config: dict = field(default=None)
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 6
+    user_attributes: dicua.UserAttributes = None
+
+    def __post_init__(self):
+        self.user_attributes = dicua.UserAttributes(auth=self.auth)
+
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 10
 @patch_to(DomoInstanceConfig)
 async def get_sandbox_is_same_instance_promotion_enabled(
     self: DomoInstanceConfig,
@@ -76,7 +83,7 @@ async def get_sandbox_is_same_instance_promotion_enabled(
         "is_self_promotion_enabled": self.is_sandbox_self_instance_promotion_enabled
     }
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 9
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 13
 @patch_to(DomoInstanceConfig)
 async def toggle_sandbox_allow_same_instance_promotion(
     self: DomoInstanceConfig,
@@ -105,7 +112,7 @@ async def toggle_sandbox_allow_same_instance_promotion(
 
     return await self.get_sandbox_is_same_instance_promotion_enabled()
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 12
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 16
 @patch_to(DomoInstanceConfig)
 async def get_is_user_invite_notification_enabled(
     self: DomoInstanceConfig,
@@ -136,7 +143,7 @@ async def get_is_user_invite_notification_enabled(
         "is_user_invite_notification_enabled": self.is_user_invite_notification_enabled
     }
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 15
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 19
 @patch_to(DomoInstanceConfig)
 async def toggle_is_user_invite_notification_enabled(
     self: DomoInstanceConfig,
@@ -175,7 +182,7 @@ async def toggle_is_user_invite_notification_enabled(
 
     return await self.get_is_user_invite_notification_enabled(auth=auth)
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 19
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 23
 @patch_to(DomoInstanceConfig)
 async def get_is_invite_social_users_enabled(
     self: DomoInstanceConfig,
@@ -204,7 +211,7 @@ async def get_is_invite_social_users_enabled(
 
     return {"is_invite_social_users_enabled": res.response["enabled"]}
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 22
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 26
 @patch_to(DomoInstanceConfig)
 async def toggle_is_invite_social_users_enabled(
     self: DomoInstanceConfig,
@@ -245,10 +252,10 @@ async def toggle_is_invite_social_users_enabled(
 
     return await self.get_is_invite_social_users_enabled()
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 26
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 30
 py310 = sys.version_info.minor >= 10 or sys.version_info.major > 3
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 27
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 31
 # class SSOConfig_InstantiationError(de.DomoError):
 #     def __init__(self, domo_instance, parent_class, function_name, message="invalid data types, check attribute types"):
 
@@ -355,7 +362,7 @@ class SSO_Config:
 
         return r
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 29
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 33
 @patch_to(DomoInstanceConfig)
 async def get_sso_config(
     self: DomoInstanceConfig,
@@ -378,7 +385,7 @@ async def get_sso_config(
 
     return self.sso_config
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 33
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 37
 @patch_to(DomoInstanceConfig)
 async def update_sso_config(
     self: DomoInstanceConfig,
@@ -462,7 +469,7 @@ async def update_sso_config(
 
     return self.sso_config
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 37
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 41
 @patch_to(DomoInstanceConfig, cls_method=True)
 async def get_publications(
     cls: DomoInstanceConfig,
@@ -493,7 +500,7 @@ async def get_publications(
     if res.status == 200 and return_raw:
         return res.response
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 41
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 45
 @patch_to(DomoInstanceConfig)
 async def get_allowlist(
     self: DomoInstanceConfig,
@@ -531,7 +538,7 @@ async def get_allowlist(
 
     return allowlist
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 45
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 49
 @patch_to(DomoInstanceConfig)
 async def set_allowlist(
     self: DomoInstanceConfig,
@@ -571,7 +578,7 @@ async def upsert_allowlist(
         session=session,
     )
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 50
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 54
 @patch_to(DomoInstanceConfig)
 async def get_grants(
     self: DomoInstanceConfig,
@@ -589,7 +596,7 @@ async def get_grants(
         auth=auth, return_raw=return_raw, session=session, debug_api=debug_api
     )
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 53
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 57
 @patch_to(DomoInstanceConfig)
 async def get_roles(
     self,
@@ -606,7 +613,7 @@ async def get_roles(
         auth=auth, debug_api=debug_api, return_raw=return_raw, session=session
     )
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 57
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 61
 @patch_to(DomoInstanceConfig)
 async def get_authorized_domains(
     self: DomoInstanceConfig,
@@ -626,7 +633,7 @@ async def get_authorized_domains(
 
     return res.response
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 60
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 64
 @patch_to(DomoInstanceConfig, cls_method=True)
 async def set_authorized_domains(
     cls: DomoInstanceConfig,
@@ -681,7 +688,7 @@ async def upsert_authorized_domains(
         session=session,
     )
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 62
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 66
 @patch_to(DomoInstanceConfig)
 async def get_authorized_custom_app_domains(
     self: DomoInstanceConfig,
@@ -701,7 +708,7 @@ async def get_authorized_custom_app_domains(
 
     return res.response
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 66
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 70
 @patch_to(DomoInstanceConfig, cls_method=True)
 async def set_authorized_custom_app_domains(
     cls: DomoInstanceConfig,
@@ -742,7 +749,9 @@ async def upsert_authorized_custom_app_domains(
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
 ):
-    existing_domains = await cls.get_authorized_custom_app_domains(auth=auth, debug_api=debug_api)
+    existing_domains = await cls.get_authorized_custom_app_domains(
+        auth=auth, debug_api=debug_api
+    )
 
     authorized_domains += existing_domains
 
@@ -756,7 +765,7 @@ async def upsert_authorized_custom_app_domains(
         session=session,
     )
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 68
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 72
 @patch_to(DomoInstanceConfig, cls_method=True)
 async def get_applications(
     cls,
@@ -784,7 +793,7 @@ async def get_applications(
 
     return [dmapp.DomoApplication._from_json(job) for job in res.response]
 
-# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 71
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 75
 @patch_to(DomoInstanceConfig)
 async def generate_applications_report(
     self,

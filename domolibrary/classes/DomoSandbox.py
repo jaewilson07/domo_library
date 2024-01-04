@@ -36,8 +36,7 @@ class DomoRepository:
     content_view_id_ls: list[str] = None
 
     def __post_init__(self):
-        self.lineage = dmdl.DomoLineage(
-                                        parent=self)
+        self.lineage = dmdl.DomoLineage(parent=self)
 
     @classmethod
     def _from_json(cls, obj, auth=None):
@@ -54,12 +53,14 @@ class DomoRepository:
             content_view_id_ls=dd.repositoryContent.viewIds,
             last_updated_dt=dtut.parse(dd.updated).replace(tzinfo=None),
             commit_dt=dtut.parse(dd.lastCommit.completed).replace(tzinfo=None),
-            commit_version=dd.lastCommit.commitName
+            commit_version=dd.lastCommit.commitName,
         )
 
     @classmethod
     async def get_from_id(cls, repository_id: str, auth: dmda.DomoFullAuth):
-        res = await sandbox_routes.get_repo_from_id(repository_id=repository_id, auth=auth)
+        res = await sandbox_routes.get_repo_from_id(
+            repository_id=repository_id, auth=auth
+        )
 
         if res.status == 404:
             raise InvalidRepositoryError
@@ -67,17 +68,21 @@ class DomoRepository:
         return cls._from_json(res.response, auth=auth)
 
     def convert_lineage_to_dataframe(self, return_raw: bool = False):
-        
+
         flat_lineage_ls = self.lineage._flatten_lineage()
 
-        output_ls = [{'sandbox_id': self.id,
-                      'sandbox_name': self.name,
-                      'version': self.commit_version,
-                      'commit_dt': self.commit_dt,
-                      'last_updated_dt': self.last_updated_dt,
-                      'entity_type': row.get('entity_type'),
-                      'entity_id': row.get('entity_id')
-                      } for row in flat_lineage_ls]
+        output_ls = [
+            {
+                "sandbox_id": self.id,
+                "sandbox_name": self.name,
+                "version": self.commit_version,
+                "commit_dt": self.commit_dt,
+                "last_updated_dt": self.last_updated_dt,
+                "entity_type": row.get("entity_type"),
+                "entity_id": row.get("entity_id"),
+            }
+            for row in flat_lineage_ls
+        ]
 
         if return_raw:
             return output_ls
@@ -87,7 +92,6 @@ class DomoRepository:
 
 @dataclass
 class DomoSandbox:
-
     @classmethod
     async def get_repositories(cls, auth):
         res = await sandbox_routes.get_shared_repos(auth)
@@ -95,7 +99,9 @@ class DomoSandbox:
         if res.status != 200:
             return None
 
-        domo_repos = [DomoRepository._from_json(
-            obj, auth=auth) for obj in res.response.get('repositories')]
+        domo_repos = [
+            DomoRepository._from_json(obj, auth=auth)
+            for obj in res.response.get("repositories")
+        ]
 
         return domo_repos

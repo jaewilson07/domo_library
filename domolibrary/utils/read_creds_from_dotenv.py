@@ -16,14 +16,16 @@ class ReadCreds_EnvFileNotExist(Exception):
         message = f"file not found at -- {env_path}"
         super().__init__(message)
 
-def read_creds_from_dotenv(env_path: str = '.env',
-                           params: list[str] = None # list of params you're expecting in the env file,
-                           ) -> utils_dd.DictDot:
+
+def read_creds_from_dotenv(
+    env_path: str = ".env",
+    params: list[str] = None,  # list of params you're expecting in the env file,
+) -> utils_dd.DictDot:
     """use_prod = false will replace all PROD values with matching TEST values"""
 
     file_exists = os.path.exists(env_path)
 
-    if not file_exists:    
+    if not file_exists:
         raise ReadCreds_EnvFileNotExist(env_path)
 
     load_dotenv(env_path)

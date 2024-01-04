@@ -6,7 +6,7 @@ __all__ = []
 # %% ../../nbs/classes/50_DomoApplication.ipynb 2
 import pandas as pd
 from dataclasses import dataclass, field
-from typing import  Optional
+from typing import Optional
 import httpx
 
 import domolibrary.routes.job as job_routes
@@ -14,7 +14,6 @@ import domolibrary.routes.application as application_routes
 import domolibrary.classes.DomoJob as dmdj
 import domolibrary.utils.DictDot as util_dd
 import domolibrary.client.DomoAuth as dmda
-
 
 # %% ../../nbs/classes/50_DomoApplication.ipynb 4
 @dataclass
@@ -42,27 +41,35 @@ class DomoApplication:
             version=dd.version,
             execution_class=dd.executionClass,
             grants=dd.authorities,
-            auth=auth)
+            auth=auth,
+        )
 
     @classmethod
     async def get_from_id(cls, auth: dmda.DomoFullAuth, application_id=None):
-        res = await application_routes.get_application_by_id(application_id=application_id, auth=auth)
+        res = await application_routes.get_application_by_id(
+            application_id=application_id, auth=auth
+        )
 
         if res.status == 200:
             return cls._from_json(obj=res.response, auth=auth)
 
-    async def get_jobs(self, auth: dmda.DomoFullAuth = None,
-                       application_id: str = None,
-                       debug_api: bool = False, 
-                       session: Optional[httpx.AsyncClient] = None, 
-                       return_raw: bool = False):
+    async def get_jobs(
+        self,
+        auth: dmda.DomoFullAuth = None,
+        application_id: str = None,
+        debug_api: bool = False,
+        session: Optional[httpx.AsyncClient] = None,
+        return_raw: bool = False,
+    ):
 
-        res = await job_routes.get_jobs(auth=auth or self.auth,
-                                        application_id=application_id or self.id,
-                                        debug_api=debug_api,
-                                        session=session)
+        res = await job_routes.get_jobs(
+            auth=auth or self.auth,
+            application_id=application_id or self.id,
+            debug_api=debug_api,
+            session=session,
+        )
         if debug_api:
-            print('Getting Domostats jobs')
+            print("Getting Domostats jobs")
 
         if res.status == 200 and not return_raw:
             self.jobs = [dmdj.DomoJob._from_json(job) for job in res.response]
@@ -78,48 +85,67 @@ class DomoApplication:
         elif not self.jobs and not (self.auth or auth):
             raise Exception("pass a auth object")
 
-        schedules = pd.DataFrame([{'hour': trigger.schedule.hour,
-                                   'minute': trigger.schedule.minute,
-                                   'job_id': job.id,
-                                   'job_name': job.name,
-                                   'trigger_id': trigger.id} for job in self.jobs for trigger in job.triggers])
+        schedules = pd.DataFrame(
+            [
+                {
+                    "hour": trigger.schedule.hour,
+                    "minute": trigger.schedule.minute,
+                    "job_id": job.id,
+                    "job_name": job.name,
+                    "trigger_id": trigger.id,
+                }
+                for job in self.jobs
+                for trigger in job.triggers
+            ]
+        )
 
         self.jobs_schedule = schedules.sort_values(
-            ['hour', 'minute'], ascending=True).reset_index(drop=True)
+            ["hour", "minute"], ascending=True
+        ).reset_index(drop=True)
         return self.jobs_schedule
 
-    async def find_next_job_schedule(self, auth:dmda.DomoAuth = None) -> dmdj.DomoTrigger_Schedule:
+    async def find_next_job_schedule(
+        self, auth: dmda.DomoAuth = None
+    ) -> dmdj.DomoTrigger_Schedule:
         if not isinstance(self.jobs_schedule, pd.DataFrame) and (self.auth or auth):
             await self.get_all_schedules()
 
-        elif not isinstance(self.jobs_schedule, pd.DataFrame) and not (self.auth or auth):
+        elif not isinstance(self.jobs_schedule, pd.DataFrame) and not (
+            self.auth or auth
+        ):
             raise Exception("pass a auth object")
 
-        df_all_hours = pd.DataFrame(range(0, 23), columns=['hour'])
-        df_all_minutes = pd.DataFrame(range(0, 60), columns=['minute'])
+        df_all_hours = pd.DataFrame(range(0, 23), columns=["hour"])
+        df_all_minutes = pd.DataFrame(range(0, 60), columns=["minute"])
 
-        df_all_hours['tmp'] = 1
-        df_all_minutes['tmp'] = 1
-        df_all = pd.merge(df_all_hours, df_all_minutes,
-                          on='tmp').drop(columns=['tmp'])
+        df_all_hours["tmp"] = 1
+        df_all_minutes["tmp"] = 1
+        df_all = pd.merge(df_all_hours, df_all_minutes, on="tmp").drop(columns=["tmp"])
 
         # get the number of occurencies of each hour and minutes
-        schedules_grouped = self.jobs_schedule.groupby(
-            ['hour', 'minute']).size().reset_index(name='cnt_schedule')
+        schedules_grouped = (
+            self.jobs_schedule.groupby(["hour", "minute"])
+            .size()
+            .reset_index(name="cnt_schedule")
+        )
 
         # print(schedules_grouped)
         # print(df_all)
 
         schedules_interpolated = pd.merge(
-            df_all, schedules_grouped, how='left', on=['hour', 'minute'])
+            df_all, schedules_grouped, how="left", on=["hour", "minute"]
+        )
 
-        schedules_interpolated['cnt_schedule'] = schedules_interpolated['cnt_schedule'].fillna(
-            value=0)
+        schedules_interpolated["cnt_schedule"] = schedules_interpolated[
+            "cnt_schedule"
+        ].fillna(value=0)
         schedules_interpolated.sort_values(
-            ['cnt_schedule', 'hour', 'minute'], ascending=True, inplace=True)
+            ["cnt_schedule", "hour", "minute"], ascending=True, inplace=True
+        )
 
         schedules_interpolated.reset_index(drop=True, inplace=True)
 
         return dmdj.DomoTrigger_Schedule(
-            hour=int(schedules_interpolated.loc[0].get('hour')),
-            minute=int(schedules_interpolated.loc[0].get('minute')))
+            hour=int(schedules_interpolated.loc[0].get("hour")),
+            minute=int(schedules_interpolated.loc[0].get("minute")),
+        )

@@ -29,8 +29,9 @@ class TrelloOauth(TrelloAuth):
         super().__init__(consumer_key)
 
     async def get_oauth_token(self):
-        token, token_secret = await auth_routes.get_oauth1_token_and_secret(consumer_key=self.consumer_key,
-                                                                            consumer_secret=self.consumer_secret)
+        token, token_secret = await auth_routes.get_oauth1_token_and_secret(
+            consumer_key=self.consumer_key, consumer_secret=self.consumer_secret
+        )
         self.token = token
         self.token_secret = token_secret
 

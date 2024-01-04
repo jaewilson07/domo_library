@@ -4,6 +4,9 @@
 __all__ = ['UpdateGroupMembership', 'GroupMembership', 'DomoGroup', 'DomoGroups']
 
 # %% ../../nbs/classes/50_DomoGroup.ipynb 2
+from ..routes.group import SearchGroups_Error, Group_CRUD_Error
+
+# %% ../../nbs/classes/50_DomoGroup.ipynb 3
 from dataclasses import dataclass, field
 from typing import List, Union
 
@@ -25,10 +28,10 @@ import domolibrary.routes.group as group_routes
 
 import domolibrary.classes.DomoUser as dmu
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 4
+# %% ../../nbs/classes/50_DomoGroup.ipynb 5
 from ..routes.group import GroupType_Enum, SearchGroups_Error
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 6
+# %% ../../nbs/classes/50_DomoGroup.ipynb 7
 class UpdateGroupMembership(de.DomoError):
     def __init__(self, member_name, group_name, domo_instance):
         super().__init__(
@@ -152,7 +155,7 @@ class GroupMembership:
         # remove
         # set
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 8
+# %% ../../nbs/classes/50_DomoGroup.ipynb 9
 @patch_to(GroupMembership)
 async def get_owners(
     self: GroupMembership,
@@ -197,7 +200,7 @@ async def get_owners(
     return self._current_owner_ls
     # return domo_users
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 9
+# %% ../../nbs/classes/50_DomoGroup.ipynb 10
 @patch_to(GroupMembership)
 async def get_members(
     self: GroupMembership,
@@ -230,7 +233,7 @@ async def get_members(
 
     return self.group.members_ls
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 11
+# %% ../../nbs/classes/50_DomoGroup.ipynb 12
 @patch_to(GroupMembership)
 async def add_members(
     self: GroupMembership,
@@ -303,7 +306,7 @@ async def set_members(
 
     return await self.get_members()
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 12
+# %% ../../nbs/classes/50_DomoGroup.ipynb 13
 @patch_to(GroupMembership)
 async def add_owners(
     self: GroupMembership,
@@ -376,7 +379,7 @@ async def set_owners(
 
     return await self.get_owners()
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 14
+# %% ../../nbs/classes/50_DomoGroup.ipynb 15
 @dataclass
 class DomoGroup:
     auth: dmda.DomoAuth = field(repr=False, default=None)
@@ -441,7 +444,7 @@ class DomoGroup:
 
         return domo_groups
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 16
+# %% ../../nbs/classes/50_DomoGroup.ipynb 17
 @patch_to(DomoGroup, cls_method=True)
 async def get_by_id(
     cls,
@@ -466,7 +469,7 @@ async def get_by_id(
     # await dg.Membership.get_members() # disabled because causes recursion
     return dg
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 19
+# %% ../../nbs/classes/50_DomoGroup.ipynb 20
 @patch_to(DomoGroup, cls_method=True)
 async def search_by_name(
     cls,
@@ -494,7 +497,7 @@ async def search_by_name(
 
     return cls._from_group_json(auth=auth, json_obj=res.response)
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 41
+# %% ../../nbs/classes/50_DomoGroup.ipynb 42
 class DomoGroups:
     def __init__(self):
         pass
@@ -506,7 +509,7 @@ class DomoGroups:
             for json_obj in json_list
         ]
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 43
+# %% ../../nbs/classes/50_DomoGroup.ipynb 44
 @patch_to(DomoGroups, cls_method=True)
 async def get_all_groups(
     cls: DomoGroups,
@@ -526,7 +529,7 @@ async def get_all_groups(
     else:
         return []
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 47
+# %% ../../nbs/classes/50_DomoGroup.ipynb 48
 @patch_to(DomoGroups, cls_method=True)
 async def toggle_system_group_visibility(
     cls: DomoGroups,
@@ -538,7 +541,7 @@ async def toggle_system_group_visibility(
         auth=auth, is_hide_system_groups=is_hide_system_groups, debug_api=debug_api
     )
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 51
+# %% ../../nbs/classes/50_DomoGroup.ipynb 52
 @patch_to(GroupMembership)
 async def add_owner_manage_groups_role(self: GroupMembership):
     await DomoGroups.toggle_system_group_visibility(
@@ -555,7 +558,7 @@ async def add_owner_manage_groups_role(self: GroupMembership):
         auth=self.group.auth, is_hide_system_groups=True
     )
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 53
+# %% ../../nbs/classes/50_DomoGroup.ipynb 54
 @patch_to(DomoGroup, cls_method=True)
 async def create_from_name(
     cls: DomoGroup,
@@ -581,7 +584,7 @@ async def create_from_name(
 
     return domo_group
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 57
+# %% ../../nbs/classes/50_DomoGroup.ipynb 58
 @patch_to(DomoGroup)
 async def update_metadata(
     self: DomoGroup,
@@ -589,34 +592,50 @@ async def update_metadata(
     group_name: str = None,
     group_type: str = None,  # use GroupType_Enum
     description: str = None,
+    additional_params: dict = None,
     debug_api: bool = False,
     return_raw: bool = False,
     session: httpx.AsyncClient = None,
 ):
     auth = auth or self.auth
 
-    res = await group_routes.update_group(
-        auth=auth,
-        group_id=self.id,
-        group_name=group_name,
-        group_type=group_type,
-        description=description,
-        debug_api=debug_api,
-        session=session,
-    )
+    try:
+        res = await group_routes.update_group(
+            auth=auth,
+            group_id=self.id,
+            group_name=group_name,
+            group_type=group_type,
+            description=description,
+            additional_params=additional_params,
+            debug_api=debug_api,
+            session=session,
+        )
 
-    if return_raw:
-        return res
+        if return_raw:
+            return res
 
-    updated_group = await DomoGroup.get_by_id(auth=auth, group_id=self.id)
+        updated_group = await DomoGroup.get_by_id(auth=auth, group_id=self.id)
 
-    self.name = updated_group.name or self.name
-    self.description = updated_group.description or self.description
-    self.type = updated_group.type or self.type
+        self.name = updated_group.name or self.name
+        self.description = updated_group.description or self.description
+        self.type = updated_group.type or self.type
+
+    except Group_CRUD_Error as e:
+        if group_type != self.type:
+            raise Group_CRUD_Error(
+                status=400,
+                message=f"probably cannot change group_type to '{group_type}' from current type '{self.type}' consider passing `addtional_parameters`",
+                domo_instance=auth.domo_instance,
+                function_name="update_group",
+                parent_class=self.__class__.__name__,
+            )
+
+        else:
+            raise e
 
     return self
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 62
+# %% ../../nbs/classes/50_DomoGroup.ipynb 63
 @patch_to(DomoGroup, cls_method=True)
 async def upsert(
     cls: DomoGroup,
@@ -640,6 +659,7 @@ async def upsert(
         )
 
     except group_routes.SearchGroups_Error as e:
+        print(e)
         return await DomoGroup.create_from_name(
             auth=auth,
             group_name=group_name,
@@ -649,9 +669,23 @@ async def upsert(
             session=session,
         )
 
-        return e
+    except Group_CRUD_Error as e:
+        print(e)
 
-# %% ../../nbs/classes/50_DomoGroup.ipynb 66
+        # try running without changing group type
+
+        return await group_routes.update_group(
+            auth=auth,
+            group_id=self.id,
+            group_name=group_name,
+            # group_type=group_type,
+            description=description,
+            additional_params=additional_params,
+            debug_api=debug_api,
+            session=session,
+        )
+
+# %% ../../nbs/classes/50_DomoGroup.ipynb 67
 @patch_to(DomoGroup)
 async def delete(
     self: DomoGroup,

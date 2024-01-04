@@ -12,7 +12,6 @@ import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 
-
 # %% ../../nbs/routes/page.ipynb 5
 class PageRetrieval_byId_Error(de.DomoError):
     def __init__(
@@ -29,7 +28,7 @@ class PageRetrieval_byId_Error(de.DomoError):
             function_name=function_name,
             parent_class=parent_class,
             message=f"failed to retrieve page_id: {page_id}",
-            domo_instance = domo_instance
+            domo_instance=domo_instance,
         )
 
 # %% ../../nbs/routes/page.ipynb 8
@@ -41,7 +40,9 @@ async def get_page_by_id(
     include_layout: bool = False,  # passes parameter to return page layout information
     debug_num_stacks_to_drop: int = 1,  # for traceback_details.  use 1 for route functions, 2 for class method
     parent_class: str = None,  # pass in self.__class__.__name__ into function
-) -> rgd.ResponseGetData:  # returns ResponseGetData on success or raise Exception on error
+) -> (
+    rgd.ResponseGetData
+):  # returns ResponseGetData on success or raise Exception on error
     """retrieves a page or throws an error"""
 
     # 9/21/2023 - the domo UI uses /cards to get page info
@@ -225,7 +226,6 @@ async def get_pages_adminsummary(
     )
     return res
 
-
 # %% ../../nbs/routes/page.ipynb 24
 async def update_page_layout(
     auth: dmda.DomoAuth, layout_id: str, body: dict, debug_api: bool = False
@@ -278,38 +278,38 @@ async def delete_writelock(
 
     return res
 
-
 # %% ../../nbs/routes/page.ipynb 25
-async def add_page_owner(auth: dmda.DomoAuth,
-                        page_id_ls : [],
-                        group_id_ls: [],
-                        user_id_ls:[],
-                        note: str = "",
-                        send_email: bool = False,
-                        session: httpx.AsyncClient = None, debug_api: bool = False) -> rgd.ResponseGetData:
+async def add_page_owner(
+    auth: dmda.DomoAuth,
+    page_id_ls: [],
+    group_id_ls: [],
+    user_id_ls: [],
+    note: str = "",
+    send_email: bool = False,
+    session: httpx.AsyncClient = None,
+    debug_api: bool = False,
+) -> rgd.ResponseGetData:
 
-
-    url = f'https://{auth.domo_instance}.domo.com/api/content/v1/pages/bulk/owners'
+    url = f"https://{auth.domo_instance}.domo.com/api/content/v1/pages/bulk/owners"
     owners = []
     for group in group_id_ls:
-        owners.append({"id":group,"type":"GROUP"})
+        owners.append({"id": group, "type": "GROUP"})
     for user in user_id_ls:
-        owners.append({"id":user,"type":"USER"})
-    
+        owners.append({"id": user, "type": "USER"})
 
-    body = {"pageIds":page_id_ls,  
-            "owners": owners, 
-            "note": note,
-            "sendEmail": send_email
-             }
-    
-    res = await gd.get_data(auth=auth,
-                        method='PUT',
-                        url=url,
-                        body = body,
-                        session=session,
-                        debug_api=debug_api)
+    body = {
+        "pageIds": page_id_ls,
+        "owners": owners,
+        "note": note,
+        "sendEmail": send_email,
+    }
+
+    res = await gd.get_data(
+        auth=auth,
+        method="PUT",
+        url=url,
+        body=body,
+        session=session,
+        debug_api=debug_api,
+    )
     return res
-
-
-

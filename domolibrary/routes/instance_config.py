@@ -19,7 +19,6 @@ import domolibrary.client.DomoError as de
 import domolibrary.routes.user as user_routes
 import domolibrary.routes.bootstrap as bootstrap_routes
 
-
 # %% ../../nbs/routes/instance_config.ipynb 4
 @gd.route_function
 async def get_is_invite_social_users_enabled(
@@ -27,8 +26,8 @@ async def get_is_invite_social_users_enabled(
     customer_id: str,
     session: httpx.AsyncClient = None,
     debug_api: bool = False,
-    parent_class = None,
-    debug_num_stacks_to_drop = 1
+    parent_class=None,
+    debug_num_stacks_to_drop=1,
 ) -> rgd.ResponseGetData:
     url = f"https://{auth.domo_instance}.domo.com/api/content/v3/customers/{customer_id}/features/free-invite"
 
@@ -38,8 +37,8 @@ async def get_is_invite_social_users_enabled(
         method="GET",
         session=session,
         debug_api=debug_api,
-        parent_class = parent_class,
-        num_stacks_to_drop = debug_num_stacks_to_drop
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
     if not res.is_success:
@@ -62,8 +61,8 @@ async def toggle_is_social_users_enabled(
     session: httpx.AsyncClient = None,
     debug_api: bool = False,
     return_raw: bool = False,
-    parent_class = False,
-    debug_num_stacks_to_drop = 1
+    parent_class=False,
+    debug_num_stacks_to_drop=1,
 ) -> rgd.ResponseGetData:
     """
     Admin > Features > Buzz
@@ -83,8 +82,8 @@ async def toggle_is_social_users_enabled(
         body=body,
         session=session,
         debug_api=debug_api,
-        parent_class = parent_class,
-        num_stacks_to_drop = debug_num_stacks_to_drop
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
     if not res.is_success:
@@ -109,6 +108,7 @@ class ToggleUserInvite_Error(de.DomoError):
     ):
         super().__init__(status=status, domo_instance=domo_instance, message=message)
 
+
 @gd.route_function
 async def toggle_is_user_invite_enabled(
     auth: dmda.DomoAuth,
@@ -116,8 +116,8 @@ async def toggle_is_user_invite_enabled(
     session: httpx.AsyncClient = None,
     debug_api: bool = False,
     return_raw: bool = False,
-    parent_class = None,
-    debug_num_stacks_to_drop = 1
+    parent_class=None,
+    debug_num_stacks_to_drop=1,
 ) -> rgd.ResponseGetData:
     """
     Admin > Company Settings > Notifications
@@ -134,8 +134,8 @@ async def toggle_is_user_invite_enabled(
         body=body,
         session=session,
         debug_api=debug_api,
-        parent_class = parent_class,
-        num_stacks_to_drop = debug_num_stacks_to_drop
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
     if not res.is_success:
@@ -156,8 +156,8 @@ async def get_is_user_invite_notifications_enabled(
     auth: dmda.DomoFullAuth,
     session: httpx.AsyncClient = None,
     debug_api: bool = False,
-    parent_class = None,
-    debug_num_stacks_to_drop = 1
+    parent_class=None,
+    debug_num_stacks_to_drop=1,
 ) -> rgd.ResponseGetData:
     url = f"https://{auth.domo_instance}.domo.com/api/customer/v1/properties/user.invite.email.enabled"
 
@@ -245,9 +245,11 @@ def generate_sso_body(
 # %% ../../nbs/routes/instance_config.ipynb 23
 class UpdateSSO_Error(de.DomoError):
     def __init__(
-        self, domo_instance, config_body, 
+        self,
+        domo_instance,
+        config_body,
         function_name,
-        status = None, 
+        status=None,
         parent_class=None,
     ):
         message = f'failed to set config to {  " || ".join([ key + " : " + str(value)  for key, value in config_body.items()]) }'
@@ -259,6 +261,7 @@ class UpdateSSO_Error(de.DomoError):
             parent_class=parent_class,
             function_name=function_name,
         )
+
 
 @gd.route_function
 async def update_sso_config(
@@ -306,8 +309,8 @@ async def get_allowlist(
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
     debug_api: bool = False,
-    parent_class = None,
-    debug_num_stacks_to_drop = 1
+    parent_class=None,
+    debug_num_stacks_to_drop=1,
 ) -> rgd.ResponseGetData:
 
     if auth.__class__.__name__ != "DomoFullAuth":
@@ -328,12 +331,11 @@ async def get_allowlist(
         debug_api=debug_api,
         is_follow_redirects=True,
         return_raw=return_raw,
-        parent_class = parent_class,
-        num_stacks_to_drop = debug_num_stacks_to_drop
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
     return res
-
 
 # %% ../../nbs/routes/instance_config.ipynb 32
 class Allowlist_UnableToUpdate(de.DomoError):
@@ -351,7 +353,6 @@ class Allowlist_UnableToUpdate(de.DomoError):
             domo_instance=domo_instance,
         )
 
-
 # %% ../../nbs/routes/instance_config.ipynb 33
 @gd.route_function
 async def set_allowlist(
@@ -360,9 +361,8 @@ async def set_allowlist(
     debug_api: bool = False,
     return_raw: bool = False,
     session: httpx.AsyncClient = None,
-    parent_class = None,
-    debug_num_stacks_to_drop = 1
-
+    parent_class=None,
+    debug_num_stacks_to_drop=1,
 ) -> rgd.ResponseGetData:
     """companysettings/whitelist API only allows users to SET the allowlist does not allow INSERT or UPDATE"""
 
@@ -380,8 +380,8 @@ async def set_allowlist(
         return_raw=return_raw,
         session=session,
         headers={"accept": "text/plain"},
-        parent_class = parent_class,
-        num_stacks_to_drop = debug_num_stacks_to_drop
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
     )
     if not res.is_success:
         raise Allowlist_UnableToUpdate(
@@ -393,7 +393,6 @@ async def set_allowlist(
 
     return res
 
-
 # %% ../../nbs/routes/instance_config.ipynb 36
 @gd.route_function
 async def set_authorized_domains(
@@ -401,13 +400,12 @@ async def set_authorized_domains(
     authorized_domain_ls: [str],
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
-    parent_class = None,
-    debug_num_stacks_to_drop = 1
+    parent_class=None,
+    debug_num_stacks_to_drop=1,
 ):
     url = f"https://{auth.domo_instance}.domo.com/api/content/v1/customer-states/authorized-domains"
 
-    body = {"name": "authorized-domains",
-            "value": ",".join(authorized_domain_ls)}
+    body = {"name": "authorized-domains", "value": ",".join(authorized_domain_ls)}
 
     res = await gd.get_data(
         auth=auth,
@@ -416,17 +414,17 @@ async def set_authorized_domains(
         body=body,
         debug_api=debug_api,
         session=session,
-        parent_class = parent_class,
-        num_stacks_to_drop = debug_num_stacks_to_drop
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
     return res
-
 
 # %% ../../nbs/routes/instance_config.ipynb 37
 class GetDomains_NotFound(de.DomoError):
     def __init__(self, status, message, domo_instance):
         super().__init__(status=status, message=message, domo_instance=domo_instance)
+
 
 @gd.route_function
 async def get_authorized_domains(
@@ -434,8 +432,8 @@ async def get_authorized_domains(
     return_raw: bool = False,
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
-    parent_class = None,
-    debug_num_stacks_to_drop =1
+    parent_class=None,
+    debug_num_stacks_to_drop=1,
 ):
     url = f"https://{auth.domo_instance}.domo.com/api/content/v1/customer-states/authorized-domains"
 
@@ -445,8 +443,8 @@ async def get_authorized_domains(
         method="GET",
         debug_api=debug_api,
         session=session,
-        parent_class = parent_class,
-        num_stacks_to_drop = debug_num_stacks_to_drop
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
     if return_raw:
@@ -480,14 +478,15 @@ async def set_authorized_custom_app_domains(
     authorized_custom_app_domain_ls: [str],
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
-    parent_class = None,
-    debug_num_stacks_to_drop = 1
+    parent_class=None,
+    debug_num_stacks_to_drop=1,
 ):
     url = f"https://{auth.domo_instance}.domo.com/api/content/v1/customer-states/authorized-app-domains"
 
-
-    body = {"name": "authorized-app-domains",
-            "value": ",".join(authorized_custom_app_domain_ls)}
+    body = {
+        "name": "authorized-app-domains",
+        "value": ",".join(authorized_custom_app_domain_ls),
+    }
 
     res = await gd.get_data(
         auth=auth,
@@ -496,8 +495,8 @@ async def set_authorized_custom_app_domains(
         body=body,
         debug_api=debug_api,
         session=session,
-        parent_class = parent_class,
-        num_stacks_to_drop = debug_num_stacks_to_drop
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
     return res
@@ -507,14 +506,15 @@ class GetAppDomains_NotFound(de.DomoError):
     def __init__(self, status, message, domo_instance):
         super().__init__(status=status, message=message, domo_instance=domo_instance)
 
+
 @gd.route_function
 async def get_authorized_custom_app_domains(
     auth: dmda.DomoAuth,
     return_raw: bool = False,
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
-    parent_class = None,
-    debug_num_stacks_to_drop =1
+    parent_class=None,
+    debug_num_stacks_to_drop=1,
 ):
     url = f"https://{auth.domo_instance}.domo.com/api/content/v1/customer-states/authorized-app-domains"
 
@@ -524,8 +524,8 @@ async def get_authorized_custom_app_domains(
         method="GET",
         debug_api=debug_api,
         session=session,
-        parent_class = parent_class,
-        num_stacks_to_drop = debug_num_stacks_to_drop
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
     if return_raw:

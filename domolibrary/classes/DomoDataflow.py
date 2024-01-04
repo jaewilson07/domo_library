@@ -39,7 +39,7 @@ class DomoDataflow:
 
     version_id: int = None
     version_number: int = None
-    versions : List[dict] = None # list of DomoDataflow Versions
+    versions: List[dict] = None  # list of DomoDataflow Versions
 
     history: DomoDataflow_History = None  # class for managing the history of a dataflow
 
@@ -47,7 +47,6 @@ class DomoDataflow:
         self.history = DomoDataflow_History(
             dataflow=self, dataflow_id=self.id, auth=self.auth
         )
-
 
     @classmethod
     def _from_json(cls, obj, auth, version_id=None, version_number=None):
@@ -69,7 +68,10 @@ class DomoDataflow:
                 DomoDataflow_Action._from_json(action) for action in dd.actions
             ]
 
-            [ domo_action.get_parents(domo_dataflow.actions) for domo_action in domo_dataflow.actions]
+            [
+                domo_action.get_parents(domo_dataflow.actions)
+                for domo_action in domo_dataflow.actions
+            ]
 
         return domo_dataflow
 
@@ -136,7 +138,7 @@ async def get_by_version_id(
         debug_api=debug_api,
         debug_num_stacks_to_drop=debug_num_stacks_to_drop,
         parent_class=cls.__name__,
-        session = session
+        session=session,
     )
 
     if return_raw:
@@ -161,10 +163,12 @@ async def get_versions(
     return_raw: bool = False,
 ):
     res = await dataflow_routes.get_dataflow_versions(
-        auth=self.auth, dataflow_id=self.id,
-        debug_api = debug_api, session = session,
-        debug_num_stacks_to_drop = debug_num_stacks_to_drop,
-        parent_class = self.__class__.__name__
+        auth=self.auth,
+        dataflow_id=self.id,
+        debug_api=debug_api,
+        session=session,
+        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+        parent_class=self.__class__.__name__,
     )
 
     if return_raw:
@@ -172,14 +176,15 @@ async def get_versions(
 
     version_ids = [df_obj["id"] for df_obj in res.response]
 
-    self.versions= await ce.gather_with_concurrency(
+    self.versions = await ce.gather_with_concurrency(
         *[
             DomoDataflow.get_by_version_id(
-                dataflow_id=self.id, version_id=version_id, auth=self.auth,
-                session = session,
-                debug_api = debug_api,
-                debug_num_stacks_to_drop = debug_num_stacks_to_drop
-
+                dataflow_id=self.id,
+                version_id=version_id,
+                auth=self.auth,
+                session=session,
+                debug_api=debug_api,
+                debug_num_stacks_to_drop=debug_num_stacks_to_drop,
             )
             for version_id in version_ids
         ],

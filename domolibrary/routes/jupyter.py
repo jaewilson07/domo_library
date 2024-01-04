@@ -17,7 +17,7 @@ async def get_jupyter_content(
     content_path: str = "",
     debug_api: bool = False,
     debug_num_stacks_to_drop=1,
-    parent_class : str = None
+    parent_class: str = None,
 ):
     url = f"https://{auth.domo_instance}.{auth.service_location}{auth.service_prefix}api/contents/{content_path}"
 
@@ -28,8 +28,7 @@ async def get_jupyter_content(
         headers={"authorization": f"Token {auth.jupyter_token}"},
         debug_api=debug_api,
         num_stacks_to_drop=debug_num_stacks_to_drop,
-        parent_class = parent_class
-
+        parent_class=parent_class,
     )
     if not res.is_success:
         raise Exception("unable to retrieve content")
@@ -124,7 +123,7 @@ async def update_jupyter_file(
     new_content,
     content_path: str = "",  # file name and location in jupyter
     debug_api: bool = False,
-    parent_class:str = None,
+    parent_class: str = None,
     debug_num_stacks_to_drop=1,
 ):
     dmda.test_is_jupyter_auth(auth)
@@ -141,7 +140,7 @@ async def update_jupyter_file(
         auth=auth,
         body=body,
         debug_api=debug_api,
-        parent_class = parent_class,
+        parent_class=parent_class,
         num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
@@ -157,13 +156,16 @@ async def update_jupyter_file(
 
 # %% ../../nbs/routes/jupyter.ipynb 16
 async def get_content_recursive_process_obj(
-    obj, all_rows, auth, debug_api: bool = False,
-    debug_num_stacks_to_drop = 0,
-    parent_class = None
+    obj,
+    all_rows,
+    auth,
+    debug_api: bool = False,
+    debug_num_stacks_to_drop=0,
+    parent_class=None,
 ):
     content_path = obj["path"]
 
-    if content_path.startswith('recent_executions'):
+    if content_path.startswith("recent_executions"):
         return
 
     if obj["type"] != "directory":
@@ -171,8 +173,8 @@ async def get_content_recursive_process_obj(
             auth=auth,
             content_path=content_path,
             debug_api=debug_api,
-            parent_class = parent_class,
-            debug_num_stacks_to_drop = debug_num_stacks_to_drop+ 1
+            parent_class=parent_class,
+            debug_num_stacks_to_drop=debug_num_stacks_to_drop + 1,
         )
 
         all_rows.append(res.response)
@@ -183,20 +185,20 @@ async def get_content_recursive_process_obj(
             content_path=content_path,
             all_rows=all_rows,
             debug_api=debug_api,
-            parent_class = parent_class,
-            debug_num_stacks_to_drop =debug_num_stacks_to_drop +1
+            parent_class=parent_class,
+            debug_num_stacks_to_drop=debug_num_stacks_to_drop + 1,
         )
 
 # %% ../../nbs/routes/jupyter.ipynb 17
 async def get_content_recursive(
     auth: dmda.DomoJupyterAuth,
     content_path="",
-    all_rows=None,  
+    all_rows=None,
     debug_api: bool = False,
     return_raw: bool = False,
     is_skip_recent_executions: bool = True,
-    debug_num_stacks_to_drop =2,
-    parent_class :str = None
+    debug_num_stacks_to_drop=2,
+    parent_class: str = None,
 ):
     dmda.test_is_jupyter_auth(auth)
 
@@ -206,8 +208,8 @@ async def get_content_recursive(
         auth=auth,
         content_path=content_path,
         debug_api=debug_api,
-        parent_class = parent_class,
-        debug_num_stacks_to_drop = debug_num_stacks_to_drop
+        parent_class=parent_class,
+        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
     content_ls = res.response["content"]
@@ -215,11 +217,15 @@ async def get_content_recursive(
     await ce.gather_with_concurrency(
         n=5,
         *[
-            get_content_recursive_process_obj(obj, all_rows, 
-            auth, debug_api=debug_api, 
-            parent_class = parent_class,
-            debug_num_stacks_to_drop = debug_num_stacks_to_drop
-            ) for index, obj in enumerate(content_ls)
+            get_content_recursive_process_obj(
+                obj,
+                all_rows,
+                auth,
+                debug_api=debug_api,
+                parent_class=parent_class,
+                debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+            )
+            for index, obj in enumerate(content_ls)
         ]
     )
 

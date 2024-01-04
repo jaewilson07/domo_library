@@ -9,32 +9,34 @@ import asyncio
 
 # %% ../../nbs/utils/chunk_execution.ipynb 3
 async def gather_with_concurrency(
-    *coros, # list of coroutines to await
+    *coros,  # list of coroutines to await
     n=60,  # number of open coroutines
 ):
-    """limits the number of open coroutines at a time.
-    """
+    """limits the number of open coroutines at a time."""
 
     semaphore = asyncio.Semaphore(n)
 
     async def sem_coro(coro):
         async with semaphore:
             return await coro
+
     return await asyncio.gather(*(sem_coro(c) for c in coros))
 
-
 # %% ../../nbs/utils/chunk_execution.ipynb 6
-async def run_sequence(*functions: Awaitable[Any] # comma separated list of functions
- ) -> None: # no explicit return
+async def run_sequence(
+    *functions: Awaitable[Any],  # comma separated list of functions
+) -> None:  # no explicit return
     """executes a sequence of functions"""
 
-    return [ await function for function in functions]
-        
+    return [await function for function in functions]
 
 # %% ../../nbs/utils/chunk_execution.ipynb 9
-def chunk_list(obj_ls :list[any],  # list of entities to split into n chunks
-               chunk_size:int  # entities per sub list
-               ) -> list[list[dict]]:  # returns a list of chunk_size lists of objects
+def chunk_list(
+    obj_ls: list[any],  # list of entities to split into n chunks
+    chunk_size: int,  # entities per sub list
+) -> list[list[dict]]:  # returns a list of chunk_size lists of objects
 
-    return [obj_ls[i * chunk_size:(i + 1) * chunk_size] for i in range((len(obj_ls) + chunk_size - 1) // chunk_size)]
-
+    return [
+        obj_ls[i * chunk_size : (i + 1) * chunk_size]
+        for i in range((len(obj_ls) + chunk_size - 1) // chunk_size)
+    ]

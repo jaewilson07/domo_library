@@ -13,50 +13,51 @@ import domolibrary.client.get_data as gd
 import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
 
-
 # %% ../../nbs/routes/job.ipynb 3
 # get RemoteDomostats job names
-async def get_jobs(auth: dmda.DomoFullAuth,
-                   application_id: str,
-                   debug_api: bool = False,
-                   session: Union[httpx.AsyncClient, httpx.AsyncClient, None] = None)-> rgd.ResponseGetData:
-    
-    offset_params = {
-            'offset': 'offset',
-            'limit': 'limit'}
+async def get_jobs(
+    auth: dmda.DomoFullAuth,
+    application_id: str,
+    debug_api: bool = False,
+    session: Union[httpx.AsyncClient, httpx.AsyncClient, None] = None,
+) -> rgd.ResponseGetData:
 
-    url = f'https://{auth.domo_instance}.domo.com/api/executor/v2/applications/{application_id}/jobs'
+    offset_params = {"offset": "offset", "limit": "limit"}
+
+    url = f"https://{auth.domo_instance}.domo.com/api/executor/v2/applications/{application_id}/jobs"
 
     if debug_api:
         print(url)
 
     def arr_fn(res) -> list[dict]:
-        return res.response.get('jobs')
+        return res.response.get("jobs")
 
-
-    # deprecated from looper 
+    # deprecated from looper
     # def alter_maximum_fn(res):
     #     return res.response.get('totalResults')
 
-    return await gd.looper(auth=auth,
-                           method='GET',
-                           url=url,
-                           arr_fn=arr_fn,
-                           loop_until_end=True,
-                           offset_params=offset_params,
-                           session=session,
-                           debug_api=debug_api)
+    return await gd.looper(
+        auth=auth,
+        method="GET",
+        url=url,
+        arr_fn=arr_fn,
+        loop_until_end=True,
+        offset_params=offset_params,
+        session=session,
+        debug_api=debug_api,
+    )
 
 
 # create the new RemoteDomostats job
-async def add_job(auth: dmda.DomoFullAuth,
-                  body: dict,
-                  application_id: str,
-                  session: Union[httpx.AsyncClient, httpx.AsyncClient, None] = None,
-                  debug_api: bool = False
-                  )-> rgd.ResponseGetData:
+async def add_job(
+    auth: dmda.DomoFullAuth,
+    body: dict,
+    application_id: str,
+    session: Union[httpx.AsyncClient, httpx.AsyncClient, None] = None,
+    debug_api: bool = False,
+) -> rgd.ResponseGetData:
 
-    url = f'https://{auth.domo_instance}.domo.com/api/executor/v1/applications/{application_id}/jobs'
+    url = f"https://{auth.domo_instance}.domo.com/api/executor/v1/applications/{application_id}/jobs"
 
     if debug_api:
         print(url)
@@ -64,37 +65,38 @@ async def add_job(auth: dmda.DomoFullAuth,
     return await gd.get_data(
         auth=auth,
         url=url,
-        method='POST',
+        method="POST",
         body=body,
         debug_api=debug_api,
-        session=session
+        session=session,
     )
 
 
-def generate_body_remote_domostats(target_instance: str,
-                                   report_dict: dict,
-                                   output_dataset_id: str,
-                                   account_id: str,
-                                   schedule_ls: list,
-                                   execution_timeout: int = 1440,
-                                   debug_api: bool = False):
+def generate_body_remote_domostats(
+    target_instance: str,
+    report_dict: dict,
+    output_dataset_id: str,
+    account_id: str,
+    schedule_ls: list,
+    execution_timeout: int = 1440,
+    debug_api: bool = False,
+):
 
     instance_url = f"{target_instance}.domo.com"
 
     body = {
         "jobName": instance_url,
-        "jobDescription": f'Get Remote stat from {instance_url}',
+        "jobDescription": f"Get Remote stat from {instance_url}",
         "executionTimeout": execution_timeout,
         "executionPayload": {
             "remoteInstance": instance_url,
             "policies": report_dict,
-            "metricsDatasetId": output_dataset_id},
+            "metricsDatasetId": output_dataset_id,
+        },
         "accounts": [account_id],
         "executionClass": "com.domo.executor.subscriberstats.SubscriberStatsExecutor",
-        "resources": {
-            "requests": {"memory": "256M"},
-            "limits": {"memory": "256M"}},
-        "triggers": schedule_ls
+        "resources": {"requests": {"memory": "256M"}, "limits": {"memory": "256M"}},
+        "triggers": schedule_ls,
     }
 
     if debug_api:
@@ -103,39 +105,38 @@ def generate_body_remote_domostats(target_instance: str,
     return body
 
 
-def generate_body_watchdog_generic(job_name: str,
-                                        notify_user_ids_ls: list,
-                                        notify_group_ids_ls: list,
-                                        notify_emails_ls: list,
-                                        entity_ids_ls: list,
-                                        entity_type : str,
-                                        metric_dataset_id: str,
-                                        schedule_ls: list,
-                                        job_type : str,
-                                        execution_timeout: int = 1440,
-                                        debug_api: bool = False):
+def generate_body_watchdog_generic(
+    job_name: str,
+    notify_user_ids_ls: list,
+    notify_group_ids_ls: list,
+    notify_emails_ls: list,
+    entity_ids_ls: list,
+    entity_type: str,
+    metric_dataset_id: str,
+    schedule_ls: list,
+    job_type: str,
+    execution_timeout: int = 1440,
+    debug_api: bool = False,
+):
 
     body = {
         "jobName": job_name,
-        "jobDescription": f'Watchdog for {job_name}',
+        "jobDescription": f"Watchdog for {job_name}",
         "executionTimeout": execution_timeout,
         "accounts": [],
         "executionPayload": {
             "notifyUserIds": notify_user_ids_ls or [],
             "notifyGroupIds": notify_group_ids_ls or [],
             "notifyEmailAddresses": notify_emails_ls or [],
-        "watcherParameters": {
-          "entityIds": entity_ids_ls,
-          "type": job_type,
-          "entityType": entity_type
+            "watcherParameters": {
+                "entityIds": entity_ids_ls,
+                "type": job_type,
+                "entityType": entity_type,
             },
-        "metricsDatasetId": metric_dataset_id
-          },
-        "resources": {
-            "requests": {"memory": "256Mi"},
-            "limits": {"memory": "256Mi"}
+            "metricsDatasetId": metric_dataset_id,
         },
-        "triggers": schedule_ls
+        "resources": {"requests": {"memory": "256Mi"}, "limits": {"memory": "256Mi"}},
+        "triggers": schedule_ls,
     }
 
     if debug_api:
@@ -143,16 +144,18 @@ def generate_body_watchdog_generic(job_name: str,
 
     return body
 
-# update the job
-async def update_job(auth: dmda.DomoFullAuth,
-                  body: dict,
-                  job_id :str,
-                  application_id: str,
-                  session: Union[httpx.AsyncClient, httpx.AsyncClient, None] = None,
-                  debug_api: bool = False
-                  )-> rgd.ResponseGetData:
 
-    url = f'https://{auth.domo_instance}.domo.com/api/executor/v1/applications/{application_id}/jobs/{job_id}'
+# update the job
+async def update_job(
+    auth: dmda.DomoFullAuth,
+    body: dict,
+    job_id: str,
+    application_id: str,
+    session: Union[httpx.AsyncClient, httpx.AsyncClient, None] = None,
+    debug_api: bool = False,
+) -> rgd.ResponseGetData:
+
+    url = f"https://{auth.domo_instance}.domo.com/api/executor/v1/applications/{application_id}/jobs/{job_id}"
 
     if debug_api:
         print(url)
@@ -160,24 +163,27 @@ async def update_job(auth: dmda.DomoFullAuth,
     return await gd.get_data(
         auth=auth,
         url=url,
-        method='PUT',
+        method="PUT",
         body=body,
         debug_api=debug_api,
-        session=session
+        session=session,
     )
 
-#update trigger
 
-async def update_job_trigger(auth: dmda.DomoFullAuth,
-                  body: dict,
-                  job_id :str,
-                  trigger_id : str,  
-                  application_id: str,
-                  session: Union[httpx.AsyncClient, httpx.AsyncClient, None] = None,
-                  debug_api: bool = False
-                  )-> rgd.ResponseGetData:
+# update trigger
 
-    url = f'https://{auth.domo_instance}.domo.com/api/executor/v1/applications/{application_id}/jobs/{job_id}/triggers/{trigger_id}'
+
+async def update_job_trigger(
+    auth: dmda.DomoFullAuth,
+    body: dict,
+    job_id: str,
+    trigger_id: str,
+    application_id: str,
+    session: Union[httpx.AsyncClient, httpx.AsyncClient, None] = None,
+    debug_api: bool = False,
+) -> rgd.ResponseGetData:
+
+    url = f"https://{auth.domo_instance}.domo.com/api/executor/v1/applications/{application_id}/jobs/{job_id}/triggers/{trigger_id}"
 
     if debug_api:
         print(url)
@@ -185,8 +191,8 @@ async def update_job_trigger(auth: dmda.DomoFullAuth,
     return await gd.get_data(
         auth=auth,
         url=url,
-        method='PUT',
+        method="PUT",
         body=body,
         debug_api=debug_api,
-        session=session
+        session=session,
     )

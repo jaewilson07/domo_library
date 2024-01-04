@@ -13,7 +13,6 @@ import traceback
 
 from nbdev.showdoc import patch_to
 
-
 # %% ../../nbs/client/95_Logger.ipynb 5
 @dataclass
 class TracebackDetails:
@@ -32,8 +31,7 @@ class TracebackDetails:
         parent_class=None,  # pass ParentClass.__name__
         debug_traceback: bool = False,
     ):
-        self.function_trail = " -> ".join([line[2]
-                                          for line in traceback_stack])
+        self.function_trail = " -> ".join([line[2] for line in traceback_stack])
 
         self.function_name = traceback_stack[-1][2]
         self.file_name = traceback_stack[-1][0]
@@ -64,31 +62,36 @@ def get_traceback(
             module_index = index
 
     num_stacks_to_drop += 1  # adjust for init
-    
-    if module_index + num_stacks_to_drop >= len(traceback_stack)-1 :
+
+    if module_index + num_stacks_to_drop >= len(traceback_stack) - 1:
         print("adjusting num_stacks_to_drop, consider revising `get_traceback` call")
-        print({
-            'stack_length': len(traceback_stack),
-            'module_index': module_index,
-            'num_stacks_to_drop_passed': num_stacks_to_drop
-        })
+        print(
+            {
+                "stack_length": len(traceback_stack),
+                "module_index": module_index,
+                "num_stacks_to_drop_passed": num_stacks_to_drop,
+            }
+        )
         num_stacks_to_drop -= 1
 
-    filtered_traceback_stack = traceback_stack[module_index:-
-                                               num_stacks_to_drop]
-    
+    filtered_traceback_stack = traceback_stack[module_index:-num_stacks_to_drop]
+
     if debug_traceback:
-        print({'len orig stack': len(traceback_stack),
-            'len filtered stack': len(filtered_traceback_stack),
-            'root_module_name': root_module, 'root_module_index': module_index,
-            'stacks_to_drop': num_stacks_to_drop})
+        print(
+            {
+                "len orig stack": len(traceback_stack),
+                "len filtered stack": len(filtered_traceback_stack),
+                "root_module_name": root_module,
+                "root_module_index": module_index,
+                "stacks_to_drop": num_stacks_to_drop,
+            }
+        )
 
     return TracebackDetails(
         traceback_stack=filtered_traceback_stack,
         parent_class=parent_class,
         debug_traceback=debug_traceback,
     )
-
 
 # %% ../../nbs/client/95_Logger.ipynb 8
 class Logger:
