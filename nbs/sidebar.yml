@@ -38,6 +38,7 @@ website:
           - classes/50_DomoGrant.ipynb
           - classes/50_DomoGroup.ipynb
           - classes/50_DomoInstanceConfig.ipynb
+          - classes/50_DomoInstanceConfig_UserAttributes.ipynb
           - classes/50_DomoJob.ipynb
           - classes/50_DomoJupyter.ipynb
           - classes/50_DomoLineage.ipynb
@@ -87,6 +88,9 @@ website:
               - section: 2023-09-13_Domo_Jupyter
                 contents: []
                 href: projects/posts/2023-09-13_Domo_Jupyter/index.ipynb
+              - section: 2024-01-02_update_users
+                contents: []
+                href: projects/posts/2024-01-02_update_users/index.ipynb
         href: projects/index.qmd
       - section: routes
         contents:
@@ -111,6 +115,7 @@ website:
           - routes/sandbox.ipynb
           - routes/stream.ipynb
           - routes/user.ipynb
+          - routes/user_attributes.ipynb
       - section: utils
         contents:
           - utils/DictDot.ipynb
