@@ -568,7 +568,7 @@ class AccountConfig(Enum):
     snowflake_internal_unload = DomoAccount_Config_SnowflakeInternalUnload
 
     snowflakekeypairauthentication = (
-        DomoAccount_Config_SnowflakeKeyPairAuthentication,
+        DomoAccount_Config_SnowflakeKeyPairAuthentication
     )
 
     snowflake_writeback = DomoAccount_Config_SnowflakeWriteback
