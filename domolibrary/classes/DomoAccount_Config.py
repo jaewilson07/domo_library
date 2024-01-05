@@ -226,9 +226,9 @@ class DomoAccount_Config_AmazonS3Advanced(DomoAccount_Config):
 # %% ../../nbs/classes/50_DomoAccount_Config.ipynb 14
 @dataclass
 class DomoAccount_Config_AwsAthena(DomoAccount_Config):
-    aws_access_key: str
-    aws_secret_key: str = field(repr=False)
-    s3_staging_dir: str
+    access_key: str
+    secret_key: str = field(repr=False)
+    bucket: str
     workgroup: str
 
     region: str = "us-west-2"
@@ -239,18 +239,18 @@ class DomoAccount_Config_AwsAthena(DomoAccount_Config):
         dd = util_dd.DictDot(obj)
 
         return cls(
-            aws_access_key=dd.awsAccessKey,
-            aws_secret_key=dd.awsSecretKey,
-            s3_staging_dir=dd.s3StagingDir,
+            access_key=dd.awsAccessKey,
+            secret_key=dd.awsSecretKey,
+            bucket=dd.s3StagingDir,
             region=dd.region,
             workgroup=dd.workgroup,
         )
 
     def to_json(self):
         return {
-            "awsAccessKey": self.aws_access_key,
-            "awsSecretKey": self.aws_secret_key,
-            "s3StagingDir": self.s3_staging_dir,
+            "awsAccessKey": self.access_key,
+            "awsSecretKey": self.secret_key,
+            "s3StagingDir": self.bucket,
             "region": self.region,
             "workgroup": self.workgroup,
         }
@@ -260,9 +260,9 @@ class DomoAccount_Config_AwsAthena(DomoAccount_Config):
 class DomoAccount_Config_HighBandwidthConnector(DomoAccount_Config):
     """this connector is not enabled by default contact your CSM / AE"""
 
-    aws_access_key: str
-    aws_secret_key: str = field(repr=False)
-    s3_staging_dir: str
+    access_key: str
+    secret_key: str = field(repr=False)
+    bucket: str
 
     region: str = "us-west-2"
     data_provider_type = "amazon-athena-high-bandwidth"
@@ -272,17 +272,17 @@ class DomoAccount_Config_HighBandwidthConnector(DomoAccount_Config):
         dd = util_dd.DictDot(obj)
 
         return cls(
-            aws_access_key=dd.awsAccessKey,
-            aws_secret_key=dd.awsSecretKey,
-            s3_staging_dir=dd.s3StagingDir,
+            access_key=dd.awsAccessKey,
+            secret_key=dd.awsSecretKey,
+            bucket=dd.s3StagingDir,
             region=dd.region,
         )
 
     def to_json(self):
         return {
-            "awsAccessKey": self.aws_access_key,
-            "awsSecretKey": self.aws_secret_key,
-            "s3StagingDir": self.s3_staging_dir,
+            "awsAccessKey": self.access_key,
+            "awsSecretKey": self.secret_key,
+            "s3StagingDir": self.bucket,
             "region": self.region,
         }
 
@@ -367,7 +367,7 @@ class DomoAccount_Config_SnowflakeUnload_V2(DomoAccount_Config):
 class DomoAccount_Config_SnowflakeUnloadAdvancedPartition(DomoAccount_Config):
     password: str = field(repr=False)
     account: str
-    user_name: str
+    username: str
     role: str = None
 
     data_provider_type = "snowflake-internal-unload-advanced-partition"
@@ -378,7 +378,7 @@ class DomoAccount_Config_SnowflakeUnloadAdvancedPartition(DomoAccount_Config):
             password=obj["password"],
             role=obj.get("role"),
             account=obj["account"],
-            user_name=obj["username"],
+            username=obj["username"],
         )
 
     def to_json(self):
@@ -386,7 +386,7 @@ class DomoAccount_Config_SnowflakeUnloadAdvancedPartition(DomoAccount_Config):
             "password": self.password,
             "role": self.role,
             "account": self.account,
-            "username": self.user_name,
+            "username": self.username,
         }
 
 # %% ../../nbs/classes/50_DomoAccount_Config.ipynb 24
@@ -396,7 +396,7 @@ class DomoAccount_Config_SnowflakeWriteback(DomoAccount_Config):
     domo_client_id: str
     account: str
     password: str = field(repr=False)
-    user_name: str
+    username: str
 
     data_provider_type = "snowflake-writeback"
 
@@ -406,7 +406,7 @@ class DomoAccount_Config_SnowflakeWriteback(DomoAccount_Config):
             domo_client_secret=obj["domoClientSecret"],
             domo_client_id=obj["domoClientId"],
             account=obj["account"],
-            user_name=obj["username"],
+            username=obj["username"],
             password=obj["password"],
         )
 
@@ -416,7 +416,7 @@ class DomoAccount_Config_SnowflakeWriteback(DomoAccount_Config):
             "password": self.password,
             "domoClientId": self.domo_client_id,
             "account": self.account,
-            "username": self.user_name,
+            "username": self.username,
         }
 
 # %% ../../nbs/classes/50_DomoAccount_Config.ipynb 25
@@ -426,7 +426,7 @@ class DomoAccount_Config_SnowflakeUnload(DomoAccount_Config):
     access_key: str
     account: str
     password: str = field(repr=False)
-    user_name: str
+    username: str
     bucket: str
 
     data_provider_type = "snowflake-unload"
@@ -437,7 +437,7 @@ class DomoAccount_Config_SnowflakeUnload(DomoAccount_Config):
             secret_key=obj["secretKey"],
             access_key=obj["accessKey"],
             account=obj["account"],
-            user_name=obj["username"],
+            username=obj["username"],
             password=obj["password"],
             bucket=obj["bucket"],
         )
@@ -449,7 +449,7 @@ class DomoAccount_Config_SnowflakeUnload(DomoAccount_Config):
             "secretKey": self.secret_key,
             "accessKey": self.access_key,
             "account": self.account,
-            "username": self.user_name,
+            "username": self.username,
         }
 
 # %% ../../nbs/classes/50_DomoAccount_Config.ipynb 26
@@ -458,7 +458,7 @@ class DomoAccount_Config_SnowflakeFederated(DomoAccount_Config):
     password: str = field(repr=False)
     host: str
     warehouse: str
-    user: str
+    username: str
     port: str = None
     role: str = None
 
@@ -470,7 +470,7 @@ class DomoAccount_Config_SnowflakeFederated(DomoAccount_Config):
             password=obj["password"],
             host=obj["host"],
             warehouse=obj["warehouse"],
-            user=obj["user"],
+            username=obj["user"],
             role=obj.get("role"),
             port=obj.get("port"),
         )
@@ -481,7 +481,7 @@ class DomoAccount_Config_SnowflakeFederated(DomoAccount_Config):
             "port": self.port,
             "host": self.host,
             "warehouse": self.warehouse,
-            "user": self.user,
+            "user": self.username,
             "role": self.role,
         }
 
@@ -490,7 +490,7 @@ class DomoAccount_Config_SnowflakeFederated(DomoAccount_Config):
 class DomoAccount_Config_SnowflakeInternalUnload(DomoAccount_Config):
     password: str = field(repr=False)
     account: str
-    user_name: str
+    username: str
     role: str = None
     data_provider_type = "snowflake-internal-unload"
 
@@ -500,7 +500,7 @@ class DomoAccount_Config_SnowflakeInternalUnload(DomoAccount_Config):
             password=obj["password"],
             role=obj.get("role"),
             account=obj["account"],
-            user_name=obj["username"],
+            username=obj["username"],
         )
 
     def to_json(self):
@@ -508,7 +508,7 @@ class DomoAccount_Config_SnowflakeInternalUnload(DomoAccount_Config):
             "password": self.password,
             "role": self.role,
             "account": self.account,
-            "username": self.user_name,
+            "username": self.username,
         }
 
 # %% ../../nbs/classes/50_DomoAccount_Config.ipynb 28
@@ -516,8 +516,8 @@ class DomoAccount_Config_SnowflakeInternalUnload(DomoAccount_Config):
 class DomoAccount_Config_SnowflakeKeyPairAuthentication(DomoAccount_Config):
     private_key: str = field(repr=False)
     account: str = field(repr=False)
-    pass_phrase: str = field(repr=False)
-    user_name: str
+    passphrase: str = field(repr=False)
+    username: str
     role: str = None
     data_provider_type = "snowflakekeypairauthentication"
 
@@ -527,8 +527,8 @@ class DomoAccount_Config_SnowflakeKeyPairAuthentication(DomoAccount_Config):
             private_key=obj["privateKey"],
             role=obj.get("role"),
             account=obj["account"],
-            user_name=obj["username"],
-            pass_phrase=obj["passPhrase"],
+            username=obj["username"],
+            passphrase=obj["passPhrase"],
         )
 
     def to_json(self):
@@ -536,8 +536,8 @@ class DomoAccount_Config_SnowflakeKeyPairAuthentication(DomoAccount_Config):
             "privateKey": self.private_key,
             "role": self.role,
             "account": self.account,
-            "username": self.user_name,
-            "passPhrase": self.pass_phrase,
+            "username": self.username,
+            "passPhrase": self.passphrase,
         }
 
 # %% ../../nbs/classes/50_DomoAccount_Config.ipynb 29
