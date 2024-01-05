@@ -136,8 +136,12 @@ class GetAccount_NoMatch(de.DomoError):
         status=None,
         function_name=None,
         parent_class=None,
+        message=None,
     ):
-        message = f"account_id {account_id} not found"
+        message = (
+            message
+            or f"account_id {account_id} not found has it been shared with the user?"
+        )
 
         super().__init__(
             message=message,
@@ -233,22 +237,14 @@ async def get_account_from_id(
 async def get_account_config(
     auth: dmda.DomoAuth,
     account_id: int,
+    data_provider_type: str,
     return_raw: bool = False,
     debug_api: bool = False,
     debug_num_stacks_to_drop: int = 1,
     parent_class: str = None,
     session: Union[httpx.AsyncClient, httpx.AsyncClient, None] = None,
 ) -> rgd.ResponseGetData:
-    res = await get_account_from_id(
-        auth=auth,
-        account_id=account_id,
-        debug_api=debug_api,
-        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
-        parent_class=parent_class,
-        session=session,
-    )
 
-    data_provider_type = res.response.get("dataProviderType")
     url = f"https://{auth.domo_instance}.domo.com/api/data/v1/providers/{data_provider_type}/account/{account_id}?unmask=true"
 
     if debug_api:
@@ -272,6 +268,7 @@ async def get_account_config(
             account_id=account_id,
             domo_instance=auth.domo_instance,
             status=res.status,
+            message=f"unable to retrieve config for {account_id} -- is the account shared with this user?",
             parent_class=parent_class,
             function_name=res.traceback_details.function_name,
         )

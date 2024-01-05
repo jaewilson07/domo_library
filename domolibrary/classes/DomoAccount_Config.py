@@ -176,7 +176,6 @@ class DomoAccount_Config_AmazonS3(DomoAccount_Config):
     def to_json(self):
         bucket = self.bucket
 
-
         if bucket and bucket.lower().startswith("s3://"):
             bucket = bucket[5:]
             print(
@@ -211,8 +210,8 @@ class DomoAccount_Config_AmazonS3Advanced(DomoAccount_Config):
 
     def to_json(self):
         bucket = self.bucket
-        
-        if bucket.lower().startswith("s3://"):
+
+        if bucket and bucket.lower().startswith("s3://"):
             bucket = bucket[5:]
             print(
                 f"🤦‍♀️- Domo bucket expects string without s3:// prefix. Trimming to '{bucket}' for the output"
@@ -565,11 +564,10 @@ class AccountConfig(Enum):
     snowflake_internal_unload_advanced_partition = (
         DomoAccount_Config_SnowflakeUnloadAdvancedPartition
     )
+
     snowflake_internal_unload = DomoAccount_Config_SnowflakeInternalUnload
 
-    snowflakekeypairauthentication = (
-        DomoAccount_Config_SnowflakeKeyPairAuthentication
-    )
+    snowflakekeypairauthentication = DomoAccount_Config_SnowflakeKeyPairAuthentication
 
     snowflake_writeback = DomoAccount_Config_SnowflakeWriteback
     snowflake_federated = DomoAccount_Config_SnowflakeFederated

@@ -6,7 +6,7 @@ __all__ = ['Account_CanIModify', 'UpsertAccount_MatchCriteria', 'DomoAccount', '
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 3
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, List
 
 import datetime as dt
 import re
@@ -60,15 +60,18 @@ class UpsertAccount_MatchCriteria(de.DomoError):
 # %% ../../nbs/classes/50_DomoAccount.ipynb 6
 @dataclass
 class DomoAccount:
-    data_provider_type: str = None
-    name: str = None
+    id: int
+    auth: dmda.DomoAuth = field(repr=False)
 
-    id: int = None
+    name: str = None
+    data_provider_type: str = None
+
     created_dt: dt.datetime = None
     modified_dt: dt.datetime = None
-    auth: dmda.DomoAuth = field(repr=False, default=None)
 
-    config: DomoAccount_Config = (None,)
+    config: DomoAccount_Config = None
+
+    owner: List[Any] = None  # DomoUser or DomoGroup
 
     is_admin_summary: bool = True
 
@@ -101,14 +104,14 @@ class DomoAccount:
 class DomoAccounConfig_MissingFields(de.DomoError):
     def __init__(self, domo_instance, missing_keys, account_id):
         super().__init__(
-            domo_instance= domo_instance,
-            message = f"{account_id} config class definition is missing the following keys - {', '.join(keys)} extend the AccountConfig"
+            domo_instance=domo_instance,
+            message=f"{account_id} config class definition is missing the following keys - {', '.join(keys)} extend the AccountConfig",
         )
+
 
 @patch_to(DomoAccount)
 def _test_missing_keys(self, res_obj, config_obj):
-
-     return [ r_key for r_key in res_obj.keys() if r_key not in config_obj.keys()]
+    return [r_key for r_key in res_obj.keys() if r_key not in config_obj.keys()]
 
 
 @patch_to(DomoAccount)
@@ -121,11 +124,24 @@ async def _get_config(
     debug_num_stacks_to_drop=2,
     is_suppress_no_config: bool = False,  # can be used to suppress cases where the config is not defined, either because the account_config is OAuth, and therefore not stored in Domo OR because the AccountConfig class doesn't cover the data_type
 ):
+    if not self.data_provider_type:
+        res = await account_routes.get_account_from_id(
+            auth=self.auth,
+            account_id=self.id,
+            session=session,
+            debug_api=debug_api,
+            parent_class=self.__class__.__name__,
+            debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+        )
+
+        self.data_provider_type = res.response["dataProviderType"]
+
     res = await account_routes.get_account_config(
         auth=auth or self.auth,
         account_id=self.id,
         session=session,
         debug_api=debug_api,
+        data_provider_type=self.data_provider_type,
         parent_class=self.__class__.__name__,
         debug_num_stacks_to_drop=debug_num_stacks_to_drop,
     )
@@ -133,21 +149,27 @@ async def _get_config(
     if return_raw:
         return res
 
-    data_provider_type = res.response.get("_search_metadata").get("data_provider_type")
-
-    config_fn = AccountConfig(data_provider_type).value
+    config_fn = AccountConfig(self.data_provider_type).value
 
     if not is_suppress_no_config and not config_fn.is_defined_config:
-        raise config_fn._associated_exception(data_provider_type)
+        raise config_fn._associated_exception(self.data_provider_type)
 
     self.config = config_fn._from_json(res.response)
 
     if self.config and self.config.to_json() != {}:
-        if not res.response : print( self.data_provider_type, "no response")
-        if not self.config.to_json() : print( self.id, self.data_provider_type, "no config", self.config.to_json(), res.response)
+        if not res.response:
+            print(self.data_provider_type, "no response")
 
-        self._test_missing_keys( res_obj = res.response, config_obj = self.config.to_json() )
+        if not self.config.to_json():
+            print(
+                self.id,
+                self.data_provider_type,
+                "no config",
+                self.config.to_json(),
+                res.response,
+            )
 
+        self._test_missing_keys(res_obj=res.response, config_obj=self.config.to_json())
 
     return self.config
 
@@ -656,8 +678,7 @@ async def get_accounts(
     if account_name and isinstance(account_name, str):
         domo_accounts = [
             domo_account
-            for domo_account in domo_accounts
-            if domo_account.name.lower() == account_name.lower()
+            for domo_account in domo_accounts if domo_account.name.lower() == account_name.lower()
         ]
 
     if account_type:
