@@ -5,7 +5,7 @@ __all__ = ['User_CrudError', 'GetUser_Error', 'ResetPassword_PasswordUsed', 'Sea
            'get_all_users', 'get_by_id', 'search_users', 'search_users_by_id', 'search_users_by_email',
            'search_virtual_user_by_subscriber_instance', 'create_user', 'set_user_landing_page', 'reset_password',
            'request_password_reset', 'UserProperty_Type', 'UserProperty', 'generate_patch_user_property_body',
-           'update_user', 'download_avatar']
+           'update_user', 'download_avatar', 'delete_user']
 
 # %% ../../nbs/routes/user.ipynb 2
 import os
@@ -42,7 +42,7 @@ class User_CrudError(de.DomoError):
             parent_class=parent_class,
         )
 
-
+        
 class GetUser_Error(de.DomoError):
     def __init__(
         self, domo_instance, status, response, function_name=None, parent_class=None
@@ -726,5 +726,42 @@ async def download_avatar(
             out_file.write(res.response)
 
     res.is_success = True
+
+    return res
+
+# %% ../../nbs/routes/user.ipynb 47
+import os
+import domolibrary.client.DomoAuth as dmda
+
+async def delete_user(
+    auth: dmda.DomoAuth,
+    user_id: str,
+    debug_api: bool = False,
+    debug_num_stacks_to_drop=1,
+    parent_class: str = None,
+    session: httpx.AsyncClient = None,
+) -> rgd.ResponseGetData:
+    url = f"https://{auth.domo_instance}.domo.com/api/identity/v1/users/{user_id}"
+
+    if debug_api:
+        print(url)
+
+    res = await gd.get_data(
+        auth=auth,
+        url=url,
+        method="DELETE",
+        debug_api=debug_api,
+        session=session,
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
+    )
+    if not res.is_success:
+        raise User_CrudError(
+            domo_instance=auth.domo_instance,
+            function_name=res.traceback_details.function_name,
+            parent_class=parent_class,
+            status=res.status,
+            message=res.response,
+        )
 
     return res
