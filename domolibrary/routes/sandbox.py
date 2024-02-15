@@ -12,11 +12,12 @@ import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 
-# %% ../../nbs/routes/sandbox.ipynb 3
+# %% ../../nbs/routes/sandbox.ipynb 4
 @gd.route_function
 async def get_is_allow_same_instance_promotion_enabled(
     auth: dmda.DomoAuth,
     session: httpx.AsyncClient = None,
+    return_raw: bool = False,
     debug_num_stacks_to_drop: int = 1,
     debug_api: bool = False,
     parent_class: str = None,
@@ -33,17 +34,28 @@ async def get_is_allow_same_instance_promotion_enabled(
         parent_class=parent_class,
     )
 
+    if return_raw:
+        return res
+
+    res.response = {
+        "name": "allow_same_instance_promotion",
+        "is_enabled": res.response["allowSelfPromotion"],
+    }
+
     return res
 
-# %% ../../nbs/routes/sandbox.ipynb 5
+# %% ../../nbs/routes/sandbox.ipynb 6
 class Sandbox_ToggleSameInstancePromotion_Error(de.DomoError):
-    def __init__(self, domo_instance, message, status, parent_class=None):
+    def __init__(
+        self, domo_instance, message, status, parent_class=None, function_name=None
+    ):
         super().__init__(
             self,
             domo_instance=domo_instance,
             status=status,
             parent_class=parent_class,
             message=message,
+            function_name=function_name,
         )
 
 
@@ -81,7 +93,7 @@ async def toggle_allow_same_instance_promotion(
 
     return res
 
-# %% ../../nbs/routes/sandbox.ipynb 7
+# %% ../../nbs/routes/sandbox.ipynb 8
 @gd.route_function
 async def get_shared_repos(
     auth: dmda.DomoAuth,
@@ -119,7 +131,7 @@ async def get_shared_repos(
 
     return res
 
-# %% ../../nbs/routes/sandbox.ipynb 10
+# %% ../../nbs/routes/sandbox.ipynb 11
 @gd.route_function
 async def get_repo_from_id(
     auth: dmda.DomoFullAuth,
@@ -139,4 +151,5 @@ async def get_repo_from_id(
         parent_class=parent_class,
         debug_api=debug_api,
         num_stacks_to_drop=debug_num_stacks_to_drop,
+        session=session,
     )

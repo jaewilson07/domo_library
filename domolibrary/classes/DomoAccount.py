@@ -678,7 +678,8 @@ async def get_accounts(
     if account_name and isinstance(account_name, str):
         domo_accounts = [
             domo_account
-            for domo_account in domo_accounts if domo_account.name.lower() == account_name.lower()
+            for domo_account in domo_accounts
+            if domo_account.name.lower() == account_name.lower()
         ]
 
     if account_type:

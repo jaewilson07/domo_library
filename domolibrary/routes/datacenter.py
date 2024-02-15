@@ -5,7 +5,7 @@ __all__ = ['Datacenter_Enum', 'Dataflow_Type_Filter_Enum', 'Datacenter_Filter_Fi
            'Datacenter_Filter_Field_Certification_Enum', 'generate_search_datacenter_filter',
            'generate_search_datacenter_filter_search_term', 'generate_search_datacenter_body',
            'generate_search_datacenter_account_body', 'SearchDatacenter_NoResultsFound', 'search_datacenter',
-           'get_lineage_upstream', 'ShareResource_Enum', 'share_resource']
+           'get_connectors', 'get_lineage_upstream', 'ShareResource_Enum', 'share_resource']
 
 # %% ../../nbs/routes/datacenter.ipynb 2
 from enum import Enum
@@ -17,7 +17,7 @@ import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoError as de
 import domolibrary.client.DomoAuth as dmda
 
-# %% ../../nbs/routes/datacenter.ipynb 3
+# %% ../../nbs/routes/datacenter.ipynb 4
 class Datacenter_Enum(Enum):
     ACCOUNT = "ACCOUNT"
     CARD = "CARD"
@@ -26,6 +26,7 @@ class Datacenter_Enum(Enum):
     GROUP = "GROUP"
     PAGE = "PAGE"
     USER = "USER"
+    CONNECTOR = "CONNECTOR"
 
 
 class Dataflow_Type_Filter_Enum(Enum):
@@ -69,7 +70,7 @@ class Dataflow_Type_Filter_Enum(Enum):
         "not": False,
     }
 
-# %% ../../nbs/routes/datacenter.ipynb 4
+# %% ../../nbs/routes/datacenter.ipynb 5
 class Datacenter_Filter_Field_Enum(Enum):
     DATAPROVIDER = "dataprovidername_facet"
     CERTIFICATION = "certification.state"
@@ -94,14 +95,14 @@ def generate_search_datacenter_filter(
         "not": is_not,
     }
 
-# %% ../../nbs/routes/datacenter.ipynb 6
+# %% ../../nbs/routes/datacenter.ipynb 7
 def generate_search_datacenter_filter_search_term(search_term):
     # if not "*" in search_term:
     #     search_term = f"*{search_term}*"
 
     return {"field": "name_sort", "filterType": "wildcard", "query": search_term}
 
-# %% ../../nbs/routes/datacenter.ipynb 9
+# %% ../../nbs/routes/datacenter.ipynb 10
 def generate_search_datacenter_body(
     search_text: str = None,
     entity_type: Union[
@@ -136,7 +137,7 @@ def generate_search_datacenter_body(
         "offset": offset,
     }
 
-# %% ../../nbs/routes/datacenter.ipynb 12
+# %% ../../nbs/routes/datacenter.ipynb 13
 def generate_search_datacenter_account_body(
     search_str: str, is_exact_match: bool = True
 ):
@@ -158,7 +159,7 @@ def generate_search_datacenter_account_body(
         "sort": {"fieldSorts": [{"field": "display_name_sort", "sortOrder": "ASC"}]},
     }
 
-# %% ../../nbs/routes/datacenter.ipynb 13
+# %% ../../nbs/routes/datacenter.ipynb 14
 class SearchDatacenter_NoResultsFound(de.DomoError):
     def __init__(
         self, body, domo_instance, parent_class: str = None, function_name: str = None
@@ -234,7 +235,45 @@ async def search_datacenter(
 
     return res
 
-# %% ../../nbs/routes/datacenter.ipynb 16
+# %% ../../nbs/routes/datacenter.ipynb 17
+@gd.route_function
+async def get_connectors(
+    auth: dmda.DomoAuth,
+    search_text=None,
+    session: httpx.AsyncClient = None,
+    debug_api: bool = False,
+    debug_num_stacks_to_drop=1,
+    parent_class: str = None,
+    additional_filters_ls=None,
+):
+    additional_filters_ls = additional_filters_ls or []
+
+    body = generate_search_datacenter_body(
+        entity_type=Datacenter_Enum.CONNECTOR.value,
+        additional_filters_ls=additional_filters_ls,
+        combineResults=True,
+    )
+
+    res = await search_datacenter(
+        auth=auth,
+        body=body,
+        session=session,
+        debug_api=debug_api,
+        parent_class=parent_class,
+        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+    )
+
+    if search_text:
+        res.response = [
+            r
+            for r in res.response
+            if search_text.lower() in r["label"].lower()
+            or search_text.lower() in r["title"].lower()
+        ]
+
+    return res
+
+# %% ../../nbs/routes/datacenter.ipynb 19
 @gd.route_function
 async def get_lineage_upstream(
     auth: dmda.DomoAuth,
@@ -260,7 +299,7 @@ async def get_lineage_upstream(
         num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
-# %% ../../nbs/routes/datacenter.ipynb 19
+# %% ../../nbs/routes/datacenter.ipynb 22
 class ShareResource_Enum(Enum):
     PAGE = "page"
     CARD = "badge"

@@ -95,7 +95,6 @@ async def get_by_id(
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
 ):
-
     """retrieves details about a dataflow execution including actions"""
 
     res = await dataflow_routes.get_dataflow_execution_by_id(
@@ -122,7 +121,6 @@ async def get_actions(
     session: httpx.AsyncClient = None,
     return_raw: bool = False,
 ):
-
     """retrieves details execution action results"""
 
     res = await dataflow_routes.get_dataflow_execution_by_id(

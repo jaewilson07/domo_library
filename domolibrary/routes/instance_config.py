@@ -5,10 +5,10 @@ __all__ = ['get_is_invite_social_users_enabled', 'ToggleSocialUsers_Error', 'tog
            'ToggleUserInvite_Error', 'toggle_is_user_invite_enabled', 'get_is_user_invite_notifications_enabled',
            'get_sso_config', 'generate_sso_body', 'UpdateSSO_Error', 'update_sso_config', 'get_allowlist',
            'Allowlist_UnableToUpdate', 'set_allowlist', 'set_authorized_domains', 'GetDomains_NotFound',
-           'get_authorized_domains', 'set_authorized_custom_app_domains', 'GetAppDomains_NotFound',
-           'get_authorized_custom_app_domains']
+           'get_authorized_domains', 'get_is_weekly_digest_enabled', 'toggle_is_weekly_digest_enabled',
+           'GetAppDomains_NotFound', 'get_authorized_custom_app_domains', 'set_authorized_custom_app_domains']
 
-# %% ../../nbs/routes/instance_config.ipynb 2
+# %% ../../nbs/routes/instance_config.ipynb 3
 import httpx
 
 import domolibrary.client.get_data as gd
@@ -16,10 +16,12 @@ import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 
+from ..utils.convert import convert_string_to_bool
+
 import domolibrary.routes.user as user_routes
 import domolibrary.routes.bootstrap as bootstrap_routes
 
-# %% ../../nbs/routes/instance_config.ipynb 4
+# %% ../../nbs/routes/instance_config.ipynb 6
 @gd.route_function
 async def get_is_invite_social_users_enabled(
     auth: dmda.DomoAuth,
@@ -27,8 +29,13 @@ async def get_is_invite_social_users_enabled(
     session: httpx.AsyncClient = None,
     debug_api: bool = False,
     parent_class=None,
+    return_raw: bool = False,
     debug_num_stacks_to_drop=1,
 ) -> rgd.ResponseGetData:
+
+    # must pass the customer as the short form API endpoint (without customer_id) does not support a GET request
+    # url = f"https://{auth.domo_instance}.domo.com/api/content/v3/customers/features/free-invite"
+
     url = f"https://{auth.domo_instance}.domo.com/api/content/v3/customers/{customer_id}/features/free-invite"
 
     res = await gd.get_data(
@@ -46,9 +53,14 @@ async def get_is_invite_social_users_enabled(
             status=res.status, message=res.response, domo_instance=auth.domo_instance
         )
 
+    if return_raw:
+        return res
+
+    res.response = {"name": "free-invite", "is_enabled": res.response["enabled"]}
+
     return res
 
-# %% ../../nbs/routes/instance_config.ipynb 7
+# %% ../../nbs/routes/instance_config.ipynb 9
 class ToggleSocialUsers_Error(de.DomoError):
     def __init__(self, status, domo_instance, message="failure to toggle social users"):
         super().__init__(status=status, domo_instance=domo_instance, message=message)
@@ -101,7 +113,7 @@ async def toggle_is_social_users_enabled(
 
     return res
 
-# %% ../../nbs/routes/instance_config.ipynb 11
+# %% ../../nbs/routes/instance_config.ipynb 13
 class ToggleUserInvite_Error(de.DomoError):
     def __init__(
         self, status, domo_instance, message="failure to toggle user invite enabled"
@@ -150,7 +162,7 @@ async def toggle_is_user_invite_enabled(
 
     return res
 
-# %% ../../nbs/routes/instance_config.ipynb 14
+# %% ../../nbs/routes/instance_config.ipynb 16
 @gd.route_function
 async def get_is_user_invite_notifications_enabled(
     auth: dmda.DomoFullAuth,
@@ -158,6 +170,7 @@ async def get_is_user_invite_notifications_enabled(
     debug_api: bool = False,
     parent_class=None,
     debug_num_stacks_to_drop=1,
+    return_raw: bool = False,
 ) -> rgd.ResponseGetData:
     url = f"https://{auth.domo_instance}.domo.com/api/customer/v1/properties/user.invite.email.enabled"
 
@@ -174,9 +187,17 @@ async def get_is_user_invite_notifications_enabled(
             status=res.status, message=res.response, domo_instance=auth.domo_instance
         )
 
+    if return_raw:
+        return res
+
+    res.response = {
+        "name": "user.invite.email.enabled",
+        "is_enabled": convert_string_to_bool(res.response["value"]),
+    }
+
     return res
 
-# %% ../../nbs/routes/instance_config.ipynb 18
+# %% ../../nbs/routes/instance_config.ipynb 20
 @gd.route_function
 async def get_sso_config(
     auth: dmda.DomoAuth,
@@ -199,7 +220,7 @@ async def get_sso_config(
 
     return res
 
-# %% ../../nbs/routes/instance_config.ipynb 22
+# %% ../../nbs/routes/instance_config.ipynb 24
 def generate_sso_body(
     login_enabled: bool = None,  # False
     idp_enabled: bool = None,  # False
@@ -242,7 +263,7 @@ def generate_sso_body(
 
     return {key: value for key, value in r.items() if value is not None}
 
-# %% ../../nbs/routes/instance_config.ipynb 23
+# %% ../../nbs/routes/instance_config.ipynb 25
 class UpdateSSO_Error(de.DomoError):
     def __init__(
         self,
@@ -302,7 +323,7 @@ async def update_sso_config(
 
     return res
 
-# %% ../../nbs/routes/instance_config.ipynb 27
+# %% ../../nbs/routes/instance_config.ipynb 29
 @gd.route_function
 async def get_allowlist(
     auth: dmda.DomoFullAuth,
@@ -337,7 +358,7 @@ async def get_allowlist(
 
     return res
 
-# %% ../../nbs/routes/instance_config.ipynb 32
+# %% ../../nbs/routes/instance_config.ipynb 34
 class Allowlist_UnableToUpdate(de.DomoError):
     def __init__(
         self,
@@ -353,7 +374,7 @@ class Allowlist_UnableToUpdate(de.DomoError):
             domo_instance=domo_instance,
         )
 
-# %% ../../nbs/routes/instance_config.ipynb 33
+# %% ../../nbs/routes/instance_config.ipynb 35
 @gd.route_function
 async def set_allowlist(
     auth: dmda.DomoAuth,
@@ -393,7 +414,7 @@ async def set_allowlist(
 
     return res
 
-# %% ../../nbs/routes/instance_config.ipynb 36
+# %% ../../nbs/routes/instance_config.ipynb 38
 @gd.route_function
 async def set_authorized_domains(
     auth: dmda.DomoAuth,
@@ -420,7 +441,7 @@ async def set_authorized_domains(
 
     return res
 
-# %% ../../nbs/routes/instance_config.ipynb 37
+# %% ../../nbs/routes/instance_config.ipynb 39
 class GetDomains_NotFound(de.DomoError):
     def __init__(self, status, message, domo_instance):
         super().__init__(status=status, message=message, domo_instance=domo_instance)
@@ -471,23 +492,52 @@ async def get_authorized_domains(
     res.response = [domain.strip() for domain in res.response.get("value").split(",")]
     return res
 
-# %% ../../nbs/routes/instance_config.ipynb 41
+# %% ../../nbs/routes/instance_config.ipynb 43
 @gd.route_function
-async def set_authorized_custom_app_domains(
+async def get_is_weekly_digest_enabled(
     auth: dmda.DomoAuth,
-    authorized_custom_app_domain_ls: [str],
+    return_raw: bool = False,
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
     parent_class=None,
     debug_num_stacks_to_drop=1,
 ):
-    url = f"https://{auth.domo_instance}.domo.com/api/content/v1/customer-states/authorized-app-domains"
+    url = f"https://{auth.domo_instance}.domo.com/api/content/v1/customer-states/come-back-to-domo-all-users"
 
-    body = {
-        "name": "authorized-app-domains",
-        "value": ",".join(authorized_custom_app_domain_ls),
+    res = await gd.get_data(
+        auth=auth,
+        url=url,
+        method="GET",
+        debug_api=debug_api,
+        session=session,
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
+    )
+
+    if return_raw:
+        return res
+
+    res.response = {
+        "is_enabled": convert_string_to_bool(res.response["value"]),
+        "feature": "come-back-to-domo-all-users",
     }
 
+    return res
+
+# %% ../../nbs/routes/instance_config.ipynb 45
+@gd.route_function
+async def toggle_is_weekly_digest_enabled(
+    auth: dmda.DomoAuth,
+    return_raw: bool = False,
+    debug_api: bool = False,
+    is_enabled: bool = True,
+    session: httpx.AsyncClient = None,
+    parent_class=None,
+    debug_num_stacks_to_drop=1,
+):
+    url = f"https://{auth.domo_instance}.domo.com/api/content/v1/customer-states/come-back-to-domo-all-users"
+
+    body = {"name": "come-back-to-domo-all-users", "value": is_enabled}
     res = await gd.get_data(
         auth=auth,
         url=url,
@@ -499,9 +549,12 @@ async def set_authorized_custom_app_domains(
         num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
-    return res
+    if not res.is_success:
+        return res
 
-# %% ../../nbs/routes/instance_config.ipynb 42
+    return await get_is_weekly_digest_enabled(auth=auth)
+
+# %% ../../nbs/routes/instance_config.ipynb 48
 class GetAppDomains_NotFound(de.DomoError):
     def __init__(self, status, message, domo_instance):
         super().__init__(status=status, message=message, domo_instance=domo_instance)
@@ -550,4 +603,34 @@ async def get_authorized_custom_app_domains(
         return res
 
     res.response = [domain.strip() for domain in res.response.get("value").split(",")]
+    return res
+
+# %% ../../nbs/routes/instance_config.ipynb 51
+@gd.route_function
+async def set_authorized_custom_app_domains(
+    auth: dmda.DomoAuth,
+    authorized_custom_app_domain_ls: [str],
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
+    parent_class=None,
+    debug_num_stacks_to_drop=1,
+):
+    url = f"https://{auth.domo_instance}.domo.com/api/content/v1/customer-states/authorized-app-domains"
+
+    body = {
+        "name": "authorized-app-domains",
+        "value": ",".join(authorized_custom_app_domain_ls),
+    }
+
+    res = await gd.get_data(
+        auth=auth,
+        url=url,
+        method="PUT",
+        body=body,
+        debug_api=debug_api,
+        session=session,
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
+    )
+
     return res

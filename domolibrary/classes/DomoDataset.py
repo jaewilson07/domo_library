@@ -124,7 +124,6 @@ class DomoDataset_Schema:
         debug_api: bool = False,
         return_raw: bool = False,  # return the raw response
     ) -> List[DomoDataset_Schema_Column]:
-
         """method that retrieves schema for a dataset"""
 
         auth, dataset_id = await _have_prereqs(

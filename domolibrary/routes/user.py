@@ -22,7 +22,7 @@ import domolibrary.client.DomoError as de
 
 import domolibrary.utils.chunk_execution as ce
 
-# %% ../../nbs/routes/user.ipynb 4
+# %% ../../nbs/routes/user.ipynb 5
 class User_CrudError(de.DomoError):
     def __init__(
         self,
@@ -42,7 +42,7 @@ class User_CrudError(de.DomoError):
             parent_class=parent_class,
         )
 
-        
+
 class GetUser_Error(de.DomoError):
     def __init__(
         self, domo_instance, status, response, function_name=None, parent_class=None
@@ -114,7 +114,7 @@ class DownloadAvatar_Error(de.DomoError):
             function_name=function_name,
         )
 
-# %% ../../nbs/routes/user.ipynb 6
+# %% ../../nbs/routes/user.ipynb 7
 async def get_all_users(
     auth: dmda.DomoAuth,
     debug_api: bool = False,
@@ -144,7 +144,7 @@ async def get_all_users(
 
     return res
 
-# %% ../../nbs/routes/user.ipynb 10
+# %% ../../nbs/routes/user.ipynb 11
 async def get_by_id(
     user_id,
     auth: dmda.DomoAuth,
@@ -228,7 +228,7 @@ async def get_by_id(
 
     return res_v2
 
-# %% ../../nbs/routes/user.ipynb 15
+# %% ../../nbs/routes/user.ipynb 16
 def process_v1_search_users(
     v1_user_ls: list[dict],  # list of users from v1_users_search API
 ) -> list[dict]:  # sanitized list of users.
@@ -251,7 +251,7 @@ def process_v1_search_users(
 
     return clean_users
 
-# %% ../../nbs/routes/user.ipynb 16
+# %% ../../nbs/routes/user.ipynb 17
 async def search_users(
     auth: dmda.DomoAuth,
     body: dict,
@@ -318,7 +318,7 @@ async def search_users(
 
     return res
 
-# %% ../../nbs/routes/user.ipynb 17
+# %% ../../nbs/routes/user.ipynb 18
 async def search_users_by_id(
     user_ids: list[str],  # list of user ids to search
     auth: dmda.DomoAuth,
@@ -367,7 +367,7 @@ async def search_users_by_id(
 
     return res
 
-# %% ../../nbs/routes/user.ipynb 18
+# %% ../../nbs/routes/user.ipynb 19
 async def search_users_by_email(
     user_email_ls: list[
         str
@@ -419,7 +419,7 @@ async def search_users_by_email(
     res.response = [row for ls in [_.response for _ in res_ls] for row in ls]
     return res
 
-# %% ../../nbs/routes/user.ipynb 22
+# %% ../../nbs/routes/user.ipynb 23
 async def search_virtual_user_by_subscriber_instance(
     auth: dmda.DomoAuth,  # domo auth object
     subscriber_instance_ls: list[str],  # list of subscriber domo instances
@@ -448,7 +448,7 @@ async def search_virtual_user_by_subscriber_instance(
         parent_class=parent_class,
     )
 
-# %% ../../nbs/routes/user.ipynb 26
+# %% ../../nbs/routes/user.ipynb 27
 async def create_user(
     auth: dmda.DomoAuth,
     display_name: str,
@@ -501,7 +501,7 @@ async def create_user(
     res.is_success = True
     return res
 
-# %% ../../nbs/routes/user.ipynb 29
+# %% ../../nbs/routes/user.ipynb 30
 async def set_user_landing_page(
     auth: dmda.DomoAuth,
     user_id: str,
@@ -534,7 +534,7 @@ async def set_user_landing_page(
 
     return res
 
-# %% ../../nbs/routes/user.ipynb 30
+# %% ../../nbs/routes/user.ipynb 31
 async def reset_password(
     auth: dmda.DomoAuth,
     user_id: str,
@@ -571,7 +571,7 @@ async def reset_password(
 
     return res
 
-# %% ../../nbs/routes/user.ipynb 33
+# %% ../../nbs/routes/user.ipynb 34
 async def request_password_reset(
     domo_instance: str,
     email: str,
@@ -592,7 +592,7 @@ async def request_password_reset(
         session=session,
     )
 
-# %% ../../nbs/routes/user.ipynb 35
+# %% ../../nbs/routes/user.ipynb 36
 class UserProperty_Type(Enum):
     display_name = "displayName"
     email_address = "emailAddress"
@@ -626,13 +626,13 @@ class UserProperty:
             "values": self._value_to_list(self.values),
         }
 
-# %% ../../nbs/routes/user.ipynb 37
+# %% ../../nbs/routes/user.ipynb 38
 def generate_patch_user_property_body(user_property_ls: [UserProperty]):
     return {
         "attributes": [user_property.to_json() for user_property in user_property_ls]
     }
 
-# %% ../../nbs/routes/user.ipynb 40
+# %% ../../nbs/routes/user.ipynb 41
 async def update_user(
     user_id: str,
     user_property_ls: [UserProperty],
@@ -673,7 +673,7 @@ async def update_user(
 
     return res
 
-# %% ../../nbs/routes/user.ipynb 43
+# %% ../../nbs/routes/user.ipynb 44
 async def download_avatar(
     user_id,
     auth: dmda.DomoAuth,
@@ -729,10 +729,7 @@ async def download_avatar(
 
     return res
 
-# %% ../../nbs/routes/user.ipynb 47
-import os
-import domolibrary.client.DomoAuth as dmda
-
+# %% ../../nbs/routes/user.ipynb 48
 async def delete_user(
     auth: dmda.DomoAuth,
     user_id: str,

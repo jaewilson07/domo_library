@@ -40,13 +40,15 @@ class CreateUser_MissingRole(de.DomoError):
             message=f"error creating user {email_address} missing role_id",
         )
 
+
 class DeleteUser_Error(de.DomoError):
     def __init__(self, domo_instance, email_address):
         super().__init__(
             domo_instance=domo_instance,
             message=f"error deleting user {email_address}.",
         )
-        
+
+
 class DownloadAvatar_NoAvatarKey(de.DomoError):
     def __init__(
         self,

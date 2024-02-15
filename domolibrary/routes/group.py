@@ -122,7 +122,6 @@ async def get_group_by_id(
     parent_class: str = None,
     debug_num_stacks_to_drop: int = 1,
 ) -> rgd.ResponseGetData:
-
     """uses /content/v2/groups/ api -- does not return details"""
 
     url = f"https://{auth.domo_instance}.domo.com/api/content/v2/groups/{group_id}"
@@ -540,7 +539,6 @@ async def update_group_membership(
     parent_class: str = None,
     debug_num_stacks_to_drop: int = 1,
 ) -> rgd.ResponseGetData:
-
     """
     each member or owner obj should be an object of shape {"type", "id"}
     """

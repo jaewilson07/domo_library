@@ -143,7 +143,6 @@ async def udpate_publish_job(
 async def get_subscription_summaries(
     auth: dmda.DomoAuth, session: httpx.AsyncClient = None, debug_api: bool = False
 ) -> rgd.ResponseGetData:
-
     """retrieves a summary of existing subscriptions"""
     url = f"https://{auth.domo_instance}.domo.com/api/publish/v2/subscription/summaries"
 

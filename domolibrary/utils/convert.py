@@ -2,7 +2,8 @@
 
 # %% auto 0
 __all__ = ['convert_epoch_millisecond_to_datetime', 'convert_datetime_to_epoch_millisecond', 'convert_snake_to_pascal',
-           'InvalidEmail', 'test_valid_email', 'ConcatDataframe_InvalidElement', 'concat_list_dataframe']
+           'InvalidEmail', 'test_valid_email', 'convert_string_to_bool', 'ConcatDataframe_InvalidElement',
+           'concat_list_dataframe']
 
 # %% ../../nbs/utils/convert.ipynb 2
 import datetime as dt
@@ -46,7 +47,11 @@ def test_valid_email(email):
     else:
         raise InvalidEmail(email=email)
 
-# %% ../../nbs/utils/convert.ipynb 17
+# %% ../../nbs/utils/convert.ipynb 16
+def convert_string_to_bool(v):
+    return v.lower() in ("yes", "true", "t", "1")
+
+# %% ../../nbs/utils/convert.ipynb 18
 class ConcatDataframe_InvalidElement(Exception):
     def __init__(self, elem):
         message = f"{type(elem)} passed into dataframe"
