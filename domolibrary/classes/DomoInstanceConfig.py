@@ -9,31 +9,26 @@ from ..routes.instance_config import UpdateSSO_Error
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 3
 import httpx
 import datetime as dt
-import asyncio
 from fastcore.basics import patch_to
 import sys
 import pandas as pd
 
 
 from dataclasses import dataclass, field, asdict
-from typing import List
 
 import domolibrary.utils.DictDot as util_dd
 import domolibrary.utils.chunk_execution as ce
 import domolibrary.utils.convert as cd
 
 import domolibrary.client.DomoAuth as dmda
-import domolibrary.client.DomoError as de
-import domolibrary.client.Logger as lg
 
 import domolibrary.classes.DomoInstanceConfig_UserAttribute as dicua
 
 import domolibrary.routes.instance_config as instance_config_routes
-import domolibrary.routes.bootstrap as bootstrap_routes
 import domolibrary.routes.sandbox as sandbox_routes
 import domolibrary.routes.publish as publish_routes
 import domolibrary.routes.application as application_routes
-import domolibrary.routes.access_token as access_token_routes
+
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 5
 @dataclass
@@ -445,7 +440,7 @@ async def get_sso_config(
     if return_raw:
         return res
 
-    self.sso_config = SSO_Config._from_json(auth=auth, obj=res.response)
+    self.sso_config = SSO_Config._from_json(auth=self.auth, obj=res.response)
 
     return self.sso_config
 
@@ -974,22 +969,23 @@ async def get_access_tokens(
 @patch_to(DomoInstanceConfig)
 async def generate_access_token(
     self: DomoInstanceConfig,
-    owner : None, # DomoUser
+    owner: None,  # DomoUser
     duration_in_days: int,
-    token_name : str,
+    token_name: str,
     debug_api: bool = False,
     debug_num_stacks_to_drop=3,
     session: httpx.AsyncClient = None,
 ):
     import domolibrary.classes.DomoAccessToken as dmat
 
-    token= await dmat.DomoAccessToken.generate(
+    token = await dmat.DomoAccessToken.generate(
         auth=self.auth,
         session=session,
-        token_name = token_name,
+        token_name=token_name,
         debug_api=debug_api,
         parent_class=self.__class__.__name__,
-        owner = owner, duration_in_days = duration_in_days,
+        owner=owner,
+        duration_in_days=duration_in_days,
         debug_num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 

@@ -633,7 +633,6 @@ async def delete_user(
         parent_class=parent_class,
     )
 
-
     if not res.is_success:
         raise DeleteUser_Error(account_id=self.id, domo_instance=auth.domo_instance)
 

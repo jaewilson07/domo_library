@@ -25,8 +25,6 @@ import domolibrary.client.DomoError as de
 
 import domolibrary.utils.chunk_execution as ce
 
-
-
 # %% ../../nbs/routes/user.ipynb 5
 class User_CrudError(de.DomoError):
     def __init__(

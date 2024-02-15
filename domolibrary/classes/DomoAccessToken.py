@@ -19,34 +19,32 @@ import domolibrary.routes.access_token as access_token_routes
 # %% ../../nbs/classes/50_DomoAccessToken.ipynb 5
 @dataclass
 class DomoAccessToken:
-    id : int
-    name : str
-    owner : None
-    expiration_date : dt.datetime
+    id: int
+    name: str
+    owner: None
+    expiration_date: dt.datetime
 
     auth: dmda.DomoAuth
 
     def __eq__(self, other):
         if not isinstance(other, DomoAccessToken):
             return False
-            
+
         return self.id == other.id
 
-
     @classmethod
-    async def _from_json( cls, obj, auth):
+    async def _from_json(cls, obj, auth):
         import domolibrary.classes.DomoUser as dmu
 
-        owner = await dmu.DomoUser.get_by_id(user_id = obj['ownerId'], auth = auth)
-        
-        return cls(
-            id = obj['id'],
-            name = obj['name'],
-            owner = owner,
-            expiration_date = obj['expires'],
-            auth = auth
-        )
+        owner = await dmu.DomoUser.get_by_id(user_id=obj["ownerId"], auth=auth)
 
+        return cls(
+            id=obj["id"],
+            name=obj["name"],
+            owner=owner,
+            expiration_date=obj["expires"],
+            auth=auth,
+        )
 
 # %% ../../nbs/classes/50_DomoAccessToken.ipynb 6
 async def get_access_tokens(
@@ -55,41 +53,43 @@ async def get_access_tokens(
     debug_api: bool = False,
     debug_num_stacks_to_drop=2,
     session: httpx.AsyncClient = None,
-    parent_class = None
+    parent_class=None,
 ):
     res = await access_token_routes.get_access_tokens(
         auth=auth,
         session=session,
         debug_api=debug_api,
-        parent_class = parent_class,
+        parent_class=parent_class,
         debug_num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
     if return_raw:
         return res
 
-    return await ce.gather_with_concurrency(*[DomoAccessToken._from_json(obj = obj, auth = auth) for obj in res.response], n = 10)
+    return await ce.gather_with_concurrency(
+        *[DomoAccessToken._from_json(obj=obj, auth=auth) for obj in res.response], n=10
+    )
 
 # %% ../../nbs/classes/50_DomoAccessToken.ipynb 8
 @patch_to(DomoAccessToken, cls_method=True)
 async def generate(
     cls: DomoAccessToken,
     duration_in_days: int,
-    token_name : str,
+    token_name: str,
     auth: dmda.DomoAuth,
     owner: None,  # DomoUser
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
     debug_num_stacks_to_drop: int = 2,
     return_raw: bool = False,
-    parent_class : str = None
+    parent_class: str = None,
 ):
 
     res = await access_token_routes.generate_access_token(
         user_id=owner.id,
-        token_name = token_name,
+        token_name=token_name,
         duration_in_days=duration_in_days,
-        auth = auth,
+        auth=auth,
         debug_api=debug_api,
         session=session,
         debug_num_stacks_to_drop=debug_num_stacks_to_drop,
