@@ -33,6 +33,7 @@ import domolibrary.routes.bootstrap as bootstrap_routes
 import domolibrary.routes.sandbox as sandbox_routes
 import domolibrary.routes.publish as publish_routes
 import domolibrary.routes.application as application_routes
+import domolibrary.routes.access_token as access_token_routes
 
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 5
 @dataclass
@@ -946,3 +947,52 @@ async def get_connectors(
         return res
 
     return [DomoConnector._from_str(obj) for obj in res.response]
+
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 88
+@patch_to(DomoInstanceConfig)
+async def get_access_tokens(
+    self: DomoInstanceConfig,
+    debug_api: bool = False,
+    debug_num_stacks_to_drop=3,
+    session: httpx.AsyncClient = None,
+):
+    import domolibrary.classes.DomoAccessToken as dmat
+
+    domo_tokens = await dmat.get_access_tokens(
+        auth=self.auth,
+        session=session,
+        debug_api=debug_api,
+        parent_class=self.__class__.__name__,
+        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+    )
+
+    self.access_tokens = domo_tokens
+
+    return self.access_tokens
+
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 90
+@patch_to(DomoInstanceConfig)
+async def generate_access_token(
+    self: DomoInstanceConfig,
+    owner : None, # DomoUser
+    duration_in_days: int,
+    token_name : str,
+    debug_api: bool = False,
+    debug_num_stacks_to_drop=3,
+    session: httpx.AsyncClient = None,
+):
+    import domolibrary.classes.DomoAccessToken as dmat
+
+    token= await dmat.DomoAccessToken.generate(
+        auth=self.auth,
+        session=session,
+        token_name = token_name,
+        debug_api=debug_api,
+        parent_class=self.__class__.__name__,
+        owner = owner, duration_in_days = duration_in_days,
+        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+    )
+
+    await self.get_access_tokens()
+
+    return token

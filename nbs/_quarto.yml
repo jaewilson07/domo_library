@@ -41,8 +41,6 @@ website:
     left:
       - text: "Blog"
         href: blog/index.qmd
-      - text: "Code Samples"
-        href: projects/index.qmd
     right:
       - icon: github
         href: "https://github.com/jaewilson07/domo_library"
