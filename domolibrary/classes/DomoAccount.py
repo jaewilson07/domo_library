@@ -98,6 +98,7 @@ class DomoAccount:
             ),
             auth=auth,
             is_admin_summary=is_admin_summary,
+            owners = dd.owners
         )
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 8
