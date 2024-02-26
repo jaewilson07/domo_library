@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 from typing import Optional
 import httpx
 
-import domolibrary.routes.job as job_routes
+
 import domolibrary.routes.application as application_routes
 import domolibrary.classes.DomoJob as dmdj
 import domolibrary.utils.DictDot as util_dd

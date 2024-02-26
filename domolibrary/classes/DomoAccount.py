@@ -9,7 +9,6 @@ from dataclasses import dataclass, field
 from typing import Any, List
 
 import datetime as dt
-import re
 
 import httpx
 
@@ -47,6 +46,7 @@ class Account_CanIModify(de.DomoError):
         super().__init__(
             message=f"`DomoAccount.is_admin_summary` must be `False` to proceed.  Either set the value explicity, or retrieve the account instance using `DomoAccount.get_by_id()`",
             domo_instance=domo_instance,
+            entity_id = account_id
         )
 
 
@@ -71,7 +71,7 @@ class DomoAccount:
 
     config: DomoAccount_Config = None
 
-    owner: List[Any] = None  # DomoUser or DomoGroup
+    owners: List[Any] = None  # DomoUser or DomoGroup
 
     is_admin_summary: bool = True
 
@@ -106,7 +106,7 @@ class DomoAccounConfig_MissingFields(de.DomoError):
     def __init__(self, domo_instance, missing_keys, account_id):
         super().__init__(
             domo_instance=domo_instance,
-            message=f"{account_id} config class definition is missing the following keys - {', '.join(keys)} extend the AccountConfig",
+            message=f"{account_id} config class definition is missing the following keys - {', '.join(missing_keys)} extend the AccountConfig",
         )
 
 
