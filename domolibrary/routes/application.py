@@ -2,8 +2,9 @@
 
 # %% auto 0
 __all__ = ['ApplicationError_NoneRetrieved', 'get_applications', 'get_application_by_id', 'ApplicationError_NoJobRetrieved',
-           'get_application_jobs', 'generate_body_remote_domostats', 'generate_body_watchdog_generic', 'add_job',
-           'update_job', 'update_job_trigger', 'execute_application_job']
+           'get_application_jobs', 'get_application_job_by_id', 'generate_body_remote_domostats',
+           'generate_body_watchdog_generic', 'CRUD_ApplicationJob_Error', 'create_job', 'update_job',
+           'update_job_trigger', 'execute_application_job']
 
 # %% ../../nbs/routes/application.ipynb 2
 from typing import Union
@@ -14,6 +15,8 @@ import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 
+from pprint import pprint
+
 # %% ../../nbs/routes/application.ipynb 4
 class ApplicationError_NoneRetrieved(de.DomoError):
     def __init__(
@@ -23,6 +26,7 @@ class ApplicationError_NoneRetrieved(de.DomoError):
         application_name=None,
         parent_class=None,
         function_name=None,
+        job_id=None,
     ):
         message = "No applications retrieve"
 
@@ -32,8 +36,13 @@ class ApplicationError_NoneRetrieved(de.DomoError):
         if application_name:
             message = f"unable to retrieve application - {application_name}"
 
+        if application_id and job_id:
+            message = (
+                f"unable to retrieve {job_id} job from application - {application_name}"
+            )
+
         super().__init__(
-            message=messagae,
+            message=message,
             parent_class=parent_class,
             function_name=function_name,
             domo_instance=domo_instance,
@@ -79,7 +88,7 @@ async def get_application_by_id(
     session: Union[httpx.AsyncClient, httpx.AsyncClient, None] = None,
     debug_api: bool = False,
     parent_class: str = None,
-    debug_num_stacks_to_drop: int = None,
+    debug_num_stacks_to_drop: int = 1,
 ) -> rgd.ResponseGetData:
     url = f"https://{auth.domo_instance}.domo.com/api/executor/v1/applications/{application_id}"
 
@@ -118,7 +127,7 @@ class ApplicationError_NoJobRetrieved(de.DomoError):
         message = f"no jobs retrieved from application - {application_id}"
 
         super().__init__(
-            message=messagae,
+            message=message,
             parent_class=parent_class,
             function_name=function_name,
             domo_instance=domo_instance,
@@ -140,9 +149,6 @@ async def get_application_jobs(
     offset_params = {"offset": "offset", "limit": "limit"}
 
     url = f"https://{auth.domo_instance}.domo.com/api/executor/v2/applications/{application_id}/jobs"
-
-    if debug_api:
-        print(url)
 
     def arr_fn(res) -> list[dict]:
         return res.response.get("jobs")
@@ -168,7 +174,42 @@ async def get_application_jobs(
 
     return res
 
-# %% ../../nbs/routes/application.ipynb 13
+# %% ../../nbs/routes/application.ipynb 12
+@gd.route_function
+async def get_application_job_by_id(
+    auth: dmda.DomoFullAuth,
+    application_id: str,
+    job_id: str,
+    parent_class: str = None,
+    debug_api: bool = False,
+    debug_num_stacks_to_drop=2,
+    session: Union[httpx.AsyncClient, httpx.AsyncClient, None] = None,
+) -> rgd.ResponseGetData:
+
+    url = f"https://{auth.domo_instance}.domo.com/api/executor/v1/applications/{application_id}/jobs/{job_id}"
+
+    res = await gd.get_data(
+        auth=auth,
+        method="GET",
+        url=url,
+        session=session,
+        debug_api=debug_api,
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
+    )
+
+    if not res.is_success:
+        raise ApplicationError_NoneRetrieved(
+            domo_instance=auth.domo_instance,
+            application_id=application_id,
+            parent_class=parent_class,
+            function_name=res.traceback_details.function_name,
+            job_id=job_id,
+        )
+
+    return res
+
+# %% ../../nbs/routes/application.ipynb 15
 def generate_body_remote_domostats(
     target_instance: str,
     report_dict: dict,
@@ -241,10 +282,26 @@ def generate_body_watchdog_generic(
 
     return body
 
-# %% ../../nbs/routes/application.ipynb 14
+# %% ../../nbs/routes/application.ipynb 16
+class CRUD_ApplicationJob_Error(de.DomoError):
+    def __init__(
+        self, domo_instance, application_id, message, parent_class, function_name
+    ):
+        super().__init__(
+            self,
+            domo_instance=domo_instance,
+            entity_id=application_id,
+            parent_class=parent_class,
+            function_name=function_name,
+            message=message,
+        )
+
+
 # create the new RemoteDomostats job
+
+
 @gd.route_function
-async def add_job(
+async def create_job(
     auth: dmda.DomoFullAuth,
     body: dict,
     application_id: str,
@@ -264,17 +321,22 @@ async def add_job(
         url=url,
         method="POST",
         body=body,
-        debug_api=debug_api,
         session=session,
+        debug_api=debug_api,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
+        parent_class=parent_class,
     )
 
 
 # update the job
+@gd.route_function
 async def update_job(
     auth: dmda.DomoFullAuth,
     body: dict,
     job_id: str,
     application_id: str,
+    debug_num_stacks_to_drop=1,
+    parent_class: str = None,
     session: Union[httpx.AsyncClient, httpx.AsyncClient, None] = None,
     debug_api: bool = False,
 ) -> rgd.ResponseGetData:
@@ -284,38 +346,67 @@ async def update_job(
     if debug_api:
         print(url)
 
-    return await gd.get_data(
+    res = await gd.get_data(
         auth=auth,
         url=url,
         method="PUT",
         body=body,
         debug_api=debug_api,
         session=session,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
+        parent_class=parent_class,
     )
 
+    if not res.is_success:
+        raise CRUD_ApplicationJob_Error(
+            domo_instance=auth.domo_instance,
+            application_id=application_id,
+            message=res.response,
+            parent_class=parent_class,
+            function_name=res.traceback_details.function_name,
+        )
 
+    return res
+
+
+@gd.route_function
 async def update_job_trigger(
     auth: dmda.DomoFullAuth,
     body: dict,
     job_id: str,
     trigger_id: str,
     application_id: str,
+    debug_num_stacks_to_drop=1,
+    parent_class: str = None,
     session: Union[httpx.AsyncClient, httpx.AsyncClient, None] = None,
     debug_api: bool = False,
 ) -> rgd.ResponseGetData:
 
     url = f"https://{auth.domo_instance}.domo.com/api/executor/v1/applications/{application_id}/jobs/{job_id}/triggers/{trigger_id}"
 
-    return await gd.get_data(
+    res = await gd.get_data(
         auth=auth,
         url=url,
         method="PUT",
         body=body,
         debug_api=debug_api,
         session=session,
+        parent_class=parent_class,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
-# %% ../../nbs/routes/application.ipynb 15
+    if not res.is_success:
+        raise CRUD_ApplicationJob_Error(
+            domo_instance=auth.domo_instance,
+            application_id=application_id,
+            message=res.response,
+            parent_class=parent_class,
+            function_name=res.traceback_details.function_name,
+        )
+
+    return res
+
+# %% ../../nbs/routes/application.ipynb 17
 @gd.route_function
 async def execute_application_job(
     auth: dmda.DomoAuth,
@@ -328,17 +419,15 @@ async def execute_application_job(
 ):
     url = f"https://{auth.domo_instance}.domo.com/api/executor/v1/applications/{application_id}/jobs/{job_id}/executions"
 
-    res= await gd.get_data(
+    res = await gd.get_data(
         auth=auth,
         url=url,
         method="POST",
         body={},
         debug_api=debug_api,
         session=session,
-        parent_class = parent_class,
+        parent_class=parent_class,
         num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
     return res
-
-
