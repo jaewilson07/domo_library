@@ -127,12 +127,12 @@ class GetData_Error(de.DomoError):
 
 # %% ../../nbs/client/10_get_data.ipynb 8
 def create_httpx_session(
-    session: httpx.AsyncClient = None,
+    session: httpx.AsyncClient = None, is_verify: bool = False
 ) -> Tuple[httpx.AsyncClient, bool]:
     is_close_session = False
     if session is None:
         is_close_session = True
-        session = httpx.AsyncClient()
+        session = httpx.AsyncClient(verify = is_verify)
     return session, is_close_session
 
 
@@ -161,6 +161,7 @@ async def get_data(
     parent_class: str = None,  # name of the parent calling class
     num_stacks_to_drop: int = 2,  # number of stacks to drop from the stack trace.  see `domolibrary.client.Logger.TracebackDetails`.  use 2 with class > route structure.  use 1 with route based approach
     debug_traceback: bool = False,
+    is_verify : bool = False
 ) -> rgd.ResponseGetData:
     """async wrapper for asyncio requests"""
 
@@ -172,7 +173,7 @@ async def get_data(
 
     headers = create_headers(auth=auth, content_type=content_type, headers=headers)
 
-    session, is_close_session = create_httpx_session(session)
+    session, is_close_session = create_httpx_session(session = session, is_verify =is_verify)
 
     traceback_details = dl.get_traceback(
         num_stacks_to_drop=num_stacks_to_drop,
@@ -280,9 +281,12 @@ async def get_data_stream(
     parent_class: str = None,  # name of the parent calling class
     num_stacks_to_drop: int = 2,  # number of stacks to drop from the stack trace.  see `domolibrary.client.Logger.TracebackDetails`.  use 2 with class > route structure.  use 1 with route based approach
     debug_traceback: bool = False,
+    session : httpx.AsyncClient = None,
+    is_verify : bool = False
 ) -> rgd.ResponseGetData:
     """async wrapper for asyncio requests"""
 
+    create_httpx_session(session = session, is_verify = is_verify)
     if debug_api:
         print("🐛 debugging get_data")
 
@@ -326,8 +330,9 @@ async def get_data_stream(
 
     content = bytearray()
 
+
     try:
-        async with httpx.AsyncClient() as client:
+        async with session or httpx.AsyncClient(verify = False) as client:
             async with client.stream(method, url=url, headers=headers) as res:
                 if res.status_code == 200:
                     async for chunk in res.aiter_bytes():
@@ -377,10 +382,11 @@ async def looper(
     parent_class: str = None,
     timeout: bool = 10,
     wait_sleep: int = 0,
+    is_verify:bool= False
 ) -> rgd.ResponseGetData:
     is_close_session = False
 
-    session, is_close_session = create_httpx_session(session)
+    session, is_close_session = create_httpx_session(session, is_verify = is_verify)
 
     allRows = []
     isLoop = True
