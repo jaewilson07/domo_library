@@ -15,14 +15,39 @@ website:
               - section: 2023-01-24_Domo_Onboarding
                 contents: []
                 href: blog/posts/2023-01-24_Domo_Onboarding/index.qmd
+              - section: 2023-012-18_DeleteDuplicateAccounts
+                contents: []
+                href: blog/posts/2023-012-18_DeleteDuplicateAccounts/index.ipynb
+              - section: 2023-02-02_DojoFeatures
+                contents: []
+                href: blog/posts/2023-02-02_DojoFeatures/index.ipynb
+              - section: 2023-02-02_DojoSQL
+                contents: []
+                href: blog/posts/2023-02-02_DojoSQL/index.ipynb
+              - section: 2023-03-13-Custom_Roles
+                contents: []
+                href: blog/posts/2023-03-13-Custom_Roles/index.ipynb
+              - section: 2023-04-03_AutomatedTagging
+                contents: []
+                href: blog/posts/2023-04-03_AutomatedTagging/index.ipynb
+              - section: 2023-04-14_BackupCards
+                contents: []
+                href: blog/posts/2023-04-14_BackupCards/index.ipynb
+              - section: 2023-09-13_Domo_Jupyter
+                contents: []
+                href: blog/posts/2023-09-13_Domo_Jupyter/index.ipynb
               - section: 2023-11-18 _creatingDomoStats_MgicETL
                 contents:
                   - blog/posts/2023-11-18 _creatingDomoStats_MgicETL/index_v2_with_history.ipynb
                   - blog/posts/2023-11-18 _creatingDomoStats_MgicETL/without_domolibrary.ipynb
                 href: blog/posts/2023-11-18 _creatingDomoStats_MgicETL/index.ipynb
+              - section: 2024-01-02_update_users
+                contents: []
+                href: blog/posts/2024-01-02_update_users/index.ipynb
         href: blog/index.qmd
       - section: classes
         contents:
+          - classes/50_DomoAccessToken.ipynb
           - classes/50_DomoAccount.ipynb
           - classes/50_DomoAccount_Config.ipynb
           - classes/50_DomoActivityLog.ipynb
@@ -63,41 +88,13 @@ website:
           - integrations/DomoJupyter.ipynb
           - integrations/MonitDataset.ipynb
           - integrations/RoleHierarchy.ipynb
-      - section: projects
-        contents:
-          - section: posts
-            contents:
-              - section: 2023-012-18_DeleteDuplicateAccounts
-                contents: []
-                href: projects/posts/2023-012-18_DeleteDuplicateAccounts/index.ipynb
-              - section: 2023-02-02_DojoFeatures
-                contents: []
-                href: projects/posts/2023-02-02_DojoFeatures/index.ipynb
-              - section: 2023-02-02_DojoSQL
-                contents: []
-                href: projects/posts/2023-02-02_DojoSQL/index.ipynb
-              - section: 2023-03-13-Custom_Roles
-                contents: []
-                href: projects/posts/2023-03-13-Custom_Roles/index.ipynb
-              - section: 2023-04-03_AutomatedTagging
-                contents: []
-                href: projects/posts/2023-04-03_AutomatedTagging/index.ipynb
-              - section: 2023-04-14_BackupCards
-                contents: []
-                href: projects/posts/2023-04-14_BackupCards/index.ipynb
-              - section: 2023-09-13_Domo_Jupyter
-                contents: []
-                href: projects/posts/2023-09-13_Domo_Jupyter/index.ipynb
-              - section: 2024-01-02_update_users
-                contents: []
-                href: projects/posts/2024-01-02_update_users/index.ipynb
-        href: projects/index.qmd
       - section: routes
         contents:
           - routes/account.ipynb
           - routes/activity_log.ipynb
           - routes/application.ipynb
           - routes/auth.ipynb
+          - routes/auth_accesstoken.ipynb
           - routes/bootstrap.ipynb
           - routes/card.ipynb
           - routes/datacenter.ipynb
