@@ -14,11 +14,14 @@ from domolibrary.routes.user import (
     DownloadAvatar_Error,
 )
 
+from ..utils.Image import Image
+
 # %% ../../nbs/classes/50_DomoUser.ipynb 3
 import datetime as dt
 from dataclasses import dataclass, field
 from typing import Optional
 import httpx
+import asyncio
 
 from nbdev.showdoc import patch_to
 
@@ -217,10 +220,10 @@ async def download_avatar(
     """
     auth = auth or self.auth
 
-    if not self.avatar_key:
-        raise DownloadAvatar_NoAvatarKey(
-            domo_instance=auth.domo_instance, user_id=self.id
-        )
+    # if not self.avatar_key:
+    #     raise DownloadAvatar_NoAvatarKey(
+    #         domo_instance=auth.domo_instance, user_id=self.id
+    #     )
 
     res = await user_routes.download_avatar(
         auth=self.auth,
@@ -235,9 +238,13 @@ async def download_avatar(
     if return_raw:
         return res
 
-    return res.response
+    self.avatar =  Image.from_bytestr(data = res.response)
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 20
+    return self.avatar
+
+    # return res.response
+
+# %% ../../nbs/classes/50_DomoUser.ipynb 22
 @patch_to(DomoUser)
 async def reset_password(self: DomoUser, new_password: str, debug_api: bool = False):
     """reset your password, will respect password restrictions set up in the Domo UI"""
@@ -248,7 +255,7 @@ async def reset_password(self: DomoUser, new_password: str, debug_api: bool = Fa
 
     return res
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 22
+# %% ../../nbs/classes/50_DomoUser.ipynb 24
 @patch_to(DomoUser, cls_method=True)
 async def request_password_reset(
     cls,
@@ -268,7 +275,7 @@ async def request_password_reset(
         session=session,
     )
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 23
+# %% ../../nbs/classes/50_DomoUser.ipynb 25
 @patch_to(DomoUser)
 async def set_user_landing_page(
     self: DomoUser,
@@ -289,11 +296,11 @@ async def set_user_landing_page(
 
     return True
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 25
+# %% ../../nbs/classes/50_DomoUser.ipynb 27
 @patch_to(DomoUser)
 async def update_properties(
     self: DomoUser,
-    property_ls: [
+    property_ls: List[
         UserProperty
     ],  # use the UserProperty class to define a list of user properties to update, see user route documentation to see a list of UserProperty_Types that can be updated
     return_raw: bool = False,
@@ -317,7 +324,7 @@ async def update_properties(
 
     return self
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 30
+# %% ../../nbs/classes/50_DomoUser.ipynb 32
 @dataclass
 class DomoUsers:
     """a class for searching for Users"""
@@ -341,7 +348,7 @@ class DomoUsers:
     def _generate_logger(self, logger: Optional[lc.Logger] = None):
         self.logger = logger or self.logger or lc.Logger(app_name="domo_users")
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 32
+# %% ../../nbs/classes/50_DomoUser.ipynb 34
 @patch_to(DomoUsers, cls_method=True)
 async def all_users(
     cls: DomoUsers,
@@ -370,7 +377,7 @@ async def all_users(
 
     return cls._users_to_domo_user(user_ls=users_ls, auth=auth)
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 36
+# %% ../../nbs/classes/50_DomoUser.ipynb 38
 @patch_to(DomoUsers, cls_method=True)
 async def by_id(
     cls: DomoUsers,
@@ -401,7 +408,7 @@ async def by_id(
 
     return domo_users
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 39
+# %% ../../nbs/classes/50_DomoUser.ipynb 41
 @patch_to(DomoUsers, cls_method=True)
 def util_match_domo_users_to_emails(
     cls: DomoUsers, domo_users: list[DomoUser], user_email_ls: list[str]
@@ -474,7 +481,7 @@ async def by_email(
 
     return domo_users
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 43
+# %% ../../nbs/classes/50_DomoUser.ipynb 45
 @patch_to(DomoUsers, cls_method=True)
 async def virtual_user_by_subscriber_instance(
     cls: DomoUsers,
@@ -500,7 +507,7 @@ async def virtual_user_by_subscriber_instance(
     domo_users = cls._users_to_virtual_user(user_ls, auth=auth)
     return domo_users
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 48
+# %% ../../nbs/classes/50_DomoUser.ipynb 50
 @patch_to(DomoUsers, cls_method=True)
 async def create_user(
     cls: DomoUsers,
@@ -542,7 +549,7 @@ async def create_user(
 
     return u
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 51
+# %% ../../nbs/classes/50_DomoUser.ipynb 53
 @patch_to(DomoUsers, cls_method=True)
 async def upsert_user(
     cls: DomoUsers,
@@ -612,7 +619,7 @@ async def upsert_user(
     #         grant_ls = domo_role._valid_grant_ls(grant_ls)
     #         await domo_role.set_grants(grant_ls=grant_ls)
 
-# %% ../../nbs/classes/50_DomoUser.ipynb 53
+# %% ../../nbs/classes/50_DomoUser.ipynb 55
 @patch_to(DomoUser)
 async def delete_user(
     self: DomoUser,
