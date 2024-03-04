@@ -46,7 +46,7 @@ class Account_CanIModify(de.DomoError):
         super().__init__(
             message=f"`DomoAccount.is_admin_summary` must be `False` to proceed.  Either set the value explicity, or retrieve the account instance using `DomoAccount.get_by_id()`",
             domo_instance=domo_instance,
-            entity_id = account_id
+            entity_id=account_id,
         )
 
 
@@ -98,7 +98,7 @@ class DomoAccount:
             ),
             auth=auth,
             is_admin_summary=is_admin_summary,
-            owners = dd.owners
+            owners=dd.owners,
         )
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 8

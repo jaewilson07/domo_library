@@ -29,7 +29,6 @@ import domolibrary.routes.sandbox as sandbox_routes
 import domolibrary.routes.publish as publish_routes
 import domolibrary.routes.application as application_routes
 
-
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 5
 @dataclass
 class DomoInstanceConfig:
