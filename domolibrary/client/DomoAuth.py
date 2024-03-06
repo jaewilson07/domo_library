@@ -370,16 +370,16 @@ class DomoJupyterFullAuth(_DomoJupyter_Optional, DomoFullAuth, _DomoJupyter_Requ
 
     @classmethod
     def convert_auth(
-        cls, full_auth: DomoFullAuth, jupyter_token, service_location, service_prefix
+        cls, auth: DomoFullAuth, jupyter_token, service_location, service_prefix
     ):
         """converts DomoFullAuth to DomoJupyterFullAuth
         i.e. adds DomoJupyter specific auth fields
         eventually can add DomoJupyter specific auth flow for generating auth token
         """
         c= cls(
-            domo_instance=full_auth.domo_instance,
-            domo_username=full_auth.domo_username,
-            domo_password=full_auth.domo_password,
+            domo_instance=auth.domo_instance,
+            domo_username=auth.domo_username,
+            domo_password=auth.domo_password,
             jupyter_token=jupyter_token,
             service_location=service_location,
             service_prefix=service_prefix,
@@ -402,15 +402,15 @@ class DomoJupyterFullAuth(_DomoJupyter_Optional, DomoFullAuth, _DomoJupyter_Requ
 class DomoJupyterTokenAuth(_DomoJupyter_Optional, DomoTokenAuth, _DomoJupyter_Required):
     @classmethod
     def convert_auth(
-        cls, token_auth: DomoTokenAuth, jupyter_token, service_location, service_prefix
+        cls, auth: DomoTokenAuth, jupyter_token, service_location, service_prefix
     ):
         """converts DomoTokenAuth to DomoJupyterTokenAuth
         i.e. adds DomoJupyter specific auth fields
         eventually can add DomoJupyter specific auth flow for generating auth token
         """
         return cls(
-            domo_instance=token_auth.domo_instance,
-            domo_access_token=token_auth.domo_access_token,
+            domo_instance=auth.domo_instance,
+            domo_access_token=auth.domo_access_token,
             jupyter_token=jupyter_token,
             service_location=service_location,
             service_prefix=service_prefix,

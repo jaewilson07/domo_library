@@ -52,6 +52,7 @@ website:
           - classes/50_DomoAccount_Config.ipynb
           - classes/50_DomoActivityLog.ipynb
           - classes/50_DomoApplication.ipynb
+          - classes/50_DomoApplication_Job.ipynb
           - classes/50_DomoBootstrap.ipynb
           - classes/50_DomoCard.ipynb
           - classes/50_DomoCertification.ipynb
@@ -64,7 +65,6 @@ website:
           - classes/50_DomoGroup.ipynb
           - classes/50_DomoInstanceConfig.ipynb
           - classes/50_DomoInstanceConfig_UserAttributes.ipynb
-          - classes/50_DomoJob.ipynb
           - classes/50_DomoJupyter.ipynb
           - classes/50_DomoLineage.ipynb
           - classes/50_DomoPDP.ipynb
@@ -103,7 +103,6 @@ website:
           - routes/grant.ipynb
           - routes/group.ipynb
           - routes/instance_config.ipynb
-          - routes/job.ipynb
           - routes/jupyter.ipynb
           - routes/page.ipynb
           - routes/pdp.ipynb
@@ -116,6 +115,7 @@ website:
       - section: utils
         contents:
           - utils/DictDot.ipynb
+          - utils/Image.ipynb
           - utils/chunk_execution.ipynb
           - utils/convert.ipynb
           - utils/read_creds_from_dotenv.ipynb
