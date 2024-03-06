@@ -5,13 +5,18 @@ __all__ = ['User_CrudError', 'GetUser_Error', 'ResetPassword_PasswordUsed', 'Sea
            'get_all_users', 'get_by_id', 'search_users', 'search_users_by_id', 'search_users_by_email',
            'search_virtual_user_by_subscriber_instance', 'create_user', 'set_user_landing_page', 'reset_password',
            'request_password_reset', 'UserProperty_Type', 'UserProperty', 'generate_patch_user_property_body',
-           'update_user', 'download_avatar', 'delete_user']
+           'update_user', 'download_avatar', 'generate_avatar_bytestr', 'upload_avatar', 'delete_user']
 
-# %% ../../nbs/routes/user.ipynb 2
+# %% ../../nbs/routes/user.ipynb 3
 import os
 from enum import Enum
 import httpx
 import asyncio
+from typing import List
+
+import datetime as dt
+import time
+import base64
 
 import domolibrary.utils.DictDot as dd
 from domolibrary.utils.convert import test_valid_email
@@ -21,8 +26,9 @@ import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 
 import domolibrary.utils.chunk_execution as ce
+import domolibrary.utils.Image as uimg
 
-# %% ../../nbs/routes/user.ipynb 5
+# %% ../../nbs/routes/user.ipynb 6
 class User_CrudError(de.DomoError):
     def __init__(
         self,
@@ -114,7 +120,7 @@ class DownloadAvatar_Error(de.DomoError):
             function_name=function_name,
         )
 
-# %% ../../nbs/routes/user.ipynb 7
+# %% ../../nbs/routes/user.ipynb 8
 async def get_all_users(
     auth: dmda.DomoAuth,
     debug_api: bool = False,
@@ -135,7 +141,7 @@ async def get_all_users(
 
     if not res.is_success:
         raise GetUser_Error(
-            domo_instance=domo_instance,
+            domo_instance=auth.domo_instance,
             status=res.status,
             response=res.response,
             function_name=res.traceback_details.function_name,
@@ -144,7 +150,7 @@ async def get_all_users(
 
     return res
 
-# %% ../../nbs/routes/user.ipynb 11
+# %% ../../nbs/routes/user.ipynb 12
 async def get_by_id(
     user_id,
     auth: dmda.DomoAuth,
@@ -228,7 +234,7 @@ async def get_by_id(
 
     return res_v2
 
-# %% ../../nbs/routes/user.ipynb 16
+# %% ../../nbs/routes/user.ipynb 17
 def process_v1_search_users(
     v1_user_ls: list[dict],  # list of users from v1_users_search API
 ) -> list[dict]:  # sanitized list of users.
@@ -251,7 +257,7 @@ def process_v1_search_users(
 
     return clean_users
 
-# %% ../../nbs/routes/user.ipynb 17
+# %% ../../nbs/routes/user.ipynb 18
 async def search_users(
     auth: dmda.DomoAuth,
     body: dict,
@@ -300,7 +306,7 @@ async def search_users(
 
     if not res.is_success:
         raise GetUser_Error(
-            domo_instance=domo_instance,
+            domo_instance=auth.domo_instance,
             status=res.status,
             response=res.response,
             function_name=res.traceback_details.function_name,
@@ -318,7 +324,7 @@ async def search_users(
 
     return res
 
-# %% ../../nbs/routes/user.ipynb 18
+# %% ../../nbs/routes/user.ipynb 19
 async def search_users_by_id(
     user_ids: list[str],  # list of user ids to search
     auth: dmda.DomoAuth,
@@ -367,7 +373,7 @@ async def search_users_by_id(
 
     return res
 
-# %% ../../nbs/routes/user.ipynb 19
+# %% ../../nbs/routes/user.ipynb 20
 async def search_users_by_email(
     user_email_ls: list[
         str
@@ -419,7 +425,7 @@ async def search_users_by_email(
     res.response = [row for ls in [_.response for _ in res_ls] for row in ls]
     return res
 
-# %% ../../nbs/routes/user.ipynb 23
+# %% ../../nbs/routes/user.ipynb 24
 async def search_virtual_user_by_subscriber_instance(
     auth: dmda.DomoAuth,  # domo auth object
     subscriber_instance_ls: list[str],  # list of subscriber domo instances
@@ -448,7 +454,7 @@ async def search_virtual_user_by_subscriber_instance(
         parent_class=parent_class,
     )
 
-# %% ../../nbs/routes/user.ipynb 27
+# %% ../../nbs/routes/user.ipynb 28
 async def create_user(
     auth: dmda.DomoAuth,
     display_name: str,
@@ -501,7 +507,7 @@ async def create_user(
     res.is_success = True
     return res
 
-# %% ../../nbs/routes/user.ipynb 30
+# %% ../../nbs/routes/user.ipynb 31
 async def set_user_landing_page(
     auth: dmda.DomoAuth,
     user_id: str,
@@ -534,7 +540,7 @@ async def set_user_landing_page(
 
     return res
 
-# %% ../../nbs/routes/user.ipynb 31
+# %% ../../nbs/routes/user.ipynb 32
 async def reset_password(
     auth: dmda.DomoAuth,
     user_id: str,
@@ -571,7 +577,7 @@ async def reset_password(
 
     return res
 
-# %% ../../nbs/routes/user.ipynb 34
+# %% ../../nbs/routes/user.ipynb 35
 async def request_password_reset(
     domo_instance: str,
     email: str,
@@ -592,7 +598,7 @@ async def request_password_reset(
         session=session,
     )
 
-# %% ../../nbs/routes/user.ipynb 36
+# %% ../../nbs/routes/user.ipynb 37
 class UserProperty_Type(Enum):
     display_name = "displayName"
     email_address = "emailAddress"
@@ -626,16 +632,16 @@ class UserProperty:
             "values": self._value_to_list(self.values),
         }
 
-# %% ../../nbs/routes/user.ipynb 38
-def generate_patch_user_property_body(user_property_ls: [UserProperty]):
+# %% ../../nbs/routes/user.ipynb 39
+def generate_patch_user_property_body(user_property_ls: List[UserProperty]):
     return {
         "attributes": [user_property.to_json() for user_property in user_property_ls]
     }
 
-# %% ../../nbs/routes/user.ipynb 41
+# %% ../../nbs/routes/user.ipynb 42
 async def update_user(
     user_id: str,
-    user_property_ls: [UserProperty],
+    user_property_ls: List[UserProperty],
     auth: dmda.DomoAuth = None,
     debug_api: bool = False,
     session: httpx.AsyncClient = None,
@@ -673,7 +679,8 @@ async def update_user(
 
     return res
 
-# %% ../../nbs/routes/user.ipynb 44
+# %% ../../nbs/routes/user.ipynb 46
+@gd.route_function
 async def download_avatar(
     user_id,
     auth: dmda.DomoAuth,
@@ -684,7 +691,8 @@ async def download_avatar(
     debug_api: bool = False,
     return_raw: bool = False,
     parent_class: str = None,
-    debug_num_Stacks_to_drop=1,
+    debug_num_stacks_to_drop=1,
+    session: httpx.AsyncClient = None
 ):
     url = f"https://{auth.domo_instance}.domo.com/api/content/v1/avatar/USER/{user_id}?size={pixels}"
 
@@ -694,8 +702,9 @@ async def download_avatar(
         auth=auth,
         debug_api=debug_api,
         headers={"accept": "image/png;charset=utf-8"},
-        num_stacks_to_drop=debug_num_Stacks_to_drop,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
         parent_class=parent_class,
+        session = session
     )
 
     if return_raw:
@@ -729,7 +738,71 @@ async def download_avatar(
 
     return res
 
-# %% ../../nbs/routes/user.ipynb 48
+# %% ../../nbs/routes/user.ipynb 49
+def generate_avatar_bytestr(img_bytestr, img_type):
+    if isinstance(img_bytestr, str):
+        img_bytestr = img_bytestr.encode( 'utf-8')
+
+    if not uimg.isBase64(img_bytestr):
+        img_bytestr = base64.b64encode(img_bytestr)
+
+    img_bytestr = img_bytestr.decode('utf-8')
+
+    html_encoding = f"data:image/{img_type};base64,"
+
+    if not img_bytestr.startswith(html_encoding):
+        img_bytestr = html_encoding + img_bytestr
+
+    return img_bytestr
+
+
+@gd.route_function
+async def upload_avatar(
+    auth: dmda.DomoAuth,
+    user_id: int,
+    img_bytestr: bytes,
+    img_type: str,  #'jpg or png'
+    debug_api: bool = False,
+    debug_num_stacks_to_drop=1,
+    session:httpx.AsyncClient = None,
+    parent_class: str = None,
+):
+    url = f"https://{auth.domo_instance}.domo.com/api/content/v1/avatar/bulk"
+
+    body = {
+        "base64Image": generate_avatar_bytestr(img_bytestr, img_type),
+        "encodedImage": generate_avatar_bytestr(img_bytestr, img_type),
+        "isOpen": False,
+        "entityIds": [user_id],
+        "entityType": "USER",
+    }
+
+    # return body
+
+    res = await gd.get_data(
+        url=url,
+        method="POST",
+        body=body,
+        session=session,
+        debug_api=debug_api,
+        num_stacks_to_drop=debug_num_stacks_to_drop,
+        auth=auth,
+        parent_class=None,
+    )
+
+    if not res.is_success:
+        raise User_CrudError(
+            domo_instance=auth.domo_instance,
+            entity_id=user_id,
+            status=res.status,
+            message=res.response,
+            function_name=res.traceback_details.function_name,
+            parent_class=parent_class,
+        )
+
+    return res
+
+# %% ../../nbs/routes/user.ipynb 52
 async def delete_user(
     auth: dmda.DomoAuth,
     user_id: str,

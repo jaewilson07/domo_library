@@ -7,15 +7,16 @@ __all__ = []
 import pandas as pd
 from dataclasses import dataclass, field
 from typing import Optional
+from enum import Enum
 import httpx
 
-import domolibrary.routes.job as job_routes
+
 import domolibrary.routes.application as application_routes
 import domolibrary.classes.DomoJob as dmdj
 import domolibrary.utils.DictDot as util_dd
 import domolibrary.client.DomoAuth as dmda
 
-# %% ../../nbs/classes/50_DomoApplication.ipynb 4
+# %% ../../nbs/classes/50_DomoApplication.ipynb 5
 @dataclass
 class DomoApplication:
     id: str

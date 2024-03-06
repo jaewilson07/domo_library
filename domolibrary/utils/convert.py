@@ -2,8 +2,8 @@
 
 # %% auto 0
 __all__ = ['convert_epoch_millisecond_to_datetime', 'convert_datetime_to_epoch_millisecond', 'convert_snake_to_pascal',
-           'InvalidEmail', 'test_valid_email', 'convert_string_to_bool', 'ConcatDataframe_InvalidElement',
-           'concat_list_dataframe']
+           'convert_str_to_snake_case', 'InvalidEmail', 'test_valid_email', 'convert_string_to_bool',
+           'ConcatDataframe_InvalidElement', 'concat_list_dataframe']
 
 # %% ../../nbs/utils/convert.ipynb 2
 import datetime as dt
@@ -28,6 +28,17 @@ def convert_snake_to_pascal(clean_str):
     return clean_str[0].lower() + clean_str[1:]
 
 # %% ../../nbs/utils/convert.ipynb 13
+def convert_str_to_snake_case(text_str, is_only_alphanumeric : bool = False):
+    """converts 'snake_case_str' to 'snakeCaseStr'"""
+
+    text_str =  text_str.replace(" ", "_").lower()
+
+    if is_only_alphanumeric:
+        text_str = re.sub(r'\W+', '', text_str)
+
+    return text_str
+
+# %% ../../nbs/utils/convert.ipynb 15
 class InvalidEmail(Exception):
     def __init__(self, email):
 
@@ -47,11 +58,11 @@ def test_valid_email(email):
     else:
         raise InvalidEmail(email=email)
 
-# %% ../../nbs/utils/convert.ipynb 16
+# %% ../../nbs/utils/convert.ipynb 18
 def convert_string_to_bool(v):
     return v.lower() in ("yes", "true", "t", "1")
 
-# %% ../../nbs/utils/convert.ipynb 18
+# %% ../../nbs/utils/convert.ipynb 20
 class ConcatDataframe_InvalidElement(Exception):
     def __init__(self, elem):
         message = f"{type(elem)} passed into dataframe"
