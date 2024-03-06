@@ -114,7 +114,7 @@ class DomoJupyterWorkspace_Content:
             parent_class=self.__class__.__name__,
         )
 
-# %% ../../nbs/classes/50_DomoJupyter.ipynb 5
+# %% ../../nbs/classes/50_DomoJupyter.ipynb 6
 @dataclass
 class DomoJupyterWorkspace:
     auth: dmda.DomoJupyterAuth = field(repr=False)
@@ -153,7 +153,11 @@ class DomoJupyterWorkspace:
             )
             self.service_location = res["service_location"]
             self.service_prefix = res["service_prefix"]
+    
+        if self.service_location and self.service_prefix and self.jupyter_token:
+            self.update_auth()
 
+    
     def update_auth(self, service_location= None, service_prefix = None, jupyter_token = None):
         
         self.service_location = service_location or self.service_location
@@ -176,9 +180,9 @@ class DomoJupyterWorkspace:
                 service_prefix=self.service_prefix,
             )
     
-        self.auth.service_location = service_location
-        self.auth.service_prefix = service_prefix
-        self.auth.jupyer_token = jupyter_token
+        self.auth.service_location = self.service_location
+        self.auth.service_prefix = self.service_prefix
+        self.auth.jupyer_token = self.jupyter_token
         
 
 
@@ -205,7 +209,7 @@ class DomoJupyterWorkspace:
         )
         return domo_workspace
 
-# %% ../../nbs/classes/50_DomoJupyter.ipynb 6
+# %% ../../nbs/classes/50_DomoJupyter.ipynb 7
 @patch_to(DomoJupyterWorkspace, cls_method=True)
 async def get_by_id(
     cls,
@@ -227,7 +231,7 @@ async def get_by_id(
 
     return cls._from_json(auth = auth, obj = res.response, jupyter_token = jupyter_token)
 
-# %% ../../nbs/classes/50_DomoJupyter.ipynb 8
+# %% ../../nbs/classes/50_DomoJupyter.ipynb 9
 @patch_to(DomoJupyterWorkspace)
 async def get_content(
     self,
