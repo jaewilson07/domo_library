@@ -113,7 +113,7 @@ class _DomoFullAuth_Required:
 class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required, _DomoAuth_Required):
     """use for full authentication token"""
 
-    async def generate_auth_header(self, token: str = None) -> dict:
+    async def _generate_auth_header(self, token: str = None) -> dict:
         token = token or self.token or await self.get_auth_token()
 
         self.token = token
@@ -121,6 +121,9 @@ class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required, _DomoAuth_Require
         self.auth_header = {"x-domo-authentication": token}
 
         return self.auth_header
+
+    async def generate_auth_header(self, token: str = None) -> dict:
+        return await self._generate_auth_header(token = token)
 
     async def get_auth_token(
         self,
@@ -181,7 +184,7 @@ class _DomoTokenAuth_Required:
         self, debug_api: bool = False, session: httpx.AsyncClient = None
     ):
 
-        auth_header = self.auth_header or self.generate_auth_header()
+        auth_header = self.auth_header or await self.generate_auth_header()
 
         res = await auth_routes.who_am_i(
             domo_instance=self.domo_instance,
@@ -200,14 +203,16 @@ class DomoTokenAuth(_DomoAuth_Optional, _DomoTokenAuth_Required, _DomoAuth_Requi
     Necessary in cases where direct sign on is not permitted
     """
 
-    def generate_auth_header(self) -> dict:
+    async def _generate_auth_header(self) -> dict:
         """returns auth_header for validating API requests using access_tokens / developer tokens"""
 
         "is this being executed as part of get_auth_token chain? if yes, suppress not validated error"
         traceback_details = lg.get_traceback(num_stacks_to_drop=0)
         function_name = traceback_details.function_name
+
         if len(traceback_details.traceback_stack) >= 3:
             function_name = traceback_details.traceback_stack[-3][2]
+        
         if not function_name == "get_auth_token" and not self.token:
             print(
                 "warning this token has not been validated by who_am_i, run get_auth_token first"
@@ -217,6 +222,9 @@ class DomoTokenAuth(_DomoAuth_Optional, _DomoTokenAuth_Required, _DomoAuth_Requi
             "x-domo-developer-token": self.token or self.domo_access_token
         }
         return self.auth_header
+    
+    async def generate_auth_header(self):
+        return await self._generate_auth_header()
 
     async def get_auth_token(
         self, session: Optional[httpx.AsyncClient] = None, debug_api: bool = False
@@ -235,7 +243,7 @@ class DomoTokenAuth(_DomoAuth_Optional, _DomoTokenAuth_Required, _DomoAuth_Requi
         self.token = self.domo_access_token
         self.user_id = res.response.get("id")
 
-        self.auth_header = self.generate_auth_header()
+        self.auth_header = await self.generate_auth_header()
 
         if not self.token_name:
             self.token_name = "token_auth"
@@ -320,13 +328,6 @@ class _DomoJupyter_Optional:
         self._test_prereq()
         self.set_manual_login()
 
-    def generate_auth_header(self, token: str) -> dict:
-        self.auth_header = {
-            "x-domo-authentication": token,
-            "authorization": f"Token {self.jupyter_token}",
-        }
-
-        return self.auth_header
 
 
 @dataclass
@@ -366,6 +367,7 @@ class DomoJupyterAuth(_DomoJupyter_Optional, _DomoJupyter_Required):
 # %% ../../nbs/client/95_DomoAuth.ipynb 34
 @dataclass
 class DomoJupyterFullAuth(_DomoJupyter_Optional, DomoFullAuth, _DomoJupyter_Required):
+
     @classmethod
     def convert_auth(
         cls, full_auth: DomoFullAuth, jupyter_token, service_location, service_prefix
@@ -374,7 +376,7 @@ class DomoJupyterFullAuth(_DomoJupyter_Optional, DomoFullAuth, _DomoJupyter_Requ
         i.e. adds DomoJupyter specific auth fields
         eventually can add DomoJupyter specific auth flow for generating auth token
         """
-        return cls(
+        c= cls(
             domo_instance=full_auth.domo_instance,
             domo_username=full_auth.domo_username,
             domo_password=full_auth.domo_password,
@@ -382,6 +384,18 @@ class DomoJupyterFullAuth(_DomoJupyter_Optional, DomoFullAuth, _DomoJupyter_Requ
             service_location=service_location,
             service_prefix=service_prefix,
         )
+
+        return c
+
+
+    async def generate_auth_header(self, token: str = None) -> dict:
+        await self._generate_auth_header(token)
+        
+        self.auth_header.update({
+            "authorization": f"Token {self.jupyter_token}",
+        })
+
+        return self.auth_header
 
 # %% ../../nbs/client/95_DomoAuth.ipynb 38
 @dataclass
@@ -401,6 +415,15 @@ class DomoJupyterTokenAuth(_DomoJupyter_Optional, DomoTokenAuth, _DomoJupyter_Re
             service_location=service_location,
             service_prefix=service_prefix,
         )
+    
+    async def generate_auth_header(self) -> dict:
+        await self._generate_auth_header()
+        
+        self.auth_header.update({
+            "authorization": f"Token {self.jupyter_token}",
+        })
+
+        return self.auth_header
 
 # %% ../../nbs/client/95_DomoAuth.ipynb 42
 def test_is_jupyter_auth(
