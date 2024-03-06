@@ -144,6 +144,9 @@ class DomoJupyterWorkspace:
     service_prefix: str = None
 
     def __post_init__(self):
+        self._update_auth_params()
+
+    def _update_auth_params(self):
         if self.instances:
             res = jupyter_routes.parse_instance_service_location_and_prefix(
                 self.instances[0], self.auth.domo_instance
@@ -151,25 +154,33 @@ class DomoJupyterWorkspace:
             self.service_location = res["service_location"]
             self.service_prefix = res["service_prefix"]
 
-        if self.service_location and self.service_prefix and self.jupyter_token:
-            if isinstance(self.auth, dmda.DomoFullAuth):
-                self.auth = dmda.DomoJupyterFullAuth.convert_auth(
-                    auth=self.auth,
-                    service_location=self.service_location,
-                    jupyter_token=self.jupyter_token,
-                    service_prefix=self.service_prefix,
-                )
-            if isinstance(self.auth, dmda.DomoTokenAuth):
-                self.auth = dmda.DomoJupyterTokenAuth.convert_auth(
-                    auth=self.auth,
-                    service_location=self.service_location,
-                    jupyter_token=self.jupyter_token,
-                    service_prefix=self.service_prefix,
-                )
+    def update_auth(self, service_location= None, service_prefix = None, jupyter_token = None):
+        
+        self.service_location = service_location or self.service_location
+        self.service_prefix = service_prefix or self.service_prefix
+        self.jupyer_token = jupyter_token or self.jupyter_token
+                            
+        if isinstance(self.auth, dmda.DomoFullAuth):
+            self.auth = dmda.DomoJupyterFullAuth.convert_auth(
+                auth=self.auth,
+                service_location= self.service_location,
+                jupyter_token= self.jupyter_token,
+                service_prefix= self.service_prefix,
+            )
+        
+        if isinstance(self.auth, dmda.DomoTokenAuth):
+            self.auth = dmda.DomoJupyterTokenAuth.convert_auth(
+                auth=self.auth,
+                service_location=self.service_location,
+                jupyter_token=self.jupyter_token,
+                service_prefix=self.service_prefix,
+            )
+    
+        self.auth.service_location = service_location
+        self.auth.service_prefix = service_prefix
+        self.auth.jupyer_token = jupyter_token
+        
 
-        if self.auth:
-            self.auth.service_location = self.service_location
-            self.auth.service_prefix = self.service_prefix
 
     @classmethod
     def _from_json(
@@ -193,6 +204,28 @@ class DomoJupyterWorkspace:
             jupyter_token=jupyter_token,
         )
         return domo_workspace
+
+# %% ../../nbs/classes/50_DomoJupyter.ipynb 6
+@patch_to(DomoJupyterWorkspace, cls_method=True)
+async def get_by_id(
+    cls,
+    workspace_id,
+    auth: dmda.DomoAuth, # this API does not require the jupyter_token, but activities inside the workspace will require additional authentication
+    jupyter_token = None,
+    return_raw: bool = False,
+    debug_api: bool = False,
+    session:httpx.AsyncClient = None,
+):
+
+    res = await jupyter_routes.get_jupyter_workspace_by_id(
+        workspace_id=workspace_id, auth=auth,
+        session = session, debug_api = debug_api, parent_class = cls.__name__
+    )
+
+    if return_raw:
+        return res
+
+    return cls._from_json(auth = auth, obj = res.response, jupyter_token = jupyter_token)
 
 # %% ../../nbs/classes/50_DomoJupyter.ipynb 8
 @patch_to(DomoJupyterWorkspace)
