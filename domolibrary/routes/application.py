@@ -248,12 +248,10 @@ def generate_body_watchdog_generic(
     notify_user_ids_ls: list,
     notify_group_ids_ls: list,
     notify_emails_ls: list,
-    entity_ids_ls: list,
-    entity_type: str,
-    metric_dataset_id: str,
+    log_dataset_id: str,
     schedule_ls: list,
-    job_type: str,
-    execution_timeout: int = 1440,
+    watchdog_parameter_body: dict,
+    execution_timeout=1440,
     debug_api: bool = False,
 ):
 
@@ -266,12 +264,8 @@ def generate_body_watchdog_generic(
             "notifyUserIds": notify_user_ids_ls or [],
             "notifyGroupIds": notify_group_ids_ls or [],
             "notifyEmailAddresses": notify_emails_ls or [],
-            "watcherParameters": {
-                "entityIds": entity_ids_ls,
-                "type": job_type,
-                "entityType": entity_type,
-            },
-            "metricsDatasetId": metric_dataset_id,
+            "watcherParameters": watchdog_parameter_body,
+            "metricsDatasetId": log_dataset_id,
         },
         "resources": {"requests": {"memory": "256Mi"}, "limits": {"memory": "256Mi"}},
         "triggers": schedule_ls,
@@ -316,7 +310,7 @@ async def create_application_job(
     if debug_api:
         print(url)
 
-    return await gd.get_data(
+    res = await gd.get_data(
         auth=auth,
         url=url,
         method="POST",
@@ -326,6 +320,17 @@ async def create_application_job(
         num_stacks_to_drop=debug_num_stacks_to_drop,
         parent_class=parent_class,
     )
+
+    if not res.is_success:
+        raise CRUD_ApplicationJob_Error(
+            domo_instance=auth.domo_instance,
+            application_id=application_id,
+            message=res.response,
+            parent_class=parent_class,
+            function_name=res.traceback_details.function_name,
+        )
+
+    return res
 
 
 # update the job
