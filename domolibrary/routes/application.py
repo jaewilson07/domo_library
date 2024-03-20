@@ -2,9 +2,9 @@
 
 # %% auto 0
 __all__ = ['ApplicationError_NoneRetrieved', 'get_applications', 'get_application_by_id', 'ApplicationError_NoJobRetrieved',
-           'get_application_jobs', 'get_application_job_by_id', 'generate_body_remote_domostats',
-           'generate_body_watchdog_generic', 'CRUD_ApplicationJob_Error', 'create_job', 'update_job',
-           'update_job_trigger', 'execute_application_job']
+           'get_application_jobs', 'get_application_job_by_id', 'generate_remote_domostats',
+           'generate_body_watchdog_generic', 'CRUD_ApplicationJob_Error', 'create_application_job',
+           'update_application_job', 'update_application_job_trigger', 'execute_application_job']
 
 # %% ../../nbs/routes/application.ipynb 2
 from typing import Union
@@ -210,7 +210,7 @@ async def get_application_job_by_id(
     return res
 
 # %% ../../nbs/routes/application.ipynb 15
-def generate_body_remote_domostats(
+def generate_remote_domostats(
     target_instance: str,
     report_dict: dict,
     output_dataset_id: str,
@@ -248,12 +248,10 @@ def generate_body_watchdog_generic(
     notify_user_ids_ls: list,
     notify_group_ids_ls: list,
     notify_emails_ls: list,
-    entity_ids_ls: list,
-    entity_type: str,
-    metric_dataset_id: str,
+    log_dataset_id: str,
     schedule_ls: list,
-    job_type: str,
-    execution_timeout: int = 1440,
+    watchdog_parameter_body: dict,
+    execution_timeout=1440,
     debug_api: bool = False,
 ):
 
@@ -266,12 +264,8 @@ def generate_body_watchdog_generic(
             "notifyUserIds": notify_user_ids_ls or [],
             "notifyGroupIds": notify_group_ids_ls or [],
             "notifyEmailAddresses": notify_emails_ls or [],
-            "watcherParameters": {
-                "entityIds": entity_ids_ls,
-                "type": job_type,
-                "entityType": entity_type,
-            },
-            "metricsDatasetId": metric_dataset_id,
+            "watcherParameters": watchdog_parameter_body,
+            "metricsDatasetId": log_dataset_id,
         },
         "resources": {"requests": {"memory": "256Mi"}, "limits": {"memory": "256Mi"}},
         "triggers": schedule_ls,
@@ -301,7 +295,7 @@ class CRUD_ApplicationJob_Error(de.DomoError):
 
 
 @gd.route_function
-async def create_job(
+async def create_application_job(
     auth: dmda.DomoFullAuth,
     body: dict,
     application_id: str,
@@ -316,7 +310,7 @@ async def create_job(
     if debug_api:
         print(url)
 
-    return await gd.get_data(
+    res = await gd.get_data(
         auth=auth,
         url=url,
         method="POST",
@@ -327,10 +321,21 @@ async def create_job(
         parent_class=parent_class,
     )
 
+    if not res.is_success:
+        raise CRUD_ApplicationJob_Error(
+            domo_instance=auth.domo_instance,
+            application_id=application_id,
+            message=res.response,
+            parent_class=parent_class,
+            function_name=res.traceback_details.function_name,
+        )
+
+    return res
+
 
 # update the job
 @gd.route_function
-async def update_job(
+async def update_application_job(
     auth: dmda.DomoFullAuth,
     body: dict,
     job_id: str,
@@ -370,7 +375,7 @@ async def update_job(
 
 
 @gd.route_function
-async def update_job_trigger(
+async def update_application_job_trigger(
     auth: dmda.DomoFullAuth,
     body: dict,
     job_id: str,

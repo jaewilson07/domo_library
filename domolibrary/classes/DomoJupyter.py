@@ -4,6 +4,9 @@
 __all__ = ['DomoJupyterWorkspace_Content', 'DomoJupyterWorkspace']
 
 # %% ../../nbs/classes/50_DomoJupyter.ipynb 2
+from ..routes.jupyter import JupyterAPI_Error, JupyterAPI_Error
+
+# %% ../../nbs/classes/50_DomoJupyter.ipynb 3
 import os
 import json
 
@@ -19,12 +22,14 @@ from dateutil.parser import parse
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.routes.jupyter as jupyter_routes
 
+
+
 # import domolibrary.client.DomoError as de
 # import domolibrary.utils.chunk_execution as ce
 
 from nbdev.showdoc import patch_to
 
-# %% ../../nbs/classes/50_DomoJupyter.ipynb 4
+# %% ../../nbs/classes/50_DomoJupyter.ipynb 5
 @dataclass
 class DomoJupyterWorkspace_Content:
     name: str
@@ -114,7 +119,7 @@ class DomoJupyterWorkspace_Content:
             parent_class=self.__class__.__name__,
         )
 
-# %% ../../nbs/classes/50_DomoJupyter.ipynb 6
+# %% ../../nbs/classes/50_DomoJupyter.ipynb 7
 @dataclass
 class DomoJupyterWorkspace:
     auth: dmda.DomoJupyterAuth = field(repr=False)
@@ -209,7 +214,7 @@ class DomoJupyterWorkspace:
         )
         return domo_workspace
 
-# %% ../../nbs/classes/50_DomoJupyter.ipynb 7
+# %% ../../nbs/classes/50_DomoJupyter.ipynb 8
 @patch_to(DomoJupyterWorkspace, cls_method=True)
 async def get_by_id(
     cls,
@@ -231,7 +236,7 @@ async def get_by_id(
 
     return cls._from_json(auth = auth, obj = res.response, jupyter_token = jupyter_token)
 
-# %% ../../nbs/classes/50_DomoJupyter.ipynb 9
+# %% ../../nbs/classes/50_DomoJupyter.ipynb 10
 @patch_to(DomoJupyterWorkspace)
 async def get_content(
     self,
@@ -242,7 +247,7 @@ async def get_content(
 ):
     res = await jupyter_routes.get_content(
         auth=self.auth,
-        debug_api=False,
+        debug_api=debug_api,
         content_path=content_path,
         debug_num_stacks_to_drop=2,
         parent_class=self.__class__.__name__,

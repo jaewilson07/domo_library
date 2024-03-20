@@ -4,18 +4,11 @@
 __all__ = ['PDP_Parameter', 'PDP_Policy', 'Dataset_PDP_Policies', 'SearchPDP_NotFound']
 
 # %% ../../nbs/classes/50_DomoPDP.ipynb 2
-import asyncio
-import datetime as dt
-import io
-import json
-
 import httpx
-import pandas as pd
 
 from nbdev.showdoc import patch_to
 
-from dataclasses import dataclass, field
-from enum import Enum, auto
+from dataclasses import dataclass
 
 import domolibrary.utils.DictDot as util_dd
 import domolibrary.utils.chunk_execution as ce
@@ -25,10 +18,8 @@ import domolibrary.routes.pdp as pdp_routes
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 
-# from ..utils.chunk_execution import chunk_list
-# from . import DomoCertification as dmdc
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 5
+# %% ../../nbs/classes/50_DomoPDP.ipynb 6
 @dataclass
 class PDP_Parameter:
     column_name: str
@@ -46,7 +37,7 @@ class PDP_Parameter:
         "COLUMN" or "DYNAMIC"
     )  # column sets parameter on data vs dynamic creates on Domo Trusted Attribute
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 6
+# %% ../../nbs/classes/50_DomoPDP.ipynb 7
 @patch_to(PDP_Parameter)
 def generate_parameter_simple(obj):
 
@@ -70,7 +61,7 @@ def generate_body_from_parameter(self):
         ignore_case=self.ignore_case,
     )
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 9
+# %% ../../nbs/classes/50_DomoPDP.ipynb 10
 @dataclass
 class PDP_Policy:
     dataset_id: str
@@ -155,7 +146,7 @@ class PDP_Policy:
             )
             return res
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 11
+# %% ../../nbs/classes/50_DomoPDP.ipynb 12
 @patch_to(PDP_Policy)
 def generate_body_from_policy(
     self: PDP_Policy,
@@ -178,7 +169,7 @@ def generate_body_from_policy(
         virtual_user_ids=self.virtual_user_ls,
     )
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 13
+# %% ../../nbs/classes/50_DomoPDP.ipynb 14
 class Dataset_PDP_Policies:
 
     dataset = None  # domo dataset class
@@ -189,7 +180,7 @@ class Dataset_PDP_Policies:
         self.dataset = dataset
         self.policies = []
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 15
+# %% ../../nbs/classes/50_DomoPDP.ipynb 16
 @patch_to(Dataset_PDP_Policies)
 async def get_policies(
     self: Dataset_PDP_Policies,
@@ -224,7 +215,7 @@ async def get_policies(
         self.policies = domo_policy
         return domo_policy
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 24
+# %% ../../nbs/classes/50_DomoPDP.ipynb 25
 class SearchPDP_NotFound(de.DomoError):
     def __init__(
         self, domo_instance, dataset_id, message="not found", function_name="search_pdp"
@@ -302,7 +293,7 @@ async def search_pdp_policies(
 
     return policy_search
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 28
+# %% ../../nbs/classes/50_DomoPDP.ipynb 29
 @patch_to(PDP_Policy)
 async def delete_policy(
     self: PDP_Policy,
@@ -321,7 +312,7 @@ async def delete_policy(
 
     return res
 
-# %% ../../nbs/classes/50_DomoPDP.ipynb 32
+# %% ../../nbs/classes/50_DomoPDP.ipynb 33
 @patch_to(Dataset_PDP_Policies)
 async def toggle_dataset_pdp(
     self: Dataset_PDP_Policies,
