@@ -9,7 +9,7 @@ from ..routes.instance_config import UpdateSSO_Error
 # %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 3
 import httpx
 import datetime as dt
-from fastcore.basics import patch_to
+from nbdev.showdoc import patch_to
 import sys
 import pandas as pd
 
@@ -974,6 +974,7 @@ async def generate_access_token(
     debug_api: bool = False,
     debug_num_stacks_to_drop=3,
     session: httpx.AsyncClient = None,
+    return_raw: bool = False
 ):
     import domolibrary.classes.DomoAccessToken as dmat
 
@@ -986,8 +987,45 @@ async def generate_access_token(
         owner=owner,
         duration_in_days=duration_in_days,
         debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+        return_raw = return_raw
     )
 
-    await self.get_access_tokens()
-
     return token
+
+# %% ../../nbs/classes/50_DomoInstanceConfig.ipynb 92
+@patch_to(DomoInstanceConfig)
+async def regenerate_access_token(
+    self,
+    domo_user: None,  # domo_user
+    token_name,
+    session: httpx.AsyncClient = None,
+    duration_in_days: int = 90,
+    debug_api: bool = False,
+    return_raw: bool = False,
+):
+
+    access_tokens = await self.get_access_tokens()
+
+    match_token = next(
+        (
+            token
+            for token in access_tokens
+            if token.owner == domo_user and token.name == token_name
+        ),
+        None,
+    )
+
+    if match_token:
+        await match_token.revoke()
+
+    domo_access_token = await self.generate_access_token(
+        owner=domo_user,
+        duration_in_days=duration_in_days,
+        token_name=token_name,
+        debug_api=debug_api,
+        debug_num_stacks_to_drop=3,
+        session=session,
+        return_raw = return_raw
+    )
+
+    return domo_access_token
