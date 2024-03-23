@@ -5,24 +5,6 @@ __all__ = ['Account_CanIModify', 'UpsertAccount_MatchCriteria', 'DomoAccount', '
            'Account_Accesslist_Share', 'Account_Accesslist']
 
 # %% ../../nbs/classes/50_DomoAccount.ipynb 3
-from dataclasses import dataclass, field
-from typing import Any, List
-
-import datetime as dt
-
-import httpx
-
-from nbdev.showdoc import patch_to
-
-import domolibrary.utils.convert as cd
-import domolibrary.utils.DictDot as util_dd
-import domolibrary.client.DomoAuth as dmda
-import domolibrary.client.DomoError as de
-import domolibrary.routes.account as account_routes
-
-import domolibrary.utils.chunk_execution as ce
-
-# %% ../../nbs/classes/50_DomoAccount.ipynb 4
 from domolibrary.routes.account import (
     ShareAccount_V1_AccessLevel,
     ShareAccount_V2_AccessLevel,
@@ -40,7 +22,24 @@ from domolibrary.classes.DomoAccount_Config import (
     AccountConfig,
 )
 
+# %% ../../nbs/classes/50_DomoAccount.ipynb 4
+from dataclasses import dataclass, field
+from typing import Any, List
 
+import httpx
+import datetime as dt
+
+from nbdev.showdoc import patch_to
+
+import domolibrary.utils.convert as cd
+import domolibrary.utils.DictDot as util_dd
+import domolibrary.client.DomoAuth as dmda
+import domolibrary.client.DomoError as de
+import domolibrary.routes.account as account_routes
+
+import domolibrary.utils.chunk_execution as ce
+
+# %% ../../nbs/classes/50_DomoAccount.ipynb 6
 class Account_CanIModify(de.DomoError):
     def __init__(self, account_id, domo_instance):
         super().__init__(
@@ -57,7 +56,7 @@ class UpsertAccount_MatchCriteria(de.DomoError):
             domo_instance=domo_instance,
         )
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 6
+# %% ../../nbs/classes/50_DomoAccount.ipynb 8
 @dataclass
 class DomoAccount:
     id: int
@@ -101,7 +100,7 @@ class DomoAccount:
             owners=dd.owners,
         )
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 8
+# %% ../../nbs/classes/50_DomoAccount.ipynb 10
 class DomoAccounConfig_MissingFields(de.DomoError):
     def __init__(self, domo_instance, missing_keys, account_id):
         super().__init__(
@@ -174,7 +173,7 @@ async def _get_config(
 
     return self.config
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 11
+# %% ../../nbs/classes/50_DomoAccount.ipynb 13
 @patch_to(DomoAccount, cls_method=True)
 async def get_by_id(
     cls,
@@ -211,7 +210,7 @@ async def get_by_id(
 
     return acc
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 18
+# %% ../../nbs/classes/50_DomoAccount.ipynb 20
 @patch_to(DomoAccount, cls_method=True)
 async def create_account(
     cls: DomoAccount,
@@ -233,7 +232,7 @@ async def create_account(
 
     return await cls.get_by_id(auth=auth, account_id=res.response.get("id"))
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 20
+# %% ../../nbs/classes/50_DomoAccount.ipynb 22
 @patch_to(DomoAccount)
 async def update_config(
     self: DomoAccount,
@@ -270,7 +269,7 @@ async def update_config(
 
     return self
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 25
+# %% ../../nbs/classes/50_DomoAccount.ipynb 27
 @patch_to(DomoAccount)
 async def update_name(
     self: DomoAccount,
@@ -300,7 +299,7 @@ async def update_name(
 
     return self
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 30
+# %% ../../nbs/classes/50_DomoAccount.ipynb 32
 @patch_to(DomoAccount)
 async def delete_account(
     self: DomoAccount,
@@ -326,7 +325,7 @@ async def delete_account(
 
     return res
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 32
+# %% ../../nbs/classes/50_DomoAccount.ipynb 34
 @patch_to(DomoAccount)
 async def is_feature_accountsv2_enabled(
     self: DomoAccount, auth: dmda.DomoFullAuth = None, return_raw: bool = False
@@ -348,7 +347,7 @@ async def is_feature_accountsv2_enabled(
         )
         return -1
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 35
+# %% ../../nbs/classes/50_DomoAccount.ipynb 37
 @patch_to(DomoAccount)
 async def _share_v2(
     self: DomoAccount,
@@ -403,7 +402,7 @@ async def _share_v2(
 
         return f"already shared {self.id} - {self.name} with {group_id or user_id}"
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 38
+# %% ../../nbs/classes/50_DomoAccount.ipynb 40
 @patch_to(DomoAccount)
 async def _share_v1(
     self: DomoAccount,
@@ -457,7 +456,7 @@ async def _share_v1(
         else:
             raise e
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 41
+# %% ../../nbs/classes/50_DomoAccount.ipynb 43
 @patch_to(DomoAccount)
 async def share(
     self: DomoAccount,
@@ -539,12 +538,12 @@ async def share(
 
     return res
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 45
+# %% ../../nbs/classes/50_DomoAccount.ipynb 47
 @dataclass
 class DomoAccounts:
     auth: dmda.DomoAuth
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 46
+# %% ../../nbs/classes/50_DomoAccount.ipynb 48
 @staticmethod
 @patch_to(DomoAccounts)
 async def _get_accounts_accountsapi(
@@ -699,7 +698,7 @@ async def get_accounts(
 
     return domo_accounts
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 49
+# %% ../../nbs/classes/50_DomoAccount.ipynb 51
 @dataclass
 class Account_Accesslist_Share:
     entity: Any
@@ -746,7 +745,7 @@ class Account_Accesslist:
     domo_users = None
     domo_groups = None
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 50
+# %% ../../nbs/classes/50_DomoAccount.ipynb 52
 @patch_to(DomoAccount)
 async def get_accesslist(
     self: DomoAccount,
@@ -774,7 +773,7 @@ async def get_accesslist(
     )
     return self.accesslist
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 54
+# %% ../../nbs/classes/50_DomoAccount.ipynb 56
 @patch_to(DomoAccounts, cls_method=True)
 async def upsert_account(
     cls: DomoAccounts,
@@ -845,7 +844,7 @@ async def upsert_account(
 
     return acc
 
-# %% ../../nbs/classes/50_DomoAccount.ipynb 57
+# %% ../../nbs/classes/50_DomoAccount.ipynb 59
 @patch_to(DomoAccount)
 async def upsert_share_account_user(
     self: DomoAccount,

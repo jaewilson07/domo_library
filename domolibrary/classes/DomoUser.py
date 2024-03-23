@@ -14,7 +14,7 @@ from domolibrary.routes.user import (
     DownloadAvatar_Error,
 )
 
-from ..utils.Image import Image, are_same_image,domo_default_img
+from ..utils.Image import Image, are_same_image, domo_default_img
 
 # %% ../../nbs/classes/50_DomoUser.ipynb 3
 import datetime as dt
@@ -237,7 +237,7 @@ async def download_avatar(
     if return_raw:
         return res
 
-    self.avatar =  Image.from_bytestr(data = res.response)
+    self.avatar = Image.from_bytestr(data=res.response)
 
     return self.avatar
 
@@ -246,59 +246,61 @@ async def download_avatar(
 # %% ../../nbs/classes/50_DomoUser.ipynb 20
 @patch_to(DomoUser)
 async def upload_avatar(
-    self, avatar: Image, debug_api: bool = False, 
+    self,
+    avatar: Image,
+    debug_api: bool = False,
     session: httpx.AsyncClient = None,
-    return_raw : bool = False
+    return_raw: bool = False,
 ):
     avatar.crop_square()
-        
+
     res = await user_routes.upload_avatar(
         auth=self.auth,
         user_id=self.id,
         img_bytestr=avatar.to_bytes(),
-        img_type = avatar.format,
+        img_type=avatar.format,
         debug_api=debug_api,
         parent_class=self.__class__.__name__,
         session=session,
     )
-    
+
     if return_raw:
         return res
-    
-    await asyncio.sleep(2)
-        
-    return await self.download_avatar( debug_api = debug_api)
 
+    await asyncio.sleep(2)
+
+    return await self.download_avatar(debug_api=debug_api)
 
 # %% ../../nbs/classes/50_DomoUser.ipynb 22
 @patch_to(DomoUser)
 async def upsert_avatar(
-    self, avatar: Image, debug_api: bool = False, 
+    self,
+    avatar: Image,
+    debug_api: bool = False,
     session: httpx.AsyncClient = None,
-    return_raw : bool = False
+    return_raw: bool = False,
 ):
     avatar.crop_square()
 
     res = "images are the same"
-    if not are_same_image(domo_default_img , avatar)  :
+    if not are_same_image(domo_default_img, avatar):
 
         res = await user_routes.upload_avatar(
             auth=self.auth,
             user_id=self.id,
             img_bytestr=avatar.to_bytes(),
-            img_type = avatar.format,
+            img_type=avatar.format,
             debug_api=debug_api,
             parent_class=self.__class__.__name__,
             session=session,
         )
-        
+
         if return_raw:
             return res
-    
-    await asyncio.sleep(2)
-        
-    return await self.download_avatar( debug_api = debug_api)
 
+    await asyncio.sleep(2)
+
+    return await self.download_avatar(debug_api=debug_api)
 
 # %% ../../nbs/classes/50_DomoUser.ipynb 23
 @patch_to(DomoUser)

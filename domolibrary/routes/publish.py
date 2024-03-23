@@ -6,13 +6,14 @@ __all__ = ['search_publications', 'get_publication_by_id', 'generate_publish_bod
            'accept_invite_by_id_v2', 'refresh_publish_jobs']
 
 # %% ../../nbs/routes/publish.ipynb 2
+from typing import List
 import httpx
 
 import domolibrary.client.get_data as gd
 import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
 
-# %% ../../nbs/routes/publish.ipynb 4
+# %% ../../nbs/routes/publish.ipynb 5
 async def search_publications(
     auth: dmda.DomoAuth,
     search_term: str = None,
@@ -39,7 +40,7 @@ async def search_publications(
 
     return res
 
-# %% ../../nbs/routes/publish.ipynb 6
+# %% ../../nbs/routes/publish.ipynb 7
 async def get_publication_by_id(
     auth: dmda.DomoAuth,
     publication_id: str,
@@ -63,11 +64,11 @@ async def get_publication_by_id(
 
 # generate publish body
 
-# %% ../../nbs/routes/publish.ipynb 8
+# %% ../../nbs/routes/publish.ipynb 9
 def generate_publish_body(
     url: str,
-    sub_domain_ls: [str],
-    content_ls: [str],
+    sub_domain_ls: List[str],
+    content_ls: List[str],
     name: str,
     description: str,
     unique_id: str,
@@ -91,7 +92,7 @@ def generate_publish_body(
 
     return body
 
-# %% ../../nbs/routes/publish.ipynb 10
+# %% ../../nbs/routes/publish.ipynb 11
 # Creating publish job for a specific subscriber
 async def create_publish_job(
     auth: dmda.DomoAuth,
@@ -114,7 +115,7 @@ async def create_publish_job(
 
     return res
 
-# %% ../../nbs/routes/publish.ipynb 11
+# %% ../../nbs/routes/publish.ipynb 12
 # Updating existing publish job with content
 async def udpate_publish_job(
     auth: dmda.DomoAuth,
@@ -139,7 +140,7 @@ async def udpate_publish_job(
 
 # # finds all jobs waiting to be accepted within the subscriber
 
-# %% ../../nbs/routes/publish.ipynb 13
+# %% ../../nbs/routes/publish.ipynb 14
 async def get_subscription_summaries(
     auth: dmda.DomoAuth, session: httpx.AsyncClient = None, debug_api: bool = False
 ) -> rgd.ResponseGetData:
@@ -151,7 +152,7 @@ async def get_subscription_summaries(
     )
     return res
 
-# %% ../../nbs/routes/publish.ipynb 15
+# %% ../../nbs/routes/publish.ipynb 16
 async def get_subscription_invititations(
     auth: dmda.DomoAuth, session: httpx.AsyncClient = None, debug_api: bool = False
 ) -> rgd.ResponseGetData:
@@ -164,7 +165,7 @@ async def get_subscription_invititations(
     )
     return res
 
-# %% ../../nbs/routes/publish.ipynb 18
+# %% ../../nbs/routes/publish.ipynb 19
 async def accept_invite_by_id(
     auth: dmda.DomoAuth,
     subscription_id: str,
@@ -180,7 +181,7 @@ async def accept_invite_by_id(
     )
     return res
 
-# %% ../../nbs/routes/publish.ipynb 19
+# %% ../../nbs/routes/publish.ipynb 20
 async def accept_invite_by_id_v2(
     auth: dmda.DomoAuth,
     publication_id: str,
@@ -211,7 +212,7 @@ async def accept_invite_by_id_v2(
     )
     return res
 
-# %% ../../nbs/routes/publish.ipynb 20
+# %% ../../nbs/routes/publish.ipynb 21
 async def refresh_publish_jobs(
     auth: dmda.DomoAuth,
     publish_ids: list,

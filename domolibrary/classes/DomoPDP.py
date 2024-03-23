@@ -18,7 +18,6 @@ import domolibrary.routes.pdp as pdp_routes
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 
-
 # %% ../../nbs/classes/50_DomoPDP.ipynb 6
 @dataclass
 class PDP_Parameter:

@@ -13,7 +13,7 @@ import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 
-# %% ../../nbs/routes/role.ipynb 4
+# %% ../../nbs/routes/role.ipynb 5
 class Role_NotRetrieved(de.DomoError):
     def __init__(
         self,
@@ -54,7 +54,7 @@ class Role_CRUD_Error(de.DomoError):
             parent_class=parent_class,
         )
 
-# %% ../../nbs/routes/role.ipynb 5
+# %% ../../nbs/routes/role.ipynb 6
 @gd.route_function
 async def get_roles(
     auth: dmda.DomoAuth,
@@ -86,7 +86,7 @@ async def get_roles(
 
     return res
 
-# %% ../../nbs/routes/role.ipynb 8
+# %% ../../nbs/routes/role.ipynb 9
 @gd.route_function
 async def get_role_by_id(
     auth: dmda.DomoAuth,
@@ -122,7 +122,7 @@ async def get_role_by_id(
 
     return res
 
-# %% ../../nbs/routes/role.ipynb 10
+# %% ../../nbs/routes/role.ipynb 11
 @gd.route_function
 async def get_role_grants(
     auth: dmda.DomoAuth,
@@ -163,7 +163,7 @@ async def get_role_grants(
 
     return res
 
-# %% ../../nbs/routes/role.ipynb 13
+# %% ../../nbs/routes/role.ipynb 14
 @gd.route_function
 async def get_role_membership(
     auth: dmda.DomoAuth,
@@ -212,7 +212,7 @@ async def get_role_membership(
 
     return res
 
-# %% ../../nbs/routes/role.ipynb 17
+# %% ../../nbs/routes/role.ipynb 18
 @gd.route_function
 async def create_role(
     auth: dmda.DomoAuth,
@@ -248,7 +248,7 @@ async def create_role(
 
     return res
 
-# %% ../../nbs/routes/role.ipynb 18
+# %% ../../nbs/routes/role.ipynb 19
 @gd.route_function
 async def delete_role(
     auth: dmda.DomoAuth,
@@ -282,7 +282,7 @@ async def delete_role(
 
     return res
 
-# %% ../../nbs/routes/role.ipynb 22
+# %% ../../nbs/routes/role.ipynb 23
 @gd.route_function
 async def get_default_role(
     auth,
@@ -318,7 +318,7 @@ async def get_default_role(
 
     return res
 
-# %% ../../nbs/routes/role.ipynb 25
+# %% ../../nbs/routes/role.ipynb 26
 @gd.route_function
 async def set_default_role(
     auth: dmda.DomoAuth,
@@ -353,7 +353,7 @@ async def set_default_role(
 
     return res
 
-# %% ../../nbs/routes/role.ipynb 27
+# %% ../../nbs/routes/role.ipynb 28
 @gd.route_function
 async def update_role_metadata(
     auth: dmda.DomoAuth,
@@ -390,7 +390,7 @@ async def update_role_metadata(
 
     return res
 
-# %% ../../nbs/routes/role.ipynb 30
+# %% ../../nbs/routes/role.ipynb 31
 @gd.route_function
 async def set_role_grants(
     auth: dmda.DomoAuth,
@@ -427,7 +427,7 @@ async def set_role_grants(
 
     return res
 
-# %% ../../nbs/routes/role.ipynb 31
+# %% ../../nbs/routes/role.ipynb 32
 @gd.route_function
 async def role_membership_add_users(
     auth: dmda.DomoAuth,

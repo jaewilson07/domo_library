@@ -156,7 +156,7 @@ class DomoDataflow_History:
 
     execution_history: List[DomoDataflow_History_Execution] = None
 
-# %% ../../nbs/classes/50_DomoDataflow_History.ipynb 15
+# %% ../../nbs/classes/50_DomoDataflow_History.ipynb 14
 @patch_to(DomoDataflow_History)
 async def get_execution_history(
     self: DomoDataflow_History,

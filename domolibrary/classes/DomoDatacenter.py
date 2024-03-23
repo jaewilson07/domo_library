@@ -6,7 +6,7 @@ __all__ = ['DomoDatacenter']
 # %% ../../nbs/classes/50_DomoDatacenter.ipynb 2
 import asyncio
 from dataclasses import dataclass
-from typing import Union
+from typing import Union, List
 from enum import Enum
 
 import httpx
@@ -61,7 +61,7 @@ async def search_datacenter(
 
     return res.response
 
-# %% ../../nbs/classes/50_DomoDatacenter.ipynb 9
+# %% ../../nbs/classes/50_DomoDatacenter.ipynb 10
 @patch_to(DomoDatacenter, cls_method=True)
 async def search_datasets(
     cls,
@@ -102,7 +102,7 @@ async def search_datasets(
         ]
     )
 
-# %% ../../nbs/classes/50_DomoDatacenter.ipynb 12
+# %% ../../nbs/classes/50_DomoDatacenter.ipynb 13
 @patch_to(DomoDatacenter, cls_method=True)
 async def get_accounts(
     cls,
@@ -192,8 +192,9 @@ async def get_lineage_upstream(
                 )
             )
             pass
-
-    await session.aclose()
+    
+    if is_close_session:
+        await session.aclose()
     return domo_obj
 
 # %% ../../nbs/classes/50_DomoDatacenter.ipynb 18
@@ -242,7 +243,7 @@ async def search_cards(
 async def get_cards_admin_summary(
     cls,
     auth=dmda.DomoAuth,
-    page_ids: [str] = None,
+    page_ids: List[str] = None,
     card_search_text: str = None,
     page_search_text: str = None,
     maximum: int = None,  # maximum number of results to return

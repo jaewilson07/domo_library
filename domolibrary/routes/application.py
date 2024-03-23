@@ -162,6 +162,7 @@ async def get_application_jobs(
         offset_params=offset_params,
         session=session,
         debug_api=debug_api,
+        debug_num_stacks_to_drop = debug_num_stacks_to_drop
     )
 
     if not res.is_success:

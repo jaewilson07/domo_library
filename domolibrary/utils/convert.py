@@ -28,13 +28,13 @@ def convert_snake_to_pascal(clean_str):
     return clean_str[0].lower() + clean_str[1:]
 
 # %% ../../nbs/utils/convert.ipynb 13
-def convert_str_to_snake_case(text_str, is_only_alphanumeric : bool = False):
+def convert_str_to_snake_case(text_str, is_only_alphanumeric: bool = False):
     """converts 'snake_case_str' to 'snakeCaseStr'"""
 
-    text_str =  text_str.replace(" ", "_").lower()
+    text_str = text_str.replace(" ", "_").lower()
 
     if is_only_alphanumeric:
-        text_str = re.sub(r'\W+', '', text_str)
+        text_str = re.sub(r"\W+", "", text_str)
 
     return text_str
 

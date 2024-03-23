@@ -4,10 +4,13 @@
 __all__ = ['DomoPage', 'DomoPages', 'Page_NoAccess']
 
 # %% ../../nbs/classes/50_DomoPage.ipynb 2
+from ..routes.page import PageRetrieval_byId_Error
+
+# %% ../../nbs/classes/50_DomoPage.ipynb 3
 from nbdev.showdoc import patch_to
 from dataclasses import dataclass, field
+from typing import List
 
-import asyncio
 import httpx
 
 import domolibrary.client.Logger as lg
@@ -18,9 +21,6 @@ import domolibrary.routes.page as page_routes
 
 import domolibrary.utils.DictDot as util_dd
 import domolibrary.utils.chunk_execution as ce
-
-# %% ../../nbs/classes/50_DomoPage.ipynb 3
-from ..routes.page import PageRetrieval_byId_Error
 
 # %% ../../nbs/classes/50_DomoPage.ipynb 6
 @dataclass(
@@ -668,9 +668,9 @@ async def update_layout(
 async def add_page_owner(
     cls,
     auth: dmda.DomoAuth,
-    page_id_ls: [],  # Page IDs to be updated by owner,
-    group_id_ls: [],  # DomoGroup IDs to share page with
-    user_id_ls: [],  # DomoUser IDs to share page with
+    page_id_ls: List[int],  # Page IDs to be updated by owner,
+    group_id_ls: List[int],  # DomoGroup IDs to share page with
+    user_id_ls: List[int],  # DomoUser IDs to share page with
     note: str = None,  # message for automated email
     send_email: bool = False,  # send or not email to the new owners
     debug_api: bool = False,

@@ -4,11 +4,9 @@
 __all__ = ['ReadCreds_EnvFileNotExist', 'read_creds_from_dotenv']
 
 # %% ../../nbs/utils/read_creds_from_dotenv.ipynb 2
-import os
-
-from dotenv import load_dotenv
-
 import domolibrary.utils.DictDot as utils_dd
+from dotenv import load_dotenv
+import os
 
 # %% ../../nbs/utils/read_creds_from_dotenv.ipynb 3
 class ReadCreds_EnvFileNotExist(Exception):

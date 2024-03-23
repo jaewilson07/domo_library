@@ -4,14 +4,14 @@
 __all__ = ['DomoJupyterWorkspace_Content', 'DomoJupyterWorkspace']
 
 # %% ../../nbs/classes/50_DomoJupyter.ipynb 2
-from ..routes.jupyter import JupyterAPI_Error, JupyterAPI_Error
+from ..routes.jupyter import JupyterAPI_Error
 
 # %% ../../nbs/classes/50_DomoJupyter.ipynb 3
 import os
 import json
 
 from dataclasses import dataclass, field
-from typing import Union, List
+from typing import List
 import datetime as dt
 
 import httpx
@@ -21,7 +21,6 @@ from dateutil.parser import parse
 
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.routes.jupyter as jupyter_routes
-
 
 
 # import domolibrary.client.DomoError as de
@@ -97,7 +96,7 @@ class DomoJupyterWorkspace_Content:
         debug_api: bool = False,
     ):
         if jupyter_folder and jupyter_file_name:
-            content_patuh = f"{jupyter_folder}/{jupyter_file_name}"
+            content_path = f"{jupyter_folder}/{jupyter_file_name}"
 
         if len(self.folder) > 0:
             content_path = f"{self.folder}/{self.name}"
@@ -158,25 +157,26 @@ class DomoJupyterWorkspace:
             )
             self.service_location = res["service_location"]
             self.service_prefix = res["service_prefix"]
-    
+
         if self.service_location and self.service_prefix and self.jupyter_token:
             self.update_auth()
 
-    
-    def update_auth(self, service_location= None, service_prefix = None, jupyter_token = None):
-        
+    def update_auth(
+        self, service_location=None, service_prefix=None, jupyter_token=None
+    ):
+
         self.service_location = service_location or self.service_location
         self.service_prefix = service_prefix or self.service_prefix
-        self.jupyer_token = jupyter_token or self.jupyter_token
-                            
+        self.jupyter_token = jupyter_token or self.jupyter_token
+
         if isinstance(self.auth, dmda.DomoFullAuth):
             self.auth = dmda.DomoJupyterFullAuth.convert_auth(
                 auth=self.auth,
-                service_location= self.service_location,
-                jupyter_token= self.jupyter_token,
-                service_prefix= self.service_prefix,
+                service_location=self.service_location,
+                jupyter_token=self.jupyter_token,
+                service_prefix=self.service_prefix,
             )
-        
+
         if isinstance(self.auth, dmda.DomoTokenAuth):
             self.auth = dmda.DomoJupyterTokenAuth.convert_auth(
                 auth=self.auth,
@@ -184,12 +184,10 @@ class DomoJupyterWorkspace:
                 jupyter_token=self.jupyter_token,
                 service_prefix=self.service_prefix,
             )
-    
+
         self.auth.service_location = self.service_location
         self.auth.service_prefix = self.service_prefix
-        self.auth.jupyer_token = self.jupyter_token
-        
-
+        self.auth.jupyter_token = self.jupyter_token
 
     @classmethod
     def _from_json(
@@ -219,22 +217,25 @@ class DomoJupyterWorkspace:
 async def get_by_id(
     cls,
     workspace_id,
-    auth: dmda.DomoAuth, # this API does not require the jupyter_token, but activities inside the workspace will require additional authentication
-    jupyter_token = None,
+    auth: dmda.DomoAuth,  # this API does not require the jupyter_token, but activities inside the workspace will require additional authentication
+    jupyter_token=None,
     return_raw: bool = False,
     debug_api: bool = False,
-    session:httpx.AsyncClient = None,
+    session: httpx.AsyncClient = None,
 ):
 
     res = await jupyter_routes.get_jupyter_workspace_by_id(
-        workspace_id=workspace_id, auth=auth,
-        session = session, debug_api = debug_api, parent_class = cls.__name__
+        workspace_id=workspace_id,
+        auth=auth,
+        session=session,
+        debug_api=debug_api,
+        parent_class=cls.__name__,
     )
 
     if return_raw:
         return res
 
-    return cls._from_json(auth = auth, obj = res.response, jupyter_token = jupyter_token)
+    return cls._from_json(auth=auth, obj=res.response, jupyter_token=jupyter_token)
 
 # %% ../../nbs/classes/50_DomoJupyter.ipynb 10
 @patch_to(DomoJupyterWorkspace)

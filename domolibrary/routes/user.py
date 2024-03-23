@@ -9,14 +9,16 @@ __all__ = ['User_CrudError', 'GetUser_Error', 'ResetPassword_PasswordUsed', 'Sea
 
 # %% ../../nbs/routes/user.ipynb 3
 import os
+
 from enum import Enum
-import httpx
-import asyncio
 from typing import List
 
 import datetime as dt
-import time
+
 import base64
+import asyncio
+import httpx
+
 
 import domolibrary.utils.DictDot as dd
 from domolibrary.utils.convert import test_valid_email
@@ -406,7 +408,7 @@ async def search_users_by_email(
                         {
                             "filterType": "text",
                             "field": "emailAddress",
-                            "text": " ".join(user_email_ls),
+                            "text": " ".join(user_ls),
                         }
                     ],
                 },
@@ -692,7 +694,7 @@ async def download_avatar(
     return_raw: bool = False,
     parent_class: str = None,
     debug_num_stacks_to_drop=1,
-    session: httpx.AsyncClient = None
+    session: httpx.AsyncClient = None,
 ):
     url = f"https://{auth.domo_instance}.domo.com/api/content/v1/avatar/USER/{user_id}?size={pixels}"
 
@@ -704,7 +706,7 @@ async def download_avatar(
         headers={"accept": "image/png;charset=utf-8"},
         num_stacks_to_drop=debug_num_stacks_to_drop,
         parent_class=parent_class,
-        session = session
+        session=session,
     )
 
     if return_raw:
@@ -741,12 +743,12 @@ async def download_avatar(
 # %% ../../nbs/routes/user.ipynb 49
 def generate_avatar_bytestr(img_bytestr, img_type):
     if isinstance(img_bytestr, str):
-        img_bytestr = img_bytestr.encode( 'utf-8')
+        img_bytestr = img_bytestr.encode("utf-8")
 
     if not uimg.isBase64(img_bytestr):
         img_bytestr = base64.b64encode(img_bytestr)
 
-    img_bytestr = img_bytestr.decode('utf-8')
+    img_bytestr = img_bytestr.decode("utf-8")
 
     html_encoding = f"data:image/{img_type};base64,"
 
@@ -764,7 +766,7 @@ async def upload_avatar(
     img_type: str,  #'jpg or png'
     debug_api: bool = False,
     debug_num_stacks_to_drop=1,
-    session:httpx.AsyncClient = None,
+    session: httpx.AsyncClient = None,
     parent_class: str = None,
 ):
     url = f"https://{auth.domo_instance}.domo.com/api/content/v1/avatar/bulk"

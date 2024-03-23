@@ -110,7 +110,7 @@ async def get_workspace_auth_token_params(workspace_id, auth, return_raw: bool =
     if not open_instances:
         raise JupyterAPI_WorkspaceStarted(
             status=res.status,
-            response= "There are no open instances. Do you need to start the workspace?",
+            response="There are no open instances. Do you need to start the workspace?",
             domo_instance=auth.domo_instance,
             function_name=res.traceback_details.function_name,
         )
@@ -313,7 +313,8 @@ class generate_update_jupyter_body_factory(Enum):
             return cls[value.upper()].value
         except:
             return cls.TEXT.value
-    
+
+
 def generate_update_jupyter_body(
     new_content, content_path: str  # my_folder/datatypes.ipynb
 ):

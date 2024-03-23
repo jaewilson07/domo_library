@@ -5,15 +5,13 @@ __all__ = ['upload_data']
 
 # %% ../../nbs/utils/upload_data.ipynb 2
 import httpx
-import pandas as pd
-
-# import asyncio
 
 import domolibrary.client.Logger as lc
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.classes.DomoDataset as dmds
+import pandas as pd
 
-# %% ../../nbs/utils/upload_data.ipynb 3
+# %% ../../nbs/utils/upload_data.ipynb 4
 async def loop_upload(
     upload_df: pd.DataFrame,
     consol_ds: dmds.DomoDataset,
@@ -70,7 +68,7 @@ async def loop_upload(
 
     return res
 
-# %% ../../nbs/utils/upload_data.ipynb 4
+# %% ../../nbs/utils/upload_data.ipynb 5
 async def upload_data(
     # instance where the data_fn function will execute against
     data_fn,  # data function to execute

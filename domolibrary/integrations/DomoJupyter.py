@@ -9,7 +9,7 @@ __all__ = ['GetJupyter_ErrorRetrievingAccount', 'GetJupyter_ErrorRetrievingAccou
 # %% ../../nbs/integrations/DomoJupyter.ipynb 2
 import pandas as pd
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Optional,Tuple, List
 from enum import Enum
 
 
@@ -42,10 +42,7 @@ def get_jupyter_account(
     account_name: str,  # name of account as it appears in the
     domojupyter_fn: callable,
     maximum_retry: int = 10,
-) -> (
-    list,
-    dict,
-):  # returns account properties list and a dictionary of the properties.
+) -> Tuple[List, dict] :  # returns account properties list and a dictionary of the properties.
     """import a domojupyter account, will loop until success"""
     account_properties = None
 
@@ -111,7 +108,7 @@ class GetInstanceConfig:
         debug_api: bool = False,
         debug_log: bool = False,
         debug_num_stacks_to_drop: int = 2,
-    ) -> [dict]:  # list of config query
+    ) -> List[dict]:  # list of config query
         """wrapper for `DomoDataset.query_dataset_private` retrieves company configuration dataset and stores it as config"""
 
         ds = await dmds.DomoDataset.get_from_id(

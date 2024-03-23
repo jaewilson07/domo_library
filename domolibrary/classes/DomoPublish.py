@@ -6,7 +6,7 @@ __all__ = ['DomoPublication_Subscription', 'DomoPublication_Content', 'DomoPubli
 
 # %% ../../nbs/classes/50_DomoPublish.ipynb 2
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Optional, List
 
 import datetime as dt
 import pandas as pd
@@ -25,7 +25,7 @@ import domolibrary.classes.DomoLineage as dmdl
 
 import domolibrary.utils.chunk_execution as ce
 
-# %% ../../nbs/classes/50_DomoPublish.ipynb 4
+# %% ../../nbs/classes/50_DomoPublish.ipynb 5
 @dataclass
 class DomoPublication_Subscription:
     subscription_id: str
@@ -49,7 +49,7 @@ class DomoPublication_Subscription:
             ),
         )
 
-# %% ../../nbs/classes/50_DomoPublish.ipynb 6
+# %% ../../nbs/classes/50_DomoPublish.ipynb 7
 @dataclass
 class DomoPublication_Content:
     content_id: str
@@ -86,14 +86,14 @@ class DomoPublication_Content:
         }
         return temp_dict
 
-# %% ../../nbs/classes/50_DomoPublish.ipynb 8
+# %% ../../nbs/classes/50_DomoPublish.ipynb 9
 class DomoPublication_UnexpectedContentType(Exception):
     def __init__(self, publication_id, content_type, domo_instance):
         super().__init__(
             f"DomoPublication_Instantiation: Unexpected content type {content_type} in publication {publication_id} in {domo_instance}"
         )
 
-# %% ../../nbs/classes/50_DomoPublish.ipynb 9
+# %% ../../nbs/classes/50_DomoPublish.ipynb 10
 @dataclass
 class DomoPublication:
     id: str
@@ -104,13 +104,13 @@ class DomoPublication:
 
     auth: dmda.DomoAuth = field(default=None, repr=False)
 
-    subscription_authorizations: [DomoPublication_Subscription] = field(
+    subscription_authorizations: List[DomoPublication_Subscription] = field(
         default_factory=list
     )
-    content: [DomoPublication_Content] = field(default_factory=list)
+    content: List[DomoPublication_Content] = field(default_factory=list)
 
-    content_page_id_ls: [str] = field(default_factory=list)
-    content_dataset_id_ls: [str] = field(default_factory=list)
+    content_page_id_ls: List[str] = field(default_factory=list)
+    content_dataset_id_ls: List[str] = field(default_factory=list)
 
     lineage: dmdl.DomoLineage = None
 
@@ -161,7 +161,7 @@ class DomoPublication:
 
         return domo_pub
 
-# %% ../../nbs/classes/50_DomoPublish.ipynb 10
+# %% ../../nbs/classes/50_DomoPublish.ipynb 11
 @patch_to(DomoPublication, cls_method=True)
 async def get_from_id(cls, publication_id=None, auth: dmda.DomoAuth = None, timeout=10):
 
@@ -178,7 +178,7 @@ async def get_from_id(cls, publication_id=None, auth: dmda.DomoAuth = None, time
 
     return cls._from_json(obj=res.response, auth=auth)
 
-# %% ../../nbs/classes/50_DomoPublish.ipynb 15
+# %% ../../nbs/classes/50_DomoPublish.ipynb 16
 @dataclass
 class DomoPublications:
     @classmethod
@@ -205,7 +205,7 @@ class DomoPublications:
 
         return [DomoPublication_Subscription._from_json(sub) for sub in sub_ls]
 
-# %% ../../nbs/classes/50_DomoPublish.ipynb 18
+# %% ../../nbs/classes/50_DomoPublish.ipynb 19
 @patch_to(DomoPublications, cls_method=True)
 async def search_publications(
     cls: DomoPublications,
@@ -236,7 +236,7 @@ async def search_publications(
         ]
     )
 
-# %% ../../nbs/classes/50_DomoPublish.ipynb 20
+# %% ../../nbs/classes/50_DomoPublish.ipynb 21
 @patch_to(DomoPublication, cls_method=False)
 def convert_content_to_dataframe(self, return_raw: bool = False):
 
@@ -280,13 +280,13 @@ def convert_lineage_to_dataframe(self, return_raw: bool = False):
 
     return pd.DataFrame(output_ls)
 
-# %% ../../nbs/classes/50_DomoPublish.ipynb 21
+# %% ../../nbs/classes/50_DomoPublish.ipynb 22
 @patch_to(DomoPublication, cls_method=True)
 async def create_publication(
     cls,
     name: str,
-    content_ls: [DomoPublication_Content],
-    subscription_ls: [DomoPublication_Subscription],
+    content_ls: List[DomoPublication_Content],
+    subscription_ls: List[DomoPublication_Subscription],
     unique_id: str = None,
     description: str = None,
     auth: dmda.DomoAuth = None,
@@ -335,13 +335,13 @@ async def create_publication(
 
     return cls._from_json(obj=res.response, auth=auth)
 
-# %% ../../nbs/classes/50_DomoPublish.ipynb 23
+# %% ../../nbs/classes/50_DomoPublish.ipynb 24
 @patch_to(DomoPublication, cls_method=True)
 async def update_publication(
     cls,
     name: str,
-    content_ls: [DomoPublication_Content],
-    subscription_ls: [DomoPublication_Subscription],
+    content_ls: List[DomoPublication_Content],
+    subscription_ls: List[DomoPublication_Subscription],
     publication_id: str,
     description: str = None,
     auth: dmda.DomoAuth = None,
@@ -389,7 +389,7 @@ async def update_publication(
 
     return cls._from_json(obj=res.response, auth=auth)
 
-# %% ../../nbs/classes/50_DomoPublish.ipynb 25
+# %% ../../nbs/classes/50_DomoPublish.ipynb 26
 @patch_to(DomoPublication, cls_method=True)
 async def get_subscription_invites_list(
     cls, auth: dmda.DomoAuth, debug_api: bool = False

@@ -21,7 +21,7 @@ import domolibrary.client.DomoAuth as dmda
 class DomoApplication:
     auth: dmda.DomoAuth = field(repr=False)
     id: str
-    version : str = None
+    version: str = None
     name: str = None
     customer_id: str = None
     description: str = None
@@ -29,7 +29,6 @@ class DomoApplication:
     grants: List[str] = None
     jobs: List[dmdj.DomoJob] = field(default=None)
     jobs_schedule: List[dmdj.DomoTrigger_Schedule] = field(default=None, repr=False)
-
 
     @classmethod
     def _from_json(cls, obj, auth: dmda.DomoFullAuth = None):
@@ -43,9 +42,9 @@ class DomoApplication:
             version=dd.version,
             execution_class=dd.executionClass,
             grants=dd.authorities,
-            auth=auth
+            auth=auth,
         )
-    
+
     def _get_job_class(self):
         return DomoJob_Types.get_from_api_name(self.name)
 
@@ -75,7 +74,9 @@ async def get_from_id(
 
 # %% ../../nbs/classes/50_DomoApplication.ipynb 15
 @patch_to(DomoApplication)
-async def find_next_job_schedule(self, return_raw: bool = False) -> dmdj.DomoTrigger_Schedule:
+async def find_next_job_schedule(
+    self, return_raw: bool = False
+) -> dmdj.DomoTrigger_Schedule:
 
     await self.get_jobs()
     await self.get_schedules()

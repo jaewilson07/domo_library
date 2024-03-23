@@ -21,7 +21,7 @@ import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoError as de
 import domolibrary.client.Logger as dl
 
-# %% ../../nbs/client/10_get_data.ipynb 3
+# %% ../../nbs/client/10_get_data.ipynb 4
 async def create_aiohttp_session(
     session: aiohttp.ClientSession = None,
 ) -> Tuple[aiohttp.ClientSession, bool]:
@@ -52,7 +52,7 @@ def create_headers(
         headers.update(**auth.auth_header)
     return headers
 
-# %% ../../nbs/client/10_get_data.ipynb 4
+# %% ../../nbs/client/10_get_data.ipynb 5
 async def get_data_aiohttp(
     url: str,
     method: str,
@@ -120,19 +120,19 @@ async def get_data_aiohttp(
         if is_close_session:
             await session.close()
 
-# %% ../../nbs/client/10_get_data.ipynb 7
+# %% ../../nbs/client/10_get_data.ipynb 8
 class GetData_Error(de.DomoError):
     def __init__(self, message, url):
         super().__init__(message=message, domo_instance=url)
 
-# %% ../../nbs/client/10_get_data.ipynb 8
+# %% ../../nbs/client/10_get_data.ipynb 9
 def create_httpx_session(
     session: httpx.AsyncClient = None, is_verify: bool = False
 ) -> Tuple[httpx.AsyncClient, bool]:
     is_close_session = False
     if session is None:
         is_close_session = True
-        session = httpx.AsyncClient(verify = is_verify)
+        session = httpx.AsyncClient(verify=is_verify)
     return session, is_close_session
 
 
@@ -144,7 +144,7 @@ async def handle_error(e, url, attempt, max_attempt):
     await asyncio.sleep(5)
     return attempt
 
-# %% ../../nbs/client/10_get_data.ipynb 9
+# %% ../../nbs/client/10_get_data.ipynb 10
 async def get_data(
     url: str,
     method: str,
@@ -161,7 +161,7 @@ async def get_data(
     parent_class: str = None,  # name of the parent calling class
     num_stacks_to_drop: int = 2,  # number of stacks to drop from the stack trace.  see `domolibrary.client.Logger.TracebackDetails`.  use 2 with class > route structure.  use 1 with route based approach
     debug_traceback: bool = False,
-    is_verify : bool = False
+    is_verify: bool = False,
 ) -> rgd.ResponseGetData:
     """async wrapper for asyncio requests"""
 
@@ -173,7 +173,9 @@ async def get_data(
 
     headers = create_headers(auth=auth, content_type=content_type, headers=headers)
 
-    session, is_close_session = create_httpx_session(session = session, is_verify =is_verify)
+    session, is_close_session = create_httpx_session(
+        session=session, is_verify=is_verify
+    )
 
     traceback_details = dl.get_traceback(
         num_stacks_to_drop=num_stacks_to_drop,
@@ -267,7 +269,7 @@ async def get_data(
             if is_close_session:
                 await session.aclose()
 
-# %% ../../nbs/client/10_get_data.ipynb 14
+# %% ../../nbs/client/10_get_data.ipynb 15
 async def get_data_stream(
     url: str,
     auth: dmda.DomoAuth,
@@ -281,12 +283,12 @@ async def get_data_stream(
     parent_class: str = None,  # name of the parent calling class
     num_stacks_to_drop: int = 2,  # number of stacks to drop from the stack trace.  see `domolibrary.client.Logger.TracebackDetails`.  use 2 with class > route structure.  use 1 with route based approach
     debug_traceback: bool = False,
-    session : httpx.AsyncClient = None,
-    is_verify : bool = False
+    session: httpx.AsyncClient = None,
+    is_verify: bool = False,
 ) -> rgd.ResponseGetData:
     """async wrapper for asyncio requests"""
 
-    create_httpx_session(session = session, is_verify = is_verify)
+    create_httpx_session(session=session, is_verify=is_verify)
     if debug_api:
         print("🐛 debugging get_data")
 
@@ -330,9 +332,8 @@ async def get_data_stream(
 
     content = bytearray()
 
-
     try:
-        async with session or httpx.AsyncClient(verify = False) as client:
+        async with session or httpx.AsyncClient(verify=False) as client:
             async with client.stream(method, url=url, headers=headers) as res:
                 if res.status_code == 200:
                     async for chunk in res.aiter_bytes():
@@ -355,12 +356,12 @@ async def get_data_stream(
 
         await asyncio.sleep(5)
 
-# %% ../../nbs/client/10_get_data.ipynb 18
+# %% ../../nbs/client/10_get_data.ipynb 19
 class LooperError(Exception):
     def __init__(self, loop_stage: str, message):
         super().__init__(f"{loop_stage} - {message}")
 
-# %% ../../nbs/client/10_get_data.ipynb 19
+# %% ../../nbs/client/10_get_data.ipynb 20
 async def looper(
     auth: dmda.DomoAuth,
     session: httpx.AsyncClient,
@@ -382,11 +383,11 @@ async def looper(
     parent_class: str = None,
     timeout: bool = 10,
     wait_sleep: int = 0,
-    is_verify:bool= False
+    is_verify: bool = False,
 ) -> rgd.ResponseGetData:
     is_close_session = False
 
-    session, is_close_session = create_httpx_session(session, is_verify = is_verify)
+    session, is_close_session = create_httpx_session(session, is_verify=is_verify)
 
     allRows = []
     isLoop = True
@@ -477,7 +478,7 @@ async def looper(
 
     return await rgd.ResponseGetData._from_looper(res=res, array=allRows)
 
-# %% ../../nbs/client/10_get_data.ipynb 23
+# %% ../../nbs/client/10_get_data.ipynb 24
 async def looper_aiohttp(
     auth: dmda.DomoAuth,
     session: aiohttp.ClientSession,
@@ -586,7 +587,7 @@ async def looper_aiohttp(
 
     return await rgd.ResponseGetData._from_looper(res=res, array=allRows)
 
-# %% ../../nbs/client/10_get_data.ipynb 25
+# %% ../../nbs/client/10_get_data.ipynb 26
 class RouteFunction_ResponseTypeError(TypeError):
     def __init__(self, result):
         super().__init__(

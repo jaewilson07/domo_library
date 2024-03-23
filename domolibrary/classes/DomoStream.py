@@ -4,7 +4,6 @@
 __all__ = ['custom_query', 'StreamConfig', 'DomoStream']
 
 # %% ../../nbs/classes/50_DomoStream.ipynb 3
-from enum import Enum
 from dataclasses import dataclass, field
 from typing import List, Optional
 from abc import ABC, abstractmethod

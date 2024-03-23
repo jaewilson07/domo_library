@@ -136,7 +136,7 @@ async def get_user_attribute_by_id(
             message=res.response,
             function_name=res.traceback_details.function_name,
             parent_class=parent_class,
-            domo_instance=domo_instance,
+            domo_instance=auth.domo_instance,
         )
 
     res.response = next(

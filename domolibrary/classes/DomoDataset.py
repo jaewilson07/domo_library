@@ -187,6 +187,29 @@ async def _test_missing_columns(
 
     return False
 
+# %% ../../nbs/classes/50_DomoDataset.ipynb 14
+@patch_to(DomoDataset_Schema)
+async def reset_col_order(self: DomoDataset_Schema, df: pd.DataFrame, dataset_id):
+
+    await self.get()
+
+    if len(self.columns) != len(df.columns):
+        raise Exception("")
+
+    for index, col in enumerate(self.schema.columns):
+        col.order = col.order if col.order > 0 else index
+
+    # for index, schema in enumerate(consol_ds.schema.columns):
+    #     schema.order = index
+
+    # schema = {'columns': [col.__dict__ for col in consol_ds.schema.columns]}
+    # schema
+
+    # import domolibrary.routes.dataset as dataset_routes
+    # await dataset_routes.alter_schema(auth = consol_auth, dataset_id = consol_ds.id, schema_obj = schema)
+
+    df[[]]
+
 # %% ../../nbs/classes/50_DomoDataset.ipynb 15
 @patch_to(DomoDataset_Schema)
 def to_dict(self: DomoDataset_Schema):
@@ -297,7 +320,7 @@ class DomoDataset_Tags:
 
     async def set(
         self,
-        tag_ls: [str],
+        tag_ls: List[str],
         dataset_id: str = None,
         auth: Optional[dmda.DomoAuth] = None,
         debug_api: bool = False,
@@ -333,7 +356,7 @@ class DomoDataset_Tags:
 @patch_to(DomoDataset_Tags)
 async def add(
     self: DomoDataset_Tags,
-    add_tag_ls: [str],
+    add_tag_ls: List[str],
     dataset_id: str = None,
     auth: Optional[dmda.DomoAuth] = None,
     debug_api: bool = False,
@@ -364,7 +387,7 @@ async def add(
 @patch_to(DomoDataset_Tags)
 async def remove(
     self: DomoDataset_Tags,
-    remove_tag_ls: [str],
+    remove_tag_ls: List[str],
     dataset_id: str = None,
     auth: dmda.DomoFullAuth = None,
     debug_api: bool = False,
@@ -505,7 +528,7 @@ async def query_dataset_private(
     dataset_id: str,
     sql: str,
     session: Optional[httpx.AsyncClient] = None,
-    filter_pdp_policy_id_ls: [int] = None,  # filter by pdp policy
+    filter_pdp_policy_id_ls: List[int] = None,  # filter by pdp policy
     loop_until_end: bool = False,  # retrieve all available rows
     limit=100,  # maximum rows to return per request.  refers to PAGINATION
     skip=0,

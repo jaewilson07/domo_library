@@ -4,6 +4,9 @@
 __all__ = ['DomoBootstrap_Feature', 'DomoBootstrap']
 
 # %% ../../nbs/classes/50_DomoBootstrap.ipynb 2
+from ..routes.bootstrap import InvalidAuthTypeError
+
+# %% ../../nbs/classes/50_DomoBootstrap.ipynb 3
 from dataclasses import dataclass, field
 from nbdev.showdoc import patch_to
 import httpx
@@ -15,10 +18,7 @@ import domolibrary.client.DomoAuth as dmda
 import domolibrary.routes.bootstrap as bootstrap_routes
 import domolibrary.utils.chunk_execution as ce
 
-# %% ../../nbs/classes/50_DomoBootstrap.ipynb 3
-from ..routes.bootstrap import InvalidAuthTypeError
-
-# %% ../../nbs/classes/50_DomoBootstrap.ipynb 4
+# %% ../../nbs/classes/50_DomoBootstrap.ipynb 5
 @dataclass
 class DomoBootstrap_Feature:
     id: int
@@ -42,7 +42,7 @@ class DomoBootstrap_Feature:
         )
         return bsf
 
-# %% ../../nbs/classes/50_DomoBootstrap.ipynb 5
+# %% ../../nbs/classes/50_DomoBootstrap.ipynb 6
 @dataclass
 class DomoBootstrap:
     auth: dmda.DomoAuth = field(repr=False)
@@ -51,7 +51,7 @@ class DomoBootstrap:
     page_ls: list[dmpg.DomoPage] = field(default=None)
     feature_ls: list[DomoBootstrap_Feature] = field(default=None)
 
-# %% ../../nbs/classes/50_DomoBootstrap.ipynb 6
+# %% ../../nbs/classes/50_DomoBootstrap.ipynb 7
 @patch_to(DomoBootstrap)
 async def get_all(
     self: DomoBootstrap,
@@ -76,7 +76,7 @@ async def get_all(
 
     return res.response
 
-# %% ../../nbs/classes/50_DomoBootstrap.ipynb 9
+# %% ../../nbs/classes/50_DomoBootstrap.ipynb 10
 @patch_to(DomoBootstrap)
 async def get_customer_id(
     self: DomoBootstrap,
@@ -100,7 +100,7 @@ async def get_customer_id(
 
     return self.customer_id
 
-# %% ../../nbs/classes/50_DomoBootstrap.ipynb 12
+# %% ../../nbs/classes/50_DomoBootstrap.ipynb 13
 @patch_to(DomoBootstrap)
 async def get_pages(
     self: DomoBootstrap,
@@ -134,7 +134,7 @@ async def get_pages(
 
     return self.page_ls
 
-# %% ../../nbs/classes/50_DomoBootstrap.ipynb 15
+# %% ../../nbs/classes/50_DomoBootstrap.ipynb 16
 @patch_to(DomoBootstrap)
 async def get_features(
     self: DomoBootstrap,
@@ -165,7 +165,7 @@ async def get_features(
 
     return feature_list
 
-# %% ../../nbs/classes/50_DomoBootstrap.ipynb 18
+# %% ../../nbs/classes/50_DomoBootstrap.ipynb 19
 @patch_to(DomoBootstrap)
 async def is_feature_accountsv2_enabled(
     self: DomoBootstrap,

@@ -10,7 +10,7 @@ import domolibrary.client.get_data as gd
 import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
 
-# %% ../../nbs/routes/stream.ipynb 3
+# %% ../../nbs/routes/stream.ipynb 4
 async def get_stream_by_id(
     auth: dmda.DomoAuth,
     stream_id: str,

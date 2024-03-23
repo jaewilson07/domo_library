@@ -10,15 +10,18 @@ import domolibrary.client.get_data as gd
 import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
 
-# %% ../../nbs/routes/activity_log.ipynb 4
+# %% ../../nbs/routes/activity_log.ipynb 5
 @gd.route_function
 async def get_activity_log_object_types(
     auth: dmda.DomoAuth,
     parent_class: str = None,
+    debug_num_stacks_to_drop = 1, 
+    debug_api: bool = False,
+    session: httpx.AsyncClient = None,
 ) -> rgd.ResponseGetData:
     """retrieves a list of valid objectTypes that can be used to search the activity_log API"""
 
-    url = f"https://{auth.domo+_instance}.domo.com/api/audit/v1/user-audits/objectTypes"
+    url = f"https://{auth.domo_instance}.domo.com/api/audit/v1/user-audits/objectTypes"
 
     return await gd.get_data(
         url=url,
@@ -29,7 +32,7 @@ async def get_activity_log_object_types(
         num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
-# %% ../../nbs/routes/activity_log.ipynb 7
+# %% ../../nbs/routes/activity_log.ipynb 8
 @gd.route_function
 async def search_activity_log(
     auth: dmda.DomoAuth,

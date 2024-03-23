@@ -4,6 +4,15 @@
 __all__ = ['DomoAuth', 'DomoFullAuth', 'test_is_full_auth', 'DomoTokenAuth', 'DomoDeveloperAuth', 'DomoJupyterAuth',
            'DomoJupyterFullAuth', 'DomoJupyterTokenAuth', 'test_is_jupyter_auth']
 
+# %% ../../nbs/client/95_DomoAuth.ipynb 2
+from domolibrary.routes.auth import (
+    AccountLockedError,
+    InvalidAuthTypeError,
+    InvalidCredentialsError,
+    InvalidInstanceError,
+    NoAccessTokenReturned,
+)
+
 # %% ../../nbs/client/95_DomoAuth.ipynb 3
 from dataclasses import dataclass, field
 from typing import Optional, Union
@@ -17,15 +26,6 @@ import domolibrary.client.Logger as lg
 import domolibrary.client.DomoError as de
 
 import domolibrary.routes.auth as auth_routes
-
-# %% ../../nbs/client/95_DomoAuth.ipynb 4
-from domolibrary.routes.auth import (
-    AccountLockedError,
-    InvalidAuthTypeError,
-    InvalidCredentialsError,
-    InvalidInstanceError,
-    NoAccessTokenReturned,
-)
 
 # %% ../../nbs/client/95_DomoAuth.ipynb 7
 @dataclass
@@ -123,7 +123,7 @@ class DomoFullAuth(_DomoAuth_Optional, _DomoFullAuth_Required, _DomoAuth_Require
         return self.auth_header
 
     async def generate_auth_header(self, token: str = None) -> dict:
-        return await self._generate_auth_header(token = token)
+        return await self._generate_auth_header(token=token)
 
     async def get_auth_token(
         self,
@@ -212,7 +212,7 @@ class DomoTokenAuth(_DomoAuth_Optional, _DomoTokenAuth_Required, _DomoAuth_Requi
 
         if len(traceback_details.traceback_stack) >= 3:
             function_name = traceback_details.traceback_stack[-3][2]
-        
+
         if not function_name == "get_auth_token" and not self.token:
             print(
                 "warning this token has not been validated by who_am_i, run get_auth_token first"
@@ -222,7 +222,7 @@ class DomoTokenAuth(_DomoAuth_Optional, _DomoTokenAuth_Required, _DomoAuth_Requi
             "x-domo-developer-token": self.token or self.domo_access_token
         }
         return self.auth_header
-    
+
     async def generate_auth_header(self):
         return await self._generate_auth_header()
 
@@ -329,7 +329,6 @@ class _DomoJupyter_Optional:
         self.set_manual_login()
 
 
-
 @dataclass
 class _DomoJupyter_Required:
     jupyter_token: str
@@ -376,7 +375,7 @@ class DomoJupyterFullAuth(_DomoJupyter_Optional, DomoFullAuth, _DomoJupyter_Requ
         i.e. adds DomoJupyter specific auth fields
         eventually can add DomoJupyter specific auth flow for generating auth token
         """
-        c= cls(
+        c = cls(
             domo_instance=auth.domo_instance,
             domo_username=auth.domo_username,
             domo_password=auth.domo_password,
@@ -387,13 +386,14 @@ class DomoJupyterFullAuth(_DomoJupyter_Optional, DomoFullAuth, _DomoJupyter_Requ
 
         return c
 
-
     async def generate_auth_header(self, token: str = None) -> dict:
         await self._generate_auth_header(token)
-        
-        self.auth_header.update({
-            "authorization": f"Token {self.jupyter_token}",
-        })
+
+        self.auth_header.update(
+            {
+                "authorization": f"Token {self.jupyter_token}",
+            }
+        )
 
         return self.auth_header
 
@@ -415,13 +415,15 @@ class DomoJupyterTokenAuth(_DomoJupyter_Optional, DomoTokenAuth, _DomoJupyter_Re
             service_location=service_location,
             service_prefix=service_prefix,
         )
-    
+
     async def generate_auth_header(self) -> dict:
         await self._generate_auth_header()
-        
-        self.auth_header.update({
-            "authorization": f"Token {self.jupyter_token}",
-        })
+
+        self.auth_header.update(
+            {
+                "authorization": f"Token {self.jupyter_token}",
+            }
+        )
 
         return self.auth_header
 

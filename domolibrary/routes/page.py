@@ -6,7 +6,7 @@ __all__ = ['PageRetrieval_byId_Error', 'get_page_by_id', 'get_page_definition', 
 
 # %% ../../nbs/routes/page.ipynb 2
 import httpx
-
+from typing import List
 import domolibrary.client.get_data as gd
 import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
@@ -281,9 +281,9 @@ async def delete_writelock(
 # %% ../../nbs/routes/page.ipynb 25
 async def add_page_owner(
     auth: dmda.DomoAuth,
-    page_id_ls: [],
-    group_id_ls: [],
-    user_id_ls: [],
+    page_id_ls: List[int],
+    group_id_ls: List[int],
+    user_id_ls: List[int],
     note: str = "",
     send_email: bool = False,
     session: httpx.AsyncClient = None,

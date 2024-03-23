@@ -6,7 +6,7 @@ __all__ = ['DomoAccessToken', 'get_access_tokens']
 # %% ../../nbs/classes/50_DomoAccessToken.ipynb 2
 import httpx
 import datetime as dt
-from fastcore.basics import patch_to
+from nbdev.showdoc import patch_to
 
 from dataclasses import dataclass, field, asdict
 
@@ -23,8 +23,9 @@ class DomoAccessToken:
     name: str
     owner: None
     expiration_date: dt.datetime
+    token: str = field(repr=False)
 
-    auth: dmda.DomoAuth
+    auth: dmda.DomoAuth = field(repr=False)
 
     def __eq__(self, other):
         if not isinstance(other, DomoAccessToken):
@@ -44,6 +45,7 @@ class DomoAccessToken:
             owner=owner,
             expiration_date=obj["expires"],
             auth=auth,
+            token=obj.get("token"),
         )
 
 # %% ../../nbs/classes/50_DomoAccessToken.ipynb 6
@@ -101,7 +103,7 @@ async def generate(
 
     return await cls._from_json(obj=res.response, auth=auth)
 
-# %% ../../nbs/classes/50_DomoAccessToken.ipynb 10
+# %% ../../nbs/classes/50_DomoAccessToken.ipynb 9
 @patch_to(DomoAccessToken)
 async def revoke(
     self,
@@ -116,4 +118,29 @@ async def revoke(
         debug_num_stacks_to_drop=debug_num_stacks_to_drop,
         parent_class=self.__class__.__name__,
         session=session,
+    )
+
+# %% ../../nbs/classes/50_DomoAccessToken.ipynb 11
+@patch_to(DomoAccessToken)
+async def regenerate(
+    self,
+    session: httpx.AsyncClient = None,
+    duration_in_days: int = 90,
+    debug_api: bool = False,
+    return_raw: bool = False,
+    debug_num_stacks_to_drop: int = 2,
+):
+
+    await self.revoke()
+
+    return await self.generate(
+        duration_in_days=duration_in_days,
+        token_name=self.name,
+        auth=self.auth,
+        owner=self.owner,
+        debug_api=debug_api,
+        session=session,
+        debug_num_stacks_to_drop=debug_num_stacks_to_drop,
+        return_raw=return_raw,
+        parent_class=self.__class__.__name__,
     )

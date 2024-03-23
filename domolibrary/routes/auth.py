@@ -5,11 +5,7 @@ __all__ = ['InvalidCredentialsError', 'AccountLockedError', 'InvalidAuthTypeErro
            'NoAccessTokenReturned', 'get_full_auth', 'get_developer_auth', 'who_am_i']
 
 # %% ../../nbs/routes/auth.ipynb 2
-import datetime as dt
-import time
-
-from dataclasses import dataclass, field
-from typing import Optional, Union
+from typing import Optional
 from urllib.parse import urlparse
 
 import httpx

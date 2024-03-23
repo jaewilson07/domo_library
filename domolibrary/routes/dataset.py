@@ -9,7 +9,7 @@ __all__ = ['DatasetNotFoundError', 'QueryRequestError', 'query_dataset_public', 
            'generate_share_dataset_payload', 'ShareDataset_Error', 'share_dataset']
 
 # %% ../../nbs/routes/dataset.ipynb 3
-from typing import Optional
+from typing import Optional, List
 from enum import Enum
 
 import io
@@ -22,7 +22,7 @@ import domolibrary.client.ResponseGetData as rgd
 import domolibrary.client.DomoAuth as dmda
 import domolibrary.client.DomoError as de
 
-# %% ../../nbs/routes/dataset.ipynb 5
+# %% ../../nbs/routes/dataset.ipynb 6
 class DatasetNotFoundError(de.DomoError):
     def __init__(
         self,
@@ -42,7 +42,7 @@ class DatasetNotFoundError(de.DomoError):
             parent_class=parent_class,
         )
 
-# %% ../../nbs/routes/dataset.ipynb 6
+# %% ../../nbs/routes/dataset.ipynb 7
 class QueryRequestError(de.DomoError):
     def __init__(
         self,
@@ -98,7 +98,7 @@ async def query_dataset_private(
     limit=100,  # maximum rows to return per request.  refers to PAGINATION
     skip=0,
     maximum=100,  # equivalent to the LIMIT or TOP clause in SQL, the number of rows to return total
-    filter_pdp_policy_id_ls: [int] = None,
+    filter_pdp_policy_id_ls: List[int] = None,
     debug_api: bool = False,
     debug_loop: bool = False,
     timeout: int = 10,
@@ -197,7 +197,7 @@ async def query_dataset_private(
 
     return res
 
-# %% ../../nbs/routes/dataset.ipynb 9
+# %% ../../nbs/routes/dataset.ipynb 10
 async def get_dataset_by_id(
     dataset_id: str,  # dataset id from URL
     auth: Optional[dmda.DomoAuth] = None,  # requires full authentication
@@ -231,7 +231,7 @@ async def get_dataset_by_id(
 
     return res
 
-# %% ../../nbs/routes/dataset.ipynb 12
+# %% ../../nbs/routes/dataset.ipynb 13
 async def get_schema(
     auth: dmda.DomoAuth,
     dataset_id: str,
@@ -252,7 +252,7 @@ async def get_schema(
         num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
-# %% ../../nbs/routes/dataset.ipynb 15
+# %% ../../nbs/routes/dataset.ipynb 16
 async def alter_schema(
     auth: dmda.DomoAuth,
     schema_obj: dict,
@@ -275,10 +275,10 @@ async def alter_schema(
         num_stacks_to_drop=debug_num_stacks_to_drop,
     )
 
-# %% ../../nbs/routes/dataset.ipynb 17
+# %% ../../nbs/routes/dataset.ipynb 18
 async def set_dataset_tags(
     auth: dmda.DomoFullAuth,
-    tag_ls: [str],  # complete list of tags for dataset
+    tag_ls: List[str],  # complete list of tags for dataset
     dataset_id: str,
     debug_api: bool = False,
     session: Optional[httpx.AsyncClient] = None,
@@ -312,7 +312,7 @@ async def set_dataset_tags(
 
     return res
 
-# %% ../../nbs/routes/dataset.ipynb 20
+# %% ../../nbs/routes/dataset.ipynb 21
 class UploadDataError(de.DomoError):
     """raise if unable to upload data to Domo"""
 
@@ -328,7 +328,7 @@ class UploadDataError(de.DomoError):
             domo_instance=domo_instance,
         )
 
-# %% ../../nbs/routes/dataset.ipynb 21
+# %% ../../nbs/routes/dataset.ipynb 22
 async def upload_dataset_stage_1(
     auth: dmda.DomoAuth,
     dataset_id: str,
@@ -389,7 +389,7 @@ async def upload_dataset_stage_1(
 
     return res
 
-# %% ../../nbs/routes/dataset.ipynb 23
+# %% ../../nbs/routes/dataset.ipynb 24
 async def upload_dataset_stage_2_file(
     auth: dmda.DomoAuth,
     dataset_id: str,
@@ -429,7 +429,7 @@ async def upload_dataset_stage_2_file(
 
     return res
 
-# %% ../../nbs/routes/dataset.ipynb 24
+# %% ../../nbs/routes/dataset.ipynb 25
 async def upload_dataset_stage_2_df(
     auth: dmda.DomoAuth,
     dataset_id: str,
@@ -471,7 +471,7 @@ async def upload_dataset_stage_2_df(
 
     return res
 
-# %% ../../nbs/routes/dataset.ipynb 25
+# %% ../../nbs/routes/dataset.ipynb 26
 async def upload_dataset_stage_3(
     auth: dmda.DomoAuth,
     dataset_id: str,
@@ -526,7 +526,7 @@ async def upload_dataset_stage_3(
 
     return res
 
-# %% ../../nbs/routes/dataset.ipynb 27
+# %% ../../nbs/routes/dataset.ipynb 28
 async def index_dataset(
     auth: dmda.DomoAuth,
     dataset_id: str,
@@ -548,7 +548,7 @@ async def index_dataset(
         debug_api=debug_api,
     )
 
-# %% ../../nbs/routes/dataset.ipynb 28
+# %% ../../nbs/routes/dataset.ipynb 29
 async def index_status(
     auth: dmda.DomoAuth,
     dataset_id: str,
@@ -564,7 +564,7 @@ async def index_status(
         auth=auth, method="GET", url=url, session=session, debug_api=debug_api
     )
 
-# %% ../../nbs/routes/dataset.ipynb 30
+# %% ../../nbs/routes/dataset.ipynb 31
 def generate_list_partitions_body(limit=100, offset=0):
     return {
         "paginationFields": [
@@ -619,7 +619,7 @@ async def list_partitions(
         )
     return res
 
-# %% ../../nbs/routes/dataset.ipynb 32
+# %% ../../nbs/routes/dataset.ipynb 33
 def generate_create_dataset_body(
     dataset_name: str, dataset_type: str = "API", schema: dict = None
 ):
@@ -660,7 +660,7 @@ async def create(
         debug_api=debug_api,
     )
 
-# %% ../../nbs/routes/dataset.ipynb 35
+# %% ../../nbs/routes/dataset.ipynb 36
 async def delete_partition_stage_1(
     auth: dmda.DomoAuth,
     dataset_id: str,
@@ -677,7 +677,7 @@ async def delete_partition_stage_1(
 
 # Stage 2. This will remove the partition association so that it doesn’t show up in the list call.  Technically, this is not required as a partition against a deleted data version will not count against the 400 partition limit, but as the current partitions api doesn’t make that clear, cleaning these up will make it much easier for you to manage.
 
-# %% ../../nbs/routes/dataset.ipynb 36
+# %% ../../nbs/routes/dataset.ipynb 37
 async def delete_partition_stage_2(
     auth: dmda.DomoAuth,
     dataset_id: str,
@@ -688,7 +688,7 @@ async def delete_partition_stage_2(
 
     return await gd.get_data(auth=auth, method="DELETE", url=url, debug_api=debug_api)
 
-# %% ../../nbs/routes/dataset.ipynb 37
+# %% ../../nbs/routes/dataset.ipynb 38
 async def delete(
     auth: dmda.DomoAuth,
     dataset_id: str,
@@ -701,7 +701,7 @@ async def delete(
         auth=auth, method="DELETE", url=url, session=session, debug_api=debug_api
     )
 
-# %% ../../nbs/routes/dataset.ipynb 38
+# %% ../../nbs/routes/dataset.ipynb 39
 class ShareDataset_AccessLevelEnum(Enum):
     CO_OWNER = "CO_OWNER"
     CAN_EDIT = "CAN_EDIT"
@@ -721,7 +721,7 @@ def generate_share_dataset_payload(
         "sendEmail": is_send_email,
     }
 
-# %% ../../nbs/routes/dataset.ipynb 39
+# %% ../../nbs/routes/dataset.ipynb 40
 class ShareDataset_Error(de.DomoError):
     def __init__(
         self,

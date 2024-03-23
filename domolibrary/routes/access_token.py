@@ -165,6 +165,7 @@ async def revoke_access_token(
         debug_api=debug_api,
         parent_class=parent_class,
         num_stacks_to_drop=debug_num_stacks_to_drop,
+        session = session
     )
 
     if not res.is_success:
