@@ -45,15 +45,7 @@ website:
                 contents: []
                 href: blog/posts/2024-01-02_update_users/index.ipynb
               - section: 2024-03-23_domopalooza24
-                contents:
-                  - blog/posts/2024-03-23_domopalooza24/Tut1 - Authentication In Domo.ipynb
-                  - blog/posts/2024-03-23_domopalooza24/Tut2 - Working with Objects
-                    and Domo Integration.ipynb
-                  - blog/posts/2024-03-23_domopalooza24/Tut3 - Generate a DomoStats
-                    style Dataset.ipynb
-                  - blog/posts/2024-03-23_domopalooza24/Tut4 - Using Access Token
-                    Authentication and Updating Domo via API.ipynb
-                  - blog/posts/2024-03-23_domopalooza24/Tut55 - extra materials.ipynb
+                contents: []
                 href: blog/posts/2024-03-23_domopalooza24/index.qmd
         href: blog/index.qmd
       - section: classes

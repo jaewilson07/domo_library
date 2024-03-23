@@ -18,8 +18,7 @@ import domolibrary.routes.group as group_routes
 import domolibrary.classes.DomoUser as dmu
 
 # %% auto 0
-__all__ = ["UpdateGroupMembership", "GroupMembership"]
-
+__all__ = ['UpdateGroupMembership', 'GroupMembership']
 
 # %% ../../nbs/classes/50_DomoGroup_Membership.ipynb 4
 class UpdateGroupMembership(de.DomoError):
@@ -146,7 +145,6 @@ class GroupMembership:
         # remove
         # set
 
-
 # %% ../../nbs/classes/50_DomoGroup_Membership.ipynb 6
 @patch_to(GroupMembership)
 async def get_owners(
@@ -176,7 +174,7 @@ async def get_owners(
             *[
                 dmg.DomoGroup.get_by_id(group_id=group_id, auth=auth)
                 for group_id in group_ids
-            ],
+            ]
         )
         self._current_owner_ls += domo_groups
 
@@ -192,7 +190,6 @@ async def get_owners(
 
     return self._current_owner_ls
     # return domo_users
-
 
 # %% ../../nbs/classes/50_DomoGroup_Membership.ipynb 7
 @patch_to(GroupMembership)
@@ -226,7 +223,6 @@ async def get_members(
     self.group.members_ls = self._current_member_ls
 
     return self.group.members_ls
-
 
 # %% ../../nbs/classes/50_DomoGroup_Membership.ipynb 9
 @patch_to(GroupMembership)
@@ -301,7 +297,6 @@ async def set_members(
 
     return await self.get_members()
 
-
 # %% ../../nbs/classes/50_DomoGroup_Membership.ipynb 10
 @patch_to(GroupMembership)
 async def add_owners(
@@ -374,7 +369,6 @@ async def set_owners(
         return res
 
     return await self.get_owners()
-
 
 # %% ../../nbs/classes/50_DomoGroup_Membership.ipynb 11
 @patch_to(GroupMembership)

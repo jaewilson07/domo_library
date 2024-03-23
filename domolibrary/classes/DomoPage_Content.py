@@ -17,7 +17,6 @@ import domolibrary.routes.page as page_routes
 import domolibrary.utils.DictDot as util_dd
 import domolibrary.utils.chunk_execution as ce
 
-
 # %% ../../nbs/classes/50_DomoPage_Content.ipynb 6
 @dataclass
 class PageLayoutTemplate:
@@ -54,7 +53,6 @@ class PageLayoutTemplate:
             "virtual": self.virtual,
             "virtualAppendix": self.virtual_appendix,
         }
-
 
 # %% ../../nbs/classes/50_DomoPage_Content.ipynb 7
 @dataclass
@@ -116,7 +114,6 @@ class PageLayoutBackground:
             "alpha": self.alpha,
             "src": self.src,
         }
-
 
 # %% ../../nbs/classes/50_DomoPage_Content.ipynb 9
 @dataclass
@@ -203,7 +200,6 @@ class PageLayoutContent:
             body["background"] = self.background.get_body()
         return body
 
-
 # %% ../../nbs/classes/50_DomoPage_Content.ipynb 10
 @dataclass
 class PageLayoutStandard:
@@ -232,7 +228,6 @@ class PageLayoutStandard:
                     obj.template.append(dc)
         return obj
 
-
 # %% ../../nbs/classes/50_DomoPage_Content.ipynb 12
 @dataclass
 class PageLayoutCompact:
@@ -259,7 +254,6 @@ class PageLayoutCompact:
                 if dc not in obj.template:
                     obj.template.append(dc)
         return obj
-
 
 # %% ../../nbs/classes/50_DomoPage_Content.ipynb 14
 @dataclass
