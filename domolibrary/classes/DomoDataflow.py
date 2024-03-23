@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 # %% auto 0
-__all__ = ['DomoDataflow']
+__all__ = ["DomoDataflow"]
 
 # %% ../../nbs/classes/50_DomoDataflow.ipynb 3
 from dataclasses import dataclass, field
@@ -25,6 +25,7 @@ from domolibrary.classes.DomoDataflow_History import (
     DomoDataflow_History,
     DomoDataflow_ActionResult,
 )
+
 
 # %% ../../nbs/classes/50_DomoDataflow.ipynb 6
 @dataclass
@@ -75,6 +76,7 @@ class DomoDataflow:
 
         return domo_dataflow
 
+
 # %% ../../nbs/classes/50_DomoDataflow.ipynb 7
 @patch_to(DomoDataflow, cls_method=True)
 async def get_from_id(
@@ -103,6 +105,7 @@ async def get_from_id(
 
     return cls._from_json(res.response, auth=auth)
 
+
 # %% ../../nbs/classes/50_DomoDataflow.ipynb 12
 @patch_to(DomoDataflow)
 async def execute(
@@ -118,6 +121,7 @@ async def execute(
         debug_api=debug_api,
         debug_num_stacks_to_drop=debug_num_stacks_to_drop,
     )
+
 
 # %% ../../nbs/classes/50_DomoDataflow.ipynb 16
 @patch_to(DomoDataflow, cls_method=True)
@@ -152,6 +156,7 @@ async def get_by_version_id(
     )
 
     return domo_dataflow
+
 
 # %% ../../nbs/classes/50_DomoDataflow.ipynb 18
 @patch_to(DomoDataflow)
@@ -188,7 +193,7 @@ async def get_versions(
             )
             for version_id in version_ids
         ],
-        n=10
+        n=10,
     )
 
     return self.versions

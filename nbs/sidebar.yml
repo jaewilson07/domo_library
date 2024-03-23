@@ -44,6 +44,17 @@ website:
               - section: 2024-01-02_update_users
                 contents: []
                 href: blog/posts/2024-01-02_update_users/index.ipynb
+              - section: 2024-03-23_domopalooza24
+                contents:
+                  - blog/posts/2024-03-23_domopalooza24/Tut1 - Authentication In Domo.ipynb
+                  - blog/posts/2024-03-23_domopalooza24/Tut2 - Working with Objects
+                    and Domo Integration.ipynb
+                  - blog/posts/2024-03-23_domopalooza24/Tut3 - Generate a DomoStats
+                    style Dataset.ipynb
+                  - blog/posts/2024-03-23_domopalooza24/Tut4 - Using Access Token
+                    Authentication and Updating Domo via API.ipynb
+                  - blog/posts/2024-03-23_domopalooza24/Tut55 - extra materials.ipynb
+                href: blog/posts/2024-03-23_domopalooza24/index.qmd
         href: blog/index.qmd
       - section: classes
         contents:
@@ -63,6 +74,7 @@ website:
           - classes/50_DomoDataset.ipynb
           - classes/50_DomoGrant.ipynb
           - classes/50_DomoGroup.ipynb
+          - classes/50_DomoGroup_Membership.ipynb
           - classes/50_DomoInstanceConfig.ipynb
           - classes/50_DomoInstanceConfig_UserAttributes.ipynb
           - classes/50_DomoJupyter.ipynb
