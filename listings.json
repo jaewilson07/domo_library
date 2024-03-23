@@ -1,0 +1,22 @@
+[
+  {
+    "listing": "/blog/index.html",
+    "items": [
+      "/blog/posts/2023-03-13-Custom_Roles/index.html",
+      "/blog/posts/2024-03-23_domopalooza24/dp24_intro_to_jupyter.html",
+      "/blog/posts/2024-01-02_update_users/index.html",
+      "/blog/posts/2023-012-18_DeleteDuplicateAccounts/index.html",
+      "/blog/posts/2023-11-18 _creatingDomoStats_MgicETL/without_domolibrary.html",
+      "/blog/posts/2023-11-18 _creatingDomoStats_MgicETL/index_v2_with_history.html",
+      "/blog/posts/2023-11-18 _creatingDomoStats_MgicETL/index.html",
+      "/blog/posts/2023-09-13_Domo_Jupyter/index.html",
+      "/blog/posts/2023-04-14_BackupCards/index.html",
+      "/blog/posts/2023-04-03_AutomatedTagging/index.html",
+      "/blog/posts/2023-02-02_DojoFeatures/index.html",
+      "/blog/posts/2023-02-02_DojoSQL/index.html",
+      "/blog/posts/2023-01-24-Domo_Everywhere_MultiInstance/index.html",
+      "/blog/posts/2023-01-24_Domo_Onboarding/index.html",
+      "/blog/posts/2023-01-24_DomoVariables/index.html"
+    ]
+  }
+]

@@ -1,0 +1,2279 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.551">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Jae Wilson">
+<meta name="dcterms.date" content="2023-11-28">
+
+<title>domolibrary - Tutorial - Generate a DomoStats dataset using DomoLibrary</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../../../styles.css">
+<meta property="og:title" content="domolibrary - Tutorial - Generate a DomoStats dataset using DomoLibrary">
+<meta property="og:site_name" content="domolibrary">
+<meta name="twitter:title" content="domolibrary - Tutorial - Generate a DomoStats dataset using DomoLibrary">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">domolibrary</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../blog/index.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaewilson07/domo_library"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/onyxreporting"> <i class="bi bi-twitter" role="img" aria-label="OnyxReporting Twitter">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Tutorial - Generate a DomoStats dataset using DomoLibrary</li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Client</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../client/get_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">get_data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../client/domoauth.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DomoAuth</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../client/logger.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logger</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../client/responsegetdata.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ResponseGetData</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../client/domoerror.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DomoError</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Classes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domoaccesstoken.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">AccessToken</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domoaccount.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Account</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domoaccount_config.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Account Config extensions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domoactivitylog.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Activity Log</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domoapplication.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Application</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domoapplication_job.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Job</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domobootstrap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bootstrap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domocard.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Card</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domocertification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Certification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domodatacenter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DataCenter</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domodataflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dataflow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domodataflow_action.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dataflow_Action</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domodataflow_history.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dataflow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domodataset.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dataset</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domogrant.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Grant</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domogroup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Group</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domogroup_membership.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Group</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domoinstanceconfig.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Instance Configuration</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domoinstanceconfig_userattributes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Instance Configuration User Attributes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domojupyter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DomoJupyter Integration</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domolineage.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lineage</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domopage.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Page</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domopage_content.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">PageContent</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domopdp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">PDP</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domopublish.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Publish</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domorole.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Role</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domosandbox.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sandbox</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domostream.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stream</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domouser.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">User</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Routes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/account.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Account Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/activity_log.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Activity Log Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/application.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Application Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/auth.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Auth Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/auth_accesstoken.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Access Token Auth Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/bootstrap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bootstrap Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/card.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Card Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/datacenter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Datacenter Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/dataflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dataflow Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/dataset.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dataset Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/grant.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Grant Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/group.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Group Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/instance_config.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Instance Config Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/jupyter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Jupyter Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/page.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Page Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/pdp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">PDP Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/publish.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Publish Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/role.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Role Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/sandbox.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sandbox Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/stream.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stream Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/user.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">User Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/user_attributes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">User Attribute Routes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Integrations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../integrations/Automation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Automation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../integrations/domojupyter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DomoJupyter (GetInstanceCredentials)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../integrations/MonitDataset.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">MonitDataset</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../integrations/rolehierarchy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RoleHierarchy</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Utils</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../utils/chunk_execution.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Async Code Execution</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../utils/convert.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Conversion utility functions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../utils/dictdot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DictDot</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../utils/image.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Utility Class</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../utils/read_creds_from_dotenv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Read Creds from DotEnv</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../utils/upload_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Upload Data to Domo</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Tutorial - Generate a DomoStats dataset using DomoLibrary</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">DomoStats</div>
+    <div class="quarto-category">MagicETL</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Jae Wilson </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 28, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<div id="bae946e8-371d-4475-b588-8aeac01e5736" class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pip install domolibrary</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="88a03454-93a8-4c82-bc3e-5b470836c876" class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>domo_username <span class="op">=</span> os.environ.get(<span class="st">"DOMO_USERNAME"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>domo_instance <span class="op">=</span> <span class="st">"domo-community"</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>domo_password <span class="op">=</span> os.environ.get(<span class="st">"DOJO_PASSWORD"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="ac8de4b3-e938-4a53-85f0-cc327642e386" class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> domolibrary.client.DomoAuth <span class="im">as</span> dmda</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>auth <span class="op">=</span> dmda.DomoFullAuth(</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    domo_username<span class="op">=</span>domo_username,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    domo_password<span class="op">=</span>domo_password,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span>domo_instance,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> auth.print_is_token()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>🎉 full_auth token retrieved from domo-community ⚙️</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>True</code></pre>
+</div>
+</div>
+<div id="0f0779bb-ca89-4312-ac53-e54abf62d002" class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> domolibrary.classes.DomoDatacenter <span class="im">as</span> dmdc</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>domo_datacenter <span class="op">=</span> dmdc.DomoDatacenter(auth<span class="op">=</span>auth)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>dataflows_ls <span class="op">=</span> <span class="cf">await</span> domo_datacenter.search_datacenter(</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    auth<span class="op">=</span>auth,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    entity_type<span class="op">=</span><span class="st">"DATAFLOW"</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    additional_filters_ls<span class="op">=</span>[</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>            <span class="st">"filterType"</span>: <span class="st">"term"</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>            <span class="st">"field"</span>: <span class="st">"data_flow_type"</span>,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>            <span class="st">"value"</span>: <span class="st">"MAGIC"</span>,</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>            <span class="st">"name"</span>: <span class="st">"Magic ETL v2"</span>,</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>            <span class="st">"not"</span>: <span class="va">False</span>,</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>dataflows_ls[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>{'entityType': 'dataflow',
+ 'databaseId': '340',
+ 'searchId': {'indexName': None,
+  'databaseId': '340',
+  'customer': 'mmmm-0012-0200',
+  'entityType': 'dataflow'},
+ 'createDate': 1699938646000,
+ 'lastModified': 1701451542000,
+ 'lastIndexed': 1701451545056,
+ 'highlightedFields': {},
+ 'language': 'English',
+ 'requestAccess': False,
+ 'score': 56.957905,
+ 'name': 'Demo Active Employees',
+ 'description': '',
+ 'ownedById': '699075231',
+ 'ownedByName': 'Mark Snodgrass',
+ 'tags': [],
+ 'lastRunDate': 1699938659000,
+ 'inputDatasets': [{'name': 'DomoStats - People',
+   'id': '241025d7-3cca-4369-b7c0-b3264277c0e1'},
+  {'name': 'Domo Dimensions - Calendar',
+   'id': 'd6b99a99-63c7-46f0-8e54-38045e29e710'}],
+ 'outputDatasets': [{'name': 'Demo Active Employees',
+   'id': 'b25b7f48-5257-4e26-bffa-b240b0caefea'}],
+ 'runCount': 1,
+ 'successRate': 1.0,
+ 'dataFlowType': 'MAGIC',
+ 'status': 'SUCCESS',
+ 'deleted': False,
+ 'passwordProtected': False,
+ 'abandoned': False,
+ 'owners': [{'id': '699075231',
+   'type': 'USER',
+   'displayName': 'Mark Snodgrass'}],
+ 'ownersLocalized': {'localizedMessage': 'Mark Snodgrass', 'count': 1},
+ 'paused': False,
+ 'winnerText': 'Demo Active Employees',
+ 'statusOrderPriority': 70,
+ 'inputCount': 2,
+ 'outputCount': 1,
+ 'ownedByType': 'USER',
+ 'customer': 'mmmm-0012-0200'}</code></pre>
+</div>
+</div>
+<div id="38ea7820-ae9a-4422-ab10-9876c3dfb9d0" class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dataflow_ids <span class="op">=</span> [dataflow.get(<span class="st">"databaseId"</span>) <span class="cf">for</span> dataflow <span class="kw">in</span> dataflows_ls]</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>dataflow_ids[<span class="dv">0</span>:<span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>['340', '131', '227', '37', '185']</code></pre>
+</div>
+</div>
+<div id="182c8833-d6fc-4231-829f-e7bcc59a09ef" class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> domolibrary.classes.DomoDataflow <span class="im">as</span> dmdf</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> asyncio</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>dataflow_definition_ls <span class="op">=</span> <span class="cf">await</span> asyncio.gather(</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>[</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        dmdf.DomoDataflow.get_from_id(dataflow_id<span class="op">=</span>dataflow_id, auth<span class="op">=</span>auth)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> dataflow_id <span class="kw">in</span> dataflow_ids</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>domo_dataflow <span class="op">=</span> dataflow_definition_ls[<span class="dv">0</span>]</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>domo_dataflow</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>DomoDataflow(id=340, name='Demo Active Employees', owner=None, description=None, tags=None, actions=[DomoDataflow_Action(id='d7b935c6-2184-4079-bc7b-4e50e25d1801', type='LoadFromVault', name='DomoStats - People', datasource_id='241025d7-3cca-4369-b7c0-b3264277c0e1', sql=None, depends_on=None, parent_actions=None), DomoDataflow_Action(id='cd3d5f9e-0bfe-40d9-bb95-45faf2d64b30', type='SelectValues', name='Select Columns', datasource_id=None, sql=None, depends_on=['d7b935c6-2184-4079-bc7b-4e50e25d1801'], parent_actions=[DomoDataflow_Action(id='d7b935c6-2184-4079-bc7b-4e50e25d1801', type='LoadFromVault', name='DomoStats - People', datasource_id='241025d7-3cca-4369-b7c0-b3264277c0e1', sql=None, depends_on=None, parent_actions=None)]), DomoDataflow_Action(id='18e365d8-8b24-471b-a1da-694a1936ad5c', type='LoadFromVault', name='Domo Dimensions - Calendar', datasource_id='d6b99a99-63c7-46f0-8e54-38045e29e710', sql=None, depends_on=None, parent_actions=None), DomoDataflow_Action(id='db088785-df3f-41c1-885f-5380223137ee', type='Filter', name='Filter Rows', datasource_id=None, sql=None, depends_on=['18e365d8-8b24-471b-a1da-694a1936ad5c'], parent_actions=[DomoDataflow_Action(id='18e365d8-8b24-471b-a1da-694a1936ad5c', type='LoadFromVault', name='Domo Dimensions - Calendar', datasource_id='d6b99a99-63c7-46f0-8e54-38045e29e710', sql=None, depends_on=None, parent_actions=None)]), DomoDataflow_Action(id='3956ad1d-cb9a-4fb0-9bc2-305e2f552932', type='SelectValues', name='Select Columns 1', datasource_id=None, sql=None, depends_on=['db088785-df3f-41c1-885f-5380223137ee'], parent_actions=[DomoDataflow_Action(id='db088785-df3f-41c1-885f-5380223137ee', type='Filter', name='Filter Rows', datasource_id=None, sql=None, depends_on=['18e365d8-8b24-471b-a1da-694a1936ad5c'], parent_actions=[DomoDataflow_Action(id='18e365d8-8b24-471b-a1da-694a1936ad5c', type='LoadFromVault', name='Domo Dimensions - Calendar', datasource_id='d6b99a99-63c7-46f0-8e54-38045e29e710', sql=None, depends_on=None, parent_actions=None)])]), DomoDataflow_Action(id='3ffe103e-4f89-4e55-89db-9a9a77fcbc59', type='Constant', name='Calendar', datasource_id=None, sql=None, depends_on=['3956ad1d-cb9a-4fb0-9bc2-305e2f552932'], parent_actions=[DomoDataflow_Action(id='3956ad1d-cb9a-4fb0-9bc2-305e2f552932', type='SelectValues', name='Select Columns 1', datasource_id=None, sql=None, depends_on=['db088785-df3f-41c1-885f-5380223137ee'], parent_actions=[DomoDataflow_Action(id='db088785-df3f-41c1-885f-5380223137ee', type='Filter', name='Filter Rows', datasource_id=None, sql=None, depends_on=['18e365d8-8b24-471b-a1da-694a1936ad5c'], parent_actions=[DomoDataflow_Action(id='18e365d8-8b24-471b-a1da-694a1936ad5c', type='LoadFromVault', name='Domo Dimensions - Calendar', datasource_id='d6b99a99-63c7-46f0-8e54-38045e29e710', sql=None, depends_on=None, parent_actions=None)])])]), DomoDataflow_Action(id='2a191a01-6be7-4646-b9af-ca3fea3a388a', type='Constant', name='Employees', datasource_id=None, sql=None, depends_on=['cd3d5f9e-0bfe-40d9-bb95-45faf2d64b30'], parent_actions=[DomoDataflow_Action(id='cd3d5f9e-0bfe-40d9-bb95-45faf2d64b30', type='SelectValues', name='Select Columns', datasource_id=None, sql=None, depends_on=['d7b935c6-2184-4079-bc7b-4e50e25d1801'], parent_actions=[DomoDataflow_Action(id='d7b935c6-2184-4079-bc7b-4e50e25d1801', type='LoadFromVault', name='DomoStats - People', datasource_id='241025d7-3cca-4369-b7c0-b3264277c0e1', sql=None, depends_on=None, parent_actions=None)])]), DomoDataflow_Action(id='6b89d1f5-ea18-480c-b3c5-f0bffde9fe3f', type='MergeJoin', name='Join Data', datasource_id=None, sql=None, depends_on=['3ffe103e-4f89-4e55-89db-9a9a77fcbc59', '2a191a01-6be7-4646-b9af-ca3fea3a388a'], parent_actions=[DomoDataflow_Action(id='3ffe103e-4f89-4e55-89db-9a9a77fcbc59', type='Constant', name='Calendar', datasource_id=None, sql=None, depends_on=['3956ad1d-cb9a-4fb0-9bc2-305e2f552932'], parent_actions=[DomoDataflow_Action(id='3956ad1d-cb9a-4fb0-9bc2-305e2f552932', type='SelectValues', name='Select Columns 1', datasource_id=None, sql=None, depends_on=['db088785-df3f-41c1-885f-5380223137ee'], parent_actions=[DomoDataflow_Action(id='db088785-df3f-41c1-885f-5380223137ee', type='Filter', name='Filter Rows', datasource_id=None, sql=None, depends_on=['18e365d8-8b24-471b-a1da-694a1936ad5c'], parent_actions=[DomoDataflow_Action(id='18e365d8-8b24-471b-a1da-694a1936ad5c', type='LoadFromVault', name='Domo Dimensions - Calendar', datasource_id='d6b99a99-63c7-46f0-8e54-38045e29e710', sql=None, depends_on=None, parent_actions=None)])])]), DomoDataflow_Action(id='2a191a01-6be7-4646-b9af-ca3fea3a388a', type='Constant', name='Employees', datasource_id=None, sql=None, depends_on=['cd3d5f9e-0bfe-40d9-bb95-45faf2d64b30'], parent_actions=[DomoDataflow_Action(id='cd3d5f9e-0bfe-40d9-bb95-45faf2d64b30', type='SelectValues', name='Select Columns', datasource_id=None, sql=None, depends_on=['d7b935c6-2184-4079-bc7b-4e50e25d1801'], parent_actions=[DomoDataflow_Action(id='d7b935c6-2184-4079-bc7b-4e50e25d1801', type='LoadFromVault', name='DomoStats - People', datasource_id='241025d7-3cca-4369-b7c0-b3264277c0e1', sql=None, depends_on=None, parent_actions=None)])])]), DomoDataflow_Action(id='cfe59cc5-a01f-4910-b6bc-e74d3c8a7170', type='Filter', name='Filter to actives', datasource_id=None, sql=None, depends_on=['6b89d1f5-ea18-480c-b3c5-f0bffde9fe3f'], parent_actions=[DomoDataflow_Action(id='6b89d1f5-ea18-480c-b3c5-f0bffde9fe3f', type='MergeJoin', name='Join Data', datasource_id=None, sql=None, depends_on=['3ffe103e-4f89-4e55-89db-9a9a77fcbc59', '2a191a01-6be7-4646-b9af-ca3fea3a388a'], parent_actions=[DomoDataflow_Action(id='3ffe103e-4f89-4e55-89db-9a9a77fcbc59', type='Constant', name='Calendar', datasource_id=None, sql=None, depends_on=['3956ad1d-cb9a-4fb0-9bc2-305e2f552932'], parent_actions=[DomoDataflow_Action(id='3956ad1d-cb9a-4fb0-9bc2-305e2f552932', type='SelectValues', name='Select Columns 1', datasource_id=None, sql=None, depends_on=['db088785-df3f-41c1-885f-5380223137ee'], parent_actions=[DomoDataflow_Action(id='db088785-df3f-41c1-885f-5380223137ee', type='Filter', name='Filter Rows', datasource_id=None, sql=None, depends_on=['18e365d8-8b24-471b-a1da-694a1936ad5c'], parent_actions=[DomoDataflow_Action(id='18e365d8-8b24-471b-a1da-694a1936ad5c', type='LoadFromVault', name='Domo Dimensions - Calendar', datasource_id='d6b99a99-63c7-46f0-8e54-38045e29e710', sql=None, depends_on=None, parent_actions=None)])])]), DomoDataflow_Action(id='2a191a01-6be7-4646-b9af-ca3fea3a388a', type='Constant', name='Employees', datasource_id=None, sql=None, depends_on=['cd3d5f9e-0bfe-40d9-bb95-45faf2d64b30'], parent_actions=[DomoDataflow_Action(id='cd3d5f9e-0bfe-40d9-bb95-45faf2d64b30', type='SelectValues', name='Select Columns', datasource_id=None, sql=None, depends_on=['d7b935c6-2184-4079-bc7b-4e50e25d1801'], parent_actions=[DomoDataflow_Action(id='d7b935c6-2184-4079-bc7b-4e50e25d1801', type='LoadFromVault', name='DomoStats - People', datasource_id='241025d7-3cca-4369-b7c0-b3264277c0e1', sql=None, depends_on=None, parent_actions=None)])])])]), DomoDataflow_Action(id='1176585b-85bf-454a-9967-f4a59caf4094', type='SelectValues', name='Select Columns 2', datasource_id=None, sql=None, depends_on=['cfe59cc5-a01f-4910-b6bc-e74d3c8a7170'], parent_actions=[DomoDataflow_Action(id='cfe59cc5-a01f-4910-b6bc-e74d3c8a7170', type='Filter', name='Filter to actives', datasource_id=None, sql=None, depends_on=['6b89d1f5-ea18-480c-b3c5-f0bffde9fe3f'], parent_actions=[DomoDataflow_Action(id='6b89d1f5-ea18-480c-b3c5-f0bffde9fe3f', type='MergeJoin', name='Join Data', datasource_id=None, sql=None, depends_on=['3ffe103e-4f89-4e55-89db-9a9a77fcbc59', '2a191a01-6be7-4646-b9af-ca3fea3a388a'], parent_actions=[DomoDataflow_Action(id='3ffe103e-4f89-4e55-89db-9a9a77fcbc59', type='Constant', name='Calendar', datasource_id=None, sql=None, depends_on=['3956ad1d-cb9a-4fb0-9bc2-305e2f552932'], parent_actions=[DomoDataflow_Action(id='3956ad1d-cb9a-4fb0-9bc2-305e2f552932', type='SelectValues', name='Select Columns 1', datasource_id=None, sql=None, depends_on=['db088785-df3f-41c1-885f-5380223137ee'], parent_actions=[DomoDataflow_Action(id='db088785-df3f-41c1-885f-5380223137ee', type='Filter', name='Filter Rows', datasource_id=None, sql=None, depends_on=['18e365d8-8b24-471b-a1da-694a1936ad5c'], parent_actions=[DomoDataflow_Action(id='18e365d8-8b24-471b-a1da-694a1936ad5c', type='LoadFromVault', name='Domo Dimensions - Calendar', datasource_id='d6b99a99-63c7-46f0-8e54-38045e29e710', sql=None, depends_on=None, parent_actions=None)])])]), DomoDataflow_Action(id='2a191a01-6be7-4646-b9af-ca3fea3a388a', type='Constant', name='Employees', datasource_id=None, sql=None, depends_on=['cd3d5f9e-0bfe-40d9-bb95-45faf2d64b30'], parent_actions=[DomoDataflow_Action(id='cd3d5f9e-0bfe-40d9-bb95-45faf2d64b30', type='SelectValues', name='Select Columns', datasource_id=None, sql=None, depends_on=['d7b935c6-2184-4079-bc7b-4e50e25d1801'], parent_actions=[DomoDataflow_Action(id='d7b935c6-2184-4079-bc7b-4e50e25d1801', type='LoadFromVault', name='DomoStats - People', datasource_id='241025d7-3cca-4369-b7c0-b3264277c0e1', sql=None, depends_on=None, parent_actions=None)])])])])]), DomoDataflow_Action(id='d42dd52a-d884-4bc3-b807-07cf5584e215', type='PublishToVault', name='Demo Active Employees', datasource_id='b25b7f48-5257-4e26-bffa-b240b0caefea', sql=None, depends_on=['1176585b-85bf-454a-9967-f4a59caf4094'], parent_actions=[DomoDataflow_Action(id='1176585b-85bf-454a-9967-f4a59caf4094', type='SelectValues', name='Select Columns 2', datasource_id=None, sql=None, depends_on=['cfe59cc5-a01f-4910-b6bc-e74d3c8a7170'], parent_actions=[DomoDataflow_Action(id='cfe59cc5-a01f-4910-b6bc-e74d3c8a7170', type='Filter', name='Filter to actives', datasource_id=None, sql=None, depends_on=['6b89d1f5-ea18-480c-b3c5-f0bffde9fe3f'], parent_actions=[DomoDataflow_Action(id='6b89d1f5-ea18-480c-b3c5-f0bffde9fe3f', type='MergeJoin', name='Join Data', datasource_id=None, sql=None, depends_on=['3ffe103e-4f89-4e55-89db-9a9a77fcbc59', '2a191a01-6be7-4646-b9af-ca3fea3a388a'], parent_actions=[DomoDataflow_Action(id='3ffe103e-4f89-4e55-89db-9a9a77fcbc59', type='Constant', name='Calendar', datasource_id=None, sql=None, depends_on=['3956ad1d-cb9a-4fb0-9bc2-305e2f552932'], parent_actions=[DomoDataflow_Action(id='3956ad1d-cb9a-4fb0-9bc2-305e2f552932', type='SelectValues', name='Select Columns 1', datasource_id=None, sql=None, depends_on=['db088785-df3f-41c1-885f-5380223137ee'], parent_actions=[DomoDataflow_Action(id='db088785-df3f-41c1-885f-5380223137ee', type='Filter', name='Filter Rows', datasource_id=None, sql=None, depends_on=['18e365d8-8b24-471b-a1da-694a1936ad5c'], parent_actions=[DomoDataflow_Action(id='18e365d8-8b24-471b-a1da-694a1936ad5c', type='LoadFromVault', name='Domo Dimensions - Calendar', datasource_id='d6b99a99-63c7-46f0-8e54-38045e29e710', sql=None, depends_on=None, parent_actions=None)])])]), DomoDataflow_Action(id='2a191a01-6be7-4646-b9af-ca3fea3a388a', type='Constant', name='Employees', datasource_id=None, sql=None, depends_on=['cd3d5f9e-0bfe-40d9-bb95-45faf2d64b30'], parent_actions=[DomoDataflow_Action(id='cd3d5f9e-0bfe-40d9-bb95-45faf2d64b30', type='SelectValues', name='Select Columns', datasource_id=None, sql=None, depends_on=['d7b935c6-2184-4079-bc7b-4e50e25d1801'], parent_actions=[DomoDataflow_Action(id='d7b935c6-2184-4079-bc7b-4e50e25d1801', type='LoadFromVault', name='DomoStats - People', datasource_id='241025d7-3cca-4369-b7c0-b3264277c0e1', sql=None, depends_on=None, parent_actions=None)])])])])])])], version_id=None, version_number=None, versions=None, history=DomoDataflow_History(execution_history=None))</code></pre>
+</div>
+</div>
+<div id="b1573dcc" class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>domo_dataflow <span class="op">=</span> <span class="cf">await</span> dmdf.DomoDataflow.get_from_id(dataflow_id<span class="op">=</span><span class="dv">9</span>, auth<span class="op">=</span>auth)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>domo_dataflow</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>DomoDataflow(id=9, name='DOMO Covid Datasets', owner=None, description=None, tags=None, actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None), DomoDataflow_Action(id='96d04e4b-dc72-479c-b84b-ad0b74ada085', type='LoadFromVault', name='DOMO Covid Time Series Tracker Data', datasource_id='dcad2f50-e65e-4259-a9e8-214a3d1e18a7', sql=None, depends_on=None, parent_actions=None), DomoDataflow_Action(id='a1d07083-d1ca-41e9-8be2-f13596df03c3', type='ValueMapper', name='Value Mapper', datasource_id=None, sql=None, depends_on=['96d04e4b-dc72-479c-b84b-ad0b74ada085'], parent_actions=[DomoDataflow_Action(id='96d04e4b-dc72-479c-b84b-ad0b74ada085', type='LoadFromVault', name='DOMO Covid Time Series Tracker Data', datasource_id='dcad2f50-e65e-4259-a9e8-214a3d1e18a7', sql=None, depends_on=None, parent_actions=None)]), DomoDataflow_Action(id='6e3ec9a4-470b-4fe4-8e8a-bd954b681df4', type='DateCalculator', name='Days Since...', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)]), DomoDataflow_Action(id='59e6226d-507f-4cff-86b1-f024499173aa', type='NumericCalculator', name='Resolved Cases', datasource_id=None, sql=None, depends_on=['6e3ec9a4-470b-4fe4-8e8a-bd954b681df4'], parent_actions=[DomoDataflow_Action(id='6e3ec9a4-470b-4fe4-8e8a-bd954b681df4', type='DateCalculator', name='Days Since...', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)])]), DomoDataflow_Action(id='3224b938-e977-40ea-bb85-c6784d13fa95', type='NumericCalculator', name='Active Cases', datasource_id=None, sql=None, depends_on=['59e6226d-507f-4cff-86b1-f024499173aa'], parent_actions=[DomoDataflow_Action(id='59e6226d-507f-4cff-86b1-f024499173aa', type='NumericCalculator', name='Resolved Cases', datasource_id=None, sql=None, depends_on=['6e3ec9a4-470b-4fe4-8e8a-bd954b681df4'], parent_actions=[DomoDataflow_Action(id='6e3ec9a4-470b-4fe4-8e8a-bd954b681df4', type='DateCalculator', name='Days Since...', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)])])]), DomoDataflow_Action(id='39a7a4ba-8bc3-4141-ac44-ada9ecee380e', type='SelectValues', name='Select Columns', datasource_id=None, sql=None, depends_on=['3224b938-e977-40ea-bb85-c6784d13fa95'], parent_actions=[DomoDataflow_Action(id='3224b938-e977-40ea-bb85-c6784d13fa95', type='NumericCalculator', name='Active Cases', datasource_id=None, sql=None, depends_on=['59e6226d-507f-4cff-86b1-f024499173aa'], parent_actions=[DomoDataflow_Action(id='59e6226d-507f-4cff-86b1-f024499173aa', type='NumericCalculator', name='Resolved Cases', datasource_id=None, sql=None, depends_on=['6e3ec9a4-470b-4fe4-8e8a-bd954b681df4'], parent_actions=[DomoDataflow_Action(id='6e3ec9a4-470b-4fe4-8e8a-bd954b681df4', type='DateCalculator', name='Days Since...', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)])])])]), DomoDataflow_Action(id='a55f2e60-9418-4291-8272-141be6193740', type='PublishToVault', name='DOMO_Covid_Current Snapshot', datasource_id='e0bbe9ec-6ccf-428b-b18b-a2405cedbe4b', sql=None, depends_on=['39a7a4ba-8bc3-4141-ac44-ada9ecee380e'], parent_actions=[DomoDataflow_Action(id='39a7a4ba-8bc3-4141-ac44-ada9ecee380e', type='SelectValues', name='Select Columns', datasource_id=None, sql=None, depends_on=['3224b938-e977-40ea-bb85-c6784d13fa95'], parent_actions=[DomoDataflow_Action(id='3224b938-e977-40ea-bb85-c6784d13fa95', type='NumericCalculator', name='Active Cases', datasource_id=None, sql=None, depends_on=['59e6226d-507f-4cff-86b1-f024499173aa'], parent_actions=[DomoDataflow_Action(id='59e6226d-507f-4cff-86b1-f024499173aa', type='NumericCalculator', name='Resolved Cases', datasource_id=None, sql=None, depends_on=['6e3ec9a4-470b-4fe4-8e8a-bd954b681df4'], parent_actions=[DomoDataflow_Action(id='6e3ec9a4-470b-4fe4-8e8a-bd954b681df4', type='DateCalculator', name='Days Since...', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)])])])])]), DomoDataflow_Action(id='4f77e294-4673-46b5-8744-8317eeae39a7', type='SelectValues', name='Prep for Pivot', datasource_id=None, sql=None, depends_on=['3224b938-e977-40ea-bb85-c6784d13fa95'], parent_actions=[DomoDataflow_Action(id='3224b938-e977-40ea-bb85-c6784d13fa95', type='NumericCalculator', name='Active Cases', datasource_id=None, sql=None, depends_on=['59e6226d-507f-4cff-86b1-f024499173aa'], parent_actions=[DomoDataflow_Action(id='59e6226d-507f-4cff-86b1-f024499173aa', type='NumericCalculator', name='Resolved Cases', datasource_id=None, sql=None, depends_on=['6e3ec9a4-470b-4fe4-8e8a-bd954b681df4'], parent_actions=[DomoDataflow_Action(id='6e3ec9a4-470b-4fe4-8e8a-bd954b681df4', type='DateCalculator', name='Days Since...', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)])])])]), DomoDataflow_Action(id='9e6fef1a-2428-4c70-ab47-9aaf80a035aa', type='NormalizeAll', name='Dynamic Unpivot', datasource_id=None, sql=None, depends_on=['4f77e294-4673-46b5-8744-8317eeae39a7'], parent_actions=[DomoDataflow_Action(id='4f77e294-4673-46b5-8744-8317eeae39a7', type='SelectValues', name='Prep for Pivot', datasource_id=None, sql=None, depends_on=['3224b938-e977-40ea-bb85-c6784d13fa95'], parent_actions=[DomoDataflow_Action(id='3224b938-e977-40ea-bb85-c6784d13fa95', type='NumericCalculator', name='Active Cases', datasource_id=None, sql=None, depends_on=['59e6226d-507f-4cff-86b1-f024499173aa'], parent_actions=[DomoDataflow_Action(id='59e6226d-507f-4cff-86b1-f024499173aa', type='NumericCalculator', name='Resolved Cases', datasource_id=None, sql=None, depends_on=['6e3ec9a4-470b-4fe4-8e8a-bd954b681df4'], parent_actions=[DomoDataflow_Action(id='6e3ec9a4-470b-4fe4-8e8a-bd954b681df4', type='DateCalculator', name='Days Since...', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)])])])])]), DomoDataflow_Action(id='58109dc0-37e6-4893-9ba0-5ed5b3c1eaa8', type='PublishToVault', name='DOMO_Covid_Current Snapshot_Collapsed', datasource_id='be14b18c-7844-48e4-8acc-0878c3dc96b0', sql=None, depends_on=['9e6fef1a-2428-4c70-ab47-9aaf80a035aa'], parent_actions=[DomoDataflow_Action(id='9e6fef1a-2428-4c70-ab47-9aaf80a035aa', type='NormalizeAll', name='Dynamic Unpivot', datasource_id=None, sql=None, depends_on=['4f77e294-4673-46b5-8744-8317eeae39a7'], parent_actions=[DomoDataflow_Action(id='4f77e294-4673-46b5-8744-8317eeae39a7', type='SelectValues', name='Prep for Pivot', datasource_id=None, sql=None, depends_on=['3224b938-e977-40ea-bb85-c6784d13fa95'], parent_actions=[DomoDataflow_Action(id='3224b938-e977-40ea-bb85-c6784d13fa95', type='NumericCalculator', name='Active Cases', datasource_id=None, sql=None, depends_on=['59e6226d-507f-4cff-86b1-f024499173aa'], parent_actions=[DomoDataflow_Action(id='59e6226d-507f-4cff-86b1-f024499173aa', type='NumericCalculator', name='Resolved Cases', datasource_id=None, sql=None, depends_on=['6e3ec9a4-470b-4fe4-8e8a-bd954b681df4'], parent_actions=[DomoDataflow_Action(id='6e3ec9a4-470b-4fe4-8e8a-bd954b681df4', type='DateCalculator', name='Days Since...', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)])])])])])]), DomoDataflow_Action(id='d2ef7338-17ee-4f9c-a93b-b268605ea81e', type='GroupBy', name='Country Summary', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)]), DomoDataflow_Action(id='69cecc30-a170-432d-8367-1e3c2d362419', type='WindowAction', name='Confirmed', datasource_id=None, sql=None, depends_on=['d2ef7338-17ee-4f9c-a93b-b268605ea81e'], parent_actions=[DomoDataflow_Action(id='d2ef7338-17ee-4f9c-a93b-b268605ea81e', type='GroupBy', name='Country Summary', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)])]), DomoDataflow_Action(id='2037eb8f-c88c-4d9f-8d14-ae591a27b627', type='WindowAction', name='Deaths', datasource_id=None, sql=None, depends_on=['69cecc30-a170-432d-8367-1e3c2d362419'], parent_actions=[DomoDataflow_Action(id='69cecc30-a170-432d-8367-1e3c2d362419', type='WindowAction', name='Confirmed', datasource_id=None, sql=None, depends_on=['d2ef7338-17ee-4f9c-a93b-b268605ea81e'], parent_actions=[DomoDataflow_Action(id='d2ef7338-17ee-4f9c-a93b-b268605ea81e', type='GroupBy', name='Country Summary', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)])])]), DomoDataflow_Action(id='0c791afe-0acb-4821-8781-ddd5d51c850a', type='WindowAction', name='Recovered', datasource_id=None, sql=None, depends_on=['2037eb8f-c88c-4d9f-8d14-ae591a27b627'], parent_actions=[DomoDataflow_Action(id='2037eb8f-c88c-4d9f-8d14-ae591a27b627', type='WindowAction', name='Deaths', datasource_id=None, sql=None, depends_on=['69cecc30-a170-432d-8367-1e3c2d362419'], parent_actions=[DomoDataflow_Action(id='69cecc30-a170-432d-8367-1e3c2d362419', type='WindowAction', name='Confirmed', datasource_id=None, sql=None, depends_on=['d2ef7338-17ee-4f9c-a93b-b268605ea81e'], parent_actions=[DomoDataflow_Action(id='d2ef7338-17ee-4f9c-a93b-b268605ea81e', type='GroupBy', name='Country Summary', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)])])])]), DomoDataflow_Action(id='95f6b96d-af65-4d3b-8e3a-94ce7f2e4f64', type='SelectValues', name='Ranks', datasource_id=None, sql=None, depends_on=['0c791afe-0acb-4821-8781-ddd5d51c850a'], parent_actions=[DomoDataflow_Action(id='0c791afe-0acb-4821-8781-ddd5d51c850a', type='WindowAction', name='Recovered', datasource_id=None, sql=None, depends_on=['2037eb8f-c88c-4d9f-8d14-ae591a27b627'], parent_actions=[DomoDataflow_Action(id='2037eb8f-c88c-4d9f-8d14-ae591a27b627', type='WindowAction', name='Deaths', datasource_id=None, sql=None, depends_on=['69cecc30-a170-432d-8367-1e3c2d362419'], parent_actions=[DomoDataflow_Action(id='69cecc30-a170-432d-8367-1e3c2d362419', type='WindowAction', name='Confirmed', datasource_id=None, sql=None, depends_on=['d2ef7338-17ee-4f9c-a93b-b268605ea81e'], parent_actions=[DomoDataflow_Action(id='d2ef7338-17ee-4f9c-a93b-b268605ea81e', type='GroupBy', name='Country Summary', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)])])])])]), DomoDataflow_Action(id='57da148c-17f8-495d-b81d-2db18e1073dc', type='Filter', name='United States', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)]), DomoDataflow_Action(id='30d11b8a-eed9-4037-aa2c-03c83c3f66b8', type='GroupBy', name='State Summary', datasource_id=None, sql=None, depends_on=['57da148c-17f8-495d-b81d-2db18e1073dc'], parent_actions=[DomoDataflow_Action(id='57da148c-17f8-495d-b81d-2db18e1073dc', type='Filter', name='United States', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)])]), DomoDataflow_Action(id='551ebf46-d0ac-4210-83cd-a50049b2b61d', type='WindowAction', name='Confirmed 1', datasource_id=None, sql=None, depends_on=['30d11b8a-eed9-4037-aa2c-03c83c3f66b8'], parent_actions=[DomoDataflow_Action(id='30d11b8a-eed9-4037-aa2c-03c83c3f66b8', type='GroupBy', name='State Summary', datasource_id=None, sql=None, depends_on=['57da148c-17f8-495d-b81d-2db18e1073dc'], parent_actions=[DomoDataflow_Action(id='57da148c-17f8-495d-b81d-2db18e1073dc', type='Filter', name='United States', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)])])]), DomoDataflow_Action(id='16bae147-462b-4547-94b2-8075aab0a2fb', type='WindowAction', name='Deaths 1', datasource_id=None, sql=None, depends_on=['551ebf46-d0ac-4210-83cd-a50049b2b61d'], parent_actions=[DomoDataflow_Action(id='551ebf46-d0ac-4210-83cd-a50049b2b61d', type='WindowAction', name='Confirmed 1', datasource_id=None, sql=None, depends_on=['30d11b8a-eed9-4037-aa2c-03c83c3f66b8'], parent_actions=[DomoDataflow_Action(id='30d11b8a-eed9-4037-aa2c-03c83c3f66b8', type='GroupBy', name='State Summary', datasource_id=None, sql=None, depends_on=['57da148c-17f8-495d-b81d-2db18e1073dc'], parent_actions=[DomoDataflow_Action(id='57da148c-17f8-495d-b81d-2db18e1073dc', type='Filter', name='United States', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)])])])]), DomoDataflow_Action(id='43029ef0-9519-49c6-80c2-2f885e662221', type='WindowAction', name='Recovered 1', datasource_id=None, sql=None, depends_on=['16bae147-462b-4547-94b2-8075aab0a2fb'], parent_actions=[DomoDataflow_Action(id='16bae147-462b-4547-94b2-8075aab0a2fb', type='WindowAction', name='Deaths 1', datasource_id=None, sql=None, depends_on=['551ebf46-d0ac-4210-83cd-a50049b2b61d'], parent_actions=[DomoDataflow_Action(id='551ebf46-d0ac-4210-83cd-a50049b2b61d', type='WindowAction', name='Confirmed 1', datasource_id=None, sql=None, depends_on=['30d11b8a-eed9-4037-aa2c-03c83c3f66b8'], parent_actions=[DomoDataflow_Action(id='30d11b8a-eed9-4037-aa2c-03c83c3f66b8', type='GroupBy', name='State Summary', datasource_id=None, sql=None, depends_on=['57da148c-17f8-495d-b81d-2db18e1073dc'], parent_actions=[DomoDataflow_Action(id='57da148c-17f8-495d-b81d-2db18e1073dc', type='Filter', name='United States', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)])])])])]), DomoDataflow_Action(id='eeecc67b-34c4-4929-a4e3-34058aba039a', type='SelectValues', name='Ranks 1', datasource_id=None, sql=None, depends_on=['43029ef0-9519-49c6-80c2-2f885e662221'], parent_actions=[DomoDataflow_Action(id='43029ef0-9519-49c6-80c2-2f885e662221', type='WindowAction', name='Recovered 1', datasource_id=None, sql=None, depends_on=['16bae147-462b-4547-94b2-8075aab0a2fb'], parent_actions=[DomoDataflow_Action(id='16bae147-462b-4547-94b2-8075aab0a2fb', type='WindowAction', name='Deaths 1', datasource_id=None, sql=None, depends_on=['551ebf46-d0ac-4210-83cd-a50049b2b61d'], parent_actions=[DomoDataflow_Action(id='551ebf46-d0ac-4210-83cd-a50049b2b61d', type='WindowAction', name='Confirmed 1', datasource_id=None, sql=None, depends_on=['30d11b8a-eed9-4037-aa2c-03c83c3f66b8'], parent_actions=[DomoDataflow_Action(id='30d11b8a-eed9-4037-aa2c-03c83c3f66b8', type='GroupBy', name='State Summary', datasource_id=None, sql=None, depends_on=['57da148c-17f8-495d-b81d-2db18e1073dc'], parent_actions=[DomoDataflow_Action(id='57da148c-17f8-495d-b81d-2db18e1073dc', type='Filter', name='United States', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)])])])])])]), DomoDataflow_Action(id='660e1e8c-0d62-4e8c-9784-d4555ae46167', type='DateCalculator', name='Days Since... 2', datasource_id=None, sql=None, depends_on=['a1d07083-d1ca-41e9-8be2-f13596df03c3'], parent_actions=[DomoDataflow_Action(id='a1d07083-d1ca-41e9-8be2-f13596df03c3', type='ValueMapper', name='Value Mapper', datasource_id=None, sql=None, depends_on=['96d04e4b-dc72-479c-b84b-ad0b74ada085'], parent_actions=[DomoDataflow_Action(id='96d04e4b-dc72-479c-b84b-ad0b74ada085', type='LoadFromVault', name='DOMO Covid Time Series Tracker Data', datasource_id='dcad2f50-e65e-4259-a9e8-214a3d1e18a7', sql=None, depends_on=None, parent_actions=None)])]), DomoDataflow_Action(id='1d3e790a-dabf-45ba-849e-74996d7a03c9', type='NumericCalculator', name='Resolved Cases 1', datasource_id=None, sql=None, depends_on=['660e1e8c-0d62-4e8c-9784-d4555ae46167'], parent_actions=[DomoDataflow_Action(id='660e1e8c-0d62-4e8c-9784-d4555ae46167', type='DateCalculator', name='Days Since... 2', datasource_id=None, sql=None, depends_on=['a1d07083-d1ca-41e9-8be2-f13596df03c3'], parent_actions=[DomoDataflow_Action(id='a1d07083-d1ca-41e9-8be2-f13596df03c3', type='ValueMapper', name='Value Mapper', datasource_id=None, sql=None, depends_on=['96d04e4b-dc72-479c-b84b-ad0b74ada085'], parent_actions=[DomoDataflow_Action(id='96d04e4b-dc72-479c-b84b-ad0b74ada085', type='LoadFromVault', name='DOMO Covid Time Series Tracker Data', datasource_id='dcad2f50-e65e-4259-a9e8-214a3d1e18a7', sql=None, depends_on=None, parent_actions=None)])])]), DomoDataflow_Action(id='dc5a2d0c-3bdf-4e94-a07a-7ff4709acc1f', type='NumericCalculator', name='Active Cases 1', datasource_id=None, sql=None, depends_on=['1d3e790a-dabf-45ba-849e-74996d7a03c9'], parent_actions=[DomoDataflow_Action(id='1d3e790a-dabf-45ba-849e-74996d7a03c9', type='NumericCalculator', name='Resolved Cases 1', datasource_id=None, sql=None, depends_on=['660e1e8c-0d62-4e8c-9784-d4555ae46167'], parent_actions=[DomoDataflow_Action(id='660e1e8c-0d62-4e8c-9784-d4555ae46167', type='DateCalculator', name='Days Since... 2', datasource_id=None, sql=None, depends_on=['a1d07083-d1ca-41e9-8be2-f13596df03c3'], parent_actions=[DomoDataflow_Action(id='a1d07083-d1ca-41e9-8be2-f13596df03c3', type='ValueMapper', name='Value Mapper', datasource_id=None, sql=None, depends_on=['96d04e4b-dc72-479c-b84b-ad0b74ada085'], parent_actions=[DomoDataflow_Action(id='96d04e4b-dc72-479c-b84b-ad0b74ada085', type='LoadFromVault', name='DOMO Covid Time Series Tracker Data', datasource_id='dcad2f50-e65e-4259-a9e8-214a3d1e18a7', sql=None, depends_on=None, parent_actions=None)])])])]), DomoDataflow_Action(id='64d116fa-b2fb-40ed-a834-5e98c541eb09', type='MergeJoin', name='State Rank', datasource_id=None, sql=None, depends_on=['eeecc67b-34c4-4929-a4e3-34058aba039a', 'dc5a2d0c-3bdf-4e94-a07a-7ff4709acc1f'], parent_actions=[DomoDataflow_Action(id='eeecc67b-34c4-4929-a4e3-34058aba039a', type='SelectValues', name='Ranks 1', datasource_id=None, sql=None, depends_on=['43029ef0-9519-49c6-80c2-2f885e662221'], parent_actions=[DomoDataflow_Action(id='43029ef0-9519-49c6-80c2-2f885e662221', type='WindowAction', name='Recovered 1', datasource_id=None, sql=None, depends_on=['16bae147-462b-4547-94b2-8075aab0a2fb'], parent_actions=[DomoDataflow_Action(id='16bae147-462b-4547-94b2-8075aab0a2fb', type='WindowAction', name='Deaths 1', datasource_id=None, sql=None, depends_on=['551ebf46-d0ac-4210-83cd-a50049b2b61d'], parent_actions=[DomoDataflow_Action(id='551ebf46-d0ac-4210-83cd-a50049b2b61d', type='WindowAction', name='Confirmed 1', datasource_id=None, sql=None, depends_on=['30d11b8a-eed9-4037-aa2c-03c83c3f66b8'], parent_actions=[DomoDataflow_Action(id='30d11b8a-eed9-4037-aa2c-03c83c3f66b8', type='GroupBy', name='State Summary', datasource_id=None, sql=None, depends_on=['57da148c-17f8-495d-b81d-2db18e1073dc'], parent_actions=[DomoDataflow_Action(id='57da148c-17f8-495d-b81d-2db18e1073dc', type='Filter', name='United States', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)])])])])])]), DomoDataflow_Action(id='dc5a2d0c-3bdf-4e94-a07a-7ff4709acc1f', type='NumericCalculator', name='Active Cases 1', datasource_id=None, sql=None, depends_on=['1d3e790a-dabf-45ba-849e-74996d7a03c9'], parent_actions=[DomoDataflow_Action(id='1d3e790a-dabf-45ba-849e-74996d7a03c9', type='NumericCalculator', name='Resolved Cases 1', datasource_id=None, sql=None, depends_on=['660e1e8c-0d62-4e8c-9784-d4555ae46167'], parent_actions=[DomoDataflow_Action(id='660e1e8c-0d62-4e8c-9784-d4555ae46167', type='DateCalculator', name='Days Since... 2', datasource_id=None, sql=None, depends_on=['a1d07083-d1ca-41e9-8be2-f13596df03c3'], parent_actions=[DomoDataflow_Action(id='a1d07083-d1ca-41e9-8be2-f13596df03c3', type='ValueMapper', name='Value Mapper', datasource_id=None, sql=None, depends_on=['96d04e4b-dc72-479c-b84b-ad0b74ada085'], parent_actions=[DomoDataflow_Action(id='96d04e4b-dc72-479c-b84b-ad0b74ada085', type='LoadFromVault', name='DOMO Covid Time Series Tracker Data', datasource_id='dcad2f50-e65e-4259-a9e8-214a3d1e18a7', sql=None, depends_on=None, parent_actions=None)])])])])]), DomoDataflow_Action(id='a660c21b-b639-4f8d-b0d1-7024fea1056e', type='MergeJoin', name='Country Rank', datasource_id=None, sql=None, depends_on=['95f6b96d-af65-4d3b-8e3a-94ce7f2e4f64', '64d116fa-b2fb-40ed-a834-5e98c541eb09'], parent_actions=[DomoDataflow_Action(id='95f6b96d-af65-4d3b-8e3a-94ce7f2e4f64', type='SelectValues', name='Ranks', datasource_id=None, sql=None, depends_on=['0c791afe-0acb-4821-8781-ddd5d51c850a'], parent_actions=[DomoDataflow_Action(id='0c791afe-0acb-4821-8781-ddd5d51c850a', type='WindowAction', name='Recovered', datasource_id=None, sql=None, depends_on=['2037eb8f-c88c-4d9f-8d14-ae591a27b627'], parent_actions=[DomoDataflow_Action(id='2037eb8f-c88c-4d9f-8d14-ae591a27b627', type='WindowAction', name='Deaths', datasource_id=None, sql=None, depends_on=['69cecc30-a170-432d-8367-1e3c2d362419'], parent_actions=[DomoDataflow_Action(id='69cecc30-a170-432d-8367-1e3c2d362419', type='WindowAction', name='Confirmed', datasource_id=None, sql=None, depends_on=['d2ef7338-17ee-4f9c-a93b-b268605ea81e'], parent_actions=[DomoDataflow_Action(id='d2ef7338-17ee-4f9c-a93b-b268605ea81e', type='GroupBy', name='Country Summary', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)])])])])]), DomoDataflow_Action(id='64d116fa-b2fb-40ed-a834-5e98c541eb09', type='MergeJoin', name='State Rank', datasource_id=None, sql=None, depends_on=['eeecc67b-34c4-4929-a4e3-34058aba039a', 'dc5a2d0c-3bdf-4e94-a07a-7ff4709acc1f'], parent_actions=[DomoDataflow_Action(id='eeecc67b-34c4-4929-a4e3-34058aba039a', type='SelectValues', name='Ranks 1', datasource_id=None, sql=None, depends_on=['43029ef0-9519-49c6-80c2-2f885e662221'], parent_actions=[DomoDataflow_Action(id='43029ef0-9519-49c6-80c2-2f885e662221', type='WindowAction', name='Recovered 1', datasource_id=None, sql=None, depends_on=['16bae147-462b-4547-94b2-8075aab0a2fb'], parent_actions=[DomoDataflow_Action(id='16bae147-462b-4547-94b2-8075aab0a2fb', type='WindowAction', name='Deaths 1', datasource_id=None, sql=None, depends_on=['551ebf46-d0ac-4210-83cd-a50049b2b61d'], parent_actions=[DomoDataflow_Action(id='551ebf46-d0ac-4210-83cd-a50049b2b61d', type='WindowAction', name='Confirmed 1', datasource_id=None, sql=None, depends_on=['30d11b8a-eed9-4037-aa2c-03c83c3f66b8'], parent_actions=[DomoDataflow_Action(id='30d11b8a-eed9-4037-aa2c-03c83c3f66b8', type='GroupBy', name='State Summary', datasource_id=None, sql=None, depends_on=['57da148c-17f8-495d-b81d-2db18e1073dc'], parent_actions=[DomoDataflow_Action(id='57da148c-17f8-495d-b81d-2db18e1073dc', type='Filter', name='United States', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)])])])])])]), DomoDataflow_Action(id='dc5a2d0c-3bdf-4e94-a07a-7ff4709acc1f', type='NumericCalculator', name='Active Cases 1', datasource_id=None, sql=None, depends_on=['1d3e790a-dabf-45ba-849e-74996d7a03c9'], parent_actions=[DomoDataflow_Action(id='1d3e790a-dabf-45ba-849e-74996d7a03c9', type='NumericCalculator', name='Resolved Cases 1', datasource_id=None, sql=None, depends_on=['660e1e8c-0d62-4e8c-9784-d4555ae46167'], parent_actions=[DomoDataflow_Action(id='660e1e8c-0d62-4e8c-9784-d4555ae46167', type='DateCalculator', name='Days Since... 2', datasource_id=None, sql=None, depends_on=['a1d07083-d1ca-41e9-8be2-f13596df03c3'], parent_actions=[DomoDataflow_Action(id='a1d07083-d1ca-41e9-8be2-f13596df03c3', type='ValueMapper', name='Value Mapper', datasource_id=None, sql=None, depends_on=['96d04e4b-dc72-479c-b84b-ad0b74ada085'], parent_actions=[DomoDataflow_Action(id='96d04e4b-dc72-479c-b84b-ad0b74ada085', type='LoadFromVault', name='DOMO Covid Time Series Tracker Data', datasource_id='dcad2f50-e65e-4259-a9e8-214a3d1e18a7', sql=None, depends_on=None, parent_actions=None)])])])])])]), DomoDataflow_Action(id='5dc2fda6-902b-4c68-ba7d-1216b54fc1f6', type='SelectValues', name='Select Columns 2', datasource_id=None, sql=None, depends_on=['a660c21b-b639-4f8d-b0d1-7024fea1056e'], parent_actions=[DomoDataflow_Action(id='a660c21b-b639-4f8d-b0d1-7024fea1056e', type='MergeJoin', name='Country Rank', datasource_id=None, sql=None, depends_on=['95f6b96d-af65-4d3b-8e3a-94ce7f2e4f64', '64d116fa-b2fb-40ed-a834-5e98c541eb09'], parent_actions=[DomoDataflow_Action(id='95f6b96d-af65-4d3b-8e3a-94ce7f2e4f64', type='SelectValues', name='Ranks', datasource_id=None, sql=None, depends_on=['0c791afe-0acb-4821-8781-ddd5d51c850a'], parent_actions=[DomoDataflow_Action(id='0c791afe-0acb-4821-8781-ddd5d51c850a', type='WindowAction', name='Recovered', datasource_id=None, sql=None, depends_on=['2037eb8f-c88c-4d9f-8d14-ae591a27b627'], parent_actions=[DomoDataflow_Action(id='2037eb8f-c88c-4d9f-8d14-ae591a27b627', type='WindowAction', name='Deaths', datasource_id=None, sql=None, depends_on=['69cecc30-a170-432d-8367-1e3c2d362419'], parent_actions=[DomoDataflow_Action(id='69cecc30-a170-432d-8367-1e3c2d362419', type='WindowAction', name='Confirmed', datasource_id=None, sql=None, depends_on=['d2ef7338-17ee-4f9c-a93b-b268605ea81e'], parent_actions=[DomoDataflow_Action(id='d2ef7338-17ee-4f9c-a93b-b268605ea81e', type='GroupBy', name='Country Summary', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)])])])])]), DomoDataflow_Action(id='64d116fa-b2fb-40ed-a834-5e98c541eb09', type='MergeJoin', name='State Rank', datasource_id=None, sql=None, depends_on=['eeecc67b-34c4-4929-a4e3-34058aba039a', 'dc5a2d0c-3bdf-4e94-a07a-7ff4709acc1f'], parent_actions=[DomoDataflow_Action(id='eeecc67b-34c4-4929-a4e3-34058aba039a', type='SelectValues', name='Ranks 1', datasource_id=None, sql=None, depends_on=['43029ef0-9519-49c6-80c2-2f885e662221'], parent_actions=[DomoDataflow_Action(id='43029ef0-9519-49c6-80c2-2f885e662221', type='WindowAction', name='Recovered 1', datasource_id=None, sql=None, depends_on=['16bae147-462b-4547-94b2-8075aab0a2fb'], parent_actions=[DomoDataflow_Action(id='16bae147-462b-4547-94b2-8075aab0a2fb', type='WindowAction', name='Deaths 1', datasource_id=None, sql=None, depends_on=['551ebf46-d0ac-4210-83cd-a50049b2b61d'], parent_actions=[DomoDataflow_Action(id='551ebf46-d0ac-4210-83cd-a50049b2b61d', type='WindowAction', name='Confirmed 1', datasource_id=None, sql=None, depends_on=['30d11b8a-eed9-4037-aa2c-03c83c3f66b8'], parent_actions=[DomoDataflow_Action(id='30d11b8a-eed9-4037-aa2c-03c83c3f66b8', type='GroupBy', name='State Summary', datasource_id=None, sql=None, depends_on=['57da148c-17f8-495d-b81d-2db18e1073dc'], parent_actions=[DomoDataflow_Action(id='57da148c-17f8-495d-b81d-2db18e1073dc', type='Filter', name='United States', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)])])])])])]), DomoDataflow_Action(id='dc5a2d0c-3bdf-4e94-a07a-7ff4709acc1f', type='NumericCalculator', name='Active Cases 1', datasource_id=None, sql=None, depends_on=['1d3e790a-dabf-45ba-849e-74996d7a03c9'], parent_actions=[DomoDataflow_Action(id='1d3e790a-dabf-45ba-849e-74996d7a03c9', type='NumericCalculator', name='Resolved Cases 1', datasource_id=None, sql=None, depends_on=['660e1e8c-0d62-4e8c-9784-d4555ae46167'], parent_actions=[DomoDataflow_Action(id='660e1e8c-0d62-4e8c-9784-d4555ae46167', type='DateCalculator', name='Days Since... 2', datasource_id=None, sql=None, depends_on=['a1d07083-d1ca-41e9-8be2-f13596df03c3'], parent_actions=[DomoDataflow_Action(id='a1d07083-d1ca-41e9-8be2-f13596df03c3', type='ValueMapper', name='Value Mapper', datasource_id=None, sql=None, depends_on=['96d04e4b-dc72-479c-b84b-ad0b74ada085'], parent_actions=[DomoDataflow_Action(id='96d04e4b-dc72-479c-b84b-ad0b74ada085', type='LoadFromVault', name='DOMO Covid Time Series Tracker Data', datasource_id='dcad2f50-e65e-4259-a9e8-214a3d1e18a7', sql=None, depends_on=None, parent_actions=None)])])])])])])]), DomoDataflow_Action(id='a3000ccf-ad34-4b11-a25e-2e6acb0e50b5', type='PublishToVault', name='DOMO_Covid_Time Series', datasource_id='bea90814-7772-47ef-b6c9-7e5368d41b06', sql=None, depends_on=['5dc2fda6-902b-4c68-ba7d-1216b54fc1f6'], parent_actions=[DomoDataflow_Action(id='5dc2fda6-902b-4c68-ba7d-1216b54fc1f6', type='SelectValues', name='Select Columns 2', datasource_id=None, sql=None, depends_on=['a660c21b-b639-4f8d-b0d1-7024fea1056e'], parent_actions=[DomoDataflow_Action(id='a660c21b-b639-4f8d-b0d1-7024fea1056e', type='MergeJoin', name='Country Rank', datasource_id=None, sql=None, depends_on=['95f6b96d-af65-4d3b-8e3a-94ce7f2e4f64', '64d116fa-b2fb-40ed-a834-5e98c541eb09'], parent_actions=[DomoDataflow_Action(id='95f6b96d-af65-4d3b-8e3a-94ce7f2e4f64', type='SelectValues', name='Ranks', datasource_id=None, sql=None, depends_on=['0c791afe-0acb-4821-8781-ddd5d51c850a'], parent_actions=[DomoDataflow_Action(id='0c791afe-0acb-4821-8781-ddd5d51c850a', type='WindowAction', name='Recovered', datasource_id=None, sql=None, depends_on=['2037eb8f-c88c-4d9f-8d14-ae591a27b627'], parent_actions=[DomoDataflow_Action(id='2037eb8f-c88c-4d9f-8d14-ae591a27b627', type='WindowAction', name='Deaths', datasource_id=None, sql=None, depends_on=['69cecc30-a170-432d-8367-1e3c2d362419'], parent_actions=[DomoDataflow_Action(id='69cecc30-a170-432d-8367-1e3c2d362419', type='WindowAction', name='Confirmed', datasource_id=None, sql=None, depends_on=['d2ef7338-17ee-4f9c-a93b-b268605ea81e'], parent_actions=[DomoDataflow_Action(id='d2ef7338-17ee-4f9c-a93b-b268605ea81e', type='GroupBy', name='Country Summary', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)])])])])]), DomoDataflow_Action(id='64d116fa-b2fb-40ed-a834-5e98c541eb09', type='MergeJoin', name='State Rank', datasource_id=None, sql=None, depends_on=['eeecc67b-34c4-4929-a4e3-34058aba039a', 'dc5a2d0c-3bdf-4e94-a07a-7ff4709acc1f'], parent_actions=[DomoDataflow_Action(id='eeecc67b-34c4-4929-a4e3-34058aba039a', type='SelectValues', name='Ranks 1', datasource_id=None, sql=None, depends_on=['43029ef0-9519-49c6-80c2-2f885e662221'], parent_actions=[DomoDataflow_Action(id='43029ef0-9519-49c6-80c2-2f885e662221', type='WindowAction', name='Recovered 1', datasource_id=None, sql=None, depends_on=['16bae147-462b-4547-94b2-8075aab0a2fb'], parent_actions=[DomoDataflow_Action(id='16bae147-462b-4547-94b2-8075aab0a2fb', type='WindowAction', name='Deaths 1', datasource_id=None, sql=None, depends_on=['551ebf46-d0ac-4210-83cd-a50049b2b61d'], parent_actions=[DomoDataflow_Action(id='551ebf46-d0ac-4210-83cd-a50049b2b61d', type='WindowAction', name='Confirmed 1', datasource_id=None, sql=None, depends_on=['30d11b8a-eed9-4037-aa2c-03c83c3f66b8'], parent_actions=[DomoDataflow_Action(id='30d11b8a-eed9-4037-aa2c-03c83c3f66b8', type='GroupBy', name='State Summary', datasource_id=None, sql=None, depends_on=['57da148c-17f8-495d-b81d-2db18e1073dc'], parent_actions=[DomoDataflow_Action(id='57da148c-17f8-495d-b81d-2db18e1073dc', type='Filter', name='United States', datasource_id=None, sql=None, depends_on=['0e192d7e-280b-4c4d-bde2-f0f3adb1e213'], parent_actions=[DomoDataflow_Action(id='0e192d7e-280b-4c4d-bde2-f0f3adb1e213', type='LoadFromVault', name='DOMO Covid Current Snapshot Tracker Data', datasource_id='b034f19e-16d5-4cb3-afac-b72c8e6a79fd', sql=None, depends_on=None, parent_actions=None)])])])])])]), DomoDataflow_Action(id='dc5a2d0c-3bdf-4e94-a07a-7ff4709acc1f', type='NumericCalculator', name='Active Cases 1', datasource_id=None, sql=None, depends_on=['1d3e790a-dabf-45ba-849e-74996d7a03c9'], parent_actions=[DomoDataflow_Action(id='1d3e790a-dabf-45ba-849e-74996d7a03c9', type='NumericCalculator', name='Resolved Cases 1', datasource_id=None, sql=None, depends_on=['660e1e8c-0d62-4e8c-9784-d4555ae46167'], parent_actions=[DomoDataflow_Action(id='660e1e8c-0d62-4e8c-9784-d4555ae46167', type='DateCalculator', name='Days Since... 2', datasource_id=None, sql=None, depends_on=['a1d07083-d1ca-41e9-8be2-f13596df03c3'], parent_actions=[DomoDataflow_Action(id='a1d07083-d1ca-41e9-8be2-f13596df03c3', type='ValueMapper', name='Value Mapper', datasource_id=None, sql=None, depends_on=['96d04e4b-dc72-479c-b84b-ad0b74ada085'], parent_actions=[DomoDataflow_Action(id='96d04e4b-dc72-479c-b84b-ad0b74ada085', type='LoadFromVault', name='DOMO Covid Time Series Tracker Data', datasource_id='dcad2f50-e65e-4259-a9e8-214a3d1e18a7', sql=None, depends_on=None, parent_actions=None)])])])])])])])]), DomoDataflow_Action(id='b5055499-0d69-4273-aedf-c02c0ed96ea7', type='LoadFromVault', name='DOMO US County Covid Time Series Tracker Data', datasource_id='1225e98f-ea61-47e0-bc44-36b38725c280', sql=None, depends_on=None, parent_actions=None), DomoDataflow_Action(id='08327437-2a70-49bb-9676-8e63f540eb84', type='ValueMapper', name='Null Recovered', datasource_id=None, sql=None, depends_on=['b5055499-0d69-4273-aedf-c02c0ed96ea7'], parent_actions=[DomoDataflow_Action(id='b5055499-0d69-4273-aedf-c02c0ed96ea7', type='LoadFromVault', name='DOMO US County Covid Time Series Tracker Data', datasource_id='1225e98f-ea61-47e0-bc44-36b38725c280', sql=None, depends_on=None, parent_actions=None)]), DomoDataflow_Action(id='d652deb2-cd3e-462d-9627-2f72425e05cf', type='ValueMapper', name='Null New Recovered', datasource_id=None, sql=None, depends_on=['08327437-2a70-49bb-9676-8e63f540eb84'], parent_actions=[DomoDataflow_Action(id='08327437-2a70-49bb-9676-8e63f540eb84', type='ValueMapper', name='Null Recovered', datasource_id=None, sql=None, depends_on=['b5055499-0d69-4273-aedf-c02c0ed96ea7'], parent_actions=[DomoDataflow_Action(id='b5055499-0d69-4273-aedf-c02c0ed96ea7', type='LoadFromVault', name='DOMO US County Covid Time Series Tracker Data', datasource_id='1225e98f-ea61-47e0-bc44-36b38725c280', sql=None, depends_on=None, parent_actions=None)])]), DomoDataflow_Action(id='fe46f53d-d10e-4e1e-b341-4d18f565e83b', type='ValueMapper', name='Null or 0 Lat', datasource_id=None, sql=None, depends_on=['d652deb2-cd3e-462d-9627-2f72425e05cf'], parent_actions=[DomoDataflow_Action(id='d652deb2-cd3e-462d-9627-2f72425e05cf', type='ValueMapper', name='Null New Recovered', datasource_id=None, sql=None, depends_on=['08327437-2a70-49bb-9676-8e63f540eb84'], parent_actions=[DomoDataflow_Action(id='08327437-2a70-49bb-9676-8e63f540eb84', type='ValueMapper', name='Null Recovered', datasource_id=None, sql=None, depends_on=['b5055499-0d69-4273-aedf-c02c0ed96ea7'], parent_actions=[DomoDataflow_Action(id='b5055499-0d69-4273-aedf-c02c0ed96ea7', type='LoadFromVault', name='DOMO US County Covid Time Series Tracker Data', datasource_id='1225e98f-ea61-47e0-bc44-36b38725c280', sql=None, depends_on=None, parent_actions=None)])])]), DomoDataflow_Action(id='cebf2fb3-75e3-48ee-bfe5-2af9927cb581', type='ValueMapper', name='Null or 0 Long', datasource_id=None, sql=None, depends_on=['fe46f53d-d10e-4e1e-b341-4d18f565e83b'], parent_actions=[DomoDataflow_Action(id='fe46f53d-d10e-4e1e-b341-4d18f565e83b', type='ValueMapper', name='Null or 0 Lat', datasource_id=None, sql=None, depends_on=['d652deb2-cd3e-462d-9627-2f72425e05cf'], parent_actions=[DomoDataflow_Action(id='d652deb2-cd3e-462d-9627-2f72425e05cf', type='ValueMapper', name='Null New Recovered', datasource_id=None, sql=None, depends_on=['08327437-2a70-49bb-9676-8e63f540eb84'], parent_actions=[DomoDataflow_Action(id='08327437-2a70-49bb-9676-8e63f540eb84', type='ValueMapper', name='Null Recovered', datasource_id=None, sql=None, depends_on=['b5055499-0d69-4273-aedf-c02c0ed96ea7'], parent_actions=[DomoDataflow_Action(id='b5055499-0d69-4273-aedf-c02c0ed96ea7', type='LoadFromVault', name='DOMO US County Covid Time Series Tracker Data', datasource_id='1225e98f-ea61-47e0-bc44-36b38725c280', sql=None, depends_on=None, parent_actions=None)])])])]), DomoDataflow_Action(id='dac9af4e-a203-47f5-9493-ec46d834a51f', type='NumericCalculator', name='Resolved Cases 2', datasource_id=None, sql=None, depends_on=['cebf2fb3-75e3-48ee-bfe5-2af9927cb581'], parent_actions=[DomoDataflow_Action(id='cebf2fb3-75e3-48ee-bfe5-2af9927cb581', type='ValueMapper', name='Null or 0 Long', datasource_id=None, sql=None, depends_on=['fe46f53d-d10e-4e1e-b341-4d18f565e83b'], parent_actions=[DomoDataflow_Action(id='fe46f53d-d10e-4e1e-b341-4d18f565e83b', type='ValueMapper', name='Null or 0 Lat', datasource_id=None, sql=None, depends_on=['d652deb2-cd3e-462d-9627-2f72425e05cf'], parent_actions=[DomoDataflow_Action(id='d652deb2-cd3e-462d-9627-2f72425e05cf', type='ValueMapper', name='Null New Recovered', datasource_id=None, sql=None, depends_on=['08327437-2a70-49bb-9676-8e63f540eb84'], parent_actions=[DomoDataflow_Action(id='08327437-2a70-49bb-9676-8e63f540eb84', type='ValueMapper', name='Null Recovered', datasource_id=None, sql=None, depends_on=['b5055499-0d69-4273-aedf-c02c0ed96ea7'], parent_actions=[DomoDataflow_Action(id='b5055499-0d69-4273-aedf-c02c0ed96ea7', type='LoadFromVault', name='DOMO US County Covid Time Series Tracker Data', datasource_id='1225e98f-ea61-47e0-bc44-36b38725c280', sql=None, depends_on=None, parent_actions=None)])])])])]), DomoDataflow_Action(id='250bf67d-8882-4078-a7d4-aa6dda1a1635', type='NumericCalculator', name='Active Cases 2', datasource_id=None, sql=None, depends_on=['dac9af4e-a203-47f5-9493-ec46d834a51f'], parent_actions=[DomoDataflow_Action(id='dac9af4e-a203-47f5-9493-ec46d834a51f', type='NumericCalculator', name='Resolved Cases 2', datasource_id=None, sql=None, depends_on=['cebf2fb3-75e3-48ee-bfe5-2af9927cb581'], parent_actions=[DomoDataflow_Action(id='cebf2fb3-75e3-48ee-bfe5-2af9927cb581', type='ValueMapper', name='Null or 0 Long', datasource_id=None, sql=None, depends_on=['fe46f53d-d10e-4e1e-b341-4d18f565e83b'], parent_actions=[DomoDataflow_Action(id='fe46f53d-d10e-4e1e-b341-4d18f565e83b', type='ValueMapper', name='Null or 0 Lat', datasource_id=None, sql=None, depends_on=['d652deb2-cd3e-462d-9627-2f72425e05cf'], parent_actions=[DomoDataflow_Action(id='d652deb2-cd3e-462d-9627-2f72425e05cf', type='ValueMapper', name='Null New Recovered', datasource_id=None, sql=None, depends_on=['08327437-2a70-49bb-9676-8e63f540eb84'], parent_actions=[DomoDataflow_Action(id='08327437-2a70-49bb-9676-8e63f540eb84', type='ValueMapper', name='Null Recovered', datasource_id=None, sql=None, depends_on=['b5055499-0d69-4273-aedf-c02c0ed96ea7'], parent_actions=[DomoDataflow_Action(id='b5055499-0d69-4273-aedf-c02c0ed96ea7', type='LoadFromVault', name='DOMO US County Covid Time Series Tracker Data', datasource_id='1225e98f-ea61-47e0-bc44-36b38725c280', sql=None, depends_on=None, parent_actions=None)])])])])])]), DomoDataflow_Action(id='02a1f8dd-2b0a-4193-9c54-8d4fc19261cc', type='DateCalculator', name='Snapshot Age 1', datasource_id=None, sql=None, depends_on=['250bf67d-8882-4078-a7d4-aa6dda1a1635'], parent_actions=[DomoDataflow_Action(id='250bf67d-8882-4078-a7d4-aa6dda1a1635', type='NumericCalculator', name='Active Cases 2', datasource_id=None, sql=None, depends_on=['dac9af4e-a203-47f5-9493-ec46d834a51f'], parent_actions=[DomoDataflow_Action(id='dac9af4e-a203-47f5-9493-ec46d834a51f', type='NumericCalculator', name='Resolved Cases 2', datasource_id=None, sql=None, depends_on=['cebf2fb3-75e3-48ee-bfe5-2af9927cb581'], parent_actions=[DomoDataflow_Action(id='cebf2fb3-75e3-48ee-bfe5-2af9927cb581', type='ValueMapper', name='Null or 0 Long', datasource_id=None, sql=None, depends_on=['fe46f53d-d10e-4e1e-b341-4d18f565e83b'], parent_actions=[DomoDataflow_Action(id='fe46f53d-d10e-4e1e-b341-4d18f565e83b', type='ValueMapper', name='Null or 0 Lat', datasource_id=None, sql=None, depends_on=['d652deb2-cd3e-462d-9627-2f72425e05cf'], parent_actions=[DomoDataflow_Action(id='d652deb2-cd3e-462d-9627-2f72425e05cf', type='ValueMapper', name='Null New Recovered', datasource_id=None, sql=None, depends_on=['08327437-2a70-49bb-9676-8e63f540eb84'], parent_actions=[DomoDataflow_Action(id='08327437-2a70-49bb-9676-8e63f540eb84', type='ValueMapper', name='Null Recovered', datasource_id=None, sql=None, depends_on=['b5055499-0d69-4273-aedf-c02c0ed96ea7'], parent_actions=[DomoDataflow_Action(id='b5055499-0d69-4273-aedf-c02c0ed96ea7', type='LoadFromVault', name='DOMO US County Covid Time Series Tracker Data', datasource_id='1225e98f-ea61-47e0-bc44-36b38725c280', sql=None, depends_on=None, parent_actions=None)])])])])])])]), DomoDataflow_Action(id='709cc8dc-77b6-46c9-9c23-1e8a7cd44203', type='ValueMapper', name='Value Mapper 1', datasource_id=None, sql=None, depends_on=['02a1f8dd-2b0a-4193-9c54-8d4fc19261cc'], parent_actions=[DomoDataflow_Action(id='02a1f8dd-2b0a-4193-9c54-8d4fc19261cc', type='DateCalculator', name='Snapshot Age 1', datasource_id=None, sql=None, depends_on=['250bf67d-8882-4078-a7d4-aa6dda1a1635'], parent_actions=[DomoDataflow_Action(id='250bf67d-8882-4078-a7d4-aa6dda1a1635', type='NumericCalculator', name='Active Cases 2', datasource_id=None, sql=None, depends_on=['dac9af4e-a203-47f5-9493-ec46d834a51f'], parent_actions=[DomoDataflow_Action(id='dac9af4e-a203-47f5-9493-ec46d834a51f', type='NumericCalculator', name='Resolved Cases 2', datasource_id=None, sql=None, depends_on=['cebf2fb3-75e3-48ee-bfe5-2af9927cb581'], parent_actions=[DomoDataflow_Action(id='cebf2fb3-75e3-48ee-bfe5-2af9927cb581', type='ValueMapper', name='Null or 0 Long', datasource_id=None, sql=None, depends_on=['fe46f53d-d10e-4e1e-b341-4d18f565e83b'], parent_actions=[DomoDataflow_Action(id='fe46f53d-d10e-4e1e-b341-4d18f565e83b', type='ValueMapper', name='Null or 0 Lat', datasource_id=None, sql=None, depends_on=['d652deb2-cd3e-462d-9627-2f72425e05cf'], parent_actions=[DomoDataflow_Action(id='d652deb2-cd3e-462d-9627-2f72425e05cf', type='ValueMapper', name='Null New Recovered', datasource_id=None, sql=None, depends_on=['08327437-2a70-49bb-9676-8e63f540eb84'], parent_actions=[DomoDataflow_Action(id='08327437-2a70-49bb-9676-8e63f540eb84', type='ValueMapper', name='Null Recovered', datasource_id=None, sql=None, depends_on=['b5055499-0d69-4273-aedf-c02c0ed96ea7'], parent_actions=[DomoDataflow_Action(id='b5055499-0d69-4273-aedf-c02c0ed96ea7', type='LoadFromVault', name='DOMO US County Covid Time Series Tracker Data', datasource_id='1225e98f-ea61-47e0-bc44-36b38725c280', sql=None, depends_on=None, parent_actions=None)])])])])])])])]), DomoDataflow_Action(id='a72904d6-88d3-4e47-838b-9a0087d9b2be', type='ConcatFields', name='State | County 1', datasource_id=None, sql=None, depends_on=['709cc8dc-77b6-46c9-9c23-1e8a7cd44203'], parent_actions=[DomoDataflow_Action(id='709cc8dc-77b6-46c9-9c23-1e8a7cd44203', type='ValueMapper', name='Value Mapper 1', datasource_id=None, sql=None, depends_on=['02a1f8dd-2b0a-4193-9c54-8d4fc19261cc'], parent_actions=[DomoDataflow_Action(id='02a1f8dd-2b0a-4193-9c54-8d4fc19261cc', type='DateCalculator', name='Snapshot Age 1', datasource_id=None, sql=None, depends_on=['250bf67d-8882-4078-a7d4-aa6dda1a1635'], parent_actions=[DomoDataflow_Action(id='250bf67d-8882-4078-a7d4-aa6dda1a1635', type='NumericCalculator', name='Active Cases 2', datasource_id=None, sql=None, depends_on=['dac9af4e-a203-47f5-9493-ec46d834a51f'], parent_actions=[DomoDataflow_Action(id='dac9af4e-a203-47f5-9493-ec46d834a51f', type='NumericCalculator', name='Resolved Cases 2', datasource_id=None, sql=None, depends_on=['cebf2fb3-75e3-48ee-bfe5-2af9927cb581'], parent_actions=[DomoDataflow_Action(id='cebf2fb3-75e3-48ee-bfe5-2af9927cb581', type='ValueMapper', name='Null or 0 Long', datasource_id=None, sql=None, depends_on=['fe46f53d-d10e-4e1e-b341-4d18f565e83b'], parent_actions=[DomoDataflow_Action(id='fe46f53d-d10e-4e1e-b341-4d18f565e83b', type='ValueMapper', name='Null or 0 Lat', datasource_id=None, sql=None, depends_on=['d652deb2-cd3e-462d-9627-2f72425e05cf'], parent_actions=[DomoDataflow_Action(id='d652deb2-cd3e-462d-9627-2f72425e05cf', type='ValueMapper', name='Null New Recovered', datasource_id=None, sql=None, depends_on=['08327437-2a70-49bb-9676-8e63f540eb84'], parent_actions=[DomoDataflow_Action(id='08327437-2a70-49bb-9676-8e63f540eb84', type='ValueMapper', name='Null Recovered', datasource_id=None, sql=None, depends_on=['b5055499-0d69-4273-aedf-c02c0ed96ea7'], parent_actions=[DomoDataflow_Action(id='b5055499-0d69-4273-aedf-c02c0ed96ea7', type='LoadFromVault', name='DOMO US County Covid Time Series Tracker Data', datasource_id='1225e98f-ea61-47e0-bc44-36b38725c280', sql=None, depends_on=None, parent_actions=None)])])])])])])])])]), DomoDataflow_Action(id='670ba4cb-9c18-49c2-a372-05d635891bac', type='GroupBy', name='County Summary', datasource_id=None, sql=None, depends_on=['b5055499-0d69-4273-aedf-c02c0ed96ea7'], parent_actions=[DomoDataflow_Action(id='b5055499-0d69-4273-aedf-c02c0ed96ea7', type='LoadFromVault', name='DOMO US County Covid Time Series Tracker Data', datasource_id='1225e98f-ea61-47e0-bc44-36b38725c280', sql=None, depends_on=None, parent_actions=None)]), DomoDataflow_Action(id='0d438931-d91a-43ff-8b79-654e6925c4be', type='WindowAction', name='Confirmed 2', datasource_id=None, sql=None, depends_on=['670ba4cb-9c18-49c2-a372-05d635891bac'], parent_actions=[DomoDataflow_Action(id='670ba4cb-9c18-49c2-a372-05d635891bac', type='GroupBy', name='County Summary', datasource_id=None, sql=None, depends_on=['b5055499-0d69-4273-aedf-c02c0ed96ea7'], parent_actions=[DomoDataflow_Action(id='b5055499-0d69-4273-aedf-c02c0ed96ea7', type='LoadFromVault', name='DOMO US County Covid Time Series Tracker Data', datasource_id='1225e98f-ea61-47e0-bc44-36b38725c280', sql=None, depends_on=None, parent_actions=None)])]), DomoDataflow_Action(id='0363ec9b-6a88-4914-baa1-80983f03289c', type='WindowAction', name='Deaths 2', datasource_id=None, sql=None, depends_on=['0d438931-d91a-43ff-8b79-654e6925c4be'], parent_actions=[DomoDataflow_Action(id='0d438931-d91a-43ff-8b79-654e6925c4be', type='WindowAction', name='Confirmed 2', datasource_id=None, sql=None, depends_on=['670ba4cb-9c18-49c2-a372-05d635891bac'], parent_actions=[DomoDataflow_Action(id='670ba4cb-9c18-49c2-a372-05d635891bac', type='GroupBy', name='County Summary', datasource_id=None, sql=None, depends_on=['b5055499-0d69-4273-aedf-c02c0ed96ea7'], parent_actions=[DomoDataflow_Action(id='b5055499-0d69-4273-aedf-c02c0ed96ea7', type='LoadFromVault', name='DOMO US County Covid Time Series Tracker Data', datasource_id='1225e98f-ea61-47e0-bc44-36b38725c280', sql=None, depends_on=None, parent_actions=None)])])]), DomoDataflow_Action(id='17e224ee-3f06-4ad1-ad6a-1226af11f5d9', type='WindowAction', name='Recovered 2', datasource_id=None, sql=None, depends_on=['0363ec9b-6a88-4914-baa1-80983f03289c'], parent_actions=[DomoDataflow_Action(id='0363ec9b-6a88-4914-baa1-80983f03289c', type='WindowAction', name='Deaths 2', datasource_id=None, sql=None, depends_on=['0d438931-d91a-43ff-8b79-654e6925c4be'], parent_actions=[DomoDataflow_Action(id='0d438931-d91a-43ff-8b79-654e6925c4be', type='WindowAction', name='Confirmed 2', datasource_id=None, sql=None, depends_on=['670ba4cb-9c18-49c2-a372-05d635891bac'], parent_actions=[DomoDataflow_Action(id='670ba4cb-9c18-49c2-a372-05d635891bac', type='GroupBy', name='County Summary', datasource_id=None, sql=None, depends_on=['b5055499-0d69-4273-aedf-c02c0ed96ea7'], parent_actions=[DomoDataflow_Action(id='b5055499-0d69-4273-aedf-c02c0ed96ea7', type='LoadFromVault', name='DOMO US County Covid Time Series Tracker Data', datasource_id='1225e98f-ea61-47e0-bc44-36b38725c280', sql=None, depends_on=None, parent_actions=None)])])])]), DomoDataflow_Action(id='2d699db0-8a70-4671-837e-3b9fd03152c8', type='ConcatFields', name='State | County', datasource_id=None, sql=None, depends_on=['17e224ee-3f06-4ad1-ad6a-1226af11f5d9'], parent_actions=[DomoDataflow_Action(id='17e224ee-3f06-4ad1-ad6a-1226af11f5d9', type='WindowAction', name='Recovered 2', datasource_id=None, sql=None, depends_on=['0363ec9b-6a88-4914-baa1-80983f03289c'], parent_actions=[DomoDataflow_Action(id='0363ec9b-6a88-4914-baa1-80983f03289c', type='WindowAction', name='Deaths 2', datasource_id=None, sql=None, depends_on=['0d438931-d91a-43ff-8b79-654e6925c4be'], parent_actions=[DomoDataflow_Action(id='0d438931-d91a-43ff-8b79-654e6925c4be', type='WindowAction', name='Confirmed 2', datasource_id=None, sql=None, depends_on=['670ba4cb-9c18-49c2-a372-05d635891bac'], parent_actions=[DomoDataflow_Action(id='670ba4cb-9c18-49c2-a372-05d635891bac', type='GroupBy', name='County Summary', datasource_id=None, sql=None, depends_on=['b5055499-0d69-4273-aedf-c02c0ed96ea7'], parent_actions=[DomoDataflow_Action(id='b5055499-0d69-4273-aedf-c02c0ed96ea7', type='LoadFromVault', name='DOMO US County Covid Time Series Tracker Data', datasource_id='1225e98f-ea61-47e0-bc44-36b38725c280', sql=None, depends_on=None, parent_actions=None)])])])])]), DomoDataflow_Action(id='64244d26-fc99-459b-966a-ceb3f412ed31', type='MergeJoin', name='Join Data', datasource_id=None, sql=None, depends_on=['a72904d6-88d3-4e47-838b-9a0087d9b2be', '2d699db0-8a70-4671-837e-3b9fd03152c8'], parent_actions=[DomoDataflow_Action(id='a72904d6-88d3-4e47-838b-9a0087d9b2be', type='ConcatFields', name='State | County 1', datasource_id=None, sql=None, depends_on=['709cc8dc-77b6-46c9-9c23-1e8a7cd44203'], parent_actions=[DomoDataflow_Action(id='709cc8dc-77b6-46c9-9c23-1e8a7cd44203', type='ValueMapper', name='Value Mapper 1', datasource_id=None, sql=None, depends_on=['02a1f8dd-2b0a-4193-9c54-8d4fc19261cc'], parent_actions=[DomoDataflow_Action(id='02a1f8dd-2b0a-4193-9c54-8d4fc19261cc', type='DateCalculator', name='Snapshot Age 1', datasource_id=None, sql=None, depends_on=['250bf67d-8882-4078-a7d4-aa6dda1a1635'], parent_actions=[DomoDataflow_Action(id='250bf67d-8882-4078-a7d4-aa6dda1a1635', type='NumericCalculator', name='Active Cases 2', datasource_id=None, sql=None, depends_on=['dac9af4e-a203-47f5-9493-ec46d834a51f'], parent_actions=[DomoDataflow_Action(id='dac9af4e-a203-47f5-9493-ec46d834a51f', type='NumericCalculator', name='Resolved Cases 2', datasource_id=None, sql=None, depends_on=['cebf2fb3-75e3-48ee-bfe5-2af9927cb581'], parent_actions=[DomoDataflow_Action(id='cebf2fb3-75e3-48ee-bfe5-2af9927cb581', type='ValueMapper', name='Null or 0 Long', datasource_id=None, sql=None, depends_on=['fe46f53d-d10e-4e1e-b341-4d18f565e83b'], parent_actions=[DomoDataflow_Action(id='fe46f53d-d10e-4e1e-b341-4d18f565e83b', type='ValueMapper', name='Null or 0 Lat', datasource_id=None, sql=None, depends_on=['d652deb2-cd3e-462d-9627-2f72425e05cf'], parent_actions=[DomoDataflow_Action(id='d652deb2-cd3e-462d-9627-2f72425e05cf', type='ValueMapper', name='Null New Recovered', datasource_id=None, sql=None, depends_on=['08327437-2a70-49bb-9676-8e63f540eb84'], parent_actions=[DomoDataflow_Action(id='08327437-2a70-49bb-9676-8e63f540eb84', type='ValueMapper', name='Null Recovered', datasource_id=None, sql=None, depends_on=['b5055499-0d69-4273-aedf-c02c0ed96ea7'], parent_actions=[DomoDataflow_Action(id='b5055499-0d69-4273-aedf-c02c0ed96ea7', type='LoadFromVault', name='DOMO US County Covid Time Series Tracker Data', datasource_id='1225e98f-ea61-47e0-bc44-36b38725c280', sql=None, depends_on=None, parent_actions=None)])])])])])])])])]), DomoDataflow_Action(id='2d699db0-8a70-4671-837e-3b9fd03152c8', type='ConcatFields', name='State | County', datasource_id=None, sql=None, depends_on=['17e224ee-3f06-4ad1-ad6a-1226af11f5d9'], parent_actions=[DomoDataflow_Action(id='17e224ee-3f06-4ad1-ad6a-1226af11f5d9', type='WindowAction', name='Recovered 2', datasource_id=None, sql=None, depends_on=['0363ec9b-6a88-4914-baa1-80983f03289c'], parent_actions=[DomoDataflow_Action(id='0363ec9b-6a88-4914-baa1-80983f03289c', type='WindowAction', name='Deaths 2', datasource_id=None, sql=None, depends_on=['0d438931-d91a-43ff-8b79-654e6925c4be'], parent_actions=[DomoDataflow_Action(id='0d438931-d91a-43ff-8b79-654e6925c4be', type='WindowAction', name='Confirmed 2', datasource_id=None, sql=None, depends_on=['670ba4cb-9c18-49c2-a372-05d635891bac'], parent_actions=[DomoDataflow_Action(id='670ba4cb-9c18-49c2-a372-05d635891bac', type='GroupBy', name='County Summary', datasource_id=None, sql=None, depends_on=['b5055499-0d69-4273-aedf-c02c0ed96ea7'], parent_actions=[DomoDataflow_Action(id='b5055499-0d69-4273-aedf-c02c0ed96ea7', type='LoadFromVault', name='DOMO US County Covid Time Series Tracker Data', datasource_id='1225e98f-ea61-47e0-bc44-36b38725c280', sql=None, depends_on=None, parent_actions=None)])])])])])]), DomoDataflow_Action(id='5347a8d3-48de-4799-af32-311ba4936c23', type='SelectValues', name='Select Columns 4', datasource_id=None, sql=None, depends_on=['64244d26-fc99-459b-966a-ceb3f412ed31'], parent_actions=[DomoDataflow_Action(id='64244d26-fc99-459b-966a-ceb3f412ed31', type='MergeJoin', name='Join Data', datasource_id=None, sql=None, depends_on=['a72904d6-88d3-4e47-838b-9a0087d9b2be', '2d699db0-8a70-4671-837e-3b9fd03152c8'], parent_actions=[DomoDataflow_Action(id='a72904d6-88d3-4e47-838b-9a0087d9b2be', type='ConcatFields', name='State | County 1', datasource_id=None, sql=None, depends_on=['709cc8dc-77b6-46c9-9c23-1e8a7cd44203'], parent_actions=[DomoDataflow_Action(id='709cc8dc-77b6-46c9-9c23-1e8a7cd44203', type='ValueMapper', name='Value Mapper 1', datasource_id=None, sql=None, depends_on=['02a1f8dd-2b0a-4193-9c54-8d4fc19261cc'], parent_actions=[DomoDataflow_Action(id='02a1f8dd-2b0a-4193-9c54-8d4fc19261cc', type='DateCalculator', name='Snapshot Age 1', datasource_id=None, sql=None, depends_on=['250bf67d-8882-4078-a7d4-aa6dda1a1635'], parent_actions=[DomoDataflow_Action(id='250bf67d-8882-4078-a7d4-aa6dda1a1635', type='NumericCalculator', name='Active Cases 2', datasource_id=None, sql=None, depends_on=['dac9af4e-a203-47f5-9493-ec46d834a51f'], parent_actions=[DomoDataflow_Action(id='dac9af4e-a203-47f5-9493-ec46d834a51f', type='NumericCalculator', name='Resolved Cases 2', datasource_id=None, sql=None, depends_on=['cebf2fb3-75e3-48ee-bfe5-2af9927cb581'], parent_actions=[DomoDataflow_Action(id='cebf2fb3-75e3-48ee-bfe5-2af9927cb581', type='ValueMapper', name='Null or 0 Long', datasource_id=None, sql=None, depends_on=['fe46f53d-d10e-4e1e-b341-4d18f565e83b'], parent_actions=[DomoDataflow_Action(id='fe46f53d-d10e-4e1e-b341-4d18f565e83b', type='ValueMapper', name='Null or 0 Lat', datasource_id=None, sql=None, depends_on=['d652deb2-cd3e-462d-9627-2f72425e05cf'], parent_actions=[DomoDataflow_Action(id='d652deb2-cd3e-462d-9627-2f72425e05cf', type='ValueMapper', name='Null New Recovered', datasource_id=None, sql=None, depends_on=['08327437-2a70-49bb-9676-8e63f540eb84'], parent_actions=[DomoDataflow_Action(id='08327437-2a70-49bb-9676-8e63f540eb84', type='ValueMapper', name='Null Recovered', datasource_id=None, sql=None, depends_on=['b5055499-0d69-4273-aedf-c02c0ed96ea7'], parent_actions=[DomoDataflow_Action(id='b5055499-0d69-4273-aedf-c02c0ed96ea7', type='LoadFromVault', name='DOMO US County Covid Time Series Tracker Data', datasource_id='1225e98f-ea61-47e0-bc44-36b38725c280', sql=None, depends_on=None, parent_actions=None)])])])])])])])])]), DomoDataflow_Action(id='2d699db0-8a70-4671-837e-3b9fd03152c8', type='ConcatFields', name='State | County', datasource_id=None, sql=None, depends_on=['17e224ee-3f06-4ad1-ad6a-1226af11f5d9'], parent_actions=[DomoDataflow_Action(id='17e224ee-3f06-4ad1-ad6a-1226af11f5d9', type='WindowAction', name='Recovered 2', datasource_id=None, sql=None, depends_on=['0363ec9b-6a88-4914-baa1-80983f03289c'], parent_actions=[DomoDataflow_Action(id='0363ec9b-6a88-4914-baa1-80983f03289c', type='WindowAction', name='Deaths 2', datasource_id=None, sql=None, depends_on=['0d438931-d91a-43ff-8b79-654e6925c4be'], parent_actions=[DomoDataflow_Action(id='0d438931-d91a-43ff-8b79-654e6925c4be', type='WindowAction', name='Confirmed 2', datasource_id=None, sql=None, depends_on=['670ba4cb-9c18-49c2-a372-05d635891bac'], parent_actions=[DomoDataflow_Action(id='670ba4cb-9c18-49c2-a372-05d635891bac', type='GroupBy', name='County Summary', datasource_id=None, sql=None, depends_on=['b5055499-0d69-4273-aedf-c02c0ed96ea7'], parent_actions=[DomoDataflow_Action(id='b5055499-0d69-4273-aedf-c02c0ed96ea7', type='LoadFromVault', name='DOMO US County Covid Time Series Tracker Data', datasource_id='1225e98f-ea61-47e0-bc44-36b38725c280', sql=None, depends_on=None, parent_actions=None)])])])])])])]), DomoDataflow_Action(id='31d9273c-3bf1-4046-8594-1bec09a0f83f', type='PublishToVault', name='DOMO_Covid_Time Series_County', datasource_id='dde1d15a-04d1-42c7-88bb-10563e42be01', sql=None, depends_on=['5347a8d3-48de-4799-af32-311ba4936c23'], parent_actions=[DomoDataflow_Action(id='5347a8d3-48de-4799-af32-311ba4936c23', type='SelectValues', name='Select Columns 4', datasource_id=None, sql=None, depends_on=['64244d26-fc99-459b-966a-ceb3f412ed31'], parent_actions=[DomoDataflow_Action(id='64244d26-fc99-459b-966a-ceb3f412ed31', type='MergeJoin', name='Join Data', datasource_id=None, sql=None, depends_on=['a72904d6-88d3-4e47-838b-9a0087d9b2be', '2d699db0-8a70-4671-837e-3b9fd03152c8'], parent_actions=[DomoDataflow_Action(id='a72904d6-88d3-4e47-838b-9a0087d9b2be', type='ConcatFields', name='State | County 1', datasource_id=None, sql=None, depends_on=['709cc8dc-77b6-46c9-9c23-1e8a7cd44203'], parent_actions=[DomoDataflow_Action(id='709cc8dc-77b6-46c9-9c23-1e8a7cd44203', type='ValueMapper', name='Value Mapper 1', datasource_id=None, sql=None, depends_on=['02a1f8dd-2b0a-4193-9c54-8d4fc19261cc'], parent_actions=[DomoDataflow_Action(id='02a1f8dd-2b0a-4193-9c54-8d4fc19261cc', type='DateCalculator', name='Snapshot Age 1', datasource_id=None, sql=None, depends_on=['250bf67d-8882-4078-a7d4-aa6dda1a1635'], parent_actions=[DomoDataflow_Action(id='250bf67d-8882-4078-a7d4-aa6dda1a1635', type='NumericCalculator', name='Active Cases 2', datasource_id=None, sql=None, depends_on=['dac9af4e-a203-47f5-9493-ec46d834a51f'], parent_actions=[DomoDataflow_Action(id='dac9af4e-a203-47f5-9493-ec46d834a51f', type='NumericCalculator', name='Resolved Cases 2', datasource_id=None, sql=None, depends_on=['cebf2fb3-75e3-48ee-bfe5-2af9927cb581'], parent_actions=[DomoDataflow_Action(id='cebf2fb3-75e3-48ee-bfe5-2af9927cb581', type='ValueMapper', name='Null or 0 Long', datasource_id=None, sql=None, depends_on=['fe46f53d-d10e-4e1e-b341-4d18f565e83b'], parent_actions=[DomoDataflow_Action(id='fe46f53d-d10e-4e1e-b341-4d18f565e83b', type='ValueMapper', name='Null or 0 Lat', datasource_id=None, sql=None, depends_on=['d652deb2-cd3e-462d-9627-2f72425e05cf'], parent_actions=[DomoDataflow_Action(id='d652deb2-cd3e-462d-9627-2f72425e05cf', type='ValueMapper', name='Null New Recovered', datasource_id=None, sql=None, depends_on=['08327437-2a70-49bb-9676-8e63f540eb84'], parent_actions=[DomoDataflow_Action(id='08327437-2a70-49bb-9676-8e63f540eb84', type='ValueMapper', name='Null Recovered', datasource_id=None, sql=None, depends_on=['b5055499-0d69-4273-aedf-c02c0ed96ea7'], parent_actions=[DomoDataflow_Action(id='b5055499-0d69-4273-aedf-c02c0ed96ea7', type='LoadFromVault', name='DOMO US County Covid Time Series Tracker Data', datasource_id='1225e98f-ea61-47e0-bc44-36b38725c280', sql=None, depends_on=None, parent_actions=None)])])])])])])])])]), DomoDataflow_Action(id='2d699db0-8a70-4671-837e-3b9fd03152c8', type='ConcatFields', name='State | County', datasource_id=None, sql=None, depends_on=['17e224ee-3f06-4ad1-ad6a-1226af11f5d9'], parent_actions=[DomoDataflow_Action(id='17e224ee-3f06-4ad1-ad6a-1226af11f5d9', type='WindowAction', name='Recovered 2', datasource_id=None, sql=None, depends_on=['0363ec9b-6a88-4914-baa1-80983f03289c'], parent_actions=[DomoDataflow_Action(id='0363ec9b-6a88-4914-baa1-80983f03289c', type='WindowAction', name='Deaths 2', datasource_id=None, sql=None, depends_on=['0d438931-d91a-43ff-8b79-654e6925c4be'], parent_actions=[DomoDataflow_Action(id='0d438931-d91a-43ff-8b79-654e6925c4be', type='WindowAction', name='Confirmed 2', datasource_id=None, sql=None, depends_on=['670ba4cb-9c18-49c2-a372-05d635891bac'], parent_actions=[DomoDataflow_Action(id='670ba4cb-9c18-49c2-a372-05d635891bac', type='GroupBy', name='County Summary', datasource_id=None, sql=None, depends_on=['b5055499-0d69-4273-aedf-c02c0ed96ea7'], parent_actions=[DomoDataflow_Action(id='b5055499-0d69-4273-aedf-c02c0ed96ea7', type='LoadFromVault', name='DOMO US County Covid Time Series Tracker Data', datasource_id='1225e98f-ea61-47e0-bc44-36b38725c280', sql=None, depends_on=None, parent_actions=None)])])])])])])])])], version_id=None, version_number=None, versions=None, history=DomoDataflow_History(execution_history=None))</code></pre>
+</div>
+</div>
+<div id="c0e61dab" class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="cf">async</span> <span class="kw">def</span> generate_version_action_pdf(domo_dataflow):</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    dataflow_versions <span class="op">=</span> <span class="cf">await</span> domo_dataflow.get_versions()</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>        [</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>            {</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>                <span class="st">"dataflow_id"</span>: dataflow_version.<span class="bu">id</span>,</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>                <span class="st">"dataflow_version"</span>: dataflow_version.version_id,</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>                <span class="op">**</span>domo_action.__dict__,</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>            }</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> dataflow_version <span class="kw">in</span> dataflow_versions</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> domo_action <span class="kw">in</span> dataflow_version.actions</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    df.drop(columns<span class="op">=</span>[<span class="st">"parent_actions"</span>, <span class="st">"datasource_id"</span>, <span class="st">"sql"</span>], inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    df.rename(columns<span class="op">=</span>{<span class="st">"id"</span>: <span class="st">"tile_id"</span>, <span class="st">"type"</span>: <span class="st">"tile_type"</span>}, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>action_df <span class="op">=</span> <span class="cf">await</span> generate_version_action_pdf(domo_dataflow)</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>action_df[<span class="dv">0</span>:<span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">dataflow_id</th>
+<th data-quarto-table-cell-role="th">dataflow_version</th>
+<th data-quarto-table-cell-role="th">tile_id</th>
+<th data-quarto-table-cell-role="th">tile_type</th>
+<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">depends_on</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>9</td>
+<td>89</td>
+<td>0e192d7e-280b-4c4d-bde2-f0f3adb1e213</td>
+<td>LoadFromVault</td>
+<td>DOMO Covid Current Snapshot Tracker Data</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>9</td>
+<td>89</td>
+<td>96d04e4b-dc72-479c-b84b-ad0b74ada085</td>
+<td>LoadFromVault</td>
+<td>DOMO Covid Time Series Tracker Data</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>9</td>
+<td>89</td>
+<td>a1d07083-d1ca-41e9-8be2-f13596df03c3</td>
+<td>ValueMapper</td>
+<td>Value Mapper</td>
+<td>[96d04e4b-dc72-479c-b84b-ad0b74ada085]</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>9</td>
+<td>89</td>
+<td>6e3ec9a4-470b-4fe4-8e8a-bd954b681df4</td>
+<td>DateCalculator</td>
+<td>Days Since...</td>
+<td>[0e192d7e-280b-4c4d-bde2-f0f3adb1e213]</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>9</td>
+<td>89</td>
+<td>59e6226d-507f-4cff-86b1-f024499173aa</td>
+<td>NumericCalculator</td>
+<td>Resolved Cases</td>
+<td>[6e3ec9a4-470b-4fe4-8e8a-bd954b681df4]</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div>
+<div id="1ed279c3" class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">async</span> <span class="kw">def</span> generate_action_stats_df(domo_dataflow):</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> domo_dataflow.history.get_execution_history(maximum<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        [</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>            {</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>                <span class="st">"dataflow_version"</span>: domo_history.dataflow_version,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>                <span class="st">"dataflow_id"</span>: domo_history.dataflow_id,</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>                <span class="st">"dataflow_begin_time"</span>: domo_history.begin_time,</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>                <span class="op">**</span>domo_action.__dict__,</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>            }</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> domo_history <span class="kw">in</span> domo_dataflow.history.execution_history</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> domo_action <span class="kw">in</span> domo_history.action_results</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    df.rename(columns<span class="op">=</span>{<span class="st">"id"</span>: <span class="st">"tile_id"</span>, <span class="st">"type"</span>: <span class="st">"tile_type"</span>}, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>stats_df <span class="op">=</span> <span class="cf">await</span> generate_action_stats_df(domo_dataflow)</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>stats_df[<span class="dv">0</span>:<span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">dataflow_version</th>
+<th data-quarto-table-cell-role="th">dataflow_id</th>
+<th data-quarto-table-cell-role="th">dataflow_begin_time</th>
+<th data-quarto-table-cell-role="th">tile_id</th>
+<th data-quarto-table-cell-role="th">tile_type</th>
+<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">is_success</th>
+<th data-quarto-table-cell-role="th">rows_processed</th>
+<th data-quarto-table-cell-role="th">begin_time</th>
+<th data-quarto-table-cell-role="th">end_time</th>
+<th data-quarto-table-cell-role="th">duration_in_sec</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>89</td>
+<td>9</td>
+<td>2024-02-15 21:46:47</td>
+<td>0e192d7e-280b-4c4d-bde2-f0f3adb1e213</td>
+<td>DataHubManifestLoaderAction</td>
+<td>None</td>
+<td>True</td>
+<td>315</td>
+<td>2024-02-15 21:46:57.697</td>
+<td>2024-02-15 21:46:58.874</td>
+<td>1.177</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>89</td>
+<td>9</td>
+<td>2024-02-15 21:46:47</td>
+<td>96d04e4b-dc72-479c-b84b-ad0b74ada085</td>
+<td>DataHubManifestLoaderAction</td>
+<td>None</td>
+<td>True</td>
+<td>389137</td>
+<td>2024-02-15 21:46:57.696</td>
+<td>2024-02-15 21:47:06.790</td>
+<td>9.094</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>89</td>
+<td>9</td>
+<td>2024-02-15 21:46:47</td>
+<td>a1d07083-d1ca-41e9-8be2-f13596df03c3</td>
+<td>ValueMapper</td>
+<td>None</td>
+<td>True</td>
+<td>389137</td>
+<td>2024-02-15 21:46:58.773</td>
+<td>2024-02-15 21:47:06.790</td>
+<td>8.017</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>89</td>
+<td>9</td>
+<td>2024-02-15 21:46:47</td>
+<td>6e3ec9a4-470b-4fe4-8e8a-bd954b681df4</td>
+<td>DateCalculator</td>
+<td>None</td>
+<td>True</td>
+<td>315</td>
+<td>2024-02-15 21:46:58.772</td>
+<td>2024-02-15 21:46:58.873</td>
+<td>0.101</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>89</td>
+<td>9</td>
+<td>2024-02-15 21:46:47</td>
+<td>59e6226d-507f-4cff-86b1-f024499173aa</td>
+<td>NumericCalculator</td>
+<td>None</td>
+<td>True</td>
+<td>315</td>
+<td>2024-02-15 21:46:58.773</td>
+<td>2024-02-15 21:46:58.873</td>
+<td>0.100</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div>
+<div id="3869e052" class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> combine_execution_plan_with_stats_df(action_df, stats_df):</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    stats_df.drop(columns<span class="op">=</span>[<span class="st">"tile_type"</span>, <span class="st">"name"</span>], inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.merge(</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        action_df,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        stats_df,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>        on<span class="op">=</span>[<span class="st">"dataflow_version"</span>, <span class="st">"dataflow_id"</span>, <span class="st">"tile_id"</span>],</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>        how<span class="op">=</span><span class="st">"outer"</span>,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>combine_df <span class="op">=</span> combine_execution_plan_with_stats_df(action_df.copy(), stats_df.copy())</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">len</span>(combine_df))</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>combine_df[:<span class="dv">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>931</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">dataflow_id</th>
+<th data-quarto-table-cell-role="th">dataflow_version</th>
+<th data-quarto-table-cell-role="th">tile_id</th>
+<th data-quarto-table-cell-role="th">tile_type</th>
+<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">depends_on</th>
+<th data-quarto-table-cell-role="th">dataflow_begin_time</th>
+<th data-quarto-table-cell-role="th">is_success</th>
+<th data-quarto-table-cell-role="th">rows_processed</th>
+<th data-quarto-table-cell-role="th">begin_time</th>
+<th data-quarto-table-cell-role="th">end_time</th>
+<th data-quarto-table-cell-role="th">duration_in_sec</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>9</td>
+<td>20</td>
+<td>008ac1ce-4143-420f-93a7-9536ea986fc5</td>
+<td>WindowAction</td>
+<td>Rank &amp; Window</td>
+<td>[e667577a-8c73-4677-8022-8bf3f3e7a72e]</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaT</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>9</td>
+<td>20</td>
+<td>02a1f8dd-2b0a-4193-9c54-8d4fc19261cc</td>
+<td>DateCalculator</td>
+<td>Snapshot Age 1</td>
+<td>[250bf67d-8882-4078-a7d4-aa6dda1a1635]</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaT</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>9</td>
+<td>20</td>
+<td>0362dd20-2039-403d-a249-94e2ce716aed</td>
+<td>Constant</td>
+<td>Today</td>
+<td>[18626a7b-c1a7-4fb4-bcc0-7e50ebd7e763]</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaT</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>9</td>
+<td>20</td>
+<td>06f8d60b-8b84-474d-91de-abcaefe10abf</td>
+<td>SelectValues</td>
+<td>DIM_Country (Join)</td>
+<td>[0e783798-e39f-49f2-ac42-70cd82ffd611]</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaT</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>9</td>
+<td>20</td>
+<td>08327437-2a70-49bb-9676-8e63f540eb84</td>
+<td>ValueMapper</td>
+<td>Null Recovered 2</td>
+<td>[5da719b4-d4c6-4dfc-a928-38312de82df8]</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaT</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5</td>
+<td>9</td>
+<td>20</td>
+<td>0c791afe-0acb-4821-8781-ddd5d51c850a</td>
+<td>WindowAction</td>
+<td>Recovered</td>
+<td>[2037eb8f-c88c-4d9f-8d14-ae591a27b627]</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaT</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">6</td>
+<td>9</td>
+<td>20</td>
+<td>0e192d7e-280b-4c4d-bde2-f0f3adb1e213</td>
+<td>LoadFromVault</td>
+<td>DOMO Covid Current Snapshot Tracker Data</td>
+<td>None</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaT</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">7</td>
+<td>9</td>
+<td>20</td>
+<td>0e783798-e39f-49f2-ac42-70cd82ffd611</td>
+<td>UnionAll</td>
+<td>Append New Values</td>
+<td>[3ea82c4a-1da1-4c37-b3e5-ea77a6ba035d, 52b67a4...</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaT</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>9</td>
+<td>20</td>
+<td>1689d811-85eb-4e3a-993d-2e59419e2236</td>
+<td>SelectValues</td>
+<td>DIM Table</td>
+<td>[d6423ad7-938f-428e-a773-c8f2f257de07]</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaT</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">9</td>
+<td>9</td>
+<td>20</td>
+<td>16bae147-462b-4547-94b2-8075aab0a2fb</td>
+<td>WindowAction</td>
+<td>Deaths 1</td>
+<td>[551ebf46-d0ac-4210-83cd-a50049b2b61d]</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaT</td>
+<td>NaN</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div>
+<div id="531d9395" class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> explode_parents(df):</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co">    1. generates one row for each parent in "depends_on"</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co">    2. joins parents stats to df</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co">    3. stores dataflow_begin_time if there is no parent</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"dependencies"</span>] <span class="op">=</span> df[<span class="st">"depends_on"</span>]</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    explode_df <span class="op">=</span> df.explode(<span class="st">"depends_on"</span>)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    parents_df <span class="op">=</span> df[</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>        [</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>            <span class="st">"dataflow_version"</span>,</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>            <span class="st">"dataflow_id"</span>,</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>            <span class="st">"tile_id"</span>,</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>            <span class="st">"tile_type"</span>,</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>            <span class="st">"name"</span>,</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>            <span class="st">"end_time"</span>,</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>            <span class="st">"rows_processed"</span>,</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>    ].rename(</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>        columns<span class="op">=</span>{</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>            <span class="st">"tile_id"</span>: <span class="st">"parent_tile_id"</span>,</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>            <span class="st">"tile_type"</span>: <span class="st">"parent_tile_type"</span>,</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>            <span class="st">"name"</span>: <span class="st">"parent_tile_name"</span>,</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>            <span class="st">"end_time"</span>: <span class="st">"parent_end_time"</span>,</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>            <span class="st">"rows_processed"</span>: <span class="st">"parent_rows_processed"</span>,</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>    explode_df <span class="op">=</span> pd.merge(</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>        explode_df,</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>        parents_df,</span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>        left_on<span class="op">=</span>[<span class="st">"dataflow_version"</span>, <span class="st">"dataflow_id"</span>, <span class="st">"depends_on"</span>],</span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>        right_on<span class="op">=</span>[<span class="st">"dataflow_version"</span>, <span class="st">"dataflow_id"</span>, <span class="st">"parent_tile_id"</span>],</span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>        how<span class="op">=</span><span class="st">"left"</span>,</span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>    explode_df[<span class="st">"parent_end_time"</span>] <span class="op">=</span> explode_df[[<span class="st">"begin_time"</span>, <span class="st">"parent_end_time"</span>]].<span class="bu">max</span>(</span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>        axis<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>    explode_df[<span class="st">"actual_duration_in_sec"</span>] <span class="op">=</span> (</span>
+<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a>        explode_df[<span class="st">"end_time"</span>] <span class="op">-</span> explode_df[<span class="st">"parent_end_time"</span>]</span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a>    ).dt.total_seconds()</span>
+<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>    explode_df <span class="op">=</span> explode_df[</span>
+<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>        [</span>
+<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a>            <span class="st">"dataflow_id"</span>,</span>
+<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>            <span class="st">"dataflow_version"</span>,</span>
+<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a>            <span class="st">"tile_id"</span>,</span>
+<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a>            <span class="st">"tile_type"</span>,</span>
+<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a>            <span class="st">"name"</span>,</span>
+<span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a>            <span class="st">"rows_processed"</span>,</span>
+<span id="cb18-55"><a href="#cb18-55" aria-hidden="true" tabindex="-1"></a>            <span class="st">"begin_time"</span>,</span>
+<span id="cb18-56"><a href="#cb18-56" aria-hidden="true" tabindex="-1"></a>            <span class="st">"end_time"</span>,</span>
+<span id="cb18-57"><a href="#cb18-57" aria-hidden="true" tabindex="-1"></a>            <span class="st">"duration_in_sec"</span>,</span>
+<span id="cb18-58"><a href="#cb18-58" aria-hidden="true" tabindex="-1"></a>            <span class="st">"parent_end_time"</span>,</span>
+<span id="cb18-59"><a href="#cb18-59" aria-hidden="true" tabindex="-1"></a>            <span class="st">"actual_duration_in_sec"</span>,</span>
+<span id="cb18-60"><a href="#cb18-60" aria-hidden="true" tabindex="-1"></a>            <span class="st">"dependencies"</span>,</span>
+<span id="cb18-61"><a href="#cb18-61" aria-hidden="true" tabindex="-1"></a>            <span class="st">"parent_tile_id"</span>,</span>
+<span id="cb18-62"><a href="#cb18-62" aria-hidden="true" tabindex="-1"></a>            <span class="st">"parent_tile_type"</span>,</span>
+<span id="cb18-63"><a href="#cb18-63" aria-hidden="true" tabindex="-1"></a>            <span class="st">"parent_tile_name"</span>,</span>
+<span id="cb18-64"><a href="#cb18-64" aria-hidden="true" tabindex="-1"></a>            <span class="st">"parent_rows_processed"</span>,</span>
+<span id="cb18-65"><a href="#cb18-65" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="cb18-66"><a href="#cb18-66" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb18-67"><a href="#cb18-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-68"><a href="#cb18-68" aria-hidden="true" tabindex="-1"></a>    explode_df[<span class="st">"parent_tile_id"</span>].fillna(<span class="st">"start"</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb18-69"><a href="#cb18-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-70"><a href="#cb18-70" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> explode_df</span>
+<span id="cb18-71"><a href="#cb18-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-72"><a href="#cb18-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-73"><a href="#cb18-73" aria-hidden="true" tabindex="-1"></a>explode_df <span class="op">=</span> explode_parents(combine_df.copy())</span>
+<span id="cb18-74"><a href="#cb18-74" aria-hidden="true" tabindex="-1"></a>explode_df[<span class="dv">0</span>:<span class="dv">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/tmp/ipykernel_36055/2268720893.py:68: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  explode_df["parent_tile_id"].fillna("start", inplace=True)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">dataflow_id</th>
+<th data-quarto-table-cell-role="th">dataflow_version</th>
+<th data-quarto-table-cell-role="th">tile_id</th>
+<th data-quarto-table-cell-role="th">tile_type</th>
+<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">rows_processed</th>
+<th data-quarto-table-cell-role="th">begin_time</th>
+<th data-quarto-table-cell-role="th">end_time</th>
+<th data-quarto-table-cell-role="th">duration_in_sec</th>
+<th data-quarto-table-cell-role="th">parent_end_time</th>
+<th data-quarto-table-cell-role="th">actual_duration_in_sec</th>
+<th data-quarto-table-cell-role="th">dependencies</th>
+<th data-quarto-table-cell-role="th">parent_tile_id</th>
+<th data-quarto-table-cell-role="th">parent_tile_type</th>
+<th data-quarto-table-cell-role="th">parent_tile_name</th>
+<th data-quarto-table-cell-role="th">parent_rows_processed</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>9</td>
+<td>20</td>
+<td>008ac1ce-4143-420f-93a7-9536ea986fc5</td>
+<td>WindowAction</td>
+<td>Rank &amp; Window</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>[e667577a-8c73-4677-8022-8bf3f3e7a72e]</td>
+<td>e667577a-8c73-4677-8022-8bf3f3e7a72e</td>
+<td>UnionAll</td>
+<td>Append Unused DIM Countries</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>9</td>
+<td>20</td>
+<td>02a1f8dd-2b0a-4193-9c54-8d4fc19261cc</td>
+<td>DateCalculator</td>
+<td>Snapshot Age 1</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>[250bf67d-8882-4078-a7d4-aa6dda1a1635]</td>
+<td>250bf67d-8882-4078-a7d4-aa6dda1a1635</td>
+<td>NumericCalculator</td>
+<td>Active Cases 2</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>9</td>
+<td>20</td>
+<td>0362dd20-2039-403d-a249-94e2ce716aed</td>
+<td>Constant</td>
+<td>Today</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>[18626a7b-c1a7-4fb4-bcc0-7e50ebd7e763]</td>
+<td>18626a7b-c1a7-4fb4-bcc0-7e50ebd7e763</td>
+<td>Filter</td>
+<td>Countries Still Listed</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>9</td>
+<td>20</td>
+<td>06f8d60b-8b84-474d-91de-abcaefe10abf</td>
+<td>SelectValues</td>
+<td>DIM_Country (Join)</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>[0e783798-e39f-49f2-ac42-70cd82ffd611]</td>
+<td>0e783798-e39f-49f2-ac42-70cd82ffd611</td>
+<td>UnionAll</td>
+<td>Append New Values</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>9</td>
+<td>20</td>
+<td>08327437-2a70-49bb-9676-8e63f540eb84</td>
+<td>ValueMapper</td>
+<td>Null Recovered 2</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>[5da719b4-d4c6-4dfc-a928-38312de82df8]</td>
+<td>5da719b4-d4c6-4dfc-a928-38312de82df8</td>
+<td>ValueMapper</td>
+<td>Null Deaths 2</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5</td>
+<td>9</td>
+<td>20</td>
+<td>0c791afe-0acb-4821-8781-ddd5d51c850a</td>
+<td>WindowAction</td>
+<td>Recovered</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>[2037eb8f-c88c-4d9f-8d14-ae591a27b627]</td>
+<td>2037eb8f-c88c-4d9f-8d14-ae591a27b627</td>
+<td>WindowAction</td>
+<td>Deaths</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">6</td>
+<td>9</td>
+<td>20</td>
+<td>0e192d7e-280b-4c4d-bde2-f0f3adb1e213</td>
+<td>LoadFromVault</td>
+<td>DOMO Covid Current Snapshot Tracker Data</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>None</td>
+<td>start</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">7</td>
+<td>9</td>
+<td>20</td>
+<td>0e783798-e39f-49f2-ac42-70cd82ffd611</td>
+<td>UnionAll</td>
+<td>Append New Values</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>[3ea82c4a-1da1-4c37-b3e5-ea77a6ba035d, 52b67a4...</td>
+<td>3ea82c4a-1da1-4c37-b3e5-ea77a6ba035d</td>
+<td>Constant</td>
+<td>Flag New Values</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>9</td>
+<td>20</td>
+<td>0e783798-e39f-49f2-ac42-70cd82ffd611</td>
+<td>UnionAll</td>
+<td>Append New Values</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>[3ea82c4a-1da1-4c37-b3e5-ea77a6ba035d, 52b67a4...</td>
+<td>52b67a4e-c879-432d-95f4-ccf64475f1b7</td>
+<td>SelectValues</td>
+<td>Up to Date Covid + Existing Webform Info</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">9</td>
+<td>9</td>
+<td>20</td>
+<td>0e783798-e39f-49f2-ac42-70cd82ffd611</td>
+<td>UnionAll</td>
+<td>Append New Values</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>NaT</td>
+<td>NaN</td>
+<td>[3ea82c4a-1da1-4c37-b3e5-ea77a6ba035d, 52b67a4...</td>
+<td>97044bf5-caa3-4420-b40f-9002d836d5c5</td>
+<td>SelectValues</td>
+<td>Existing Webform Info - No Longer in Covid</td>
+<td>NaN</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div>
+<div id="852a6731" class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_average(df):</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""calculates average execution time for each tile, differentiating by reported duration_in_sec vs actual_duration which assumes an upstream parent"""</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df.groupby(</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"dataflow_id"</span>, <span class="st">"dataflow_version"</span>, <span class="st">"tile_id"</span>, <span class="st">"parent_tile_id"</span>]</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    ).agg(</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"name"</span>: <span class="st">"first"</span>,</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>            <span class="st">"tile_type"</span>: <span class="st">"first"</span>,</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>            <span class="st">"parent_tile_name"</span>: <span class="st">"first"</span>,</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>            <span class="st">"parent_tile_type"</span>: <span class="st">"first"</span>,</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>            <span class="st">"duration_in_sec"</span>: <span class="st">"mean"</span>,</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>            <span class="st">"actual_duration_in_sec"</span>: <span class="st">"mean"</span>,</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>            <span class="st">"rows_processed"</span>: <span class="st">"mean"</span>,</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>            <span class="st">"parent_rows_processed"</span>: <span class="st">"mean"</span>,</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>calculate_average(explode_df.copy())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">tile_type</th>
+<th data-quarto-table-cell-role="th">parent_tile_name</th>
+<th data-quarto-table-cell-role="th">parent_tile_type</th>
+<th data-quarto-table-cell-role="th">duration_in_sec</th>
+<th data-quarto-table-cell-role="th">actual_duration_in_sec</th>
+<th data-quarto-table-cell-role="th">rows_processed</th>
+<th data-quarto-table-cell-role="th">parent_rows_processed</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">dataflow_id</th>
+<th data-quarto-table-cell-role="th">dataflow_version</th>
+<th data-quarto-table-cell-role="th">tile_id</th>
+<th data-quarto-table-cell-role="th">parent_tile_id</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td rowspan="11" data-quarto-table-cell-role="th" data-valign="top">9</td>
+<td rowspan="5" data-quarto-table-cell-role="th" data-valign="top">20</td>
+<td data-quarto-table-cell-role="th">008ac1ce-4143-420f-93a7-9536ea986fc5</td>
+<td data-quarto-table-cell-role="th">e667577a-8c73-4677-8022-8bf3f3e7a72e</td>
+<td>Rank &amp; Window</td>
+<td>WindowAction</td>
+<td>Append Unused DIM Countries</td>
+<td>UnionAll</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">02a1f8dd-2b0a-4193-9c54-8d4fc19261cc</td>
+<td data-quarto-table-cell-role="th">250bf67d-8882-4078-a7d4-aa6dda1a1635</td>
+<td>Snapshot Age 1</td>
+<td>DateCalculator</td>
+<td>Active Cases 2</td>
+<td>NumericCalculator</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0362dd20-2039-403d-a249-94e2ce716aed</td>
+<td data-quarto-table-cell-role="th">18626a7b-c1a7-4fb4-bcc0-7e50ebd7e763</td>
+<td>Today</td>
+<td>Constant</td>
+<td>Countries Still Listed</td>
+<td>Filter</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">06f8d60b-8b84-474d-91de-abcaefe10abf</td>
+<td data-quarto-table-cell-role="th">0e783798-e39f-49f2-ac42-70cd82ffd611</td>
+<td>DIM_Country (Join)</td>
+<td>SelectValues</td>
+<td>Append New Values</td>
+<td>UnionAll</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">08327437-2a70-49bb-9676-8e63f540eb84</td>
+<td data-quarto-table-cell-role="th">5da719b4-d4c6-4dfc-a928-38312de82df8</td>
+<td>Null Recovered 2</td>
+<td>ValueMapper</td>
+<td>Null Deaths 2</td>
+<td>ValueMapper</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">...</td>
+<td data-quarto-table-cell-role="th">...</td>
+<td data-quarto-table-cell-role="th">...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td rowspan="5" data-quarto-table-cell-role="th" data-valign="top">89</td>
+<td data-quarto-table-cell-role="th">d652deb2-cd3e-462d-9627-2f72425e05cf</td>
+<td data-quarto-table-cell-role="th">08327437-2a70-49bb-9676-8e63f540eb84</td>
+<td>Null New Recovered</td>
+<td>ValueMapper</td>
+<td>Null Recovered</td>
+<td>ValueMapper</td>
+<td>25.8714</td>
+<td>-1408.67276</td>
+<td>3424193.0</td>
+<td>3424193.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">dac9af4e-a203-47f5-9493-ec46d834a51f</td>
+<td data-quarto-table-cell-role="th">cebf2fb3-75e3-48ee-bfe5-2af9927cb581</td>
+<td>Resolved Cases 2</td>
+<td>NumericCalculator</td>
+<td>Null or 0 Long</td>
+<td>ValueMapper</td>
+<td>25.8018</td>
+<td>-1408.70667</td>
+<td>3424193.0</td>
+<td>3424193.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">dc5a2d0c-3bdf-4e94-a07a-7ff4709acc1f</td>
+<td data-quarto-table-cell-role="th">1d3e790a-dabf-45ba-849e-74996d7a03c9</td>
+<td>Active Cases 1</td>
+<td>NumericCalculator</td>
+<td>Resolved Cases 1</td>
+<td>NumericCalculator</td>
+<td>7.8660</td>
+<td>-1415.71871</td>
+<td>389137.0</td>
+<td>389137.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">eeecc67b-34c4-4929-a4e3-34058aba039a</td>
+<td data-quarto-table-cell-role="th">43029ef0-9519-49c6-80c2-2f885e662221</td>
+<td>Ranks 1</td>
+<td>SelectValues</td>
+<td>Recovered 1</td>
+<td>WindowAction</td>
+<td>0.0287</td>
+<td>-1419.28524</td>
+<td>60.0</td>
+<td>60.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">fe46f53d-d10e-4e1e-b341-4d18f565e83b</td>
+<td data-quarto-table-cell-role="th">d652deb2-cd3e-462d-9627-2f72425e05cf</td>
+<td>Null or 0 Lat</td>
+<td>ValueMapper</td>
+<td>Null New Recovered</td>
+<td>ValueMapper</td>
+<td>25.8713</td>
+<td>-1408.67273</td>
+<td>3424193.0</td>
+<td>3424193.0</td>
+</tr>
+</tbody>
+</table>
+
+<p>551 rows × 8 columns</p>
+</div>
+</div>
+</div>
+</div>
+<div id="3a3989e9-fba7-44e4-973d-0cdefc8f6f67" class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_action_list(domo_dataflow: dmdf.DomoDataflow):</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>            <span class="st">"dataflow_id"</span>: domo_dataflow.<span class="bu">id</span>,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>            <span class="st">"datafow_name"</span>: domo_dataflow.name,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>            <span class="st">"action_type"</span>: domo_action.<span class="bu">type</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> domo_action <span class="kw">in</span> domo_dataflow.actions</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>get_action_list(domo_dataflow<span class="op">=</span>dataflow_definition_ls[<span class="dv">0</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>[{'dataflow_id': 340,
+  'datafow_name': 'Demo Active Employees',
+  'action_type': 'LoadFromVault'},
+ {'dataflow_id': 340,
+  'datafow_name': 'Demo Active Employees',
+  'action_type': 'SelectValues'},
+ {'dataflow_id': 340,
+  'datafow_name': 'Demo Active Employees',
+  'action_type': 'LoadFromVault'},
+ {'dataflow_id': 340,
+  'datafow_name': 'Demo Active Employees',
+  'action_type': 'Filter'},
+ {'dataflow_id': 340,
+  'datafow_name': 'Demo Active Employees',
+  'action_type': 'SelectValues'},
+ {'dataflow_id': 340,
+  'datafow_name': 'Demo Active Employees',
+  'action_type': 'Constant'},
+ {'dataflow_id': 340,
+  'datafow_name': 'Demo Active Employees',
+  'action_type': 'Constant'},
+ {'dataflow_id': 340,
+  'datafow_name': 'Demo Active Employees',
+  'action_type': 'MergeJoin'},
+ {'dataflow_id': 340,
+  'datafow_name': 'Demo Active Employees',
+  'action_type': 'Filter'},
+ {'dataflow_id': 340,
+  'datafow_name': 'Demo Active Employees',
+  'action_type': 'SelectValues'},
+ {'dataflow_id': 340,
+  'datafow_name': 'Demo Active Employees',
+  'action_type': 'PublishToVault'}]</code></pre>
+</div>
+</div>
+<div id="819035f6-649a-478d-bad6-06f59947496d" class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>action_ls <span class="op">=</span> [get_action_list(dd_obj) <span class="cf">for</span> dd_obj <span class="kw">in</span> dataflow_definition_ls]</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>flat_action_ls <span class="op">=</span> [action <span class="cf">for</span> a_list <span class="kw">in</span> action_ls <span class="cf">for</span> action <span class="kw">in</span> a_list]</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>flat_action_ls[<span class="dv">0</span>:<span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>[{'dataflow_id': 340,
+  'datafow_name': 'Demo Active Employees',
+  'action_type': 'LoadFromVault'},
+ {'dataflow_id': 340,
+  'datafow_name': 'Demo Active Employees',
+  'action_type': 'SelectValues'},
+ {'dataflow_id': 340,
+  'datafow_name': 'Demo Active Employees',
+  'action_type': 'LoadFromVault'},
+ {'dataflow_id': 340,
+  'datafow_name': 'Demo Active Employees',
+  'action_type': 'Filter'},
+ {'dataflow_id': 340,
+  'datafow_name': 'Demo Active Employees',
+  'action_type': 'SelectValues'}]</code></pre>
+</div>
+</div>
+<div id="e1c5b5bc-b1e1-4a8f-b49b-254c01e5cba1" class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(flat_action_ls)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>df[<span class="dv">0</span>:<span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">dataflow_id</th>
+<th data-quarto-table-cell-role="th">datafow_name</th>
+<th data-quarto-table-cell-role="th">action_type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>340</td>
+<td>Demo Active Employees</td>
+<td>LoadFromVault</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>340</td>
+<td>Demo Active Employees</td>
+<td>SelectValues</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>340</td>
+<td>Demo Active Employees</td>
+<td>LoadFromVault</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>340</td>
+<td>Demo Active Employees</td>
+<td>Filter</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>340</td>
+<td>Demo Active Employees</td>
+<td>SelectValues</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div>
+<div id="6d35e51f-8dc9-462f-b591-16e7434a4b09" class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>df.to_csv(<span class="st">"marks_csv.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/jaewilson07\.github\.io\/domo_library");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/jaewilson07/domo_library/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

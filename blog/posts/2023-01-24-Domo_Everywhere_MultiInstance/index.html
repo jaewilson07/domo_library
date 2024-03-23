@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.551">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Jae Wilson">
+<meta name="dcterms.date" content="2023-01-24">
+
+<title>domolibrary - Domo Distribution and Governance Strategy across Instances</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../../styles.css">
+<meta property="og:title" content="domolibrary - Domo Distribution and Governance Strategy across Instances">
+<meta property="og:description" content="">
+<meta property="og:site_name" content="domolibrary">
+<meta name="twitter:title" content="domolibrary - Domo Distribution and Governance Strategy across Instances">
+<meta name="twitter:description" content="">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">domolibrary</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../blog/index.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaewilson07/domo_library"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/onyxreporting"> <i class="bi bi-twitter" role="img" aria-label="OnyxReporting Twitter">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Domo Distribution and Governance Strategy across Instances</li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Client</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../client/get_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">get_data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../client/domoauth.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DomoAuth</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../client/logger.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logger</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../client/responsegetdata.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ResponseGetData</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../client/domoerror.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DomoError</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Classes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domoaccesstoken.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">AccessToken</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domoaccount.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Account</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domoaccount_config.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Account Config extensions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domoactivitylog.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Activity Log</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domoapplication.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Application</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domoapplication_job.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Job</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domobootstrap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bootstrap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domocard.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Card</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domocertification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Certification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domodatacenter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DataCenter</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domodataflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dataflow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domodataflow_action.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dataflow_Action</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domodataflow_history.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dataflow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domodataset.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dataset</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domogrant.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Grant</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domogroup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Group</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domogroup_membership.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Group</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domoinstanceconfig.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Instance Configuration</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domoinstanceconfig_userattributes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Instance Configuration User Attributes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domojupyter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DomoJupyter Integration</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domolineage.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lineage</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domopage.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Page</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domopage_content.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">PageContent</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domopdp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">PDP</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domopublish.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Publish</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domorole.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Role</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domosandbox.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sandbox</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domostream.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stream</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../classes/domouser.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">User</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Routes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/account.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Account Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/activity_log.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Activity Log Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/application.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Application Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/auth.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Auth Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/auth_accesstoken.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Access Token Auth Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/bootstrap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bootstrap Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/card.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Card Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/datacenter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Datacenter Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/dataflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dataflow Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/dataset.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dataset Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/grant.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Grant Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/group.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Group Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/instance_config.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Instance Config Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/jupyter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Jupyter Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/page.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Page Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/pdp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">PDP Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/publish.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Publish Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/role.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Role Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/sandbox.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sandbox Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/stream.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stream Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/user.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">User Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../routes/user_attributes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">User Attribute Routes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Integrations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../integrations/Automation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Automation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../integrations/domojupyter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DomoJupyter (GetInstanceCredentials)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../integrations/MonitDataset.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">MonitDataset</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../integrations/rolehierarchy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RoleHierarchy</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Utils</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../utils/chunk_execution.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Async Code Execution</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../utils/convert.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Conversion utility functions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../utils/dictdot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DictDot</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../utils/image.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Utility Class</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../utils/read_creds_from_dotenv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Read Creds from DotEnv</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../utils/upload_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Upload Data to Domo</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#types-of-datasets-and-which-ones-we-publish" id="toc-types-of-datasets-and-which-ones-we-publish" class="nav-link active" data-scroll-target="#types-of-datasets-and-which-ones-we-publish">4 Types of Datasets and Which ones we Publish</a></li>
+  <li><a href="#non-publishable-datasets" id="toc-non-publishable-datasets" class="nav-link" data-scroll-target="#non-publishable-datasets">Non-publishable Datasets</a></li>
+  <li><a href="#publishable-datasets" id="toc-publishable-datasets" class="nav-link" data-scroll-target="#publishable-datasets">Publishable Datasets</a></li>
+  <li><a href="#types-of-instances" id="toc-types-of-instances" class="nav-link" data-scroll-target="#types-of-instances">3 Types of Instances</a>
+  <ul class="collapse">
+  <li><a href="#responsibility-for-governance" id="toc-responsibility-for-governance" class="nav-link" data-scroll-target="#responsibility-for-governance">Responsibility for Governance</a></li>
+  <li><a href="#public-distribution-center" id="toc-public-distribution-center" class="nav-link" data-scroll-target="#public-distribution-center">Public Distribution Center&nbsp;</a></li>
+  <li><a href="#private-distribution-center" id="toc-private-distribution-center" class="nav-link" data-scroll-target="#private-distribution-center">Private Distribution Center</a></li>
+  </ul></li>
+  <li><a href="#sample-use-cases" id="toc-sample-use-cases" class="nav-link" data-scroll-target="#sample-use-cases">Sample Use Cases</a>
+  <ul class="collapse">
+  <li><a href="#engineering-produces-a-dashboard" id="toc-engineering-produces-a-dashboard" class="nav-link" data-scroll-target="#engineering-produces-a-dashboard">1. Engineering produces a dashboard</a></li>
+  <li><a href="#infosec-augments-engineerings-dashboard" id="toc-infosec-augments-engineerings-dashboard" class="nav-link" data-scroll-target="#infosec-augments-engineerings-dashboard">2. Infosec augments Engineering’s dashboard</a></li>
+  <li><a href="#secops-chooses-the-most-downstream-branch" id="toc-secops-chooses-the-most-downstream-branch" class="nav-link" data-scroll-target="#secops-chooses-the-most-downstream-branch">3. SecOps chooses the most downstream branch</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/jaewilson07/domo_library/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Domo Distribution and Governance Strategy across Instances</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Domo Everywhere</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Jae Wilson </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 24, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This is a framework for managing data distribution within an organization that has several departments using standalone instances of domo.</p>
+<p>domo-accounting.domo.com</p>
+<p>domo-sales.domo.com</p>
+<p>domo-marketing.domo.com</p>
+<p>domo-engineering.domo.com</p>
+<p>There are several highly bespoke datastores that provide high value data to different departments, they’ll have their own instances of domo too.</p>
+<p>domo-aa.domo.com</p>
+<p>domo-sfdc.domo.com</p>
+<p>domo-snowflake.domo.com</p>
+<p>We need a single place where users can find trusted dashboards builton a consistent and validated data pipeline that will consume input datasets from different departments or a chain of transformed datasets.</p>
+<p>Ex. The executive dashboard gets prepared by domo-engineering but consumes data from accounting, sales, and marketing.</p>
+<section id="types-of-datasets-and-which-ones-we-publish" class="level2">
+<h2 class="anchored" data-anchor-id="types-of-datasets-and-which-ones-we-publish">4 Types of Datasets and Which ones we Publish</h2>
+</section>
+<section id="non-publishable-datasets" class="level2">
+<h2 class="anchored" data-anchor-id="non-publishable-datasets">Non-publishable Datasets</h2>
+<p>Avoid publishing datasets that require additional lookups or external data to understand.</p>
+<ol type="1">
+<li><h3 id="raw-datasets" class="anchored">Raw Datasets</h3></li>
+</ol>
+<ul>
+<li>Come straight from the source system.</li>
+<li>Minimize ETL during Ingest.</li>
+</ul>
+<ol start="2" type="1">
+<li><h3 id="staging-dataset-int" class="anchored">Staging Dataset (INT)</h3></li>
+</ol>
+<ul>
+<li><p>Exist exclusively in Department or Clearinghouse instances.</p></li>
+<li><p>Represent intermediate steps required to transform a dataset into a usable shape.</p></li>
+<li><p>This will include dimension tables that are not golden records</p></li>
+</ul>
+</section>
+<section id="publishable-datasets" class="level2">
+<h2 class="anchored" data-anchor-id="publishable-datasets">Publishable Datasets</h2>
+<p>We promote the publishing of datasets that can stand on their own and do not require additional context to understand.</p>
+<ol start="3" type="1">
+<li><h3 id="data-warehouse-dwh" class="anchored">Data Warehouse (DWH)</h3></li>
+</ol>
+<ul>
+<li>The building blocks (inputs) to DASH datasets</li>
+</ul>
+<p>ither facts or dimensional tables that have NOT been shaped for a specific analytic use case.</p>
+<ul>
+<li><p>Do not publish cards or dashboards built on DWH datasets.</p></li>
+<li><p>Fact tables can take the form of transactional, accumulating snapshot, periodic balance.</p></li>
+<li><p>Period and accumulating snapshots should be avoided unless there’s a tradeoff for data volume optimization OR rigid reporting requirements where taking snapshots make sense (ex. Financial reporting)</p></li>
+<li><p>DWH datasets will be fact tables representing a single fact type (ex. Sales, Sales Forecast or Inventory), joined with the minimum dimensional attributes to be useful in a stand-alone setting.</p></li>
+<li><p>Avoid subsetting similar datasets (ex. Inventory 2019 vs Inventory 2022)</p></li>
+<li><p>DWH datasets&nbsp;includes conformed dimensional tables (like a Calendar Dimension with FY attributes or golden record customer master)</p></li>
+</ul>
+<ol start="4" type="1">
+<li><h3 id="dashboard-dataset-dash" class="anchored">Dashboard Dataset (DASH)</h3></li>
+</ol>
+<ul>
+<li><p>Represent stand-alone datasets that dashboards and cards are built against.</p></li>
+<li><p>Publishable only to distribution centers.</p></li>
+<li><p>Typically will combine multiple DWH fact tables and conformed dimensions.</p></li>
+<li><p>Datasets shaped for analysis (PIVOT or UNPIVOT metrics, or POP (CY vs PY etc. are classified as DASH datasets).</p></li>
+<li><p>Do not conduct ETL on DASH datasets</p></li>
+</ul>
+<hr>
+</section>
+<section id="types-of-instances" class="level1">
+<h1>3 Types of Instances</h1>
+<ol type="1">
+<li><h2 id="data-clearinghouse" class="anchored" data-anchor-id="types-of-instances">Data Clearinghouse</h2></li>
+</ol>
+<p>A domo instance for a specific type of data or data from a highly bespoke functional area or dataset that must be managed very closely. &nbsp;This data will tend to be high volume and require domain expertise to manage.</p>
+<p>Clearinghouses are exclusively data prep and management focused, so should house RAW, INT or DWH datasets.</p>
+<ul>
+<li>No project or data pipelines should be assembled here – and by extension no DASH datasets. &nbsp;Those should be handled in a Department instance.</li>
+</ul>
+<ol start="2" type="1">
+<li><h2 id="department" class="anchored">Department</h2></li>
+</ol>
+<p>An instance where projects are implemented.</p>
+<p>Datasources can be RAW or subscriptions of DWH datasets from another department.</p>
+<ul>
+<li>We do not publish DASH datasets between departments</li>
+</ul>
+<p>Every dataset should terminate as a DWH or DASH dataset.</p>
+<ul>
+<li>Only DASH datasets can be published to a Distribution Center</li>
+<li>Only DWH datasets can be published to other departments.</li>
+</ul>
+<ol start="3" type="1">
+<li><h2 id="distribution-center" class="anchored">Distribution Center</h2></li>
+</ol>
+<p>An instance that hosts certified dashboards and datasets (DASH)</p>
+<p>There can be a public datacenter and a private datacenter for highly sensitive dashboards.</p>
+<p>To prevent data manipulation in the distribution center, DataCenter along with any form of ETL access or content manipulation is disabled (no Participants or Editor rights).</p>
+<ul>
+<li>The instance can only receive datasets shared via Publish / Subscriber.</li>
+</ul>
+<section id="responsibility-for-governance" class="level3">
+<h3 class="anchored" data-anchor-id="responsibility-for-governance">Responsibility for Governance</h3>
+<p>Public and private distribution centers are differentiated by who owns responsibility for governance – the publisher versus central BI.</p>
+</section>
+<section id="public-distribution-center" class="level3">
+<h3 class="anchored" data-anchor-id="public-distribution-center">Public Distribution Center&nbsp;</h3>
+<p>Subscriber jobs INTO the public DC must be managed by the departmental data owners</p>
+<ul>
+<li>We only publish DASH datasets into the public DC</li>
+</ul>
+<p>Content sharing is managed by the dashboard publisher (using groups).</p>
+<ul>
+<li>By default PDP is NOT enabled on any dataset.</li>
+</ul>
+</section>
+<section id="private-distribution-center" class="level3">
+<h3 class="anchored" data-anchor-id="private-distribution-center">Private Distribution Center</h3>
+<p>Subscriber jobs INTO the private DC must be managed by Central BI</p>
+<p>All content sharing is managed by central BI – instance admins.</p>
+<ul>
+<li>By default PDP is enabled on all datasets that enter the distribution center.</li>
+</ul>
+</section>
+</section>
+<section id="sample-use-cases" class="level1">
+<h1>Sample Use Cases</h1>
+<section id="engineering-produces-a-dashboard" class="level2">
+<h2 class="anchored" data-anchor-id="engineering-produces-a-dashboard">1. Engineering produces a dashboard</h2>
+<p>Engineering owns “database_monitoring” (dbm) and publishes a dashboard to the PDC (public distribution center)</p>
+<ul>
+<li>DATASOURCE via raw - dbm_RAW</li>
+<li>ETL to produce dbm_DWH and dbm_DASH</li>
+<li>DISTRIBUTE via publish to PDC (dbm_DASH)</li>
+</ul>
+</section>
+<section id="infosec-augments-engineerings-dashboard" class="level2">
+<h2 class="anchored" data-anchor-id="infosec-augments-engineerings-dashboard">2. Infosec augments Engineering’s dashboard</h2>
+<p>Infosec wants to augment database_monitoring (dbm) published by Engineering and publish it as a new asset in PDC (public distribution center)</p>
+<ul>
+<li><p>DATASOURCES</p></li>
+<li><p>via subscription from engineering (dbm_DWH)</p></li>
+<li><p>Because we do not do publish DASH between departmental instances</p></li>
+<li><p>RAW data from internal sources</p></li>
+<li><p>ETL produces infosec_DWH and infosec_DASH</p></li>
+<li><p>DISTRIBUTE via publish to PDC (infosec_DASH)</p></li>
+</ul>
+</section>
+<section id="secops-chooses-the-most-downstream-branch" class="level2">
+<h2 class="anchored" data-anchor-id="secops-chooses-the-most-downstream-branch">3. SecOps chooses the most downstream branch</h2>
+<p>Security Operations wants to augment the work from Infosec and publish it as a new asset in PDC.</p>
+<ul>
+<li>This introduces a 3-step ETL chain (RAW, engineering (dbm_DWH), or infosec (infosec_DWH) that SecOps must choose where to branch from.</li>
+</ul>
+<p>Publish / Subscriber requests should be configured from the most downstream certified data owner – in this case infosec.</p>
+<ul>
+<li>If an update is made to how engineering handles database_monitoring, this ensures the update is passed to infosec. If infosec updates their ornamentation, that update passes down to SecOps and anyone who has branched off of it.</li>
+</ul>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/jaewilson07\.github\.io\/domo_library");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/jaewilson07/domo_library/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

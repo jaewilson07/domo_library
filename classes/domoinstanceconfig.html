@@ -1,0 +1,2058 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.551">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="a class based approach to configuring your domo instance">
+
+<title>domolibrary - Instance Configuration</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+<meta property="og:title" content="domolibrary - Instance Configuration">
+<meta property="og:description" content="a class based approach to configuring your domo instance">
+<meta property="og:site_name" content="domolibrary">
+<meta name="twitter:title" content="domolibrary - Instance Configuration">
+<meta name="twitter:description" content="a class based approach to configuring your domo instance">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">domolibrary</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../blog/index.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaewilson07/domo_library"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/onyxreporting"> <i class="bi bi-twitter" role="img" aria-label="OnyxReporting Twitter">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../classes/domoaccesstoken.html">Classes</a></li><li class="breadcrumb-item"><a href="../classes/domoinstanceconfig.html">Instance Configuration</a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Client</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../client/get_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">get_data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../client/domoauth.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DomoAuth</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../client/logger.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logger</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../client/responsegetdata.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ResponseGetData</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../client/domoerror.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DomoError</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Classes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domoaccesstoken.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">AccessToken</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domoaccount.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Account</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domoaccount_config.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Account Config extensions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domoactivitylog.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Activity Log</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domoapplication.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Application</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domoapplication_job.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Job</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domobootstrap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bootstrap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domocard.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Card</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domocertification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Certification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domodatacenter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DataCenter</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domodataflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dataflow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domodataflow_action.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dataflow_Action</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domodataflow_history.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dataflow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domodataset.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dataset</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domogrant.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Grant</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domogroup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Group</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domogroup_membership.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Group</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domoinstanceconfig.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Instance Configuration</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domoinstanceconfig_userattributes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Instance Configuration User Attributes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domojupyter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DomoJupyter Integration</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domolineage.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lineage</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domopage.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Page</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domopage_content.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">PageContent</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domopdp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">PDP</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domopublish.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Publish</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domorole.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Role</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domosandbox.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sandbox</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domostream.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stream</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domouser.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">User</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Routes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/account.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Account Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/activity_log.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Activity Log Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/application.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Application Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/auth.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Auth Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/auth_accesstoken.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Access Token Auth Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/bootstrap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bootstrap Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/card.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Card Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/datacenter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Datacenter Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/dataflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dataflow Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/dataset.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dataset Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/grant.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Grant Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/group.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Group Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/instance_config.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Instance Config Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/jupyter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Jupyter Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/page.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Page Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/pdp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">PDP Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/publish.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Publish Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/role.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Role Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/sandbox.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sandbox Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/stream.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stream Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/user.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">User Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/user_attributes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">User Attribute Routes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Integrations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../integrations/Automation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Automation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../integrations/domojupyter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DomoJupyter (GetInstanceCredentials)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../integrations/MonitDataset.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">MonitDataset</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../integrations/rolehierarchy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RoleHierarchy</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Utils</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../utils/chunk_execution.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Async Code Execution</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../utils/convert.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Conversion utility functions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../utils/dictdot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DictDot</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../utils/image.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Utility Class</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../utils/read_creds_from_dotenv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Read Creds from DotEnv</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../utils/upload_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Upload Data to Domo</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#domoinstanceconfig" id="toc-domoinstanceconfig" class="nav-link active" data-scroll-target="#domoinstanceconfig">DomoInstanceConfig</a></li>
+  <li><a href="#domo_instance_config-inherits-userattributes" id="toc-domo_instance_config-inherits-userattributes" class="nav-link" data-scroll-target="#domo_instance_config-inherits-userattributes">domo_instance_config inherits UserAttributes</a>
+  <ul class="collapse">
+  <li><a href="#userattributes.get_attributes" id="toc-userattributes.get_attributes" class="nav-link" data-scroll-target="#userattributes.get_attributes">UserAttributes.get_attributes</a></li>
+  </ul></li>
+  <li><a href="#toggle-sandbox---allow_same_instance_promotion" id="toc-toggle-sandbox---allow_same_instance_promotion" class="nav-link" data-scroll-target="#toggle-sandbox---allow_same_instance_promotion">Toggle Sandbox - allow_same_instance_promotion</a></li>
+  <li><a href="#toggle-is-user-invite-notification-enabled" id="toc-toggle-is-user-invite-notification-enabled" class="nav-link" data-scroll-target="#toggle-is-user-invite-notification-enabled">Toggle is user invite notification enabled</a>
+  <ul class="collapse">
+  <li><a href="#sample-implementation-of-toggle_is_user_invite_notification_enabled" id="toc-sample-implementation-of-toggle_is_user_invite_notification_enabled" class="nav-link" data-scroll-target="#sample-implementation-of-toggle_is_user_invite_notification_enabled">Sample implementation of toggle_is_user_invite_notification_enabled</a></li>
+  </ul></li>
+  <li><a href="#toggle-social-users" id="toc-toggle-social-users" class="nav-link" data-scroll-target="#toggle-social-users">Toggle Social Users</a>
+  <ul class="collapse">
+  <li><a href="#weekly-digest" id="toc-weekly-digest" class="nav-link" data-scroll-target="#weekly-digest">Weekly Digest</a></li>
+  </ul></li>
+  <li><a href="#sso-configuration" id="toc-sso-configuration" class="nav-link" data-scroll-target="#sso-configuration">SSO Configuration</a>
+  <ul class="collapse">
+  <li><a href="#sso_config" id="toc-sso_config" class="nav-link" data-scroll-target="#sso_config">SSO_Config</a></li>
+  <li><a href="#update-sso-config" id="toc-update-sso-config" class="nav-link" data-scroll-target="#update-sso-config">Update SSO Config</a></li>
+  </ul></li>
+  <li><a href="#sample-implementation-of-update_sso_config" id="toc-sample-implementation-of-update_sso_config" class="nav-link" data-scroll-target="#sample-implementation-of-update_sso_config">sample implementation of update_sso_config</a>
+  <ul class="collapse">
+  <li><a href="#get-publications" id="toc-get-publications" class="nav-link" data-scroll-target="#get-publications">Get Publications</a>
+  <ul class="collapse">
+  <li><a href="#sample-implementation-of-get_publications" id="toc-sample-implementation-of-get_publications" class="nav-link" data-scroll-target="#sample-implementation-of-get_publications">sample implementation of get_publications</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#allowlist" id="toc-allowlist" class="nav-link" data-scroll-target="#allowlist">Allowlist</a>
+  <ul class="collapse">
+  <li><a href="#alter-the-allowlist" id="toc-alter-the-allowlist" class="nav-link" data-scroll-target="#alter-the-allowlist">ALTER the allowlist</a></li>
+  <li><a href="#domo-grants" id="toc-domo-grants" class="nav-link" data-scroll-target="#domo-grants">Domo Grants</a></li>
+  <li><a href="#domo-roles" id="toc-domo-roles" class="nav-link" data-scroll-target="#domo-roles">Domo Roles</a></li>
+  <li><a href="#authorized-domains" id="toc-authorized-domains" class="nav-link" data-scroll-target="#authorized-domains">Authorized Domains</a></li>
+  <li><a href="#custom-application-authorized-domains" id="toc-custom-application-authorized-domains" class="nav-link" data-scroll-target="#custom-application-authorized-domains">Custom Application Authorized Domains</a>
+  <ul class="collapse">
+  <li><a href="#set-and-upsert-of-custom-app-authorized-domains" id="toc-set-and-upsert-of-custom-app-authorized-domains" class="nav-link" data-scroll-target="#set-and-upsert-of-custom-app-authorized-domains">Set and Upsert of custom app authorized domains</a></li>
+  </ul></li>
+  <li><a href="#applications" id="toc-applications" class="nav-link" data-scroll-target="#applications">Applications</a></li>
+  </ul></li>
+  <li><a href="#domo-connectors" id="toc-domo-connectors" class="nav-link" data-scroll-target="#domo-connectors">Domo Connectors</a>
+  <ul class="collapse">
+  <li><a href="#domoconnector" id="toc-domoconnector" class="nav-link" data-scroll-target="#domoconnector">DomoConnector</a></li>
+  </ul></li>
+  <li><a href="#access-token" id="toc-access-token" class="nav-link" data-scroll-target="#access-token">Access Token</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/jaewilson07/domo_library/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../classes/domoaccesstoken.html">Classes</a></li><li class="breadcrumb-item"><a href="../classes/domoinstanceconfig.html">Instance Configuration</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Instance Configuration</h1>
+</div>
+
+<div>
+  <div class="description">
+    a class based approach to configuring your domo instance
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/classes/DomoInstanceConfig.py#L34" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="domoinstanceconfig" class="level3">
+<h3 class="anchored" data-anchor-id="domoinstanceconfig">DomoInstanceConfig</h3>
+<blockquote class="blockquote">
+<pre><code> DomoInstanceConfig (auth:domolibrary.client.DomoAuth.DomoAuth,
+                     allowlist:list[str]=&lt;factory&gt;,
+                     is_sandbox_self_instance_promotion_enabled:bool=None,
+                     is_user_invite_notification_enabled:bool=None,
+                     is_invite_social_users_enabled:bool=None,
+                     sso_config:dict=None, user_attributes:domolibrary.cla
+                     sses.DomoInstanceConfig_UserAttribute.UserAttributes=
+                     None)</code></pre>
+</blockquote>
+<p>utility class that absorbs many of the domo instance configuration methods</p>
+</section>
+<section id="domo_instance_config-inherits-userattributes" class="level1">
+<h1>domo_instance_config inherits UserAttributes</h1>
+<p>see DomoInstanceConfig_UserAttributes for all methods</p>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/classes/DomoInstanceConfig_UserAttribute.py#LNone" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="userattributes.get_attributes" class="level3">
+<h3 class="anchored" data-anchor-id="userattributes.get_attributes">UserAttributes.get_attributes</h3>
+<blockquote class="blockquote">
+<pre><code> UserAttributes.get_attributes (issuer_type_ls:List[domolibrary.routes.use
+                                r_attributes.UserAttributes_IssuerType]=No
+                                ne, session:httpx.AsyncClient=None,
+                                debug_api:bool=False,
+                                debug_num_stacks_to_drop=2)</code></pre>
+</blockquote>
+<div id="cell-5" class="cell" data-execution_count="72">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>],</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>domo_config <span class="op">=</span> DomoInstanceConfig(auth<span class="op">=</span>token_auth)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>(<span class="cf">await</span> domo_config.user_attributes.get_attributes())[<span class="dv">0</span>:<span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>warning this token has not been validated by who_am_i, run get_auth_token first</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="72">
+<pre><code>[UserAttribute(id='fzManagerEmail', name='ManagerEmail', description='FZ_POC', issuer_type=&lt;UserAttributes_IssuerType.CUSTOM: 'customer-defined'&gt;, customer_id='mmmm-0012-0200', value_type='STRING', validator='ANY_VALUE', validator_configuration=None, security_voter='FULL_VIS_ADMIN_IDP', custom=True),
+ UserAttribute(id='fzStoreID', name='StoreID', description='FZ_POC', issuer_type=&lt;UserAttributes_IssuerType.CUSTOM: 'customer-defined'&gt;, customer_id='mmmm-0012-0200', value_type='STRING', validator='ANY_VALUE', validator_configuration=None, security_voter='FULL_VIS_ADMIN_IDP', custom=True),
+ UserAttribute(id='fzFranchiseID', name='FranchiseID', description='FZ_POC', issuer_type=&lt;UserAttributes_IssuerType.CUSTOM: 'customer-defined'&gt;, customer_id='mmmm-0012-0200', value_type='STRING', validator='ANY_VALUE', validator_configuration=None, security_voter='FULL_VIS_ADMIN_IDP', custom=True),
+ UserAttribute(id='DomoLibraryStore', name='store_id', description='store ids', issuer_type=&lt;UserAttributes_IssuerType.CUSTOM: 'customer-defined'&gt;, customer_id='mmmm-0012-0200', value_type='STRING', validator='ANY_VALUE', validator_configuration=None, security_voter='FULL_VIS_ADMIN_IDP', custom=True),
+ UserAttribute(id='DomoLibraryTestFranchise', name='franchise_id', description='test', issuer_type=&lt;UserAttributes_IssuerType.CUSTOM: 'customer-defined'&gt;, customer_id='mmmm-0012-0200', value_type='STRING', validator='ANY_VALUE', validator_configuration=None, security_voter='FULL_VIS_ADMIN_IDP', custom=True)]</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="toggle-sandbox---allow_same_instance_promotion" class="level1">
+<h1>Toggle Sandbox - allow_same_instance_promotion</h1>
+<section id="sample-implementation-of-get-is-self-promotion-enabled" class="level4">
+<h4 class="anchored" data-anchor-id="sample-implementation-of-get-is-self-promotion-enabled">sample implementation of get is self promotion enabled</h4>
+<div id="cell-8" class="cell" data-execution_count="74">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>full_auth <span class="op">=</span> dmda.DomoFullAuth(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    domo_password<span class="op">=</span>os.environ[<span class="st">"DOJO_PASSWORD"</span>],</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    domo_username<span class="op">=</span>os.environ[<span class="st">"DOMO_USERNAME"</span>],</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>domo_config <span class="op">=</span> DomoInstanceConfig(auth<span class="op">=</span>full_auth)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> domo_config.get_sandbox_is_same_instance_promotion_enabled(</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    auth<span class="op">=</span>full_auth, debug_api<span class="op">=</span><span class="va">False</span>, return_raw<span class="op">=</span><span class="va">False</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="74">
+<pre><code>{'name': 'allow_same_instance_promotion', 'is_enabled': True}</code></pre>
+</div>
+</div>
+<div id="cell-9" class="cell" data-execution_count="76">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>full_auth <span class="op">=</span> dmda.DomoFullAuth(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    domo_password<span class="op">=</span>os.environ[<span class="st">"DOJO_PASSWORD"</span>],</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    domo_username<span class="op">=</span>os.environ[<span class="st">"DOMO_USERNAME"</span>],</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>domo_config <span class="op">=</span> DomoInstanceConfig(auth<span class="op">=</span>full_auth)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> domo_config.toggle_sandbox_allow_same_instance_promotion(</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    is_enabled<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    auth<span class="op">=</span>full_auth,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    debug_api<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    return_raw<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="76">
+<pre><code>{'name': 'allow_same_instance_promotion', 'is_enabled': True}</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="toggle-is-user-invite-notification-enabled" class="level1">
+<h1>Toggle is user invite notification enabled</h1>
+<section id="sample-implementation-of-get_is_user_invite_notification_enabled" class="level4">
+<h4 class="anchored" data-anchor-id="sample-implementation-of-get_is_user_invite_notification_enabled">sample implementation of get_is_user_invite_notification_enabled</h4>
+<div id="cell-12" class="cell" data-execution_count="78">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>full_auth <span class="op">=</span> dmda.DomoFullAuth(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    domo_password<span class="op">=</span>os.environ[<span class="st">"DOJO_PASSWORD"</span>],</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    domo_username<span class="op">=</span>os.environ[<span class="st">"DOMO_USERNAME"</span>],</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>domo_config <span class="op">=</span> DomoInstanceConfig(auth<span class="op">=</span>full_auth)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> domo_config.get_is_user_invite_notification_enabled(</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    auth<span class="op">=</span>full_auth, debug_api<span class="op">=</span><span class="va">False</span>, return_raw<span class="op">=</span><span class="va">False</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="78">
+<pre><code>{'name': 'user.invite.email.enabled', 'is_enabled': True}</code></pre>
+</div>
+</div>
+</section>
+<section id="sample-implementation-of-toggle_is_user_invite_notification_enabled" class="level3">
+<h3 class="anchored" data-anchor-id="sample-implementation-of-toggle_is_user_invite_notification_enabled">Sample implementation of toggle_is_user_invite_notification_enabled</h3>
+<div id="cell-14" class="cell" data-execution_count="80">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>auth <span class="op">=</span> dmda.DomoFullAuth(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    domo_username<span class="op">=</span>os.environ[<span class="st">"DOMO_USERNAME"</span>],</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    domo_password<span class="op">=</span>os.environ[<span class="st">"DOJO_PASSWORD"</span>],</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>domo_config <span class="op">=</span> DomoInstanceConfig(auth<span class="op">=</span>auth)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> domo_config.toggle_is_user_invite_notification_enabled(auth<span class="op">=</span>auth, is_enabled<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="80">
+<pre><code>{'name': 'user.invite.email.enabled', 'is_enabled': True}</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="toggle-social-users" class="level1">
+<h1>Toggle Social Users</h1>
+<section id="sample-implementation-of-is_invite_social_users_enabled" class="level4">
+<h4 class="anchored" data-anchor-id="sample-implementation-of-is_invite_social_users_enabled">sample implementation of is_invite_social_users_enabled</h4>
+<div id="cell-17" class="cell" data-execution_count="82">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>full_auth <span class="op">=</span> dmda.DomoFullAuth(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    domo_password<span class="op">=</span>os.environ[<span class="st">"DOJO_PASSWORD"</span>],</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    domo_username<span class="op">=</span>os.environ[<span class="st">"DOMO_USERNAME"</span>],</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>domo_config <span class="op">=</span> DomoInstanceConfig(auth<span class="op">=</span>full_auth)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> domo_config.get_is_invite_social_users_enabled(</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    auth<span class="op">=</span>full_auth, debug_api<span class="op">=</span><span class="va">False</span>, return_raw<span class="op">=</span><span class="va">False</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="82">
+<pre><code>{'name': 'free-invite', 'is_enabled': True}</code></pre>
+</div>
+</div>
+</section>
+<section id="sample-implementation-of-toggle_social_users" class="level4">
+<h4 class="anchored" data-anchor-id="sample-implementation-of-toggle_social_users">sample implementation of toggle_social_users</h4>
+<div id="cell-19" class="cell" data-execution_count="84">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>auth <span class="op">=</span> dmda.DomoFullAuth(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    domo_username<span class="op">=</span>os.environ[<span class="st">"DOMO_USERNAME"</span>],</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    domo_password<span class="op">=</span>os.environ[<span class="st">"DOJO_PASSWORD"</span>],</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>domo_config <span class="op">=</span> DomoInstanceConfig(auth<span class="op">=</span>auth)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> domo_config.toggle_is_invite_social_users_enabled(auth<span class="op">=</span>auth, is_enabled<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="84">
+<pre><code>{'name': 'free-invite', 'is_enabled': True}</code></pre>
+</div>
+</div>
+</section>
+<section id="weekly-digest" class="level2">
+<h2 class="anchored" data-anchor-id="weekly-digest">Weekly Digest</h2>
+<div id="cell-21" class="cell" data-execution_count="86">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>auth <span class="op">=</span> dmda.DomoFullAuth(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    domo_username<span class="op">=</span>os.environ[<span class="st">"DOMO_USERNAME"</span>],</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    domo_password<span class="op">=</span>os.environ[<span class="st">"DOJO_PASSWORD"</span>],</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>domo_config <span class="op">=</span> DomoInstanceConfig(auth<span class="op">=</span>auth)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> domo_config.get_is_weekly_digest_enabled(auth<span class="op">=</span>auth)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="86">
+<pre><code>{'is_enabled': False, 'feature': 'come-back-to-domo-all-users'}</code></pre>
+</div>
+</div>
+<div id="cell-22" class="cell" data-execution_count="88">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>auth <span class="op">=</span> dmda.DomoFullAuth(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    domo_username<span class="op">=</span>os.environ[<span class="st">"DOMO_USERNAME"</span>],</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    domo_password<span class="op">=</span>os.environ[<span class="st">"DOJO_PASSWORD"</span>],</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>domo_config <span class="op">=</span> DomoInstanceConfig(auth<span class="op">=</span>auth)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> domo_config.toggle_is_weekly_digest_enabled(auth<span class="op">=</span>auth, is_enabled<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="88">
+<pre><code>{'is_enabled': False, 'feature': 'come-back-to-domo-all-users'}</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="sso-configuration" class="level1">
+<h1>SSO Configuration</h1>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/classes/DomoInstanceConfig.py#L328" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="sso_config" class="level3">
+<h3 class="anchored" data-anchor-id="sso_config">SSO_Config</h3>
+<blockquote class="blockquote">
+<pre><code> SSO_Config (auth:domolibrary.client.DomoAuth.DomoAuth,
+             login_enabled:bool=None, idp_enabled:bool=None,
+             import_groups:bool=None, require_invitation:bool=None,
+             enforce_allowlist:bool=None, skip_to_idp:bool=None,
+             auth_request_endpoint:str=None, token_endpoint:str=None,
+             user_info_endpoint:str=None, public_key:str=None,
+             redirect_url:str=None, certificate:str=None,
+             override_sso:bool=None, override_embed:bool=None,
+             well_known_config:str=None, assertion_endpoint:str=None,
+             ingest_attributes:bool=None)</code></pre>
+</blockquote>
+<div id="cell-25" class="cell" data-execution_count="91">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>sso_config <span class="op">=</span> SSO_Config(enforce_allowlist<span class="op">=</span><span class="va">True</span>, login_enabled<span class="op">=</span><span class="va">False</span>, auth<span class="op">=</span>auth)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>sso_config.add_attribute(skip_to_idp<span class="op">=</span><span class="va">True</span>, certificate<span class="op">=</span><span class="st">"abc"</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>sso_config.to_json()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="91">
+<pre><code>{'loginEnabled': False,
+ 'enforceWhitelist': True,
+ 'skipToIdp': True,
+ 'certificate': 'abc'}</code></pre>
+</div>
+</div>
+<section id="sample-implementation-of-get_sso_configuration" class="level4">
+<h4 class="anchored" data-anchor-id="sample-implementation-of-get_sso_configuration">sample implementation of get_sso_configuration</h4>
+<div id="cell-27" class="cell" data-execution_count="93">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>],</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>domo_config <span class="op">=</span> DomoInstanceConfig(auth<span class="op">=</span>token_auth)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> domo_config.get_sso_config()</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>domo_config.sso_config.to_json()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>warning this token has not been validated by who_am_i, run get_auth_token first</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="93">
+<pre><code>{'loginEnabled': False,
+ 'idpEnabled': False,
+ 'importGroups': False,
+ 'requireInvitation': False,
+ 'enforceWhitelist': False,
+ 'skipToIdp': False,
+ 'authRequestEndpoint': '',
+ 'tokenEndpoint': '',
+ 'userInfoEndpoint': '',
+ 'publicKey': '',
+ 'redirectUrl': '',
+ 'certificate': '',
+ 'overrideSSO': False,
+ 'overrideEmbed': False,
+ 'wellKnownConfig': ''}</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="update-sso-config" class="level2">
+<h2 class="anchored" data-anchor-id="update-sso-config">Update SSO Config</h2>
+</section>
+</section>
+<section id="sample-implementation-of-update_sso_config" class="level1">
+<h1>sample implementation of update_sso_config</h1>
+<div id="cell-30" class="cell" data-execution_count="95">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>],</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>domo_config <span class="op">=</span> DomoInstanceConfig(auth<span class="op">=</span>token_auth)</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> domo_config.update_sso_config(</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>        require_invitation<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>        override_embed<span class="op">=</span><span class="st">"abc"</span>,</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>        <span class="co"># debug_is_test=True,</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>        debug_api<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> UpdateSSO_Error <span class="im">as</span> e:</span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(e)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>warning this token has not been validated by who_am_i, run get_auth_token first
+🛑  UpdateSSO_Error 🛑 - function: DomoInstanceConfig.wrapper || status 400 || failed to set config to loginEnabled : False || idpEnabled : False || importGroups : False || requireInvitation : True || enforceWhitelist : False || skipToIdp : False || authRequestEndpoint :  || tokenEndpoint :  || userInfoEndpoint :  || publicKey :  || redirectUrl :  || certificate :  || overrideSSO : False || overrideEmbed : abc || wellKnownConfig :  at domo-community</code></pre>
+</div>
+</div>
+<section id="get-publications" class="level2">
+<h2 class="anchored" data-anchor-id="get-publications">Get Publications</h2>
+<section id="sample-implementation-of-get_publications" class="level3">
+<h3 class="anchored" data-anchor-id="sample-implementation-of-get_publications">sample implementation of get_publications</h3>
+<div id="cell-33" class="cell" data-execution_count="97">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>auth <span class="op">=</span> dmda.DomoFullAuth(</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    domo_username<span class="op">=</span>os.environ[<span class="st">"DOMO_USERNAME"</span>],</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    domo_password<span class="op">=</span>os.environ[<span class="st">"DOJO_PASSWORD"</span>],</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>list_pub <span class="op">=</span> <span class="cf">await</span> DomoInstanceConfig.get_publications(auth<span class="op">=</span>auth)</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(list_pub)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[DomoPublication(id='095426a1-2c35-468b-bb96-36c516382f19', name='Ellibot', description='', is_v2=True, created_dt=datetime.datetime(2023, 11, 10, 11, 5, 10, 961000), subscription_authorizations=[DomoPublication_Subscription(subscription_id='173ee64d-4f68-4d40-b634-22b5332f4e45', publication_id='095426a1-2c35-468b-bb96-36c516382f19', domain='domo-community-ellibot.domo.com', created_dt=datetime.datetime(2023, 11, 10, 11, 5, 10, 961000))], content=[DomoPublication_Content(content_id='c61531b6-81ac-45ec-9a77-d41194406097', entity_type='DATASET', entity_id='f6210193-5322-4481-a1de-d07aed544050', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True)], content_page_id_ls=[], content_dataset_id_ls=['f6210193-5322-4481-a1de-d07aed544050'], lineage=DomoLineage(page_id_ls=[], card_id_ls=[], dataflow_id_ls=[], dataset_id_ls=[], entity_ls=[])), DomoPublication(id='99a4f772-f0e0-47a6-873a-5870d03b9134', name='Landing Page QA', description='', is_v2=True, created_dt=datetime.datetime(2023, 6, 15, 15, 14, 23, 791000), subscription_authorizations=[DomoPublication_Subscription(subscription_id='e0788b4e-5973-4c48-8a56-433dfb280496', publication_id='99a4f772-f0e0-47a6-873a-5870d03b9134', domain='test.domo.com', created_dt=datetime.datetime(2023, 6, 15, 15, 14, 23, 791000))], content=[DomoPublication_Content(content_id='b10b76dd-17f6-4459-9279-d1764035fad8', entity_type='DATASET', entity_id='51260f1d-b146-4dff-a1d8-68b7aa0b740b', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True)], content_page_id_ls=[], content_dataset_id_ls=['51260f1d-b146-4dff-a1d8-68b7aa0b740b'], lineage=DomoLineage(page_id_ls=[], card_id_ls=[], dataflow_id_ls=[], dataset_id_ls=[], entity_ls=[])), DomoPublication(id='e3295d79-4dbe-4994-8f8e-f105b178cc3b', name='Sandbox_PROD', description='', is_v2=True, created_dt=datetime.datetime(2023, 6, 15, 14, 54, 18, 747000), subscription_authorizations=[DomoPublication_Subscription(subscription_id='7ff7ec45-4a5b-4f5b-ab82-c2d4e00527a1', publication_id='e3295d79-4dbe-4994-8f8e-f105b178cc3b', domain='test.domo.com', created_dt=datetime.datetime(2023, 6, 15, 14, 54, 18, 748000))], content=[DomoPublication_Content(content_id='d4414dfc-3d05-41ef-bb47-8b29b75bb6b8', entity_type='DATASET', entity_id='15543b0f-dfe7-4a91-b7db-a86b9e8fec82', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True)], content_page_id_ls=[], content_dataset_id_ls=['15543b0f-dfe7-4a91-b7db-a86b9e8fec82'], lineage=DomoLineage(page_id_ls=[], card_id_ls=[], dataflow_id_ls=[], dataset_id_ls=[], entity_ls=[])), DomoPublication(id='17ec9f81-906f-42f7-b70b-6a26e2db523f', name='Test OZ', description='', is_v2=True, created_dt=datetime.datetime(2023, 6, 27, 12, 5, 0, 235000), subscription_authorizations=[DomoPublication_Subscription(subscription_id='c3e2d03e-fd02-4bdc-a2c5-1daa0ae134c4', publication_id='17ec9f81-906f-42f7-b70b-6a26e2db523f', domain='test.domo.com', created_dt=datetime.datetime(2023, 6, 27, 12, 5, 0, 235000))], content=[DomoPublication_Content(content_id='72d3f072-cecc-4940-af69-e25a64170148', entity_type='DATASET', entity_id='e17fd398-8abf-4cb5-8ed1-5394e274fbf4', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True)], content_page_id_ls=[], content_dataset_id_ls=['e17fd398-8abf-4cb5-8ed1-5394e274fbf4'], lineage=DomoLineage(page_id_ls=[], card_id_ls=[], dataflow_id_ls=[], dataset_id_ls=[], entity_ls=[])), DomoPublication(id='5b4a61f0-4f65-4191-97ff-245702756a4a', name='Test OZ', description='', is_v2=True, created_dt=datetime.datetime(2023, 7, 7, 10, 44, 0, 2000), subscription_authorizations=[DomoPublication_Subscription(subscription_id='5f0989bd-fc58-4590-bdf1-9d358ea9287a', publication_id='5b4a61f0-4f65-4191-97ff-245702756a4a', domain='test.domo.com', created_dt=datetime.datetime(2023, 7, 7, 10, 44, 0, 2000))], content=[DomoPublication_Content(content_id='ede617cc-65d1-419b-bd9d-1ea7205cde62', entity_type='DATASET', entity_id='e17fd398-8abf-4cb5-8ed1-5394e274fbf4', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True)], content_page_id_ls=[], content_dataset_id_ls=['e17fd398-8abf-4cb5-8ed1-5394e274fbf4'], lineage=DomoLineage(page_id_ls=[], card_id_ls=[], dataflow_id_ls=[], dataset_id_ls=[], entity_ls=[])), DomoPublication(id='1e7eb490-64fa-4e76-8e48-7bf7e7b73851', name='Test OZ', description='', is_v2=True, created_dt=datetime.datetime(2023, 6, 27, 14, 49, 45, 693000), subscription_authorizations=[DomoPublication_Subscription(subscription_id='f7402872-6a19-4da6-9afc-363efc9c4711', publication_id='1e7eb490-64fa-4e76-8e48-7bf7e7b73851', domain='test.domo.com', created_dt=datetime.datetime(2023, 6, 27, 14, 49, 45, 694000))], content=[DomoPublication_Content(content_id='94b4c694-fc20-40dc-9eac-f85ba64121a4', entity_type='DATASET', entity_id='e17fd398-8abf-4cb5-8ed1-5394e274fbf4', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True)], content_page_id_ls=[], content_dataset_id_ls=['e17fd398-8abf-4cb5-8ed1-5394e274fbf4'], lineage=DomoLineage(page_id_ls=[], card_id_ls=[], dataflow_id_ls=[], dataset_id_ls=[], entity_ls=[])), DomoPublication(id='544c3a06-84db-441a-b1a1-051e84020976', name='Test OZ', description='', is_v2=True, created_dt=datetime.datetime(2023, 6, 28, 13, 37, 45, 633000), subscription_authorizations=[DomoPublication_Subscription(subscription_id='129a8b4d-298f-4eb8-b2ad-f4205189d0e3', publication_id='544c3a06-84db-441a-b1a1-051e84020976', domain='test.domo.com', created_dt=datetime.datetime(2023, 6, 28, 13, 37, 45, 633000))], content=[DomoPublication_Content(content_id='9768f3af-d016-4df2-8663-f01c6955336b', entity_type='DATASET', entity_id='e17fd398-8abf-4cb5-8ed1-5394e274fbf4', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True)], content_page_id_ls=[], content_dataset_id_ls=['e17fd398-8abf-4cb5-8ed1-5394e274fbf4'], lineage=DomoLineage(page_id_ls=[], card_id_ls=[], dataflow_id_ls=[], dataset_id_ls=[], entity_ls=[])), DomoPublication(id='67fa93ca-173a-43e1-b830-51ac188d3a2a', name='Test OZ', description='', is_v2=True, created_dt=datetime.datetime(2023, 6, 28, 13, 39, 7, 435000), subscription_authorizations=[DomoPublication_Subscription(subscription_id='ae01ae3f-4461-4159-af58-6f0e977bfb66', publication_id='67fa93ca-173a-43e1-b830-51ac188d3a2a', domain='test.domo.com', created_dt=datetime.datetime(2023, 6, 28, 13, 39, 7, 435000))], content=[DomoPublication_Content(content_id='c9b1cf73-8161-435c-b489-808a87948f4b', entity_type='DATASET', entity_id='e17fd398-8abf-4cb5-8ed1-5394e274fbf4', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True)], content_page_id_ls=[], content_dataset_id_ls=['e17fd398-8abf-4cb5-8ed1-5394e274fbf4'], lineage=DomoLineage(page_id_ls=[], card_id_ls=[], dataflow_id_ls=[], dataset_id_ls=[], entity_ls=[])), DomoPublication(id='0d5e5bab-8907-4afc-9e81-61b5c8b7196d', name='Test OZ', description='', is_v2=True, created_dt=datetime.datetime(2023, 7, 7, 10, 43, 28, 875000), subscription_authorizations=[DomoPublication_Subscription(subscription_id='827a6e8f-d1c9-432c-a7ec-029e998f07a2', publication_id='0d5e5bab-8907-4afc-9e81-61b5c8b7196d', domain='test.domo.com', created_dt=datetime.datetime(2023, 7, 7, 10, 43, 28, 875000))], content=[DomoPublication_Content(content_id='c6436d38-e321-483e-b297-211556375b16', entity_type='DATASET', entity_id='e17fd398-8abf-4cb5-8ed1-5394e274fbf4', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True)], content_page_id_ls=[], content_dataset_id_ls=['e17fd398-8abf-4cb5-8ed1-5394e274fbf4'], lineage=DomoLineage(page_id_ls=[], card_id_ls=[], dataflow_id_ls=[], dataset_id_ls=[], entity_ls=[])), DomoPublication(id='3ed4e4b3-2d0d-422f-8c2a-e0de94d57ef9', name='Test OZ', description='', is_v2=True, created_dt=datetime.datetime(2023, 6, 27, 11, 53, 20, 79000), subscription_authorizations=[DomoPublication_Subscription(subscription_id='0aacf3c0-3c89-45fb-866c-f834c63d30aa', publication_id='3ed4e4b3-2d0d-422f-8c2a-e0de94d57ef9', domain='test.domo.com', created_dt=datetime.datetime(2023, 6, 27, 11, 53, 20, 79000))], content=[DomoPublication_Content(content_id='a785b401-34cc-419c-8728-d326f0a95e02', entity_type='DATASET', entity_id='e17fd398-8abf-4cb5-8ed1-5394e274fbf4', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True)], content_page_id_ls=[], content_dataset_id_ls=['e17fd398-8abf-4cb5-8ed1-5394e274fbf4'], lineage=DomoLineage(page_id_ls=[], card_id_ls=[], dataflow_id_ls=[], dataset_id_ls=[], entity_ls=[])), DomoPublication(id='868e5bfa-3e0b-43f4-819a-6a34e33f039c', name='Test OZ', description='', is_v2=True, created_dt=datetime.datetime(2023, 6, 27, 16, 9, 29, 900000), subscription_authorizations=[DomoPublication_Subscription(subscription_id='53113e79-3671-4ed0-acf7-f54aef53ae8d', publication_id='868e5bfa-3e0b-43f4-819a-6a34e33f039c', domain='test.domo.com', created_dt=datetime.datetime(2023, 6, 27, 16, 9, 29, 900000))], content=[DomoPublication_Content(content_id='425bc84d-a961-4973-8fee-5aafb209431a', entity_type='DATASET', entity_id='e17fd398-8abf-4cb5-8ed1-5394e274fbf4', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True)], content_page_id_ls=[], content_dataset_id_ls=['e17fd398-8abf-4cb5-8ed1-5394e274fbf4'], lineage=DomoLineage(page_id_ls=[], card_id_ls=[], dataflow_id_ls=[], dataset_id_ls=[], entity_ls=[])), DomoPublication(id='234bff3e-bfe7-4b2d-859e-18077fa6f151', name='Test OZ', description='', is_v2=True, created_dt=datetime.datetime(2023, 6, 26, 12, 52, 17, 175000), subscription_authorizations=[DomoPublication_Subscription(subscription_id='e34198a4-2885-483d-9916-750d9be78cbc', publication_id='234bff3e-bfe7-4b2d-859e-18077fa6f151', domain='test.domo.com', created_dt=datetime.datetime(2023, 6, 26, 12, 52, 17, 175000))], content=[DomoPublication_Content(content_id='80903d8d-1f5f-41bb-8fe9-c1534d2a73d9', entity_type='DATASET', entity_id='e17fd398-8abf-4cb5-8ed1-5394e274fbf4', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True)], content_page_id_ls=[], content_dataset_id_ls=['e17fd398-8abf-4cb5-8ed1-5394e274fbf4'], lineage=DomoLineage(page_id_ls=[], card_id_ls=[], dataflow_id_ls=[], dataset_id_ls=[], entity_ls=[])), DomoPublication(id='6af270bd-fe87-4672-abdb-cba982567b3b', name='Test OZ', description='', is_v2=True, created_dt=datetime.datetime(2023, 6, 27, 14, 45, 27, 723000), subscription_authorizations=[DomoPublication_Subscription(subscription_id='4edebbf0-eef8-4a1b-9395-947714fd6438', publication_id='6af270bd-fe87-4672-abdb-cba982567b3b', domain='test.domo.com', created_dt=datetime.datetime(2023, 6, 27, 14, 45, 27, 723000))], content=[DomoPublication_Content(content_id='c32832cc-b316-4131-9823-098d0fb4e8dc', entity_type='DATASET', entity_id='e17fd398-8abf-4cb5-8ed1-5394e274fbf4', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True)], content_page_id_ls=[], content_dataset_id_ls=['e17fd398-8abf-4cb5-8ed1-5394e274fbf4'], lineage=DomoLineage(page_id_ls=[], card_id_ls=[], dataflow_id_ls=[], dataset_id_ls=[], entity_ls=[])), DomoPublication(id='5696c128-299c-4f43-a7bc-91bf9b412efa', name='Test OZ', description='', is_v2=True, created_dt=datetime.datetime(2023, 6, 27, 14, 52, 26, 775000), subscription_authorizations=[DomoPublication_Subscription(subscription_id='6338cdaa-1103-4e2d-99a9-862a93073efd', publication_id='5696c128-299c-4f43-a7bc-91bf9b412efa', domain='test.domo.com', created_dt=datetime.datetime(2023, 6, 27, 14, 52, 26, 775000))], content=[DomoPublication_Content(content_id='2652fdf8-fa3f-4dc4-852f-b47ed5ccaaf7', entity_type='DATASET', entity_id='e17fd398-8abf-4cb5-8ed1-5394e274fbf4', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True)], content_page_id_ls=[], content_dataset_id_ls=['e17fd398-8abf-4cb5-8ed1-5394e274fbf4'], lineage=DomoLineage(page_id_ls=[], card_id_ls=[], dataflow_id_ls=[], dataset_id_ls=[], entity_ls=[])), DomoPublication(id='acc9b806-0d17-4a53-b3f0-d8c6b39be67a', name='Test OZ', description='', is_v2=True, created_dt=datetime.datetime(2023, 7, 7, 10, 11, 10, 86000), subscription_authorizations=[DomoPublication_Subscription(subscription_id='e5f1fce4-008e-4ee1-8fe5-f080e80bbe0a', publication_id='acc9b806-0d17-4a53-b3f0-d8c6b39be67a', domain='test.domo.com', created_dt=datetime.datetime(2023, 7, 7, 10, 11, 10, 86000))], content=[DomoPublication_Content(content_id='91c7cb1a-2fa2-41a5-a0eb-e75b587971b6', entity_type='DATASET', entity_id='e17fd398-8abf-4cb5-8ed1-5394e274fbf4', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True)], content_page_id_ls=[], content_dataset_id_ls=['e17fd398-8abf-4cb5-8ed1-5394e274fbf4'], lineage=DomoLineage(page_id_ls=[], card_id_ls=[], dataflow_id_ls=[], dataset_id_ls=[], entity_ls=[])), DomoPublication(id='e5f7461f-66f9-4e88-8cb3-2112923748ae', name='Test OZ', description='', is_v2=True, created_dt=datetime.datetime(2023, 5, 23, 6, 44, 24, 995000), subscription_authorizations=[DomoPublication_Subscription(subscription_id='3708f286-9c28-4d97-8e61-233950af35c8', publication_id='e5f7461f-66f9-4e88-8cb3-2112923748ae', domain='test.domo.com', created_dt=datetime.datetime(2023, 5, 23, 6, 44, 24, 995000))], content=[DomoPublication_Content(content_id='328d4a54-e066-4573-80cb-e94191b1b145', entity_type='DATASET', entity_id='e17fd398-8abf-4cb5-8ed1-5394e274fbf4', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True)], content_page_id_ls=[], content_dataset_id_ls=['e17fd398-8abf-4cb5-8ed1-5394e274fbf4'], lineage=DomoLineage(page_id_ls=[], card_id_ls=[], dataflow_id_ls=[], dataset_id_ls=[], entity_ls=[])), DomoPublication(id='8e3547ed-9337-49d1-a32b-bf91077b39ac', name='Test OZ', description='', is_v2=True, created_dt=datetime.datetime(2023, 6, 26, 12, 54, 35, 983000), subscription_authorizations=[DomoPublication_Subscription(subscription_id='36a2e742-b091-4a87-ba2e-3dc570509c1a', publication_id='8e3547ed-9337-49d1-a32b-bf91077b39ac', domain='test.domo.com', created_dt=datetime.datetime(2023, 6, 26, 12, 54, 35, 983000))], content=[DomoPublication_Content(content_id='d7a63d01-cfac-43f8-8d47-6d4cfcb16722', entity_type='DATASET', entity_id='e17fd398-8abf-4cb5-8ed1-5394e274fbf4', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True)], content_page_id_ls=[], content_dataset_id_ls=['e17fd398-8abf-4cb5-8ed1-5394e274fbf4'], lineage=DomoLineage(page_id_ls=[], card_id_ls=[], dataflow_id_ls=[], dataset_id_ls=[], entity_ls=[])), DomoPublication(id='12569e57-ecea-4e3e-88b9-108317051047', name='Test OZ', description='', is_v2=True, created_dt=datetime.datetime(2023, 6, 27, 16, 13, 6, 342000), subscription_authorizations=[DomoPublication_Subscription(subscription_id='21836f64-112a-4400-bbfb-8d89045fe937', publication_id='12569e57-ecea-4e3e-88b9-108317051047', domain='test.domo.com', created_dt=datetime.datetime(2023, 6, 27, 16, 13, 6, 343000))], content=[DomoPublication_Content(content_id='d223a65a-b72c-4ff4-b47c-e35b5a06dc33', entity_type='DATASET', entity_id='e17fd398-8abf-4cb5-8ed1-5394e274fbf4', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True)], content_page_id_ls=[], content_dataset_id_ls=['e17fd398-8abf-4cb5-8ed1-5394e274fbf4'], lineage=DomoLineage(page_id_ls=[], card_id_ls=[], dataflow_id_ls=[], dataset_id_ls=[], entity_ls=[])), DomoPublication(id='4386c956-205b-4860-a60a-1ba281dc3113', name='Test OZ', description='', is_v2=True, created_dt=datetime.datetime(2023, 7, 7, 9, 17, 45, 236000), subscription_authorizations=[DomoPublication_Subscription(subscription_id='a382635c-676f-416c-95ab-c9b8d143fa8a', publication_id='4386c956-205b-4860-a60a-1ba281dc3113', domain='test.domo.com', created_dt=datetime.datetime(2023, 7, 7, 9, 17, 45, 236000))], content=[DomoPublication_Content(content_id='2be48c34-40df-45f0-b2cc-e46e43ea8841', entity_type='DATASET', entity_id='e17fd398-8abf-4cb5-8ed1-5394e274fbf4', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True)], content_page_id_ls=[], content_dataset_id_ls=['e17fd398-8abf-4cb5-8ed1-5394e274fbf4'], lineage=DomoLineage(page_id_ls=[], card_id_ls=[], dataflow_id_ls=[], dataset_id_ls=[], entity_ls=[])), DomoPublication(id='438731a1-7e4e-4863-967f-fcfad22c9247', name='Test OZ - updated', description='', is_v2=True, created_dt=datetime.datetime(2023, 5, 2, 15, 6, 24, 358000), subscription_authorizations=[DomoPublication_Subscription(subscription_id='a0272907-d34c-4c27-b716-f2386dfecd19', publication_id='438731a1-7e4e-4863-967f-fcfad22c9247', domain='test.domo.com', created_dt=datetime.datetime(2023, 5, 2, 15, 6, 24, 358000))], content=[DomoPublication_Content(content_id='16e1b47f-6677-41a3-9c80-894550fec649', entity_type='PAGE', entity_id='384424178', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True), DomoPublication_Content(content_id='14d1a1e9-8673-4b3f-aa72-1d32a6041140', entity_type='DATASET', entity_id='4ef43af5-67e7-4b9e-bd58-c4e592aa289a', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True), DomoPublication_Content(content_id='53ab2b71-7b4c-47c9-9d0f-5deb3c7974f8', entity_type='DATASET', entity_id='e17fd398-8abf-4cb5-8ed1-5394e274fbf4', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True), DomoPublication_Content(content_id='87579059-fb6a-4d35-99ab-8ff624472dfd', entity_type='DATASET', entity_id='04c1574e-c8be-4721-9846-c6ffa491144b', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True)], content_page_id_ls=['384424178'], content_dataset_id_ls=['4ef43af5-67e7-4b9e-bd58-c4e592aa289a', 'e17fd398-8abf-4cb5-8ed1-5394e274fbf4', '04c1574e-c8be-4721-9846-c6ffa491144b'], lineage=DomoLineage(page_id_ls=[], card_id_ls=[], dataflow_id_ls=[], dataset_id_ls=[], entity_ls=[])), DomoPublication(id='701eb547-4244-43f6-bcda-003ed2c483c7', name='test_publish', description='', is_v2=True, created_dt=datetime.datetime(2023, 4, 27, 1, 36, 20, 642000), subscription_authorizations=[DomoPublication_Subscription(subscription_id='447bf630-7113-4323-bf67-773dcc450a3a', publication_id='701eb547-4244-43f6-bcda-003ed2c483c7', domain='test.domo.com', created_dt=datetime.datetime(2023, 4, 27, 1, 36, 20, 642000))], content=[DomoPublication_Content(content_id='cb257f38-6d6b-46b7-92c5-aee90fde7b66', entity_type='PAGE', entity_id='1880852133', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True), DomoPublication_Content(content_id='06c56df0-c58b-4afd-ab3f-41de5089273a', entity_type='DATASET', entity_id='ea859b06-5dbe-4c31-be76-de921447d550', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True), DomoPublication_Content(content_id='40d4d296-af58-42e9-98a1-131d3b9c1c97', entity_type='DATASET', entity_id='cf149711-df55-4dc3-a159-59a26d066baa', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True), DomoPublication_Content(content_id='a600cd85-3820-47ab-b66f-6ad682d139fb', entity_type='DATASET', entity_id='ee24d234-303e-46aa-b062-9905dc0d8622', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True), DomoPublication_Content(content_id='f80ef8c8-a133-439c-b459-7967ce7df4b3', entity_type='DATASET', entity_id='e17fd398-8abf-4cb5-8ed1-5394e274fbf4', entity_domain='domo-community.domo.com', is_v2=True, is_direct_content=True)], content_page_id_ls=['1880852133'], content_dataset_id_ls=['ea859b06-5dbe-4c31-be76-de921447d550', 'cf149711-df55-4dc3-a159-59a26d066baa', 'ee24d234-303e-46aa-b062-9905dc0d8622', 'e17fd398-8abf-4cb5-8ed1-5394e274fbf4'], lineage=DomoLineage(page_id_ls=[], card_id_ls=[], dataflow_id_ls=[], dataset_id_ls=[], entity_ls=[]))]</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="allowlist" class="level1">
+<h1>Allowlist</h1>
+<section id="sample-implementation-of-get_allowlist" class="level4">
+<h4 class="anchored" data-anchor-id="sample-implementation-of-get_allowlist">sample implementation of get_allowlist</h4>
+<div id="cell-36" class="cell" data-execution_count="99">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># this route requires full auth</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="co"># auth = dmda.DomoTokenAuth(domo_instance = 'domo-community', domo_access_token=os.environ['DOMO_DOJO_ACCESS_TOKEN'])</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>auth <span class="op">=</span> dmda.DomoFullAuth(</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    domo_username<span class="op">=</span>os.environ[<span class="st">"DOMO_USERNAME"</span>],</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    domo_password<span class="op">=</span>os.environ[<span class="st">"DOJO_PASSWORD"</span>],</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>dmicnfg <span class="op">=</span> DomoInstanceConfig(auth<span class="op">=</span>auth)</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> dmicnfg.get_allowlist(auth<span class="op">=</span>auth)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="99">
+<pre><code>['0.0.0.0/0', '172.59.153.95', '192.168.0.1']</code></pre>
+</div>
+</div>
+</section>
+<section id="alter-the-allowlist" class="level2">
+<h2 class="anchored" data-anchor-id="alter-the-allowlist">ALTER the allowlist</h2>
+<ul>
+<li>The updating the allowlist will automatically include the IP Address that submits the set_allowlist request. This prevents users from accidentally locking themselves out of domo.</li>
+<li>the set_allowlist API always does a SET command, by default there is no UPDATE or INSERT option. This class-based implementation uses a combination of get_allowlist, MERGE and set_allowlist to perform an UPSERT equivalent.</li>
+</ul>
+<section id="sample-implementation-of-set-and-upsert-allowlist" class="level4">
+<h4 class="anchored" data-anchor-id="sample-implementation-of-set-and-upsert-allowlist">sample implementation of set and upsert allowlist</h4>
+<div id="cell-39" class="cell" data-execution_count="101">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># this route requires full auth</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>auth <span class="op">=</span> dmda.DomoFullAuth(</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    domo_username<span class="op">=</span>os.environ[<span class="st">"DOMO_USERNAME"</span>],</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    domo_password<span class="op">=</span>os.environ[<span class="st">"DOJO_PASSWORD"</span>],</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>dmicnfg <span class="op">=</span> DomoInstanceConfig(auth<span class="op">=</span>auth)</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> dmicnfg.set_allowlist(auth<span class="op">=</span>auth, ip_address_ls<span class="op">=</span>[<span class="st">"0.0.0.0/0"</span>])</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(e)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-40" class="cell" data-execution_count="102">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># this route requires full auth</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>auth <span class="op">=</span> dmda.DomoFullAuth(</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    domo_username<span class="op">=</span>os.environ[<span class="st">"DOMO_USERNAME"</span>],</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    domo_password<span class="op">=</span>os.environ[<span class="st">"DOJO_PASSWORD"</span>],</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>dmicnfg <span class="op">=</span> DomoInstanceConfig(auth<span class="op">=</span>auth)</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> dmicnfg.upsert_allowlist(auth<span class="op">=</span>auth, ip_address_ls<span class="op">=</span>[<span class="st">"192.168.0.1"</span>])</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(e)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="domo-grants" class="level2">
+<h2 class="anchored" data-anchor-id="domo-grants">Domo Grants</h2>
+<div id="cell-42" class="cell" data-execution_count="104">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>],</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>dmicnfg <span class="op">=</span> DomoInstanceConfig(auth<span class="op">=</span>token_auth)</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="cf">await</span> dmicnfg.get_grants(debug_prn<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(res[<span class="dv">0</span>:<span class="dv">5</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>warning this token has not been validated by who_am_i, run get_auth_token first</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="104">
+<div>
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">id</th>
+<th data-quarto-table-cell-role="th">display_group</th>
+<th data-quarto-table-cell-role="th">title</th>
+<th data-quarto-table-cell-role="th">depends_on_ls</th>
+<th data-quarto-table-cell-role="th">description</th>
+<th data-quarto-table-cell-role="th">role_membership_ls</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>authorization.roles</td>
+<td>COMPANY</td>
+<td>Manage all roles</td>
+<td>[ui.admin]</td>
+<td>Create, edit and delete custom roles. Assign a...</td>
+<td>[1, 275763436, 810756122]</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>authorization.roles.assign</td>
+<td>COMPANY</td>
+<td>Assign users to a role</td>
+<td>[ui.admin]</td>
+<td>Assign users to a role in the allowlist.</td>
+<td>[1, 810756122]</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>entity.attribute.admin</td>
+<td>COMPANY</td>
+<td>Manage Certified Attributes</td>
+<td>[ui.admin]</td>
+<td>Create, edit and delete certified attributes</td>
+<td>[1, 810756122]</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>audit</td>
+<td>COMPANY</td>
+<td>View activity logs</td>
+<td>[ui.admin]</td>
+<td>View and export audit logs.</td>
+<td>[1, 275763436, 810756122, 1563101750, 2097317660]</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>customer.edit</td>
+<td>COMPANY</td>
+<td>Manage all company settings</td>
+<td>[ui.admin]</td>
+<td>Manage company metadata, authentication rules,...</td>
+<td>[1, 275763436, 810756122]</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="domo-roles" class="level2">
+<h2 class="anchored" data-anchor-id="domo-roles">Domo Roles</h2>
+<section id="sample-implementation-of-get_roles" class="level4">
+<h4 class="anchored" data-anchor-id="sample-implementation-of-get_roles">sample implementation of get_roles</h4>
+<div id="cell-45" class="cell" data-execution_count="106">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import domolibrary.client.DomoAuth as dmda</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>],</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>dmdic <span class="op">=</span> DomoInstanceConfig(auth<span class="op">=</span>token_auth)</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="cf">await</span> dmdic.get_roles(return_raw<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(res)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>warning this token has not been validated by who_am_i, run get_auth_token first</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="106">
+<div>
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">auth</th>
+<th data-quarto-table-cell-role="th">id</th>
+<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">description</th>
+<th data-quarto-table-cell-role="th">is_system_role</th>
+<th data-quarto-table-cell-role="th">is_default_role</th>
+<th data-quarto-table-cell-role="th">grant_ls</th>
+<th data-quarto-table-cell-role="th">membership_ls</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>{'domo_instance': 'domo-community', 'domo_acce...</td>
+<td>1</td>
+<td>Admin</td>
+<td>Full access to everything</td>
+<td>True</td>
+<td>False</td>
+<td>[]</td>
+<td>[]</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>{'domo_instance': 'domo-community', 'domo_acce...</td>
+<td>2</td>
+<td>Privileged</td>
+<td>Full access except for editing users and setti...</td>
+<td>True</td>
+<td>True</td>
+<td>[]</td>
+<td>[]</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>{'domo_instance': 'domo-community', 'domo_acce...</td>
+<td>3</td>
+<td>Editor</td>
+<td>Can edit Cards, Pages, DataSets, and Dataflows</td>
+<td>True</td>
+<td>False</td>
+<td>[]</td>
+<td>[]</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>{'domo_instance': 'domo-community', 'domo_acce...</td>
+<td>4</td>
+<td>Participant</td>
+<td>Read only access to Cards and Pages</td>
+<td>True</td>
+<td>False</td>
+<td>[]</td>
+<td>[]</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>{'domo_instance': 'domo-community', 'domo_acce...</td>
+<td>5</td>
+<td>Social</td>
+<td>Access limited to social features</td>
+<td>True</td>
+<td>False</td>
+<td>[]</td>
+<td>[]</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5</td>
+<td>{'domo_instance': 'domo-community', 'domo_acce...</td>
+<td>104295428</td>
+<td>super_admin_v3</td>
+<td>upsert via DomoLibrary</td>
+<td>0</td>
+<td>False</td>
+<td>[]</td>
+<td>[]</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">6</td>
+<td>{'domo_instance': 'domo-community', 'domo_acce...</td>
+<td>275763436</td>
+<td>manual_super_admin</td>
+<td>Full access to everything - h9</td>
+<td>0</td>
+<td>False</td>
+<td>[]</td>
+<td>[]</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">7</td>
+<td>{'domo_instance': 'domo-community', 'domo_acce...</td>
+<td>810756122</td>
+<td>super_admin</td>
+<td>last updated - 2024-03-23</td>
+<td>0</td>
+<td>False</td>
+<td>[]</td>
+<td>[]</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>{'domo_instance': 'domo-community', 'domo_acce...</td>
+<td>1563101750</td>
+<td>dl_department_admin</td>
+<td>deployed via domo_library script - updated 202...</td>
+<td>0</td>
+<td>False</td>
+<td>[]</td>
+<td>[]</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">9</td>
+<td>{'domo_instance': 'domo-community', 'domo_acce...</td>
+<td>1662852841</td>
+<td>dl_test</td>
+<td>deployed via domo_library script - updated 202...</td>
+<td>0</td>
+<td>False</td>
+<td>[]</td>
+<td>[]</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">10</td>
+<td>{'domo_instance': 'domo-community', 'domo_acce...</td>
+<td>2097317660</td>
+<td>Community_Default_Priviliged</td>
+<td>Full access except for editing users and setti...</td>
+<td>0</td>
+<td>False</td>
+<td>[]</td>
+<td>[]</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="authorized-domains" class="level2">
+<h2 class="anchored" data-anchor-id="authorized-domains">Authorized Domains</h2>
+<section id="sample-implementation-of-get_authorized_domains" class="level4">
+<h4 class="anchored" data-anchor-id="sample-implementation-of-get_authorized_domains">sample implementation of get_authorized_domains</h4>
+<div id="cell-48" class="cell" data-execution_count="108">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import domolibrary.client.DomoAuth as dmda</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>],</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>dmdic <span class="op">=</span> DomoInstanceConfig(auth<span class="op">=</span>token_auth)</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> dmdic.get_authorized_domains(return_raw<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>warning this token has not been validated by who_am_i, run get_auth_token first</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="108">
+<pre><code>[]</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="custom-application-authorized-domains" class="level2">
+<h2 class="anchored" data-anchor-id="custom-application-authorized-domains">Custom Application Authorized Domains</h2>
+<section id="sample-implementation-of-get_authorized_custom_app_domains" class="level4">
+<h4 class="anchored" data-anchor-id="sample-implementation-of-get_authorized_custom_app_domains">sample implementation of get_authorized_custom_app_domains</h4>
+<div id="cell-51" class="cell" data-execution_count="111">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import domolibrary.client.DomoAuth as dmda</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>],</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>dmdic <span class="op">=</span> DomoInstanceConfig(auth<span class="op">=</span>token_auth)</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> dmdic.get_authorized_custom_app_domains(return_raw<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>warning this token has not been validated by who_am_i, run get_auth_token first</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="111">
+<pre><code>['domo.com',
+ 'salesforce.com',
+ 'facebook.com',
+ 'twitter.com',
+ 'instagram.com',
+ 'youtube.com',
+ 'linkedin.com']</code></pre>
+</div>
+</div>
+</section>
+<section id="set-and-upsert-of-custom-app-authorized-domains" class="level3">
+<h3 class="anchored" data-anchor-id="set-and-upsert-of-custom-app-authorized-domains">Set and Upsert of custom app authorized domains</h3>
+</section>
+</section>
+<section id="applications" class="level2">
+<h2 class="anchored" data-anchor-id="applications">Applications</h2>
+<section id="sample-implementation-of-get_applications" class="level4">
+<h4 class="anchored" data-anchor-id="sample-implementation-of-get_applications">sample implementation of get_applications()</h4>
+<div id="cell-55" class="cell" data-execution_count="114">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import domolibrary.client.DomoAuth as dmda</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>],</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>dmdic <span class="op">=</span> DomoInstanceConfig(auth<span class="op">=</span>auth)</span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> dmdic.get_applications(auth<span class="op">=</span>auth, return_raw<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="114">
+<pre><code>[DomoApplication(id='25a97e0c-df6b-11eb-ba80-0242ac130004', version='1.0.102_1', name='Toolkit: PDP Automation', customer_id='mmmm-0012-0200', description='PDP Automation', execution_class='com.domo.executor.pdp.PDPAutomationApplication', grants=['pipeline.executor.job.create', 'dataset.manage'], jobs=None),
+ DomoApplication(id='4ddbf5d7-6441-4eb3-b5aa-97707cae2d2b', version='1.0.25_3', name='Toolkit: Schema Management', customer_id='mmmm-0012-0200', description='Schema Management', execution_class='com.domo.executor.schema.SchemaManagement', grants=['pipeline.executor.job.create', 'dataset.admin'], jobs=None),
+ DomoApplication(id='e37a6942-9c0f-485a-8288-4fe95e10b23d', version='1.0.7_2', name='Toolkit: DataSet S3 Backup', customer_id='mmmm-0012-0200', description='DataSet S3 Backup', execution_class='com.domo.executor.backup.DataSetBackupExecutor', grants=['dataset.admin', 'search.allentities.query'], jobs=None),
+ DomoApplication(id='b52f3c80-2642-4dcb-b874-b327326021b0', version='1.80_1', name='Toolkit: User Automation', customer_id='mmmm-0012-0200', description='Toolkit: User Automation', execution_class='com.domo.executor.userautomation.UserAutomationExecutor', grants=['pipeline.executor.job.create', 'dataset.manage', 'authorization.roles', 'user.invite', 'user.edit'], jobs=None),
+ DomoApplication(id='2f6573a5-97d8-4e27-b0fd-3c0f2313a3c8', version='1.0.43_2', name='Toolkit: Group Management', customer_id='mmmm-0012-0200', description='Group Management', execution_class='com.domo.executor.automation.GroupAutomationExecutor', grants=['pipeline.executor.job.create', 'dataset.admin', 'group.admin', 'content.admin'], jobs=None),
+ DomoApplication(id='bf651f89-2b76-4290-a5d8-d4dbcddc86a3', version='1.0.7_2', name='Toolkit: Triggered Reports', customer_id='mmmm-0012-0200', description='Triggers Scheduled reports based on triggered Alerts, or DataSet updates', execution_class='com.domo.executor.reports.ReportTriggerExecutor', grants=['pipeline.executor.job.create', 'dataset.manage', 'content.export', 'alert.edit'], jobs=None),
+ DomoApplication(id='50e7230f-d2f2-42e2-a208-d94c8ae9f64c', version='1.2.401_1', name='Toolkit: Remote Domo Stats', customer_id='mmmm-0012-0200', description='Remote Domo Stats', execution_class='com.domo.executor.subscriberstats.SubscriberStatsExecutor', grants=['developer.token.manage', 'pipeline.executor.job.create', 'content.export', 'service.internal', 'dataset.admin', 'audit', 'domostats-connector', 'content.admin', 'usage.reports.view', 'authenticated.user'], jobs=None),
+ DomoApplication(id='a99c3fd8-a0f6-4d06-9a1d-74f3d12293d4', version='1.0.35_2', name='Toolkit: DataSet Tag Automation', customer_id='mmmm-0012-0200', description='DataSet Tag Automation', execution_class='com.domo.executor.tags.ResourceTagApplication', grants=['dataflow.admin', 'dataset.admin', 'search.allentities.query'], jobs=None),
+ DomoApplication(id='068a1c2d-7a1a-449d-82d9-5ab54e2eb16e', version='1.0.76_2', name='Geocoder Executor', customer_id='mmmm-0012-0200', description='Geocoder Executor Service', execution_class='com.domo.executor.geocoder.GeocoderApplication', grants=['pipeline.executor.job.create'], jobs=None),
+ DomoApplication(id='69a16dc5-1d0e-45a6-8e15-459d8c0b1b42', version='1.0.21_2', name='Toolkit: Virtual Dataset Sharing', customer_id='mmmm-0012-0200', description='Virtual Dataset Sharing', execution_class='com.domo.executor.dataset.DataSetSharingApplication', grants=['pipeline.executor.job.create', 'dataset.manage'], jobs=None)]</code></pre>
+</div>
+</div>
+</section>
+<section id="sample-implementation-of-generate_appications_report" class="level4">
+<h4 class="anchored" data-anchor-id="sample-implementation-of-generate_appications_report">sample implementation of generate_appications_report</h4>
+<div id="cell-57" class="cell" data-execution_count="116">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>],</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>domo_config <span class="op">=</span> DomoInstanceConfig(auth<span class="op">=</span>auth)</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>(<span class="cf">await</span> domo_config.generate_applications_report())[<span class="dv">0</span>:<span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="116">
+<div>
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">application_description</th>
+<th data-quarto-table-cell-role="th">application_id</th>
+<th data-quarto-table-cell-role="th">application_name</th>
+<th data-quarto-table-cell-role="th">application_version</th>
+<th data-quarto-table-cell-role="th">customer_id</th>
+<th data-quarto-table-cell-role="th">domo_instance</th>
+<th data-quarto-table-cell-role="th">execution_class</th>
+<th data-quarto-table-cell-role="th">grants</th>
+<th data-quarto-table-cell-role="th">jobs</th>
+<th data-quarto-table-cell-role="th">jobs_schedule</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>PDP Automation</td>
+<td>25a97e0c-df6b-11eb-ba80-0242ac130004</td>
+<td>Toolkit: PDP Automation</td>
+<td>1.0.102_1</td>
+<td>mmmm-0012-0200</td>
+<td>domo-community</td>
+<td>com.domo.executor.pdp.PDPAutomationApplication</td>
+<td>[pipeline.executor.job.create, dataset.manage]</td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>Schema Management</td>
+<td>4ddbf5d7-6441-4eb3-b5aa-97707cae2d2b</td>
+<td>Toolkit: Schema Management</td>
+<td>1.0.25_3</td>
+<td>mmmm-0012-0200</td>
+<td>domo-community</td>
+<td>com.domo.executor.schema.SchemaManagement</td>
+<td>[pipeline.executor.job.create, dataset.admin]</td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>DataSet S3 Backup</td>
+<td>e37a6942-9c0f-485a-8288-4fe95e10b23d</td>
+<td>Toolkit: DataSet S3 Backup</td>
+<td>1.0.7_2</td>
+<td>mmmm-0012-0200</td>
+<td>domo-community</td>
+<td>com.domo.executor.backup.DataSetBackupExecutor</td>
+<td>[dataset.admin, search.allentities.query]</td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>Toolkit: User Automation</td>
+<td>b52f3c80-2642-4dcb-b874-b327326021b0</td>
+<td>Toolkit: User Automation</td>
+<td>1.80_1</td>
+<td>mmmm-0012-0200</td>
+<td>domo-community</td>
+<td>com.domo.executor.userautomation.UserAutomatio...</td>
+<td>[pipeline.executor.job.create, dataset.manage,...</td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>Group Management</td>
+<td>2f6573a5-97d8-4e27-b0fd-3c0f2313a3c8</td>
+<td>Toolkit: Group Management</td>
+<td>1.0.43_2</td>
+<td>mmmm-0012-0200</td>
+<td>domo-community</td>
+<td>com.domo.executor.automation.GroupAutomationEx...</td>
+<td>[pipeline.executor.job.create, dataset.admin, ...</td>
+<td>None</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="domo-connectors" class="level1">
+<h1>Domo Connectors</h1>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/classes/DomoInstanceConfig.py#L888" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="domoconnector" class="level3">
+<h3 class="anchored" data-anchor-id="domoconnector">DomoConnector</h3>
+<blockquote class="blockquote">
+<pre><code> DomoConnector (id:str, label:str, title:str, sub_title:str,
+                description:str, create_date:datetime.datetime,
+                last_modified:datetime.datetime, publisher_name:str,
+                writeback_enabled:bool, tags:list[str]=&lt;factory&gt;,
+                capabilities:list[str]=&lt;factory&gt;)</code></pre>
+</blockquote>
+<div id="cell-60" class="cell" data-execution_count="119">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>],</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>domo_config <span class="op">=</span> DomoInstanceConfig(auth<span class="op">=</span>auth)</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> domo_config.get_connectors(search_text<span class="op">=</span><span class="st">"snowflake"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="119">
+<pre><code>[DomoConnector(id='com.domo.connector.snowflakekeypairauthentication', label='Snowflake Key Pair Authentication Connector', title='Snowflake Key Pair Authentication Connector', sub_title='Create an even more secure connection between Domo and your Snowflake database.', description="By combining the business intelligence power of Domo with your Snowflake data warehouse, you will be able to unlock even more data value and democratize data for your business. Use Domo's Snowflake Key Pair Authentication connector to maximize your cloud data strategy by connecting your data to Domo and making it accessible to everyone in your company.&lt;br /&gt;With this connector, you'll be able to use key pair authentication to securely bring your Snowflake data into Domo. You can use key pair authentication as enhanced authentication security over basic authentication like a username and password.&lt;br /&gt;Once you've connected Domo to your Snowflake database, you'll be able to combine it with all your other Domo data to get a centralized view of your most mission-critical information.", create_date=datetime.datetime(2023, 3, 8, 21, 8, 44), last_modified=datetime.datetime(2023, 3, 27, 9, 13, 51), publisher_name='domo', writeback_enabled=False, tags=['BI', ' IT', ' Database', ' Query', ' Snowflake Keypair', ' SQL'], capabilities=['Connector']),
+ DomoConnector(id='com.domo.connector.snowflake.partition', label='Snowflake Partition Connector', title='Snowflake Partition Connector', sub_title='Maximize your cloud data strategy and investments by connecting your Snowflake data to Domo based on the number of past days provided, then make it instantly accessible to business users.', description='The Domo Snowflake Partition Connector makes it easy to bring all your data from your Snowflake data warehouse into Domo based on the number of past days provided. If you are already using Snowflake as a data warehousing solution, this connector helps you use Domo in conjunction with it to get the most from your data. To use this connector, you must have your Snowflake account name (domain) and the username and password for your Snowflake account.&lt;br&gt;&lt;br&gt;Once your Snowflake data is in Domo, you can combine it with all your other Domo data to get a centralized view of your most mission-critical data.', create_date=datetime.datetime(2023, 10, 18, 17, 10, 37), last_modified=datetime.datetime(2023, 10, 30, 9, 26, 51), publisher_name='domo', writeback_enabled=False, tags=[' Cloud Connector', ' IT', 'BI', ' Database', ' Partition', ' Snowflake'], capabilities=['Connector']),
+ DomoConnector(id='com.domo.connector.snowflakeunload', label='Snowflake Unload Connector', title='Snowflake Unload Connector', sub_title='Unload data from your Snowflake database into Amazon S3.', description="Snowflake is a cloud-based analytic data warehouse system. Use Domo's Snowflake Unload connector to unload data from your Snowflake database into Amazon S3. The files are downloaded from S3 into Domo. This connector should be preferred over the Snowflake connector if you are executing very large queries.", create_date=datetime.datetime(2023, 2, 6, 0, 1, 12), last_modified=datetime.datetime(2023, 2, 27, 8, 48, 57), publisher_name='domo', writeback_enabled=False, tags=['Database', 'Analytics', 'Cloud Connector', 'BI'], capabilities=['Connector']),
+ DomoConnector(id='com.domo.connector.snowflake.oauth', label='Snowflake OAuth Connector', title='Snowflake OAuth Connector', sub_title='Maximize your cloud data strategy and investment by securely connecting your Snowflake data to Domo.', description='By combining the power of Domo with your Snowflake data warehouse, you will be able to unlock even more data value and democratize data for your business. The Domo Snowflake OAuth connector makes it easy to securely bring your data from your Snowflake data warehouse into Domo. If you are already using Snowflake as a data warehousing solution, this connector helps you use Domo in conjunction with it to get the most from your data.&lt;br /&gt;With the OAuth connector for Snowflake, you can use your existing Snowflake account to access your data, including your Client ID and the Client Secret provided by Snowflake when you were registered. Once your Snowflake data is in Domo, you can combine it with all your other Domo data to get a centralized view of your most mission-critical data.', create_date=datetime.datetime(2023, 3, 13, 14, 41, 5), last_modified=datetime.datetime(2023, 3, 14, 9, 30, 28), publisher_name='domo', writeback_enabled=False, tags=['BI', ' IT', ' Database', ' Query', ' SQL', ' Snowflake OAuth'], capabilities=['Connector']),
+ DomoConnector(id='com.domo.connector.snowflake', label='Snowflake Connector', title='Snowflake Connector', sub_title='Maximize your cloud data strategy and investments by connecting your data to Domo and making it instantly accessible to everyone in your company.', description='The Domo Snowflake connector makes it easy to bring all your data from your Snowflake data warehouse into Domo. If you are already using Snowflake as a data warehousing solution, this connector helps you use Domo in conjunction with it to get the most from your data. To use this connector, you must have your Snowflake account name (domain) and the username and password for your Snowflake account.&lt;br&gt;&lt;br&gt;Once your Snowflake data is in Domo, you can combine it with all your other Domo data to get a centralized view of your most mission-critical data.', create_date=datetime.datetime(2023, 11, 29, 4, 17, 29), last_modified=datetime.datetime(2023, 12, 14, 7, 47, 27), publisher_name='domo', writeback_enabled=False, tags=['BI', 'Cloud Connector', 'Database'], capabilities=['Connector']),
+ DomoConnector(id='com.domo.connector.snowflake.internal.unload.advanced.partition', label='Snowflake High Bandwidth With Advanced Partitions Connector', title='Snowflake High Bandwidth With Advanced Partitions Connector', sub_title='Unload data from Snowflake database into Domo easily and securely with a choice of partitioning selection.', description="Snowflake is a cloud-based analytic data warehouse system. Use Domo's Snowflake Internal Unload Advanced Partition to unload data from your Snowflake database into internal Amazon S3. The files are then downloaded from internal S3 into Domo. This connector allows you to select whether you want to use partitioning for your data. Also, unlike the other partition connectors, this connector allows you to use partitioning on non-date columns.", create_date=datetime.datetime(2024, 1, 3, 13, 45, 7), last_modified=datetime.datetime(2024, 3, 13, 15, 41, 15), publisher_name='domo', writeback_enabled=False, tags=None, capabilities=['Connector']),
+ DomoConnector(id='com.domo.connector.snowflakewritebacktile', label='Snowflake Writeback Connector', title='Snowflake Writeback Connector', sub_title='Get the power of Domo to transform your data, then write it back to Snowflake.', description='The Snowflake Writeback Connector makes it easy to bring all your data into Domo and normalize it, then send it back to Snowflake while simultaneously making it available for queries. If you are already using Snowflake as a data warehousing solution, this connector helps you use Domo in conjunction with it to get the most from your data. To use this connector, you must have your Snowflake account name (domain), the username and password for your Snowflake account, and your Domo developer account credentials (client id and client secret).', create_date=datetime.datetime(2020, 7, 31, 10, 4, 40), last_modified=datetime.datetime(2020, 7, 31, 10, 4, 50), publisher_name='domo', writeback_enabled=False, tags=['Database', 'Cloud Connector', 'BI'], capabilities=['Connector'])]</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="access-token" class="level1">
+<h1>Access Token</h1>
+<div id="cell-62" class="cell" data-execution_count="121">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>],</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>domo_config <span class="op">=</span> DomoInstanceConfig(auth<span class="op">=</span>token_auth)</span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>access_tokens <span class="op">=</span> <span class="cf">await</span> domo_config.get_access_tokens()</span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>access_tokens[<span class="dv">0</span>:<span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>warning this token has not been validated by who_am_i, run get_auth_token first</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="121">
+<pre><code>[DomoAccessToken(id=156180, name='Governance', owner=DomoUser(id='587894148', display_name='Bryan Van Kampen', email_address='bryan@bvankampen.net', role_id=1, department='BT Partners', title='Executive Analytics', avatar_key='09/6CF6C801EEF440968C88ECC9824D66', phone_number='6304647034', web_landing_page=None, web_mobile_landing_page=None, employee_id=None, employee_number=None, hire_date=1588827600000, reports_to=None, publisher_domain=None, subscriber_domain=None, virtual_user_id=None, custom_attributes={}, role=DomoRole(id=1, name='Admin', description='Full access to everything', is_system_role=True, is_default_role=None, grant_ls=[], membership_ls=[])), expiration_date=datetime.datetime(2030, 5, 13, 14, 47, 33)),
+ DomoAccessToken(id=159191, name='Java CLI', owner=DomoUser(id='1345408759', display_name='Alexis Lorenz (DataMaven)', email_address='DataMaven42@gmail.com', role_id=1, department='Owner', title='Major Domo Support Specialist', avatar_key='3ad4c694-c9e8-4b6b-8b80-366d347d826e', phone_number='518-496-4710', web_landing_page=None, web_mobile_landing_page=None, employee_id=None, employee_number=None, hire_date=1590156374000, reports_to=None, publisher_domain=None, subscriber_domain=None, virtual_user_id=None, custom_attributes={}, role=DomoRole(id=1, name='Admin', description='Full access to everything', is_system_role=True, is_default_role=None, grant_ls=[], membership_ls=[])), expiration_date=datetime.datetime(2030, 7, 26, 20, 11, 21)),
+ DomoAccessToken(id=163868, name='Governance', owner=DomoUser(id='1345408759', display_name='Alexis Lorenz (DataMaven)', email_address='DataMaven42@gmail.com', role_id=1, department='Owner', title='Major Domo Support Specialist', avatar_key='3ad4c694-c9e8-4b6b-8b80-366d347d826e', phone_number='518-496-4710', web_landing_page=None, web_mobile_landing_page=None, employee_id=None, employee_number=None, hire_date=1590156374000, reports_to=None, publisher_domain=None, subscriber_domain=None, virtual_user_id=None, custom_attributes={}, role=DomoRole(id=1, name='Admin', description='Full access to everything', is_system_role=True, is_default_role=None, grant_ls=[], membership_ls=[])), expiration_date=datetime.datetime(2030, 11, 4, 21, 6)),
+ DomoAccessToken(id=168840, name='Dataset Copy', owner=DomoUser(id='1345408759', display_name='Alexis Lorenz (DataMaven)', email_address='DataMaven42@gmail.com', role_id=1, department='Owner', title='Major Domo Support Specialist', avatar_key='3ad4c694-c9e8-4b6b-8b80-366d347d826e', phone_number='518-496-4710', web_landing_page=None, web_mobile_landing_page=None, employee_id=None, employee_number=None, hire_date=1590156374000, reports_to=None, publisher_domain=None, subscriber_domain=None, virtual_user_id=None, custom_attributes={}, role=DomoRole(id=1, name='Admin', description='Full access to everything', is_system_role=True, is_default_role=None, grant_ls=[], membership_ls=[])), expiration_date=datetime.datetime(2031, 2, 20, 18, 55, 14)),
+ DomoAccessToken(id=182879, name='S3 Export', owner=DomoUser(id='68216396', display_name='Elliott Leonard', email_address='egleonard88@gmail.com', role_id=1, department='Owner', title=None, avatar_key='77cad494-6551-47e1-82eb-9e7d840d3a2d', phone_number='9702198956', web_landing_page=None, web_mobile_landing_page=None, employee_id=None, employee_number=None, hire_date=None, reports_to=None, publisher_domain=None, subscriber_domain=None, virtual_user_id=None, custom_attributes={}, role=DomoRole(id=1, name='Admin', description='Full access to everything', is_system_role=True, is_default_role=None, grant_ls=[], membership_ls=[])), expiration_date=datetime.datetime(2022, 10, 8, 2, 51, 55))]</code></pre>
+</div>
+</div>
+<div id="cell-63" class="cell" data-execution_count="123">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import domolibrary.classes.DomoUser as dmu</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>],</span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>domo_user <span class="op">=</span> <span class="cf">await</span> dmu.DomoUsers.by_email(email_ls<span class="op">=</span>[<span class="st">"test4@domo.com"</span>], auth<span class="op">=</span>token_auth)</span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>domo_config <span class="op">=</span> DomoInstanceConfig(auth<span class="op">=</span>token_auth)</span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>token <span class="op">=</span> <span class="cf">await</span> domo_config.generate_access_token(</span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a>    owner<span class="op">=</span>domo_user, duration_in_days<span class="op">=</span><span class="dv">15</span>, token_name<span class="op">=</span><span class="ss">f"DL test </span><span class="sc">{</span>dt<span class="sc">.</span>date<span class="sc">.</span>today()<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-16"><a href="#cb55-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(token.token)</span>
+<span id="cb55-17"><a href="#cb55-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-18"><a href="#cb55-18" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> token.revoke()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>warning this token has not been validated by who_am_i, run get_auth_token first
+03095d5c44a0a6d3ad233d3aca11a460287b3815401471ba</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="123">
+<pre><code>ResponseGetData(status=200, response='', is_success=True, parent_class=None)</code></pre>
+</div>
+</div>
+<div id="cell-64" class="cell" data-execution_count="125">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>token <span class="op">=</span> <span class="cf">await</span> domo_config.regenerate_access_token(</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>    domo_user<span class="op">=</span>domo_user, duration_in_days<span class="op">=</span><span class="dv">15</span>, token_name<span class="op">=</span><span class="ss">f"DL test </span><span class="sc">{</span>dt<span class="sc">.</span>date<span class="sc">.</span>today()<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(token.token)</span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> token.revoke()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>a452107eff3e1353199c074ed1cf3cea38d6fbc0fc6d0d26</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="125">
+<pre><code>ResponseGetData(status=200, response='', is_success=True, parent_class=None)</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/jaewilson07\.github\.io\/domo_library");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/jaewilson07/domo_library/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

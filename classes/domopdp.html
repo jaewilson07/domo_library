@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.551">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>domolibrary - PDP</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+<meta property="og:title" content="domolibrary - PDP">
+<meta property="og:description" content="">
+<meta property="og:site_name" content="domolibrary">
+<meta name="twitter:title" content="domolibrary - PDP">
+<meta name="twitter:description" content="">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">domolibrary</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../blog/index.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaewilson07/domo_library"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/onyxreporting"> <i class="bi bi-twitter" role="img" aria-label="OnyxReporting Twitter">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../classes/domoaccesstoken.html">Classes</a></li><li class="breadcrumb-item"><a href="../classes/domopdp.html">PDP</a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Client</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../client/get_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">get_data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../client/domoauth.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DomoAuth</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../client/logger.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logger</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../client/responsegetdata.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ResponseGetData</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../client/domoerror.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DomoError</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Classes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domoaccesstoken.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">AccessToken</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domoaccount.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Account</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domoaccount_config.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Account Config extensions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domoactivitylog.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Activity Log</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domoapplication.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Application</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domoapplication_job.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Job</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domobootstrap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bootstrap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domocard.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Card</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domocertification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Certification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domodatacenter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DataCenter</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domodataflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dataflow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domodataflow_action.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dataflow_Action</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domodataflow_history.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dataflow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domodataset.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dataset</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domogrant.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Grant</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domogroup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Group</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domogroup_membership.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Group</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domoinstanceconfig.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Instance Configuration</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domoinstanceconfig_userattributes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Instance Configuration User Attributes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domojupyter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DomoJupyter Integration</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domolineage.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lineage</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domopage.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Page</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domopage_content.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">PageContent</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domopdp.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">PDP</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domopublish.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Publish</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domorole.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Role</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domosandbox.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sandbox</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domostream.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stream</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../classes/domouser.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">User</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Routes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/account.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Account Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/activity_log.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Activity Log Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/application.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Application Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/auth.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Auth Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/auth_accesstoken.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Access Token Auth Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/bootstrap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bootstrap Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/card.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Card Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/datacenter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Datacenter Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/dataflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dataflow Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/dataset.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dataset Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/grant.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Grant Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/group.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Group Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/instance_config.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Instance Config Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/jupyter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Jupyter Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/page.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Page Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/pdp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">PDP Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/publish.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Publish Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/role.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Role Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/sandbox.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sandbox Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/stream.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stream Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/user.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">User Routes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../routes/user_attributes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">User Attribute Routes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Integrations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../integrations/Automation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Automation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../integrations/domojupyter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DomoJupyter (GetInstanceCredentials)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../integrations/MonitDataset.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">MonitDataset</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../integrations/rolehierarchy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RoleHierarchy</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Utils</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../utils/chunk_execution.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Async Code Execution</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../utils/convert.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Conversion utility functions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../utils/dictdot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DictDot</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../utils/image.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Utility Class</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../utils/read_creds_from_dotenv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Read Creds from DotEnv</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../utils/upload_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Upload Data to Domo</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#pdp-policy-parameter" id="toc-pdp-policy-parameter" class="nav-link active" data-scroll-target="#pdp-policy-parameter">PDP Policy Parameter</a></li>
+  <li><a href="#pdp_parameter" id="toc-pdp_parameter" class="nav-link" data-scroll-target="#pdp_parameter">PDP_Parameter</a></li>
+  <li><a href="#pdp_parameter.generate_body_from_parameter" id="toc-pdp_parameter.generate_body_from_parameter" class="nav-link" data-scroll-target="#pdp_parameter.generate_body_from_parameter">PDP_Parameter.generate_body_from_parameter</a></li>
+  <li><a href="#pdp_parameter.generate_parameter_simple" id="toc-pdp_parameter.generate_parameter_simple" class="nav-link" data-scroll-target="#pdp_parameter.generate_parameter_simple">PDP_Parameter.generate_parameter_simple</a></li>
+  <li><a href="#pdp-policy" id="toc-pdp-policy" class="nav-link" data-scroll-target="#pdp-policy">PDP Policy</a></li>
+  <li><a href="#pdp_policy" id="toc-pdp_policy" class="nav-link" data-scroll-target="#pdp_policy">PDP_Policy</a></li>
+  <li><a href="#dataset-pdp-policies" id="toc-dataset-pdp-policies" class="nav-link" data-scroll-target="#dataset-pdp-policies">Dataset PDP Policies</a></li>
+  <li><a href="#dataset_pdp_policies" id="toc-dataset_pdp_policies" class="nav-link" data-scroll-target="#dataset_pdp_policies">Dataset_PDP_Policies</a></li>
+  <li><a href="#get-pdp-policies-from-dataset" id="toc-get-pdp-policies-from-dataset" class="nav-link" data-scroll-target="#get-pdp-policies-from-dataset">Get PDP Policies from dataset</a></li>
+  <li><a href="#sample-implementation-of-get_policies" id="toc-sample-implementation-of-get_policies" class="nav-link" data-scroll-target="#sample-implementation-of-get_policies">sample implementation of get_policies</a></li>
+  <li><a href="#sample-implementation-of-generate_body_from_policy" id="toc-sample-implementation-of-generate_body_from_policy" class="nav-link" data-scroll-target="#sample-implementation-of-generate_body_from_policy">sample implementation of generate_body_from_policy</a></li>
+  <li><a href="#sample-implementation-of-upsert_policy" id="toc-sample-implementation-of-upsert_policy" class="nav-link" data-scroll-target="#sample-implementation-of-upsert_policy">sample implementation of upsert_policy</a></li>
+  <li><a href="#search-pdp-policies-by-name-and-id" id="toc-search-pdp-policies-by-name-and-id" class="nav-link" data-scroll-target="#search-pdp-policies-by-name-and-id">Search PDP Policies by name and ID</a></li>
+  <li><a href="#dataset_pdp_policies.search_pdp_policies" id="toc-dataset_pdp_policies.search_pdp_policies" class="nav-link" data-scroll-target="#dataset_pdp_policies.search_pdp_policies">Dataset_PDP_Policies.search_pdp_policies</a></li>
+  <li><a href="#searchpdp_notfound" id="toc-searchpdp_notfound" class="nav-link" data-scroll-target="#searchpdp_notfound">SearchPDP_NotFound</a></li>
+  <li><a href="#sample-implementation-of-search_pdp_policies" id="toc-sample-implementation-of-search_pdp_policies" class="nav-link" data-scroll-target="#sample-implementation-of-search_pdp_policies">sample implementation of search_pdp_policies</a></li>
+  <li><a href="#delete-pdp-policy" id="toc-delete-pdp-policy" class="nav-link" data-scroll-target="#delete-pdp-policy">Delete PDP Policy</a></li>
+  <li><a href="#pdp_policy.delete_policy" id="toc-pdp_policy.delete_policy" class="nav-link" data-scroll-target="#pdp_policy.delete_policy">PDP_Policy.delete_policy</a></li>
+  <li><a href="#enabledisable-pdp-on-dataset" id="toc-enabledisable-pdp-on-dataset" class="nav-link" data-scroll-target="#enabledisable-pdp-on-dataset">Enable/Disable PDP on dataset</a></li>
+  <li><a href="#dataset_pdp_policies.toggle_dataset_pdp" id="toc-dataset_pdp_policies.toggle_dataset_pdp" class="nav-link" data-scroll-target="#dataset_pdp_policies.toggle_dataset_pdp">Dataset_PDP_Policies.toggle_dataset_pdp</a></li>
+  <li><a href="#sample-implementation-of-toggle_dataset_pdp" id="toc-sample-implementation-of-toggle_dataset_pdp" class="nav-link" data-scroll-target="#sample-implementation-of-toggle_dataset_pdp">sample implementation of toggle_dataset_pdp</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/jaewilson07/domo_library/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../classes/domoaccesstoken.html">Classes</a></li><li class="breadcrumb-item"><a href="../classes/domopdp.html">PDP</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">PDP</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<p>The PDP class is an example of how domolibrary uses composition. PDP is a feature of Datasets; however to segment classes, PDP was written as a separate class. In a future sprint the naming of this class may be modified for clarity.</p>
+<section id="pdp-policy-parameter" class="level3">
+<h3 class="anchored" data-anchor-id="pdp-policy-parameter">PDP Policy Parameter</h3>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/classes/DomoPDP.py#L23" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="pdp_parameter" class="level3">
+<h3 class="anchored" data-anchor-id="pdp_parameter">PDP_Parameter</h3>
+<blockquote class="blockquote">
+<pre><code> PDP_Parameter (column_name:str, column_values_ls:list,
+                operator:str='EQUALS', ignore_case:bool=True,
+                type:str='COLUMN')</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/classes/DomoPDP.py#L53" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="pdp_parameter.generate_body_from_parameter" class="level3">
+<h3 class="anchored" data-anchor-id="pdp_parameter.generate_body_from_parameter">PDP_Parameter.generate_body_from_parameter</h3>
+<blockquote class="blockquote">
+<pre><code> PDP_Parameter.generate_body_from_parameter ()</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/classes/DomoPDP.py#L41" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="pdp_parameter.generate_parameter_simple" class="level3">
+<h3 class="anchored" data-anchor-id="pdp_parameter.generate_parameter_simple">PDP_Parameter.generate_parameter_simple</h3>
+<blockquote class="blockquote">
+<pre><code> PDP_Parameter.generate_parameter_simple (obj)</code></pre>
+</blockquote>
+<div id="cell-7" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>param <span class="op">=</span> PDP_Parameter(column_name<span class="op">=</span><span class="st">"instance"</span>, column_values_ls<span class="op">=</span>[<span class="st">"domo-community"</span>])</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>PDP_Parameter.generate_body_from_parameter(param)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>{'type': 'COLUMN',
+ 'name': 'instance',
+ 'values': ['domo-community'],
+ 'operator': 'EQUALS',
+ 'ignoreCase': True}</code></pre>
+</div>
+</div>
+</section>
+<section id="pdp-policy" class="level3">
+<h3 class="anchored" data-anchor-id="pdp-policy">PDP Policy</h3>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/classes/DomoPDP.py#L65" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="pdp_policy" class="level3">
+<h3 class="anchored" data-anchor-id="pdp_policy">PDP_Policy</h3>
+<blockquote class="blockquote">
+<pre><code> PDP_Policy (dataset_id:str, filter_group_id:str, name:str,
+             parameters_ls:list[dict], user_ls:list[str],
+             group_ls:list[str], virtual_user_ls:list[str])</code></pre>
+</blockquote>
+<div id="cell-10" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># #| export</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># @patch_to(PDP_Policy)</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># def add_parameter(self: PDP_Policy, parameter_obj):</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     self.parameters.concat(parameter_obj)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="dataset-pdp-policies" class="level3">
+<h3 class="anchored" data-anchor-id="dataset-pdp-policies">Dataset PDP Policies</h3>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/classes/DomoPDP.py#L172" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="dataset_pdp_policies" class="level3">
+<h3 class="anchored" data-anchor-id="dataset_pdp_policies">Dataset_PDP_Policies</h3>
+<blockquote class="blockquote">
+<pre><code> Dataset_PDP_Policies (dataset)</code></pre>
+</blockquote>
+<p>Initialize self. See help(type(self)) for accurate signature.</p>
+</section>
+<section id="get-pdp-policies-from-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="get-pdp-policies-from-dataset">Get PDP Policies from dataset</h3>
+</section>
+<section id="sample-implementation-of-get_policies" class="level3">
+<h3 class="anchored" data-anchor-id="sample-implementation-of-get_policies">sample implementation of get_policies</h3>
+<div id="cell-15" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>],</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># instantiate dataset class</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> dmd.DomoDataset(auth<span class="op">=</span>token_auth, <span class="bu">id</span><span class="op">=</span>os.environ[<span class="st">"DOJO_DATASET_ID"</span>])</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># instantiate dataset_pdp_policies</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>dataset_pdp_policies <span class="op">=</span> Dataset_PDP_Policies(dataset<span class="op">=</span>dataset)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># get policies</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> dataset_pdp_policies.get_policies(return_raw<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co"># print(dataset.id)</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co"># for res in res.response:</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co">#     print(res['resources'])</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>warning this token has not been validated by who_am_i, run get_auth_token first</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<pre><code>[PDP_Policy(dataset_id='04c1574e-c8be-4721-9846-c6ffa491144b', filter_group_id=797, name='All Rows', parameters_ls=None, user_ls=None, group_ls=None, virtual_user_ls=['vu:0ed4455a-35df-4049-8d6d-80341083b2f4', 'vu:566d15dc-9600-48af-b5ad-89cd0ea00cb7', 'vu:a8841f70-909a-438e-9853-49783846bf22', 'vu:ed6853bb-d8c7-4777-be41-0af475fde7ba', 'vu:20e30033-edb3-44f0-a121-5ccf5f8161bc']),
+ PDP_Policy(dataset_id='04c1574e-c8be-4721-9846-c6ffa491144b', filter_group_id=1149, name='Test Update Policy Name', parameters_ls=[DictDot(name='objectID', value='000003007', values=['000003007'], type='COLUMN', operator='EQUALS', not=False, ignoreCase=True)], user_ls=[DomoUser(id='308783524', display_name='test1', email_address='test1@test.com', role_id=1563101750, department=None, title=None, avatar_key=None, phone_number=None, web_landing_page=None, web_mobile_landing_page=None, employee_id=None, employee_number=None, hire_date=None, reports_to=None, publisher_domain=None, subscriber_domain=None, virtual_user_id=None, custom_attributes={}, role=DomoRole(id=1563101750, name='dl_department_admin', description='deployed via domo_library script - updated 2024-03-23', is_system_role=0, is_default_role=None, grant_ls=[], membership_ls=[]))], group_ls=None, virtual_user_ls=['fc:e3ce6205-6717-42b4-ba1c-16b5e40eca98']),
+ PDP_Policy(dataset_id='04c1574e-c8be-4721-9846-c6ffa491144b', filter_group_id=1224, name='t2', parameters_ls=[DictDot(name='Title', value='AWS Cost and Usage Dashboard', values=['AWS Cost and Usage Dashboard'], type='COLUMN', operator='EQUALS', not=False, ignoreCase=False)], user_ls=[DomoUser(id='663516735', display_name='test 3', email_address='test33@test.com', role_id=810756122, department=None, title=None, avatar_key=None, phone_number=None, web_landing_page=None, web_mobile_landing_page=None, employee_id=None, employee_number=None, hire_date=None, reports_to=None, publisher_domain=None, subscriber_domain=None, virtual_user_id=None, custom_attributes={}, role=DomoRole(id=810756122, name='super_admin', description='last updated - 2024-03-23', is_system_role=0, is_default_role=None, grant_ls=[], membership_ls=[])), DomoUser(id='1681443709', display_name='test 3 - updated 2024-03-23', email_address='test3@test.com', role_id=810756122, department=None, title=None, avatar_key=None, phone_number=None, web_landing_page=None, web_mobile_landing_page=None, employee_id=None, employee_number=None, hire_date=None, reports_to=None, publisher_domain=None, subscriber_domain=None, virtual_user_id=None, custom_attributes={}, role=DomoRole(id=810756122, name='super_admin', description='last updated - 2024-03-23', is_system_role=0, is_default_role=None, grant_ls=[], membership_ls=[]))], group_ls=[DomoGroup(id=1513712315, name='Test Group', type='closed', description='updated via API on 2024-01-02', custom_attributes={})], virtual_user_ls=None),
+ PDP_Policy(dataset_id='04c1574e-c8be-4721-9846-c6ffa491144b', filter_group_id=1225, name='t3s', parameters_ls=[DictDot(name='Title', value='Accessing Goals Data', values=['Accessing Goals Data'], type='COLUMN', operator='EQUALS', not=False, ignoreCase=False)], user_ls=[DomoUser(id='987822803', display_name='test_pdp2@sony.com - via dl 2023-05-05', email_address='test_pdp2@sony.com', role_id=2097317660, department=None, title=None, avatar_key=None, phone_number=None, web_landing_page=None, web_mobile_landing_page=None, employee_id=None, employee_number=None, hire_date=None, reports_to=None, publisher_domain=None, subscriber_domain=None, virtual_user_id=None, custom_attributes={}, role=DomoRole(id=2097317660, name='Community_Default_Priviliged', description='Full access except for editing users and settings owners', is_system_role=0, is_default_role=None, grant_ls=[], membership_ls=[])), DomoUser(id='838842812', display_name='test_pdp3@sony.com - via dl 2023-05-05', email_address='test_pdp3@sony.com', role_id=2097317660, department=None, title=None, avatar_key=None, phone_number=None, web_landing_page=None, web_mobile_landing_page=None, employee_id=None, employee_number=None, hire_date=None, reports_to=None, publisher_domain=None, subscriber_domain=None, virtual_user_id=None, custom_attributes={}, role=DomoRole(id=2097317660, name='Community_Default_Priviliged', description='Full access except for editing users and settings owners', is_system_role=0, is_default_role=None, grant_ls=[], membership_ls=[])), DomoUser(id='1186995515', display_name='test_pdp1@sony.com - via dl 2023-05-05', email_address='test_pdp1@sony.com', role_id=2097317660, department=None, title=None, avatar_key=None, phone_number=None, web_landing_page=None, web_mobile_landing_page=None, employee_id=None, employee_number=None, hire_date=None, reports_to=None, publisher_domain=None, subscriber_domain=None, virtual_user_id=None, custom_attributes={}, role=DomoRole(id=2097317660, name='Community_Default_Priviliged', description='Full access except for editing users and settings owners', is_system_role=0, is_default_role=None, grant_ls=[], membership_ls=[]))], group_ls=None, virtual_user_ls=None),
+ PDP_Policy(dataset_id='04c1574e-c8be-4721-9846-c6ffa491144b', filter_group_id=1226, name='sds', parameters_ls=[DictDot(name='Title', value='Adding Scale Markers to Your Charts', values=['Adding Scale Markers to Your Charts'], type='COLUMN', operator='EQUALS', not=False, ignoreCase=False)], user_ls=[DomoUser(id='838842812', display_name='test_pdp3@sony.com - via dl 2023-05-05', email_address='test_pdp3@sony.com', role_id=2097317660, department=None, title=None, avatar_key=None, phone_number=None, web_landing_page=None, web_mobile_landing_page=None, employee_id=None, employee_number=None, hire_date=None, reports_to=None, publisher_domain=None, subscriber_domain=None, virtual_user_id=None, custom_attributes={}, role=DomoRole(id=2097317660, name='Community_Default_Priviliged', description='Full access except for editing users and settings owners', is_system_role=0, is_default_role=None, grant_ls=[], membership_ls=[]))], group_ls=None, virtual_user_ls=None)]</code></pre>
+</div>
+</div>
+</section>
+<section id="sample-implementation-of-generate_body_from_policy" class="level3">
+<h3 class="anchored" data-anchor-id="sample-implementation-of-generate_body_from_policy">sample implementation of generate_body_from_policy</h3>
+<div id="cell-17" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>],</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># instantiate dataset class</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dmd.DomoDataset(auth<span class="op">=</span>token_auth, <span class="bu">id</span><span class="op">=</span>os.environ[<span class="st">"DOJO_DATASET_ID"</span>])</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># instantiate dataset_pdp_policies</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    dataset_pdp_policies <span class="op">=</span> Dataset_PDP_Policies(dataset<span class="op">=</span>dataset)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># get policies</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> dataset_pdp_policies.get_policies(return_raw<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    selected_policy <span class="op">=</span> dataset_pdp_policies.policies[<span class="dv">0</span>]</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(selected_policy)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># selected_policy.generate_body_from_policy()</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(e)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>warning this token has not been validated by who_am_i, run get_auth_token first</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<pre><code>PDP_Policy(dataset_id='04c1574e-c8be-4721-9846-c6ffa491144b', filter_group_id=797, name='All Rows', parameters_ls=None, user_ls=None, group_ls=None, virtual_user_ls=['vu:a8841f70-909a-438e-9853-49783846bf22', 'vu:0ed4455a-35df-4049-8d6d-80341083b2f4', 'vu:566d15dc-9600-48af-b5ad-89cd0ea00cb7', 'vu:ed6853bb-d8c7-4777-be41-0af475fde7ba', 'vu:20e30033-edb3-44f0-a121-5ccf5f8161bc'])</code></pre>
+</div>
+</div>
+</section>
+<section id="sample-implementation-of-upsert_policy" class="level3">
+<h3 class="anchored" data-anchor-id="sample-implementation-of-upsert_policy">sample implementation of upsert_policy</h3>
+<div id="cell-19" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>],</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co"># instantiate dataset class</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> dmd.DomoDataset(auth<span class="op">=</span>token_auth, <span class="bu">id</span><span class="op">=</span>os.environ[<span class="st">"DOJO_DATASET_ID"</span>])</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co"># instantiate dataset_pdp_policies</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>dataset_pdp_policies <span class="op">=</span> Dataset_PDP_Policies(dataset<span class="op">=</span>dataset)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Updating existing policy</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>new_param <span class="op">=</span> {</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"type"</span>: <span class="st">"COLUMN"</span>,</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"name"</span>: <span class="st">"Country"</span>,</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"values"</span>: [<span class="st">"Japan"</span>, <span class="st">"United States"</span>],</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"operator"</span>: <span class="st">"EQUALS"</span>,</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ignoreCase"</span>: <span class="va">True</span>,</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> dataset_pdp_policies.get_policies(return_raw<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>    selected_policy <span class="op">=</span> dataset_pdp_policies.policies[<span class="dv">0</span>]</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>    body <span class="op">=</span> selected_policy.generate_body_from_policy()</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>    body[<span class="st">"parameters"</span>].append(new_param)</span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> PDP_Policy.upsert_policy(</span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>        auth<span class="op">=</span>token_auth,</span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>        dataset_id<span class="op">=</span>dataset.<span class="bu">id</span>,</span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>        policy_definition<span class="op">=</span>body,</span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>        debug_api<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>        debug_prn<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(e)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>warning this token has not been validated by who_am_i, run get_auth_token first
+generate_body_from_policy: no parameters</code></pre>
+</div>
+</div>
+<div id="cell-20" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># upsert_policy, no policy exists so creates new policy</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># instantiate dataset class</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dmd.DomoDataset(auth<span class="op">=</span>token_auth, <span class="bu">id</span><span class="op">=</span>os.environ[<span class="st">"DOJO_DATASET_ID"</span>])</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    param <span class="op">=</span> {</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"type"</span>: <span class="st">"COLUMN"</span>,</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"name"</span>: <span class="st">"Country"</span>,</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"values"</span>: [<span class="st">"Philippines"</span>],</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">"operator"</span>: <span class="st">"EQUALS"</span>,</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"ignoreCase"</span>: <span class="va">True</span>,</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(param[<span class="st">"name"</span>])</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>    new_pdp_policy <span class="op">=</span> PDP_Policy(</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>        dataset_id<span class="op">=</span>dataset.<span class="bu">id</span>,</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>        filter_group_id<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>        name<span class="op">=</span><span class="st">"New PDP Policy"</span>,</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>        parameters_ls<span class="op">=</span>[util_dd.DictDot(param)],</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>        user_ls<span class="op">=</span>[<span class="st">"612085674"</span>],</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>        group_ls<span class="op">=</span>[<span class="st">"1259653287"</span>],</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>        virtual_user_ls<span class="op">=</span>[],</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>    body <span class="op">=</span> new_pdp_policy.generate_body_from_policy()</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>((<span class="cf">await</span> PDP_Policy.upsert_policy(</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>        auth<span class="op">=</span>dataset.auth, dataset_id<span class="op">=</span>dataset.<span class="bu">id</span>, policy_definition<span class="op">=</span>body</span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>    )))</span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(e)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Country
+Creating policy...
+ResponseGetData(status=400, response='Bad Request', is_success=False, parent_class=None)</code></pre>
+</div>
+</div>
+</section>
+<section id="search-pdp-policies-by-name-and-id" class="level3">
+<h3 class="anchored" data-anchor-id="search-pdp-policies-by-name-and-id">Search PDP Policies by name and ID</h3>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/classes/DomoPDP.py#L232" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="dataset_pdp_policies.search_pdp_policies" class="level3">
+<h3 class="anchored" data-anchor-id="dataset_pdp_policies.search_pdp_policies">Dataset_PDP_Policies.search_pdp_policies</h3>
+<blockquote class="blockquote">
+<pre><code> Dataset_PDP_Policies.search_pdp_policies
+                                           (auth:domolibrary.client.DomoAu
+                                           th.DomoAuth, search:str,
+                                           dataset_id:str=None,
+                                           search_method:str='id',
+                                           is_exact_match:bool=True,
+                                           return_raw:bool=False,
+                                           debug_api:bool=False,
+                                           session:httpx.AsyncClient=None)</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/classes/DomoPDP.py#L218" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="searchpdp_notfound" class="level3">
+<h3 class="anchored" data-anchor-id="searchpdp_notfound">SearchPDP_NotFound</h3>
+<blockquote class="blockquote">
+<pre><code> SearchPDP_NotFound (domo_instance, dataset_id, message='not found',
+                     function_name='search_pdp')</code></pre>
+</blockquote>
+<p>base exception</p>
+</section>
+<section id="sample-implementation-of-search_pdp_policies" class="level3">
+<h3 class="anchored" data-anchor-id="sample-implementation-of-search_pdp_policies">sample implementation of search_pdp_policies</h3>
+<div id="cell-25" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>dataset_id <span class="op">=</span> os.environ[<span class="st">"DOJO_DATASET_ID"</span>]</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># authenticate into instance</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>],</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co"># instance of dataset class</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> dmd.DomoDataset(auth<span class="op">=</span>token_auth, <span class="bu">id</span><span class="op">=</span>dataset_id)</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="co"># instance of pdp_policies for the dataset</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>dpp <span class="op">=</span> Dataset_PDP_Policies(dataset<span class="op">=</span>dataset)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="co"># pull all policies for that dataset</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> dpp.get_policies()</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a><span class="co"># search policies based on name</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    policy <span class="op">=</span> <span class="cf">await</span> dpp.search_pdp_policies(</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>        auth<span class="op">=</span>token_auth,</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>        dataset_id<span class="op">=</span>dataset.<span class="bu">id</span>,</span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>        search<span class="op">=</span><span class="st">"Test 94"</span>,</span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>        search_method<span class="op">=</span><span class="st">"name"</span>,</span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>        is_exact_match<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>        debug_api<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(policy)</span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> SearchPDP_NotFound <span class="im">as</span> e:</span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(e)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>warning this token has not been validated by who_am_i, run get_auth_token first</code></pre>
+</div>
+<div class="cell-output cell-output-error">
+<pre><code>NameError: name 'SearchPDP_NotFound' is not defined</code></pre>
+</div>
+</div>
+</section>
+<section id="delete-pdp-policy" class="level3">
+<h3 class="anchored" data-anchor-id="delete-pdp-policy">Delete PDP Policy</h3>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/classes/DomoPDP.py#L297" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="pdp_policy.delete_policy" class="level3">
+<h3 class="anchored" data-anchor-id="pdp_policy.delete_policy">PDP_Policy.delete_policy</h3>
+<blockquote class="blockquote">
+<pre><code> PDP_Policy.delete_policy (auth:domolibrary.client.DomoAuth.DomoAuth,
+                           policy_id:str=None, dataset_id:str=None,
+                           debug_api:bool=False)</code></pre>
+</blockquote>
+<section id="sample-implementation-of-delete_policy" class="level4">
+<h4 class="anchored" data-anchor-id="sample-implementation-of-delete_policy">Sample implementation of delete_policy</h4>
+<div id="cell-29" class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>dataset_id <span class="op">=</span> os.environ[<span class="st">"DOJO_DATASET_ID"</span>]</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co"># authenticate into instance</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>],</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="co"># instance of dataset class</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> dmd.DomoDataset(auth<span class="op">=</span>token_auth, <span class="bu">id</span><span class="op">=</span>dataset_id)</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a><span class="co"># instance of pdp_policies for the dataset</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>dpp <span class="op">=</span> Dataset_PDP_Policies(dataset<span class="op">=</span>dataset)</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a><span class="co"># search policies based on name</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>policy <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>    policy <span class="op">=</span> <span class="cf">await</span> dpp.search_pdp_policies(</span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>        auth<span class="op">=</span>token_auth,</span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>        dataset_id<span class="op">=</span>dataset.<span class="bu">id</span>,</span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>        search<span class="op">=</span><span class="st">"Test Policy Name Employee 123"</span>,</span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>        search_method<span class="op">=</span><span class="st">"name"</span>,</span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>        is_exact_match<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>        debug_api<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(policy)</span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> SearchPDP_NotFound <span class="im">as</span> e:</span>
+<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(e)</span>
+<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a><span class="co"># delete the policy based on filtergroup id</span></span>
+<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb25-33"><a href="#cb25-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> policy.delete_policy(</span>
+<span id="cb25-34"><a href="#cb25-34" aria-hidden="true" tabindex="-1"></a>        auth<span class="op">=</span>token_auth, debug_api<span class="op">=</span><span class="va">False</span></span>
+<span id="cb25-35"><a href="#cb25-35" aria-hidden="true" tabindex="-1"></a>    )  <span class="co"># don't need to include policy or dataset since those are already tied with policy class</span></span>
+<span id="cb25-36"><a href="#cb25-36" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb25-37"><a href="#cb25-37" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(e)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>warning this token has not been validated by who_am_i, run get_auth_token first
+🛑  SearchPDP_NotFound 🛑 - function: search_pdp || 04c1574e-c8be-4721-9846-c6ffa491144b || There is no policy named "Test Policy Name Employee 123" on dataset_id 04c1574e-c8be-4721-9846-c6ffa491144b at domo-community
+name 'policy' is not defined</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="enabledisable-pdp-on-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="enabledisable-pdp-on-dataset">Enable/Disable PDP on dataset</h3>
+<hr>
+<p><a href="https://github.com/jaewilson07/domo_library/blob/main/domolibrary/classes/DomoPDP.py#L316" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="dataset_pdp_policies.toggle_dataset_pdp" class="level3">
+<h3 class="anchored" data-anchor-id="dataset_pdp_policies.toggle_dataset_pdp">Dataset_PDP_Policies.toggle_dataset_pdp</h3>
+<blockquote class="blockquote">
+<pre><code> Dataset_PDP_Policies.toggle_dataset_pdp
+                                          (auth:domolibrary.client.DomoAut
+                                          h.DomoAuth=None,
+                                          dataset_id:str=None,
+                                          is_enable:bool=True,
+                                          debug_api:bool=False,
+                                          session:httpx.AsyncClient=None)</code></pre>
+</blockquote>
+</section>
+<section id="sample-implementation-of-toggle_dataset_pdp" class="level3">
+<h3 class="anchored" data-anchor-id="sample-implementation-of-toggle_dataset_pdp">sample implementation of toggle_dataset_pdp</h3>
+<div id="cell-33" class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>dataset_id <span class="op">=</span> os.environ[<span class="st">"DOJO_DATASET_ID"</span>]</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co"># authenticate into instancedataset_id</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>token_auth <span class="op">=</span> dmda.DomoTokenAuth(</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    domo_instance<span class="op">=</span><span class="st">"domo-community"</span>,</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    domo_access_token<span class="op">=</span>os.environ[<span class="st">"DOMO_DOJO_ACCESS_TOKEN"</span>],</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="co"># instance of dataset class</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> dmd.DomoDataset(auth<span class="op">=</span>token_auth, <span class="bu">id</span><span class="op">=</span>dataset_id)</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="co"># instance of pdp_policies for the dataset</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>dpp <span class="op">=</span> Dataset_PDP_Policies(dataset<span class="op">=</span>dataset)</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a><span class="co"># toggle pdp on dataset</span></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> dpp.toggle_dataset_pdp(</span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>    auth<span class="op">=</span>token_auth, dataset_id<span class="op">=</span>dataset.<span class="bu">id</span>, is_enable<span class="op">=</span><span class="va">False</span>, debug_api<span class="op">=</span><span class="va">False</span></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>warning this token has not been validated by who_am_i, run get_auth_token first</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="21">
+<pre><code>ResponseGetData(status=200, response={'enabled': False, 'secured': False, 'external': False, 'enabledColumn': False}, is_success=True, parent_class=None)</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/jaewilson07\.github\.io\/domo_library");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/jaewilson07/domo_library/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
